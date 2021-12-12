@@ -1,0 +1,566 @@
+definitions:
+  entity.SysDept:
+    properties:
+      children:
+        items:
+          $ref: '#/definitions/entity.SysDept'
+        type: array
+      create_time:
+        type: string
+      createBy:
+        type: string
+      deptId:
+        description: 部门编码
+        type: integer
+      deptName:
+        description: 部门名称
+        type: string
+      deptPath:
+        type: string
+      email:
+        description: 邮箱
+        type: string
+      leader:
+        description: 负责人
+        type: integer
+      params:
+        type: string
+      parentId:
+        description: 上级部门
+        type: integer
+      phone:
+        description: 手机
+        type: string
+      sort:
+        description: 排序
+        type: integer
+      status:
+        description: 状态
+        type: integer
+      update_time:
+        type: string
+      updateBy:
+        type: string
+    type: object
+  entity.SysUser:
+    properties:
+      avatar:
+        description: 头像
+        type: string
+      create_time:
+        type: string
+      createBy:
+        type: string
+      deptId:
+        description: 部门编码
+        type: integer
+      email:
+        description: 邮箱
+        type: string
+      nickName:
+        description: 昵称
+        type: string
+      params:
+        type: string
+      password:
+        description: 密码
+        type: string
+      phone:
+        description: 手机号
+        type: string
+      postId:
+        description: 职位编码
+        type: integer
+      remark:
+        description: 备注
+        type: string
+      roleId:
+        description: 角色编码
+        type: integer
+      salt:
+        description: 盐
+        type: string
+      sex:
+        description: 性别
+        type: string
+      status:
+        type: integer
+      update_time:
+        type: string
+      updateBy:
+        type: string
+      userId:
+        description: 编码
+        type: integer
+      username:
+        type: string
+    type: object
+  form.Login:
+    properties:
+      captcha:
+        description: 验证码
+        type: string
+      captchaId:
+        description: 验证码ID
+        type: string
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/db/:dbId/c-metadata:
+    get: {}
+  /api/db/:dbId/exec-sql:
+    get: {}
+  /api/db/:dbId/hint-tables:
+    get: {}
+  /api/db/:dbId/sql:
+    get: {}
+    post: {}
+  /api/db/:dbId/t-metadata:
+    get: {}
+  /api/dbs:
+    get: {}
+  /system/dept:
+    post:
+      consumes:
+      - application/json
+      description: 获取JSON
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SysDept'
+      responses:
+        "200":
+          description: '{"code": 400, "message": "添加失败"}'
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: 添加部门
+      tags:
+      - 部门
+    put:
+      consumes:
+      - application/json
+      description: 获取JSON
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SysDept'
+      responses:
+        "200":
+          description: '{"code": -1, "message": "添加失败"}'
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: 修改部门
+      tags:
+      - 部门
+  /system/dept/{deptId}:
+    get:
+      description: 获取JSON
+      parameters:
+      - description: deptId
+        in: path
+        name: deptId
+        type: string
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            type: string
+      security:
+      - "": []
+      summary: 部门数据
+      tags:
+      - 部门
+  /system/dept/{id}:
+    delete:
+      description: 删除数据
+      parameters:
+      - description: deptId
+        in: path
+        name: deptId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 400, "message": "删除失败"}'
+          schema:
+            type: string
+      summary: 删除部门
+      tags:
+      - 部门
+  /system/dept/deptAllList:
+    get:
+      description: 部门列表
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            type: string
+      security:
+      - "": []
+      summary: 所有部门列表数据
+      tags:
+      - 部门
+  /system/dept/deptList:
+    get:
+      description: 分页列表
+      parameters:
+      - description: deptName
+        in: query
+        name: deptName
+        type: string
+      - description: status
+        in: query
+        name: status
+        type: string
+      - description: deptId
+        in: query
+        name: deptId
+        type: string
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            type: string
+      security:
+      - "": []
+      summary: 部门列表数据
+      tags:
+      - 部门
+  /system/dept/deptTree:
+    get:
+      description: 部门树列表
+      parameters:
+      - description: deptName
+        in: query
+        name: deptName
+        type: string
+      - description: status
+        in: query
+        name: status
+        type: string
+      - description: deptId
+        in: query
+        name: deptId
+        type: string
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            type: string
+      security:
+      - "": []
+      summary: 所有部门树数据
+      tags:
+      - 部门
+  /system/dept/roleDeptTreSelect/{roleId}:
+    delete:
+      description: 获取角色部门树
+      parameters:
+      - description: roleId
+        in: path
+        name: roleId
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 400, "message": "删除失败"}'
+          schema:
+            type: string
+      summary: 获取角色部门
+      tags:
+      - 部门
+  /system/log/logLoginList:
+    get:
+      description: 获取JSON
+      parameters:
+      - description: status
+        in: query
+        name: status
+        type: string
+      - description: dictCode
+        in: query
+        name: dictCode
+        type: string
+      - description: dictType
+        in: query
+        name: dictType
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            type: string
+      security:
+      - "": []
+      summary: 登录日志列表
+      tags:
+      - 登录日志
+  /system/menu/menuList:
+    get:
+      description: 获取JSON
+      parameters:
+      - description: menuName
+        in: query
+        name: menuName
+        type: string
+      - description: visible
+        in: query
+        name: visible
+        type: string
+      - description: title
+        in: query
+        name: title
+        type: string
+      responses:
+        "200":
+          description: '{"code": 400, "message": "抱歉未找到相关信息"}'
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Menu列表数据
+      tags:
+      - 菜单
+  /system/menu/menuRole:
+    get:
+      description: 获取JSON
+      responses:
+        "200":
+          description: '{"code": 400, "message": "抱歉未找到相关信息"}'
+          schema:
+            type: string
+      security:
+      - X-TOKEN: []
+      summary: 根据角色名称获取菜单列表数据（左菜单使用）
+      tags:
+      - 菜单
+  /system/menu/menuTreRoleSelect/{roleId}:
+    get:
+      description: 获取JSON
+      parameters:
+      - description: roleId
+        in: path
+        name: roleId
+        type: string
+      responses:
+        "200":
+          description: '{"code": 400, "message": "抱歉未找到相关信息"}'
+          schema:
+            type: string
+      security:
+      - X-TOKEN: []
+      summary: 获取角色的部门树
+      tags:
+      - 菜单
+  /system/menu/menuTreSelect:
+    get:
+      description: 获取JSON
+      responses:
+        "200":
+          description: '{"code": 400, "message": "添加失败"}'
+          schema:
+            type: string
+      security:
+      - X-TOKEN: []
+      summary: 获取菜单树
+      tags:
+      - 菜单
+  /system/menu/menuids/{menuName}:
+    get:
+      description: 获取JSON
+      responses:
+        "200":
+          description: '{"code": -1, "message": "抱歉未找到相关信息"}'
+          schema:
+            type: string
+      security:
+      - X-TOKEN: []
+      summary: 获取角色对应的菜单id数组
+      tags:
+      - 菜单
+  /system/post/post:
+    get:
+      description: 获取JSON
+      parameters:
+      - description: postName
+        in: query
+        name: postName
+        type: string
+      - description: postCode
+        in: query
+        name: postCode
+        type: string
+      - description: postId
+        in: query
+        name: postId
+        type: string
+      - description: status
+        in: query
+        name: status
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            type: string
+      security:
+      - "": []
+      summary: 职位列表数据
+      tags:
+      - 职位
+  /system/role/rolelist:
+    get:
+      description: Get JSON
+      parameters:
+      - description: roleName
+        in: query
+        name: roleName
+        type: string
+      - description: status
+        in: query
+        name: status
+        type: string
+      - description: roleKey
+        in: query
+        name: roleKey
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageNum
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            type: string
+      security:
+      - "": []
+      summary: 角色列表数据
+      tags:
+      - 角色
+  /system/user/captcha:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"登陆成功"}'
+          schema:
+            type: string
+      summary: 获取验证码
+      tags:
+      - Base
+  /system/user/getInfo:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"登陆成功"}'
+          schema:
+            type: string
+      security:
+      - "": []
+      summary: 用户统一信息
+      tags:
+      - Base
+  /system/user/login:
+    post:
+      parameters:
+      - description: 用户名, 密码, 验证码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/form.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"登陆成功"}'
+          schema:
+            type: string
+      summary: 用户登录
+      tags:
+      - Base
+  /system/user/logout:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"登陆成功"}'
+          schema:
+            type: string
+      summary: 退出登录
+      tags:
+      - Base
+  /system/user/refreshToken:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"登陆成功"}'
+          schema:
+            type: string
+      summary: 刷新token
+      tags:
+      - Base
+  /system/user/sysUserList:
+    get:
+      description: 获取JSON
+      parameters:
+      - description: user
+        in: body
+        name: user
+        schema:
+          $ref: '#/definitions/entity.SysUser'
+      responses:
+        "200":
+          description: '{"code": -1, "message": "抱歉未找到相关信息"}'
+          schema:
+            type: string
+      security:
+      - X-TOKEN: []
+      summary: 列表数据
+      tags:
+      - 用户
+swagger: "2.0"

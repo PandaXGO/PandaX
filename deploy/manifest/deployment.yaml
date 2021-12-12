@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pandax
+  labels:
+    app.kubernetes.io/name: pandax
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pandax
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: pandax
+    spec:
+      serviceAccountName: pandax
+      containers:
+      - name: pandax
+        image: pandax/pandax:v1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 7788
+          protocol: TCP

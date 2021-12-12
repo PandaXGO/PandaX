@@ -1,0 +1,8 @@
+resources:
+- namespace.yaml
+- deployment.yaml
+- rbac.yaml
+- service.yaml
+commonLabels:
+  app.kubernetes.io/version: 1.0.0
+namespace: pandax

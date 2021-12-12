@@ -1,0 +1,61 @@
+app:
+  name: pandax
+  version: 1.0.0
+  
+server:
+  # debug release test
+  model: release
+  port: 7788
+  cors: true
+  db-type: mysql
+  isInitTable: true
+  excel-dir: ./resource/excel/
+  tls:
+    enable: false
+    key-file: ./resource/default.key
+    cert-file: ./resource/default.pem
+  # 静态资源
+  static:
+    - relative-path: /assets
+      root: ./static/assets
+  # 静态文件
+  static-file:
+    - relative-path: /
+      filepath: ./static/index.html
+    - relative-path: /favicon.ico
+      filepath: ./static/favicon.ico
+
+jwt:
+  key: mykey
+  # 过期时间单位秒 7天
+  expire-time: 604800
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+
+mysql:
+  host: localhost:3306
+  username: root
+  password: 123456
+  db-name: pandax
+  config: charset=utf8&loc=Local&parseTime=true
+
+postgresql:
+  username: postgres
+  password: 123456
+  host: 127.0.0.1
+  port: 5432
+  db-name: postgres
+  max-idle-conns: 10
+  max-open-conns: 10
+
+casbin:
+  model-path: './resource/rbac_model.conf'
+
+log:
+   # 日志等级, trace, debug, info, warn, error, fatal
+  level: info
+  # file:
+  #   path: ./
+  #   name: panda_log.log

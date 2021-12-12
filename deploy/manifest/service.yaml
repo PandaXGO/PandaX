@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pandax
+  labels:
+    app.kubernetes.io/name: pandax
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 7788
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: pandax
