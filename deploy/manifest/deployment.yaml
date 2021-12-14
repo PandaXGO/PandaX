@@ -17,9 +17,9 @@ spec:
       serviceAccountName: pandax
       containers:
       - name: pandax
-        image: pandax/pandax:v1.0
+        image: xmadmin/pandax:v1.0
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
-          containerPort: 7788
+          containerPort: 8080
           protocol: TCP

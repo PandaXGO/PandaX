@@ -54,7 +54,6 @@ func InitRouter() *gin.Engine {
 		sysRouter.InitMenuRouter(sys)
 		sysRouter.InitRoleRouter(sys)
 		sysRouter.InitPostRouter(sys)
-		sysRouter.InitSettingRouter(sys)
 		sysRouter.InitUserRouter(sys)
 
 	}

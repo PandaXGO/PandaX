@@ -27,8 +27,7 @@ func InitTable() {
 				entity.SysMenu{},
 				entity.SysPost{},
 				entity.SysRoleMenu{},
-				entity.SysRoleDept{},
-				entity.SysSettings{}), "初始化表失败")
+				entity.SysRoleDept{}), "初始化表失败")
 
 	}
 }
