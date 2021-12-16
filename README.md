@@ -20,7 +20,7 @@
 ---
 系统在线文档
 ---
-* 文档地址 ：正在编写中。。。
+* 文档地址 ：https://pandaadmin.gitee.io/pandax-docs
 
  **> 未来会补充文档和视频，方便友友们使用！** 
 
@@ -122,9 +122,6 @@
 * :clipboard: 大屏系统
 * :clipboard: 报表系统
 
-## 平台官网
-
-  www.pandax.vip
   
 ## ❤特别鸣谢
 

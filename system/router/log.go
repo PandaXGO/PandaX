@@ -38,4 +38,25 @@ func InitLogRouter(router *gin.RouterGroup) {
 	logLogin.DELETE(":infoId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(deleteLogLoginLog).Handle(login.DeleteLoginLog)
 	})
+
+	// 操作日志
+	oper := &api.LogOperApi{
+		LogOperApp: services.LogOperModelDao,
+	}
+	logOper := router.Group("logOper")
+
+	logOperListLog := ctx.NewLogInfo("获取操作日志列表")
+	logOper.GET("logOperList", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(logOperListLog).Handle(oper.GetOperLogList)
+	})
+
+	getLogOperLog := ctx.NewLogInfo("获取操作日志信息")
+	logOper.GET(":operId", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(getLogOperLog).Handle(oper.GetOperLog)
+	})
+
+	deleteLogOperLog := ctx.NewLogInfo("删除操作日志信息")
+	logOper.DELETE(":operId", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(deleteLogOperLog).Handle(oper.DeleteOperLog)
+	})
 }
