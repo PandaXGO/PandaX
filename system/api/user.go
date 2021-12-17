@@ -99,6 +99,7 @@ func (u *UserApi) Login(rc *ctx.ReqCtx) {
 	var loginLog entity.LogLogin
 	ua := user_agent.New(rc.GinCtx.Request.UserAgent())
 	loginLog.Ipaddr = rc.GinCtx.ClientIP()
+	loginLog.LoginLocation = utils.GetRealAddressByIP(rc.GinCtx.ClientIP())
 	loginLog.LoginTime = time.Now()
 	loginLog.Status = "0"
 	loginLog.Remark = rc.GinCtx.Request.UserAgent()
@@ -108,6 +109,7 @@ func (u *UserApi) Login(rc *ctx.ReqCtx) {
 	loginLog.Platform = ua.Platform()
 	loginLog.Username = login.Username
 	loginLog.Msg = "登录成功"
+	loginLog.CreateBy = login.Username
 	u.LogLogin.Insert(loginLog)
 }
 

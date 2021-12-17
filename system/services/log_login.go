@@ -13,6 +13,7 @@ type (
 		FindListPage(page, pageSize int, data entity.LogLogin) (*[]entity.LogLogin, int64)
 		Update(data entity.LogLogin) *entity.LogLogin
 		Delete(infoId []int64)
+		DeleteAll()
 	}
 
 	logLoginModelImpl struct {
@@ -27,9 +28,7 @@ var LogLoginModelDao LogLoginModel = &logLoginModelImpl{
 func (m *logLoginModelImpl) Insert(data entity.LogLogin) *entity.LogLogin {
 	data.CreateBy = "0"
 	data.UpdateBy = "0"
-	err := global.Db.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "添加登录日志信息失败")
-
+	global.Db.Table(m.table).Create(&data)
 	return &data
 }
 
@@ -48,6 +47,9 @@ func (m *logLoginModelImpl) FindListPage(page, pageSize int, data entity.LogLogi
 	// 此处填写 where参数判断
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
+	}
+	if data.LoginLocation != "" {
+		db = db.Where("login_location like ?", "%"+data.LoginLocation+"%")
 	}
 	if data.Username != "" {
 		db = db.Where("username like ?", "%"+data.Username+"%")
@@ -69,4 +71,8 @@ func (m *logLoginModelImpl) Delete(infoIds []int64) {
 	err := global.Db.Table(m.table).Delete(&entity.LogLogin{}, "`info_id` in (?)", infoIds).Error
 	biz.ErrIsNil(err, "删除登录日志信息失败")
 	return
+}
+
+func (m *logLoginModelImpl) DeleteAll() {
+	global.Db.Exec("DELETE FROM log_logins")
 }

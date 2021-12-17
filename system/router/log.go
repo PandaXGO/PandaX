@@ -15,7 +15,7 @@ func InitLogRouter(router *gin.RouterGroup) {
 	logLogin := router.Group("logLogin")
 
 	logLoginListLog := ctx.NewLogInfo("获取登录日志列表")
-	logLogin.GET("logLoginList", func(c *gin.Context) {
+	logLogin.GET("list", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(logLoginListLog).Handle(login.GetLoginLogList)
 	})
 
@@ -24,14 +24,14 @@ func InitLogRouter(router *gin.RouterGroup) {
 		ctx.NewReqCtxWithGin(c).WithLog(getLogLoginLog).Handle(login.GetLoginLog)
 	})
 
-	inserLogLoginLog := ctx.NewLogInfo("添加登录日志信息")
-	logLogin.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(inserLogLoginLog).Handle(login.InsertLoginLog)
-	})
-
 	updateLogLoginLog := ctx.NewLogInfo("修改登录日志信息")
 	logLogin.PUT("", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(updateLogLoginLog).Handle(login.UpdateLoginLog)
+	})
+
+	deleteLogLoginAllLog := ctx.NewLogInfo("删除登录日志信息")
+	logLogin.DELETE("all", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(deleteLogLoginAllLog).Handle(login.DeleteAll)
 	})
 
 	deleteLogLoginLog := ctx.NewLogInfo("删除登录日志信息")
@@ -46,13 +46,18 @@ func InitLogRouter(router *gin.RouterGroup) {
 	logOper := router.Group("logOper")
 
 	logOperListLog := ctx.NewLogInfo("获取操作日志列表")
-	logOper.GET("logOperList", func(c *gin.Context) {
+	logOper.GET("list", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(logOperListLog).Handle(oper.GetOperLogList)
 	})
 
 	getLogOperLog := ctx.NewLogInfo("获取操作日志信息")
 	logOper.GET(":operId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(getLogOperLog).Handle(oper.GetOperLog)
+	})
+
+	deleteLogOperAllLog := ctx.NewLogInfo("删除操作日志信息")
+	logOper.DELETE("all", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(deleteLogOperAllLog).Handle(oper.DeleteAll)
 	})
 
 	deleteLogOperLog := ctx.NewLogInfo("删除操作日志信息")

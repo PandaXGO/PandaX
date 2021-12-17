@@ -2,9 +2,13 @@ package initialize
 
 import (
 	"fmt"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"pandax/base/config"
-	"pandax/base/middleware"
+	"pandax/middleware"
 	sysRouter "pandax/system/router"
+
+	_ "pandax/docs"
 
 	"net/http"
 
@@ -41,7 +45,8 @@ func InitRouter() *gin.Engine {
 	if serverConfig.Cors {
 		router.Use(middleware.Cors())
 	}
-
+	// api接口
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// 设置路由组
 	sys := router.Group("system")
 	{
@@ -50,20 +55,19 @@ func InitRouter() *gin.Engine {
 		sysRouter.InitConfigRouter(sys)
 		sysRouter.InitApiRouter(sys)
 		sysRouter.InitDictRouter(sys)
-		sysRouter.InitLogRouter(sys)
 		sysRouter.InitMenuRouter(sys)
 		sysRouter.InitRoleRouter(sys)
 		sysRouter.InitPostRouter(sys)
 		sysRouter.InitUserRouter(sys)
-
 	}
 	router.Group("job")
 	{
 
 	}
-	router.Group("log")
+	//日志系统
+	log := router.Group("log")
 	{
-
+		sysRouter.InitLogRouter(log)
 	}
 	return router
 }

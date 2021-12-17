@@ -25,10 +25,10 @@ type LogLoginApi struct {
 func (l LogLoginApi) GetLoginLogList(rc *ctx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
-	status := rc.GinCtx.Query("status")
+	loginLocation := rc.GinCtx.Query("loginLocation")
 	username := rc.GinCtx.Query("username")
 
-	list, total := l.LogLoginApp.FindListPage(pageNum, pageSize, entity.LogLogin{Status: status, Username: username})
+	list, total := l.LogLoginApp.FindListPage(pageNum, pageSize, entity.LogLogin{LoginLocation: loginLocation, Username: username})
 	rc.ResData = map[string]interface{}{
 		"data":     list,
 		"total":    total,
@@ -47,22 +47,6 @@ func (l LogLoginApi) GetLoginLogList(rc *ctx.ReqCtx) {
 func (l LogLoginApi) GetLoginLog(rc *ctx.ReqCtx) {
 	infoId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("infoId"))
 	rc.ResData = l.LogLoginApp.FindOne(int64(infoId))
-}
-
-// @Summary 添加登录日志
-// @Description 获取JSON
-// @Tags 登录日志
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.LogLogin true "data"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/log/logLogin [post]
-// @Security X-TOKEN
-func (l LogLoginApi) InsertLoginLog(rc *ctx.ReqCtx) {
-	var log entity.LogLogin
-	ginx.BindJsonAndValid(rc.GinCtx, &log)
-	l.LogLoginApp.Insert(log)
 }
 
 // @Summary 修改登录日志
@@ -92,4 +76,14 @@ func (l LogLoginApi) DeleteLoginLog(rc *ctx.ReqCtx) {
 	infoIds := rc.GinCtx.Param("infoId")
 	group := utils.IdsStrToIdsIntGroup(infoIds)
 	l.LogLoginApp.Delete(group)
+}
+
+// @Summary 清空登录日志
+// @Description 删除数据
+// @Tags 登录日志
+// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
+// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
+// @Router /system/log/logLogin/all [delete]
+func (l LogLoginApi) DeleteAll(rc *ctx.ReqCtx) {
+	l.LogLoginApp.DeleteAll()
 }

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
@@ -25,11 +26,11 @@ type LogOperApi struct {
 func (l LogOperApi) GetOperLogList(rc *ctx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
-	status := rc.GinCtx.Query("status")
+
+	businessType := rc.GinCtx.Query("businessType")
 	operName := rc.GinCtx.Query("operName")
 	title := rc.GinCtx.Query("title")
-
-	list, total := l.LogOperApp.FindListPage(pageNum, pageSize, entity.LogOper{Status: status, OperName: operName, Title: title})
+	list, total := l.LogOperApp.FindListPage(pageNum, pageSize, entity.LogOper{BusinessType: businessType, OperName: operName, Title: title})
 	rc.ResData = map[string]interface{}{
 		"data":     list,
 		"total":    total,
@@ -60,5 +61,16 @@ func (l LogOperApi) GetOperLog(rc *ctx.ReqCtx) {
 func (l LogOperApi) DeleteOperLog(rc *ctx.ReqCtx) {
 	operIds := rc.GinCtx.Param("operId")
 	group := utils.IdsStrToIdsIntGroup(operIds)
+	log.Println("group", group)
 	l.LogOperApp.Delete(group)
+}
+
+// @Summary 清空操作日志
+// @Description 删除数据
+// @Tags 操作日志
+// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
+// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
+// @Router /system/log/logOper/all [delete]
+func (l LogOperApi) DeleteAll(rc *ctx.ReqCtx) {
+	l.LogOperApp.DeleteAll()
 }

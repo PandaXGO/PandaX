@@ -12,6 +12,7 @@ type (
 		FindOne(infoId int64) *entity.LogOper
 		FindListPage(page, pageSize int, data entity.LogOper) (*[]entity.LogOper, int64)
 		Delete(infoId []int64)
+		DeleteAll()
 	}
 
 	logLogOperModelImpl struct {
@@ -20,14 +21,11 @@ type (
 )
 
 var LogOperModelDao LogOperModel = &logLogOperModelImpl{
-	table: `log_logins`,
+	table: `log_opers`,
 }
 
 func (m *logLogOperModelImpl) Insert(data entity.LogOper) *entity.LogOper {
-	data.BusinessType = 1
-	err := global.Db.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "添加操作日志信息失败")
-
+	global.Db.Table(m.table).Create(&data)
 	return &data
 }
 
@@ -44,8 +42,11 @@ func (m *logLogOperModelImpl) FindListPage(page, pageSize int, data entity.LogOp
 	offset := pageSize * (page - 1)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	if data.Status != "" {
-		db = db.Where("status = ?", data.Status)
+	if data.BusinessType != "" {
+		db = db.Where("business_type = ?", data.BusinessType)
+	}
+	if data.OperLocation != "" {
+		db = db.Where("oper_location like ?", "%"+data.OperLocation+"%")
 	}
 	if data.Title != "" {
 		db = db.Where("title like ?", "%"+data.Title+"%")
@@ -64,4 +65,8 @@ func (m *logLogOperModelImpl) Delete(operIds []int64) {
 	err := global.Db.Table(m.table).Delete(&entity.LogOper{}, "`oper_id` in (?)", operIds).Error
 	biz.ErrIsNil(err, "删除操作日志信息失败")
 	return
+}
+
+func (m *logLogOperModelImpl) DeleteAll() {
+	global.Db.Exec("DELETE FROM log_opers")
 }
