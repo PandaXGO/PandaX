@@ -16,7 +16,7 @@ type LogLoginApi struct {
 // @Description 获取JSON
 // @Tags 登录日志
 // @Param status query string false "status"
-// @Param dictCode query string false "username"
+// @Param username query string false "username"
 // @Param pageSize query int false "页条数"
 // @Param pageNum query int false "页码"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
