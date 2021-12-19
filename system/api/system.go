@@ -34,18 +34,21 @@ func (s *System) ServerInfo(g *gin.Context) {
 	diskDic["total"] = total / GB
 	diskDic["free"] = free / GB
 	diskDic["used"] = used / GB
+	diskDic["progress"] = int64((float64(used) / float64(total)) * 100)
 
 	used2, free2, total2 := kgo.KOS.MemoryUsage(true)
 	memDic := make(map[string]interface{}, 0)
 	memDic["total"] = total2 / GB
 	memDic["used"] = used2 / GB
 	memDic["free"] = free2 / GB
+	memDic["progress"] = int64((float64(used2) / float64(total2)) * 100)
 
 	cpuDic := make(map[string]interface{}, 0)
 	used3, idle, total3 := kgo.KOS.CpuUsage()
 	cpuDic["total"] = total3 / GB
 	cpuDic["used"] = used3 / GB
 	cpuDic["free"] = idle / GB
+	cpuDic["progress"] = int64((float64(used3) / float64(total3)) * 100)
 
 	g.JSON(http.StatusOK, gin.H{
 		"code": 200,
