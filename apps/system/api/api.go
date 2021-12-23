@@ -2,8 +2,8 @@ package api
 
 import (
 	"log"
-	entity2 "pandax/apps/system/entity"
-	services2 "pandax/apps/system/services"
+	entity "pandax/apps/system/entity"
+	services "pandax/apps/system/services"
 	"pandax/base/casbin"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
@@ -11,7 +11,7 @@ import (
 )
 
 type SystemApiApi struct {
-	ApiApp services2.SysApiModel
+	ApiApp services.SysApiModel
 }
 
 // @Tags SysApi
@@ -23,7 +23,7 @@ type SystemApiApi struct {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router /system/api [post]
 func (s *SystemApiApi) CreateApi(rc *ctx.ReqCtx) {
-	var api entity2.SysApi
+	var api entity.SysApi
 	ginx.BindJsonAndValid(rc.GinCtx, &api)
 	log.Println(api)
 	s.ApiApp.Insert(api)
@@ -61,7 +61,7 @@ func (s *SystemApiApi) GetApiList(rc *ctx.ReqCtx) {
 	description := rc.GinCtx.Query("description")
 	method := rc.GinCtx.Query("method")
 	apiGroup := rc.GinCtx.Query("apiGroup")
-	api := entity2.SysApi{Path: path, Description: description, Method: method, ApiGroup: apiGroup}
+	api := entity.SysApi{Path: path, Description: description, Method: method, ApiGroup: apiGroup}
 	list, total := s.ApiApp.FindListPage(pageNum, pageSize, api)
 	rc.ResData = map[string]interface{}{
 		"data":     list,
@@ -94,7 +94,7 @@ func (s *SystemApiApi) GetApiById(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /api/api [put]
 func (s *SystemApiApi) UpdateApi(rc *ctx.ReqCtx) {
-	var api entity2.SysApi
+	var api entity.SysApi
 	ginx.BindJsonAndValid(rc.GinCtx, &api)
 	s.ApiApp.Update(api)
 }
@@ -107,7 +107,7 @@ func (s *SystemApiApi) UpdateApi(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /system/api/all [get]
 func (s *SystemApiApi) GetAllApis(rc *ctx.ReqCtx) {
-	rc.ResData = s.ApiApp.FindList(entity2.SysApi{})
+	rc.ResData = s.ApiApp.FindList(entity.SysApi{})
 }
 
 // @Tags SysApi

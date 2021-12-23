@@ -2,19 +2,19 @@ package api
 
 import (
 	"log"
-	entity2 "pandax/apps/system/entity"
-	services2 "pandax/apps/system/services"
+	entity "pandax/apps/system/entity"
+	services "pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
 )
 
 type MenuApi struct {
-	MenuApp services2.SysMenuModel
-	DeptApp services2.SysDeptModel
+	MenuApp services.SysMenuModel
+	DeptApp services.SysDeptModel
 
-	RoleMenuApp services2.SysRoleMenuModel
-	RoleApp     services2.SysRoleModel
+	RoleMenuApp services.SysRoleMenuModel
+	RoleApp     services.SysRoleModel
 }
 
 // @Summary 获取菜单树
@@ -25,7 +25,7 @@ type MenuApi struct {
 // @Router /system/menu/menuTreSelect [get]
 // @Security X-TOKEN
 func (m *MenuApi) GetMenuTreeSelect(rc *ctx.ReqCtx) {
-	lable := m.MenuApp.SelectMenuLable(entity2.SysMenu{})
+	lable := m.MenuApp.SelectMenuLable(entity.SysMenu{})
 	rc.ResData = lable
 }
 
@@ -51,10 +51,10 @@ func (m *MenuApi) GetMenuRole(rc *ctx.ReqCtx) {
 func (m *MenuApi) GetMenuTreeRoleSelect(rc *ctx.ReqCtx) {
 	roleId := ginx.PathParamInt(rc.GinCtx, "roleId")
 
-	result := m.MenuApp.SelectMenuLable(entity2.SysMenu{})
+	result := m.MenuApp.SelectMenuLable(entity.SysMenu{})
 	menuIds := make([]int64, 0)
 	if roleId != 0 {
-		menuIds = m.RoleApp.GetRoleMeunId(entity2.SysRole{RoleId: int64(roleId)})
+		menuIds = m.RoleApp.GetRoleMeunId(entity.SysRole{RoleId: int64(roleId)})
 	}
 	rc.ResData = map[string]interface{}{
 		"menus":       result,
@@ -73,7 +73,7 @@ func (m *MenuApi) GetMenuTreeRoleSelect(rc *ctx.ReqCtx) {
 func (m *MenuApi) GetMenuPaths(rc *ctx.ReqCtx) {
 	roleKey := rc.GinCtx.Query("roleKey")
 	biz.IsTrue(roleKey != "", "请传入角色Key")
-	rc.ResData = m.RoleMenuApp.GetMenuPaths(entity2.SysRoleMenu{RoleName: roleKey})
+	rc.ResData = m.RoleMenuApp.GetMenuPaths(entity.SysRoleMenu{RoleName: roleKey})
 }
 
 // @Summary Menu列表数据
@@ -90,7 +90,7 @@ func (m *MenuApi) GetMenuList(rc *ctx.ReqCtx) {
 	menuName := rc.GinCtx.Query("menuName")
 	status := rc.GinCtx.Query("status")
 
-	menu := entity2.SysMenu{MenuName: menuName, Status: status}
+	menu := entity.SysMenu{MenuName: menuName, Status: status}
 	log.Println(menuName)
 	if menu.MenuName == "" {
 		rc.ResData = m.MenuApp.SelectMenu(menu)
@@ -122,7 +122,7 @@ func (m *MenuApi) GetMenu(rc *ctx.ReqCtx) {
 // @Router /system/menu [post]
 // @Security X-TOKEN
 func (m *MenuApi) InsertMenu(rc *ctx.ReqCtx) {
-	var menu entity2.SysMenu
+	var menu entity.SysMenu
 	ginx.BindJsonAndValid(rc.GinCtx, &menu)
 	menu.CreateBy = rc.LoginAccount.UserName
 	m.MenuApp.Insert(menu)
@@ -143,7 +143,7 @@ func (m *MenuApi) InsertMenu(rc *ctx.ReqCtx) {
 // @Router /system/menu [put]
 // @Security X-TOKEN
 func (m *MenuApi) UpdateMenu(rc *ctx.ReqCtx) {
-	var menu entity2.SysMenu
+	var menu entity.SysMenu
 	ginx.BindJsonAndValid(rc.GinCtx, &menu)
 	menu.UpdateBy = rc.LoginAccount.UserName
 	m.MenuApp.Update(menu)

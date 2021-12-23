@@ -7,10 +7,14 @@ import (
 	"github.com/mssola/user_agent"
 	"net/http"
 	"os"
-	form2 "pandax/apps/system/api/form"
-	vo2 "pandax/apps/system/api/vo"
-	entity2 "pandax/apps/system/entity"
-	services2 "pandax/apps/system/services"
+	"pandax/apps/system/api/form"
+	"pandax/apps/system/api/vo"
+	"pandax/apps/system/entity"
+
+	logEntity "pandax/apps/log/entity"
+	logServices "pandax/apps/log/services"
+
+	"pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/captcha"
 	"pandax/base/config"
@@ -23,13 +27,13 @@ import (
 )
 
 type UserApi struct {
-	UserApp     services2.SysUserModel
-	MenuApp     services2.SysMenuModel
-	PostApp     services2.SysPostModel
-	RoleApp     services2.SysRoleModel
-	RoleMenuApp services2.SysRoleMenuModel
-	DeptApp     services2.SysDeptModel
-	LogLogin    services2.LogLoginModel
+	UserApp     services.SysUserModel
+	MenuApp     services.SysMenuModel
+	PostApp     services.SysPostModel
+	RoleApp     services.SysRoleModel
+	RoleMenuApp services.SysRoleMenuModel
+	DeptApp     services.SysDeptModel
+	LogLogin    logServices.LogLoginModel
 }
 
 // @Tags Base
@@ -61,11 +65,11 @@ func (u *UserApi) RefreshToken(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
 // @Router /system/user/login [post]
 func (u *UserApi) Login(rc *ctx.ReqCtx) {
-	var l form2.Login
+	var l form.Login
 	ginx.BindJsonAndValid(rc.GinCtx, &l)
 	biz.IsTrue(captcha.Verify(l.CaptchaId, l.Captcha), "验证码认证失败")
 
-	login := u.UserApp.Login(entity2.Login{Username: l.Username, Password: l.Password})
+	login := u.UserApp.Login(entity.Login{Username: l.Username, Password: l.Password})
 	role := u.RoleApp.FindOne(login.RoleId)
 
 	token, err := ctx.CreateToken(
@@ -96,7 +100,7 @@ func (u *UserApi) Login(rc *ctx.ReqCtx) {
 		"expire":      time.Now().Unix() + config.Conf.Jwt.ExpireTime,
 	}
 
-	var loginLog entity2.LogLogin
+	var loginLog logEntity.LogLogin
 	ua := user_agent.New(rc.GinCtx.Request.UserAgent())
 	loginLog.Ipaddr = rc.GinCtx.ClientIP()
 	loginLog.LoginLocation = utils.GetRealAddressByIP(rc.GinCtx.ClientIP())
@@ -119,7 +123,7 @@ func (u *UserApi) Login(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
 // @Router /system/user/logout [post]
 func (u *UserApi) LogOut(rc *ctx.ReqCtx) {
-	var loginLog entity2.LogLogin
+	var loginLog logEntity.LogLogin
 	ua := user_agent.New(rc.GinCtx.Request.UserAgent())
 	loginLog.Ipaddr = rc.GinCtx.ClientIP()
 	loginLog.LoginTime = time.Now()
@@ -153,7 +157,7 @@ func (u *UserApi) GetSysUserList(rc *ctx.ReqCtx) {
 	userName := rc.GinCtx.Query("username")
 	phone := rc.GinCtx.Query("phone")
 	deptId := ginx.QueryInt(rc.GinCtx, "deptId", 0)
-	var user entity2.SysUser
+	var user entity.SysUser
 	user.Status = status
 	user.Username = userName
 	user.Phone = phone
@@ -176,16 +180,16 @@ func (u *UserApi) GetSysUserList(rc *ctx.ReqCtx) {
 // @Security
 func (u *UserApi) GetSysUserProfile(rc *ctx.ReqCtx) {
 
-	sysUser := entity2.SysUser{}
+	sysUser := entity.SysUser{}
 	sysUser.UserId = rc.LoginAccount.UserId
 	user := u.UserApp.FindOne(sysUser)
 
 	//获取角色列表
-	roleList := u.RoleApp.FindList(entity2.SysRole{RoleId: rc.LoginAccount.RoleId})
+	roleList := u.RoleApp.FindList(entity.SysRole{RoleId: rc.LoginAccount.RoleId})
 	//岗位列表
-	postList := u.PostApp.FindList(entity2.SysPost{PostId: rc.LoginAccount.PostId})
+	postList := u.PostApp.FindList(entity.SysPost{PostId: rc.LoginAccount.PostId})
 	//获取部门列表
-	deptList := u.DeptApp.FindList(entity2.SysDept{DeptId: rc.LoginAccount.DeptId})
+	deptList := u.DeptApp.FindList(entity.SysDept{DeptId: rc.LoginAccount.DeptId})
 
 	postIds := make([]int64, 0)
 	postIds = append(postIds, rc.LoginAccount.PostId)
@@ -222,7 +226,7 @@ func (u *UserApi) InsetSysUserAvatar(rc *ctx.ReqCtx) {
 		// 上传文件至指定目录
 		biz.ErrIsNil(rc.GinCtx.SaveUploadedFile(file, filPath), "保存头像失败")
 	}
-	sysuser := entity2.SysUser{}
+	sysuser := entity.SysUser{}
 	sysuser.UserId = rc.LoginAccount.UserId
 	sysuser.Avatar = "/" + filPath
 	sysuser.UpdateBy = rc.LoginAccount.UserName
@@ -238,10 +242,10 @@ func (u *UserApi) InsetSysUserAvatar(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
 // @Router /system/user/updatePwd [post]
 func (u *UserApi) SysUserUpdatePwd(rc *ctx.ReqCtx) {
-	var pws entity2.SysUserPwd
+	var pws entity.SysUserPwd
 	ginx.BindJsonAndValid(rc.GinCtx, &pws)
 
-	user := entity2.SysUser{}
+	user := entity.SysUser{}
 	user.UserId = rc.LoginAccount.UserId
 	u.UserApp.SetPwd(user, pws)
 }
@@ -256,13 +260,13 @@ func (u *UserApi) SysUserUpdatePwd(rc *ctx.ReqCtx) {
 func (u *UserApi) GetSysUser(rc *ctx.ReqCtx) {
 	userId := ginx.PathParamInt(rc.GinCtx, "userId")
 
-	user := entity2.SysUser{}
+	user := entity.SysUser{}
 	user.UserId = int64(userId)
 	result := u.UserApp.FindOne(user)
 
-	roles := u.RoleApp.FindList(entity2.SysRole{})
+	roles := u.RoleApp.FindList(entity.SysRole{})
 
-	posts := u.PostApp.FindList(entity2.SysPost{})
+	posts := u.PostApp.FindList(entity.SysPost{})
 
 	rc.ResData = map[string]interface{}{
 		"data":    result,
@@ -280,9 +284,9 @@ func (u *UserApi) GetSysUser(rc *ctx.ReqCtx) {
 // @Router /system/user/getInit [get]
 // @Security
 func (u *UserApi) GetSysUserInit(rc *ctx.ReqCtx) {
-	roles := u.RoleApp.FindList(entity2.SysRole{})
+	roles := u.RoleApp.FindList(entity.SysRole{})
 
-	posts := u.PostApp.FindList(entity2.SysPost{})
+	posts := u.PostApp.FindList(entity.SysPost{})
 	mp := make(map[string]interface{}, 2)
 	mp["roles"] = roles
 	mp["posts"] = posts
@@ -296,13 +300,13 @@ func (u *UserApi) GetSysUserInit(rc *ctx.ReqCtx) {
 // @Router /system/user/getInit [get]
 // @Security
 func (u *UserApi) GetUserRolePost(rc *ctx.ReqCtx) {
-	var user entity2.SysUser
+	var user entity.SysUser
 	user.UserId = rc.LoginAccount.UserId
 
 	resData := u.UserApp.FindOne(user)
 
-	roles := make([]entity2.SysRole, 0)
-	posts := make([]entity2.SysPost, 0)
+	roles := make([]entity.SysRole, 0)
+	posts := make([]entity.SysPost, 0)
 	for _, roleId := range strings.Split(resData.RoleIds, ",") {
 		ro := u.RoleApp.FindOne(kgo.KConv.Str2Int64(roleId))
 		roles = append(roles, *ro)
@@ -327,7 +331,7 @@ func (u *UserApi) GetUserRolePost(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/user/sysUser [post]
 func (u *UserApi) InsertSysUser(rc *ctx.ReqCtx) {
-	var sysUser entity2.SysUser
+	var sysUser entity.SysUser
 	ginx.BindJsonAndValid(rc.GinCtx, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
 	u.UserApp.Insert(sysUser)
@@ -343,7 +347,7 @@ func (u *UserApi) InsertSysUser(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/user/sysUser [put]
 func (u *UserApi) UpdateSysUser(rc *ctx.ReqCtx) {
-	var sysUser entity2.SysUser
+	var sysUser entity.SysUser
 	ginx.BindJsonAndValid(rc.GinCtx, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
 	u.UserApp.Update(sysUser)
@@ -359,7 +363,7 @@ func (u *UserApi) UpdateSysUser(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/user/sysUser [put]
 func (u *UserApi) UpdateSysUserStu(rc *ctx.ReqCtx) {
-	var sysUser entity2.SysUser
+	var sysUser entity.SysUser
 	ginx.BindJsonAndValid(rc.GinCtx, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
 	u.UserApp.Update(sysUser)
@@ -392,7 +396,7 @@ func (u *UserApi) ExportUser(rc *ctx.ReqCtx) {
 	userName := rc.GinCtx.Query("username")
 	phone := rc.GinCtx.Query("phone")
 
-	var user entity2.SysUser
+	var user entity.SysUser
 	user.Status = status
 	user.Username = userName
 	user.Phone = phone
@@ -409,7 +413,7 @@ func (u *UserApi) ExportUser(rc *ctx.ReqCtx) {
 }
 
 // 构建前端路由
-func Build(menus []entity2.SysMenu) []vo2.RouterVo {
+func Build(menus []entity.SysMenu) []vo.RouterVo {
 	equals := func(a string, b string) bool {
 		if a == b {
 			return true
@@ -419,9 +423,9 @@ func Build(menus []entity2.SysMenu) []vo2.RouterVo {
 	if len(menus) == 0 {
 
 	}
-	rvs := make([]vo2.RouterVo, 0)
+	rvs := make([]vo.RouterVo, 0)
 	for _, ms := range menus {
-		var rv vo2.RouterVo
+		var rv vo.RouterVo
 		rv.Name = ms.Path
 		rv.Path = ms.Path
 		rv.Component = ms.Component
@@ -429,7 +433,7 @@ func Build(menus []entity2.SysMenu) []vo2.RouterVo {
 		if ms.Permission != "" {
 			auth = strings.Split(ms.Permission, ",")
 		}
-		rv.Meta = vo2.MetaVo{
+		rv.Meta = vo.MetaVo{
 			Title:       ms.MenuName,
 			IsLink:      ms.IsLink,
 			IsHide:      equals("1", ms.IsHide),

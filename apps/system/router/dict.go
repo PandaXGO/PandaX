@@ -3,14 +3,14 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	api2 "pandax/apps/system/api"
-	services2 "pandax/apps/system/services"
+	services "pandax/apps/system/services"
 	"pandax/base/ctx"
 )
 
 func InitDictRouter(router *gin.RouterGroup) {
 	s := &api2.DictApi{
-		DictType: services2.SysDictTypeModelDao,
-		DictData: services2.SysDictDataModelDao,
+		DictType: services.SysDictTypeModelDao,
+		DictData: services.SysDictDataModelDao,
 	}
 	dict := router.Group("dict")
 

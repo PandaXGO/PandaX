@@ -1,8 +1,8 @@
 package api
 
 import (
-	entity2 "pandax/apps/system/entity"
-	services2 "pandax/apps/system/services"
+	entity "pandax/apps/system/entity"
+	services "pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
@@ -10,7 +10,7 @@ import (
 )
 
 type ConfigApi struct {
-	ConfigApp services2.SysConfigModel
+	ConfigApp services.SysConfigModel
 }
 
 // @Summary 配置列表数据
@@ -30,7 +30,7 @@ func (p *ConfigApi) GetConfigList(rc *ctx.ReqCtx) {
 	configName := rc.GinCtx.Query("configName")
 	configKey := rc.GinCtx.Query("configKey")
 	configType := rc.GinCtx.Query("configType")
-	config := entity2.SysConfig{ConfigName: configName, ConfigKey: configKey, ConfigType: configType}
+	config := entity.SysConfig{ConfigName: configName, ConfigKey: configKey, ConfigType: configType}
 	list, total := p.ConfigApp.FindListPage(pageNum, pageSize, config)
 
 	rc.ResData = map[string]interface{}{
@@ -51,7 +51,7 @@ func (p *ConfigApi) GetConfigList(rc *ctx.ReqCtx) {
 func (p *ConfigApi) GetConfigListByKey(rc *ctx.ReqCtx) {
 	configKey := rc.GinCtx.Query("configKey")
 	biz.IsTrue(configKey != "", "请传入配置Key")
-	rc.ResData = p.ConfigApp.FindList(entity2.SysConfig{ConfigKey: configKey})
+	rc.ResData = p.ConfigApp.FindList(entity.SysConfig{ConfigKey: configKey})
 }
 
 // @Summary 获取配置
@@ -77,7 +77,7 @@ func (p *ConfigApi) GetConfig(rc *ctx.ReqCtx) {
 // @Router /system/config [post]
 // @Security X-TOKEN
 func (p *ConfigApi) InsertConfig(rc *ctx.ReqCtx) {
-	var config entity2.SysConfig
+	var config entity.SysConfig
 	ginx.BindJsonAndValid(rc.GinCtx, &config)
 
 	p.ConfigApp.Insert(config)
@@ -94,7 +94,7 @@ func (p *ConfigApi) InsertConfig(rc *ctx.ReqCtx) {
 // @Router /system/config [put]
 // @Security X-TOKEN
 func (p *ConfigApi) UpdateConfig(rc *ctx.ReqCtx) {
-	var post entity2.SysConfig
+	var post entity.SysConfig
 	ginx.BindJsonAndValid(rc.GinCtx, &post)
 	p.ConfigApp.Update(post)
 }

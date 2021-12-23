@@ -3,16 +3,16 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	api2 "pandax/apps/system/api"
-	services2 "pandax/apps/system/services"
+	services "pandax/apps/system/services"
 	"pandax/base/ctx"
 )
 
 func InitRoleRouter(router *gin.RouterGroup) {
 	s := &api2.RoleApi{
-		RoleApp:     services2.SysRoleModelDao,
-		RoleMenuApp: services2.SysRoleMenuModelDao,
-		RoleDeptApp: services2.SysRoleDeptModelDao,
-		UserApp:     services2.SysUserModelDao,
+		RoleApp:     services.SysRoleModelDao,
+		RoleMenuApp: services.SysRoleMenuModelDao,
+		RoleDeptApp: services.SysRoleDeptModelDao,
+		UserApp:     services.SysUserModelDao,
 	}
 	role := router.Group("role")
 

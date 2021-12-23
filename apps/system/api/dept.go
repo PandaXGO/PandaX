@@ -3,8 +3,8 @@ package api
 import (
 	"errors"
 	"fmt"
-	entity2 "pandax/apps/system/entity"
-	services2 "pandax/apps/system/services"
+	entity "pandax/apps/system/entity"
+	services "pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
@@ -13,9 +13,9 @@ import (
 )
 
 type DeptApi struct {
-	DeptApp services2.SysDeptModel
-	UserApp services2.SysUserModel
-	RoleApp services2.SysRoleModel
+	DeptApp services.SysDeptModel
+	UserApp services.SysUserModel
+	RoleApp services.SysRoleModel
 }
 
 // @Summary 获取角色的部门树
@@ -29,11 +29,11 @@ type DeptApi struct {
 func (m *DeptApi) GetDeptTreeRoleSelect(rc *ctx.ReqCtx) {
 	roleId := ginx.PathParamInt(rc.GinCtx, "roleId")
 
-	result := m.DeptApp.SelectDeptLable(entity2.SysDept{})
+	result := m.DeptApp.SelectDeptLable(entity.SysDept{})
 
 	deptIds := make([]int64, 0)
 	if roleId != 0 {
-		deptIds = m.RoleApp.GetRoleDeptId(entity2.SysRole{RoleId: int64(roleId)})
+		deptIds = m.RoleApp.GetRoleDeptId(entity.SysRole{RoleId: int64(roleId)})
 	}
 	rc.ResData = map[string]interface{}{
 		"depts":       result,
@@ -56,7 +56,7 @@ func (a *DeptApi) GetDeptList(rc *ctx.ReqCtx) {
 	deptName := rc.GinCtx.Query("deptName")
 	status := rc.GinCtx.Query("status")
 	deptId := ginx.QueryInt(rc.GinCtx, "deptId", 0)
-	dept := entity2.SysDept{DeptName: deptName, Status: status, DeptId: int64(deptId)}
+	dept := entity.SysDept{DeptName: deptName, Status: status, DeptId: int64(deptId)}
 
 	if dept.DeptName == "" {
 		rc.ResData = a.DeptApp.SelectDept(dept)
@@ -72,7 +72,7 @@ func (a *DeptApi) GetDeptList(rc *ctx.ReqCtx) {
 // @Router /system/dept/ordinaryDeptLis [get]
 // @Security
 func (a *DeptApi) GetOrdinaryDeptList(rc *ctx.ReqCtx) {
-	rc.ResData = a.DeptApp.FindList(entity2.SysDept{})
+	rc.ResData = a.DeptApp.FindList(entity.SysDept{})
 }
 
 // @Summary 所有部门树数据
@@ -88,7 +88,7 @@ func (a *DeptApi) GetDeptTree(rc *ctx.ReqCtx) {
 	deptName := rc.GinCtx.Query("deptName")
 	status := rc.GinCtx.Query("status")
 	deptId := ginx.QueryInt(rc.GinCtx, "deptId", 0)
-	dept := entity2.SysDept{DeptName: deptName, Status: status, DeptId: int64(deptId)}
+	dept := entity.SysDept{DeptName: deptName, Status: status, DeptId: int64(deptId)}
 
 	rc.ResData = a.DeptApp.SelectDept(dept)
 }
@@ -116,7 +116,7 @@ func (a *DeptApi) GetDept(rc *ctx.ReqCtx) {
 // @Router /system/dept [post]
 // @Security Bearer
 func (a *DeptApi) InsertDept(rc *ctx.ReqCtx) {
-	var dept entity2.SysDept
+	var dept entity.SysDept
 	g := rc.GinCtx
 	ginx.BindJsonAndValid(g, &dept)
 
@@ -135,7 +135,7 @@ func (a *DeptApi) InsertDept(rc *ctx.ReqCtx) {
 // @Router /system/dept [put]
 // @Security Bearer
 func (a *DeptApi) UpdateDept(rc *ctx.ReqCtx) {
-	var dept entity2.SysDept
+	var dept entity.SysDept
 	g := rc.GinCtx
 	ginx.BindJsonAndValid(g, &dept)
 
@@ -156,7 +156,7 @@ func (a *DeptApi) DeleteDept(rc *ctx.ReqCtx) {
 
 	deList := make([]int64, 0)
 	for _, id := range deptIds {
-		user := entity2.SysUser{}
+		user := entity.SysUser{}
 		user.DeptId = id
 		list := a.UserApp.FindList(user)
 		if len(*list) == 0 {

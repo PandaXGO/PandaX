@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/kakuilan/kgo"
 	"os"
-	entity2 "pandax/apps/system/entity"
-	services2 "pandax/apps/system/services"
+	entity "pandax/apps/system/entity"
+	services "pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/config"
 	"pandax/base/ctx"
@@ -15,8 +15,8 @@ import (
 )
 
 type DictApi struct {
-	DictType services2.SysDictTypeModel
-	DictData services2.SysDictDataModel
+	DictType services.SysDictTypeModel
+	DictData services.SysDictDataModel
 }
 
 // @Summary 字典类型列表数据
@@ -37,7 +37,7 @@ func (p *DictApi) GetDictTypeList(rc *ctx.ReqCtx) {
 	dictName := rc.GinCtx.Query("dictName")
 	dictType := rc.GinCtx.Query("dictType")
 
-	list, total := p.DictType.FindListPage(pageNum, pageSize, entity2.SysDictType{Status: status, DictName: dictName, DictType: dictType})
+	list, total := p.DictType.FindListPage(pageNum, pageSize, entity.SysDictType{Status: status, DictName: dictName, DictType: dictType})
 	rc.ResData = map[string]interface{}{
 		"data":     list,
 		"total":    total,
@@ -69,7 +69,7 @@ func (p *DictApi) GetDictType(rc *ctx.ReqCtx) {
 // @Router /system/dict/type [post]
 // @Security X-TOKEN
 func (p *DictApi) InsertDictType(rc *ctx.ReqCtx) {
-	var dict entity2.SysDictType
+	var dict entity.SysDictType
 	ginx.BindJsonAndValid(rc.GinCtx, &dict)
 
 	dict.CreateBy = rc.LoginAccount.UserName
@@ -87,7 +87,7 @@ func (p *DictApi) InsertDictType(rc *ctx.ReqCtx) {
 // @Router /system/dict/type [put]
 // @Security X-TOKEN
 func (p *DictApi) UpdateDictType(rc *ctx.ReqCtx) {
-	var dict entity2.SysDictType
+	var dict entity.SysDictType
 	ginx.BindJsonAndValid(rc.GinCtx, &dict)
 
 	dict.CreateBy = rc.LoginAccount.UserName
@@ -108,7 +108,7 @@ func (p *DictApi) DeleteDictType(rc *ctx.ReqCtx) {
 	deList := make([]int64, 0)
 	for _, id := range dictIds {
 		one := p.DictType.FindOne(id)
-		list := p.DictData.FindList(entity2.SysDictData{DictType: one.DictType})
+		list := p.DictData.FindList(entity.SysDictData{DictType: one.DictType})
 		if len(*list) == 0 {
 			deList = append(deList, id)
 		} else {
@@ -132,7 +132,7 @@ func (p *DictApi) ExportDictType(rc *ctx.ReqCtx) {
 	dictName := rc.GinCtx.Query("dictName")
 	dictType := rc.GinCtx.Query("dictType")
 
-	list := p.DictType.FindList(entity2.SysDictType{Status: status, DictName: dictName, DictType: dictType})
+	list := p.DictType.FindList(entity.SysDictType{Status: status, DictName: dictName, DictType: dictType})
 	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, "字典")
 	utils.InterfaceToExcel(*list, fileName)
 
@@ -157,7 +157,7 @@ func (p *DictApi) GetDictDataList(rc *ctx.ReqCtx) {
 	dictLabel := rc.GinCtx.Query("dictLabel")
 	dictType := rc.GinCtx.Query("dictType")
 	status := rc.GinCtx.Query("status")
-	rc.ResData = p.DictData.FindList(entity2.SysDictData{Status: status, DictType: dictType, DictLabel: dictLabel})
+	rc.ResData = p.DictData.FindList(entity.SysDictData{Status: status, DictType: dictType, DictLabel: dictLabel})
 }
 
 // @Summary 字典数据获取
@@ -170,7 +170,7 @@ func (p *DictApi) GetDictDataList(rc *ctx.ReqCtx) {
 func (p *DictApi) GetDictDataListByDictType(rc *ctx.ReqCtx) {
 	dictType := rc.GinCtx.Query("dictType")
 	biz.IsTrue(dictType != "", "请传入字典类型")
-	rc.ResData = p.DictData.FindList(entity2.SysDictData{DictType: dictType})
+	rc.ResData = p.DictData.FindList(entity.SysDictData{DictType: dictType})
 }
 
 // @Summary 获取字典数据
@@ -196,7 +196,7 @@ func (p *DictApi) GetDictData(rc *ctx.ReqCtx) {
 // @Router /system/dict/data [post]
 // @Security X-TOKEN
 func (p *DictApi) InsertDictData(rc *ctx.ReqCtx) {
-	var data entity2.SysDictData
+	var data entity.SysDictData
 	ginx.BindJsonAndValid(rc.GinCtx, &data)
 
 	data.CreateBy = rc.LoginAccount.UserName
@@ -214,7 +214,7 @@ func (p *DictApi) InsertDictData(rc *ctx.ReqCtx) {
 // @Router /system/dict/data [put]
 // @Security X-TOKEN
 func (p *DictApi) UpdateDictData(rc *ctx.ReqCtx) {
-	var data entity2.SysDictData
+	var data entity.SysDictData
 	ginx.BindJsonAndValid(rc.GinCtx, &data)
 
 	data.CreateBy = rc.LoginAccount.UserName

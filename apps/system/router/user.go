@@ -3,19 +3,21 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	api2 "pandax/apps/system/api"
-	services2 "pandax/apps/system/services"
+	"pandax/apps/system/services"
+
+	logServices "pandax/apps/log/services"
 	"pandax/base/ctx"
 )
 
 func InitUserRouter(router *gin.RouterGroup) {
 	s := &api2.UserApi{
-		RoleApp:     services2.SysRoleModelDao,
-		MenuApp:     services2.SysMenuModelDao,
-		RoleMenuApp: services2.SysRoleMenuModelDao,
-		UserApp:     services2.SysUserModelDao,
-		LogLogin:    services2.LogLoginModelDao,
-		DeptApp:     services2.SysDeptModelDao,
-		PostApp:     services2.SysPostModelDao,
+		RoleApp:     services.SysRoleModelDao,
+		MenuApp:     services.SysMenuModelDao,
+		RoleMenuApp: services.SysRoleMenuModelDao,
+		UserApp:     services.SysUserModelDao,
+		LogLogin:    logServices.LogLoginModelDao,
+		DeptApp:     services.SysDeptModelDao,
+		PostApp:     services.SysPostModelDao,
 	}
 	user := router.Group("user")
 	// 获取验证码

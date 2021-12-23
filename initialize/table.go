@@ -2,6 +2,9 @@ package initialize
 
 import (
 	"pandax/apps/system/entity"
+
+	logEntity "pandax/apps/log/entity"
+
 	"pandax/base/biz"
 	"pandax/base/casbin"
 	"pandax/base/config"
@@ -20,8 +23,8 @@ func InitTable() {
 				entity.SysConfig{},
 				entity.SysDictType{},
 				entity.SysDictData{},
-				entity.LogLogin{},
-				entity.LogOper{},
+				logEntity.LogLogin{},
+				logEntity.LogOper{},
 				entity.SysUser{},
 				entity.SysRole{},
 				entity.SysMenu{},

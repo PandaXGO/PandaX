@@ -3,16 +3,16 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	api2 "pandax/apps/system/api"
-	services2 "pandax/apps/system/services"
+	services "pandax/apps/system/services"
 	"pandax/base/ctx"
 )
 
 func InitMenuRouter(router *gin.RouterGroup) {
 	s := &api2.MenuApi{
-		MenuApp:     services2.SysMenuModelDao,
-		RoleApp:     services2.SysRoleModelDao,
-		RoleMenuApp: services2.SysRoleMenuModelDao,
-		DeptApp:     services2.SysDeptModelDao,
+		MenuApp:     services.SysMenuModelDao,
+		RoleApp:     services.SysRoleModelDao,
+		RoleMenuApp: services.SysRoleMenuModelDao,
+		DeptApp:     services.SysDeptModelDao,
 	}
 	menu := router.Group("menu")
 

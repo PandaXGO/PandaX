@@ -3,8 +3,8 @@ package api
 import (
 	"errors"
 	"fmt"
-	entity2 "pandax/apps/system/entity"
-	services2 "pandax/apps/system/services"
+	entity "pandax/apps/system/entity"
+	services "pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
@@ -13,9 +13,9 @@ import (
 )
 
 type PostApi struct {
-	PostApp services2.SysPostModel
-	UserApp services2.SysUserModel
-	RoleApp services2.SysRoleModel
+	PostApp services.SysPostModel
+	UserApp services.SysUserModel
+	RoleApp services.SysRoleModel
 }
 
 // @Summary 职位列表数据
@@ -36,7 +36,7 @@ func (p *PostApi) GetPostList(rc *ctx.ReqCtx) {
 	status := rc.GinCtx.Query("status")
 	postName := rc.GinCtx.Query("postName")
 	postCode := rc.GinCtx.Query("postCode")
-	post := entity2.SysPost{Status: status, PostName: postName, PostCode: postCode}
+	post := entity.SysPost{Status: status, PostName: postName, PostCode: postCode}
 	list, total := p.PostApp.FindListPage(pageNum, pageSize, post)
 
 	rc.ResData = map[string]interface{}{
@@ -70,7 +70,7 @@ func (p *PostApi) GetPost(rc *ctx.ReqCtx) {
 // @Router /system/post [post]
 // @Security X-TOKEN
 func (p *PostApi) InsertPost(rc *ctx.ReqCtx) {
-	var post entity2.SysPost
+	var post entity.SysPost
 	ginx.BindJsonAndValid(rc.GinCtx, &post)
 
 	post.CreateBy = rc.LoginAccount.UserName
@@ -88,7 +88,7 @@ func (p *PostApi) InsertPost(rc *ctx.ReqCtx) {
 // @Router /system/post [put]
 // @Security X-TOKEN
 func (p *PostApi) UpdatePost(rc *ctx.ReqCtx) {
-	var post entity2.SysPost
+	var post entity.SysPost
 	ginx.BindJsonAndValid(rc.GinCtx, &post)
 
 	post.CreateBy = rc.LoginAccount.UserName
@@ -109,7 +109,7 @@ func (p *PostApi) DeletePost(rc *ctx.ReqCtx) {
 
 	deList := make([]int64, 0)
 	for _, id := range postIds {
-		user := entity2.SysUser{}
+		user := entity.SysUser{}
 		user.PostId = id
 		list := p.UserApp.FindList(user)
 		if len(*list) == 0 {

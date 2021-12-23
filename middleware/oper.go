@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"net/http"
-	"pandax/apps/system/entity"
-	"pandax/apps/system/services"
+	"pandax/apps/log/entity"
+	"pandax/apps/log/services"
 	"pandax/base/ctx"
 	"pandax/base/utils"
 )

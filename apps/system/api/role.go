@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/kakuilan/kgo"
 	"os"
-	entity2 "pandax/apps/system/entity"
-	services2 "pandax/apps/system/services"
+	entity "pandax/apps/system/entity"
+	services "pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/casbin"
 	"pandax/base/config"
@@ -17,10 +17,10 @@ import (
 )
 
 type RoleApi struct {
-	RoleApp     services2.SysRoleModel
-	UserApp     services2.SysUserModel
-	RoleMenuApp services2.SysRoleMenuModel
-	RoleDeptApp services2.SysRoleDeptModel
+	RoleApp     services.SysRoleModel
+	UserApp     services.SysUserModel
+	RoleMenuApp services.SysRoleMenuModel
+	RoleDeptApp services.SysRoleDeptModel
 }
 
 // @Summary 角色列表数据
@@ -41,7 +41,7 @@ func (r *RoleApi) GetRoleList(rc *ctx.ReqCtx) {
 	roleName := rc.GinCtx.Query("roleName")
 	roleKey := rc.GinCtx.Query("roleKey")
 
-	role := entity2.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
+	role := entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
 	list, total := r.RoleApp.FindListPage(pageNum, pageSize, role)
 
 	rc.ResData = map[string]interface{}{
@@ -63,7 +63,7 @@ func (r *RoleApi) GetRoleList(rc *ctx.ReqCtx) {
 func (r *RoleApi) GetRole(rc *ctx.ReqCtx) {
 	roleId := ginx.PathParamInt(rc.GinCtx, "roleId")
 	role := r.RoleApp.FindOne(int64(roleId))
-	role.MenuIds = r.RoleApp.GetRoleMeunId(entity2.SysRole{RoleId: int64(roleId)})
+	role.MenuIds = r.RoleApp.GetRoleMeunId(entity.SysRole{RoleId: int64(roleId)})
 
 	rc.ResData = role
 }
@@ -78,7 +78,7 @@ func (r *RoleApi) GetRole(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/role [post]
 func (r *RoleApi) InsertRole(rc *ctx.ReqCtx) {
-	var role entity2.SysRole
+	var role entity.SysRole
 	ginx.BindJsonAndValid(rc.GinCtx, &role)
 	role.CreateBy = rc.LoginAccount.UserName
 	insert := r.RoleApp.Insert(role)
@@ -98,7 +98,7 @@ func (r *RoleApi) InsertRole(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
 // @Router /system/role [put]
 func (r *RoleApi) UpdateRole(rc *ctx.ReqCtx) {
-	var role entity2.SysRole
+	var role entity.SysRole
 	ginx.BindJsonAndValid(rc.GinCtx, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
@@ -121,7 +121,7 @@ func (r *RoleApi) UpdateRole(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
 // @Router /system/role/changeStatus [put]
 func (r *RoleApi) UpdateRoleStatus(rc *ctx.ReqCtx) {
-	var role entity2.SysRole
+	var role entity.SysRole
 	ginx.BindJsonAndValid(rc.GinCtx, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
@@ -138,14 +138,14 @@ func (r *RoleApi) UpdateRoleStatus(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
 // @Router /system/role/dataScope [put]
 func (r *RoleApi) UpdateRoleDataScope(rc *ctx.ReqCtx) {
-	var role entity2.SysRole
+	var role entity.SysRole
 	ginx.BindJsonAndValid(rc.GinCtx, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	update := r.RoleApp.Update(role)
 	if role.DataScope == "2" {
 		// 删除角色的部门绑定
-		r.RoleDeptApp.Delete(entity2.SysRoleDept{RoleId: update.RoleId})
+		r.RoleDeptApp.Delete(entity.SysRoleDept{RoleId: update.RoleId})
 		// 添加角色部门绑定
 		r.RoleDeptApp.Insert(role.RoleId, role.DeptIds)
 	}
@@ -162,7 +162,7 @@ func (r *RoleApi) DeleteRole(rc *ctx.ReqCtx) {
 	roleId := rc.GinCtx.Param("roleId")
 	roleIds := utils.IdsStrToIdsIntGroup(roleId)
 
-	user := entity2.SysUser{}
+	user := entity.SysUser{}
 	delList := make([]int64, 0)
 	// 判断角色下面是否绑定用户
 	for _, rid := range roleIds {
@@ -198,7 +198,7 @@ func (p *RoleApi) ExportRole(rc *ctx.ReqCtx) {
 	roleName := rc.GinCtx.Query("roleName")
 	roleKey := rc.GinCtx.Query("roleKey")
 
-	list := p.RoleApp.FindList(entity2.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey})
+	list := p.RoleApp.FindList(entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey})
 	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, "角色")
 	utils.InterfaceToExcel(*list, fileName)
 

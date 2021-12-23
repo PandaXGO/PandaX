@@ -3,15 +3,15 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	api2 "pandax/apps/system/api"
-	services2 "pandax/apps/system/services"
+	services "pandax/apps/system/services"
 	"pandax/base/ctx"
 )
 
 func InitPostRouter(router *gin.RouterGroup) {
 	s := &api2.PostApi{
-		PostApp: services2.SysPostModelDao,
-		UserApp: services2.SysUserModelDao,
-		RoleApp: services2.SysRoleModelDao,
+		PostApp: services.SysPostModelDao,
+		UserApp: services.SysUserModelDao,
+		RoleApp: services.SysRoleModelDao,
 	}
 	post := router.Group("post")
 
