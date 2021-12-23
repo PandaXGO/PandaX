@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"net/http"
+	"pandax/apps/system/entity"
+	"pandax/apps/system/services"
 	"pandax/base/ctx"
 	"pandax/base/utils"
-	"pandax/system/entity"
-	"pandax/system/services"
 )
 
 func OperationHandler(rc *ctx.ReqCtx) error {

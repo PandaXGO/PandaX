@@ -1,11 +1,11 @@
 package initialize
 
 import (
+	"pandax/apps/system/entity"
 	"pandax/base/biz"
 	"pandax/base/casbin"
 	"pandax/base/config"
 	"pandax/base/global"
-	"pandax/system/entity"
 )
 
 // 初始化时如果没有表创建表

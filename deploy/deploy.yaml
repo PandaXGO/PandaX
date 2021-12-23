@@ -71,7 +71,7 @@ spec:
         app.kubernetes.io/version: 1.0.0
     spec:
       containers:
-      - image: xmadmin/pandax:v1.0
+      - image: xmadmin/pandax:v1.1
         imagePullPolicy: Always
         name: pandax
         ports:

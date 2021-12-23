@@ -24,7 +24,7 @@ func GetRealAddressByIP(ip string) string {
 	if err != nil {
 		return UNKNOWN
 	}
-	//fmt.Sprintf("%s %s",toMap["pro"].(string),toMap["city"].(string))
+	//log.Println(fmt.Sprintf("%s %s",toMap["pro"].(string),toMap["city"].(string)))
 	return toMap["addr"].(string)
 }
 
