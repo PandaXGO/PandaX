@@ -2,11 +2,11 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	api2 "pandax/apps/system/api"
+	"pandax/apps/system/api"
 )
 
 func InitSystemRouter(router *gin.RouterGroup) {
-	s := &api2.System{}
+	s := &api.System{}
 	sys := router.Group("")
 
 	{

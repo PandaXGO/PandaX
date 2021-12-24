@@ -20,7 +20,7 @@ type LogLoginApi struct {
 // @Param pageSize query int false "页条数"
 // @Param pageNum query int false "页码"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/log/list [get]
+// @Router /log/logLogin/list [get]
 // @Security
 func (l *LogLoginApi) GetLoginLogList(rc *ctx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
@@ -42,7 +42,7 @@ func (l *LogLoginApi) GetLoginLogList(rc *ctx.ReqCtx) {
 // @Tags 登录日志
 // @Param infoId path int true "infoId"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/log/logLogin/{infoId} [get]
+// @Router /log/logLogin/{infoId} [get]
 // @Security
 func (l *LogLoginApi) GetLoginLog(rc *ctx.ReqCtx) {
 	infoId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("infoId"))
@@ -57,7 +57,7 @@ func (l *LogLoginApi) GetLoginLog(rc *ctx.ReqCtx) {
 // @Param data body entity.LogLogin true "body"
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/log/logLogin [put]
+// @Router /log/logLogin [put]
 // @Security X-TOKEN
 func (l *LogLoginApi) UpdateLoginLog(rc *ctx.ReqCtx) {
 	var log entity.LogLogin
@@ -71,7 +71,7 @@ func (l *LogLoginApi) UpdateLoginLog(rc *ctx.ReqCtx) {
 // @Param infoId path string true "以逗号（,）分割的infoId"
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/log/logLogin/{infoId} [delete]
+// @Router /log/logLogin/{infoId} [delete]
 func (l *LogLoginApi) DeleteLoginLog(rc *ctx.ReqCtx) {
 	infoIds := rc.GinCtx.Param("infoId")
 	group := utils.IdsStrToIdsIntGroup(infoIds)
@@ -83,7 +83,7 @@ func (l *LogLoginApi) DeleteLoginLog(rc *ctx.ReqCtx) {
 // @Tags 登录日志
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/log/logLogin/all [delete]
+// @Router /log/logLogin/all [delete]
 func (l *LogLoginApi) DeleteAll(rc *ctx.ReqCtx) {
 	l.LogLoginApp.DeleteAll()
 }

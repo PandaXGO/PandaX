@@ -47,7 +47,7 @@ func (m *jobModelImpl) FindListPage(page, pageSize int, data entity.SysJob) (*[]
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
 	if data.JobName != "" {
-		db = db.Where("job_name = ?", data.JobName)
+		db = db.Where("job_name like ? ", "%"+data.JobName+"%")
 	}
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
@@ -67,7 +67,7 @@ func (m *jobModelImpl) FindList(data entity.SysJob) *[]entity.SysJob {
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
 	if data.JobName != "" {
-		db = db.Where("job_name = ?", data.JobName)
+		db = db.Where("job_name like ? ", "%"+data.JobName+"%")
 	}
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)

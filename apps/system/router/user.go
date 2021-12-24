@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	api2 "pandax/apps/system/api"
+	"pandax/apps/system/api"
 	"pandax/apps/system/services"
 
 	logServices "pandax/apps/log/services"
@@ -10,7 +10,7 @@ import (
 )
 
 func InitUserRouter(router *gin.RouterGroup) {
-	s := &api2.UserApi{
+	s := &api.UserApi{
 		RoleApp:     services.SysRoleModelDao,
 		MenuApp:     services.SysMenuModelDao,
 		RoleMenuApp: services.SysRoleMenuModelDao,

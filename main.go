@@ -1,6 +1,7 @@
 package main
 
 import (
+	"pandax/apps/job/jobs"
 	"pandax/base/config"
 	"pandax/base/ctx"
 	"pandax/base/global"
@@ -12,8 +13,16 @@ import (
 func main() {
 	global.Db = starter.GormInit(config.Conf.Server.DbType)
 	initialize.InitTable()
+	// gin后置 函数
 	ctx.UseAfterHandlerInterceptor(middleware.OperationHandler)
+	// gin前置 函数
 	ctx.UseBeforeHandlerInterceptor(ctx.PermissionHandler)
+	// gin后置 函数
 	ctx.UseAfterHandlerInterceptor(ctx.LogHandler)
+	go func() {
+		// 启动系统调度任务
+		jobs.InitJob()
+		jobs.Setup()
+	}()
 	starter.RunWebServer(initialize.InitRouter())
 }

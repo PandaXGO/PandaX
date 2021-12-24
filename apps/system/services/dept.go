@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+	"github.com/kakuilan/kgo"
 	"pandax/apps/system/entity"
 	"pandax/base/biz"
 	"pandax/base/global"
@@ -29,6 +31,15 @@ var SysDeptModelDao = &sysDeptModelImpl{
 
 func (m *sysDeptModelImpl) Insert(data entity.SysDept) *entity.SysDept {
 	biz.ErrIsNil(global.Db.Table(m.table).Create(&data).Error, "新增部门信息失败")
+	deptPath := "/" + kgo.KConv.Int2Str(data.DeptId)
+	if int(data.ParentId) != 0 {
+		deptP := m.FindOne(data.ParentId)
+		deptPath = deptP.DeptPath + deptPath
+	} else {
+		deptPath = "/0" + deptPath
+	}
+	data.DeptPath = deptPath
+	biz.ErrIsNil(global.Db.Table(m.table).Model(&data).Updates(&data).Error, "修改部门信息失败")
 	return &data
 }
 
@@ -86,8 +97,21 @@ func (m *sysDeptModelImpl) FindList(data entity.SysDept) *[]entity.SysDept {
 }
 
 func (m *sysDeptModelImpl) Update(data entity.SysDept) *entity.SysDept {
-	err := global.Db.Table(m.table).Model(&data).Updates(&data).Error
-	biz.ErrIsNil(err, "修改部门信息失败")
+	one := m.FindOne(data.DeptId)
+
+	deptPath := "/" + kgo.KConv.Int2Str(data.DeptId)
+	if int(data.ParentId) != 0 {
+		deptP := m.FindOne(data.ParentId)
+		deptPath = deptP.DeptPath + deptPath
+	} else {
+		deptPath = "/0" + deptPath
+	}
+	data.DeptPath = deptPath
+
+	if data.DeptPath != "" && data.DeptPath != one.DeptPath {
+		biz.ErrIsNil(errors.New("上级部门不允许修改！"), "上级部门不允许修改")
+	}
+	biz.ErrIsNil(global.Db.Table(m.table).Model(&data).Updates(&data).Error, "修改部门信息失败")
 	return &data
 }
 

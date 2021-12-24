@@ -2,13 +2,13 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	api2 "pandax/apps/system/api"
-	services "pandax/apps/system/services"
+	"pandax/apps/system/api"
+	"pandax/apps/system/services"
 	"pandax/base/ctx"
 )
 
 func InitDeptRouter(router *gin.RouterGroup) {
-	r := &api2.DeptApi{
+	r := &api.DeptApi{
 		DeptApp: services.SysDeptModelDao,
 		RoleApp: services.SysRoleModelDao,
 		UserApp: services.SysUserModelDao,

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
+
+	jobRouter "pandax/apps/job/router"
 	logRouter "pandax/apps/log/router"
 	sysRouter "pandax/apps/system/router"
 
@@ -61,10 +63,11 @@ func InitRouter() *gin.Engine {
 		sysRouter.InitRoleRouter(sys)
 		sysRouter.InitPostRouter(sys)
 		sysRouter.InitUserRouter(sys)
+		sysRouter.InitNoticeRouter(sys)
 	}
-	router.Group("job")
+	job := router.Group("job")
 	{
-
+		jobRouter.InitJobRouter(job)
 	}
 	//日志系统
 	log := router.Group("log")

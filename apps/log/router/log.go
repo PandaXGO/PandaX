@@ -29,7 +29,7 @@ func InitLogRouter(router *gin.RouterGroup) {
 		ctx.NewReqCtxWithGin(c).WithLog(updateLogLoginLog).Handle(login.UpdateLoginLog)
 	})
 
-	deleteLogLoginAllLog := ctx.NewLogInfo("删除登录日志信息")
+	deleteLogLoginAllLog := ctx.NewLogInfo("清空登录日志信息")
 	logLogin.DELETE("all", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(deleteLogLoginAllLog).Handle(login.DeleteAll)
 	})
@@ -55,7 +55,7 @@ func InitLogRouter(router *gin.RouterGroup) {
 		ctx.NewReqCtxWithGin(c).WithLog(getLogOperLog).Handle(oper.GetOperLog)
 	})
 
-	deleteLogOperAllLog := ctx.NewLogInfo("删除操作日志信息")
+	deleteLogOperAllLog := ctx.NewLogInfo("清空操作日志信息")
 	logOper.DELETE("all", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(deleteLogOperAllLog).Handle(oper.DeleteAll)
 	})
@@ -63,5 +63,26 @@ func InitLogRouter(router *gin.RouterGroup) {
 	deleteLogOperLog := ctx.NewLogInfo("删除操作日志信息")
 	logOper.DELETE(":operId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(deleteLogOperLog).Handle(oper.DeleteOperLog)
+	})
+
+	// Job日志
+	job := &api.LogJobApi{
+		LogJobApp: services.LogJobModelDao,
+	}
+	logJob := router.Group("logJob")
+
+	logJobListLog := ctx.NewLogInfo("获取操作日志列表")
+	logJob.GET("list", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(logJobListLog).Handle(job.GetJobLogList)
+	})
+
+	deleteLogJobAllLog := ctx.NewLogInfo("清空操作日志信息")
+	logJob.DELETE("all", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(deleteLogJobAllLog).Handle(job.DeleteAll)
+	})
+
+	deleteLogJobLog := ctx.NewLogInfo("删除操作日志信息")
+	logJob.DELETE(":logId", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(deleteLogJobLog).Handle(job.DeleteJobLog)
 	})
 }

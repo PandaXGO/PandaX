@@ -40,12 +40,12 @@ func InitJobRouter(router *gin.RouterGroup) {
 	})
 
 	stopJobLog := ctx.NewLogInfo("停止一个job")
-	job.DELETE(":jobId", func(c *gin.Context) {
+	job.GET("/stop/:jobId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(stopJobLog).Handle(jobApi.StopJobForService)
 	})
 
 	starteJobLog := ctx.NewLogInfo("开启一个job")
-	job.DELETE(":jobId", func(c *gin.Context) {
+	job.GET("/start/:jobId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(starteJobLog).Handle(jobApi.StartJobForService)
 	})
 }

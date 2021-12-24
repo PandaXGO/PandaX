@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"github.com/kakuilan/kgo"
+	"log"
 	"strings"
 	"text/template"
 )
@@ -67,4 +68,30 @@ func IdsStrToIdsIntGroup(keys string) []int64 {
 		IDS = append(IDS, int64(ID))
 	}
 	return IDS
+}
+
+// 获取部门
+// isP 是父ID 否则子ID
+func DeptPCIds(deptIds []string, id int64, isP bool) []int64 {
+	pRes := make([]int64, 0)
+	cRes := make([]int64, 0)
+	is := true
+	for _, deptId := range deptIds {
+		did := kgo.KConv.Str2Int64(deptId)
+		log.Println(did)
+		if is {
+			pRes = append(pRes, did)
+		}
+		if kgo.KConv.Str2Int64(deptId) == id {
+			is = false
+		}
+		if !is {
+			cRes = append(cRes, did)
+		}
+	}
+	if isP {
+		return pRes
+	} else {
+		return cRes
+	}
 }

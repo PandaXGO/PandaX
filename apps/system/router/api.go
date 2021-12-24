@@ -2,13 +2,13 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	api2 "pandax/apps/system/api"
-	services "pandax/apps/system/services"
+	"pandax/apps/system/api"
+	"pandax/apps/system/services"
 	"pandax/base/ctx"
 )
 
 func InitApiRouter(router *gin.RouterGroup) {
-	s := &api2.SystemApiApi{
+	s := &api.SystemApiApi{
 		ApiApp: services.SysSysApiModelDao,
 	}
 	api := router.Group("api")

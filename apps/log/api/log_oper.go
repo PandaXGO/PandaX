@@ -21,7 +21,7 @@ type LogOperApi struct {
 // @Param pageSize query int false "页条数"
 // @Param pageNum query int false "页码"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/log/list [get]
+// @Router /log/logOper/list [get]
 // @Security
 func (l *LogOperApi) GetOperLogList(rc *ctx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
@@ -44,7 +44,7 @@ func (l *LogOperApi) GetOperLogList(rc *ctx.ReqCtx) {
 // @Tags 操作日志
 // @Param operId path int true "operId"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/log/logOper/{operId} [get]
+// @Router /log/logOper/{operId} [get]
 // @Security
 func (l *LogOperApi) GetOperLog(rc *ctx.ReqCtx) {
 	operId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("operId"))
@@ -57,7 +57,7 @@ func (l *LogOperApi) GetOperLog(rc *ctx.ReqCtx) {
 // @Param operId path string true "以逗号（,）分割的operId"
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/log/logOper/{operId} [delete]
+// @Router /log/logOper/{operId} [delete]
 func (l *LogOperApi) DeleteOperLog(rc *ctx.ReqCtx) {
 	operIds := rc.GinCtx.Param("operId")
 	group := utils.IdsStrToIdsIntGroup(operIds)
@@ -70,7 +70,7 @@ func (l *LogOperApi) DeleteOperLog(rc *ctx.ReqCtx) {
 // @Tags 操作日志
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/log/logOper/all [delete]
+// @Router /log/logOper/all [delete]
 func (l *LogOperApi) DeleteAll(rc *ctx.ReqCtx) {
 	l.LogOperApp.DeleteAll()
 }

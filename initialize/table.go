@@ -3,10 +3,10 @@ package initialize
 import (
 	"pandax/apps/system/entity"
 
+	jobEntity "pandax/apps/job/entity"
 	logEntity "pandax/apps/log/entity"
 
 	"pandax/base/biz"
-	"pandax/base/casbin"
 	"pandax/base/config"
 	"pandax/base/global"
 )
@@ -17,7 +17,6 @@ func InitTable() {
 	if m.IsInitTable {
 		biz.ErrIsNil(
 			global.Db.AutoMigrate(
-				casbin.CasbinRule{},
 				entity.SysDept{},
 				entity.SysApi{},
 				entity.SysConfig{},
@@ -25,12 +24,16 @@ func InitTable() {
 				entity.SysDictData{},
 				logEntity.LogLogin{},
 				logEntity.LogOper{},
+				logEntity.LogJob{},
 				entity.SysUser{},
 				entity.SysRole{},
 				entity.SysMenu{},
 				entity.SysPost{},
 				entity.SysRoleMenu{},
-				entity.SysRoleDept{}), "初始化表失败")
+				entity.SysRoleDept{},
+				entity.SysNotice{},
+				jobEntity.SysJob{}),
+			"初始化表失败")
 
 	}
 }

@@ -2,13 +2,13 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	api2 "pandax/apps/system/api"
-	services "pandax/apps/system/services"
+	"pandax/apps/system/api"
+	"pandax/apps/system/services"
 	"pandax/base/ctx"
 )
 
 func InitConfigRouter(router *gin.RouterGroup) {
-	s := &api2.ConfigApi{
+	s := &api.ConfigApi{
 		ConfigApp: services.SysSysConfigModelDao,
 	}
 	config := router.Group("config")

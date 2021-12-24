@@ -13,7 +13,7 @@ type SysJob struct {
 	MisfirePolicy  string `json:"misfirePolicy" gorm:"type:varchar(1);"`    // 执行策略
 	Concurrent     string `json:"concurrent" gorm:"type:varchar(1);"`       // 是否并发
 	Status         string `json:"status" gorm:"type:varchar(1);"`           // 状态
-	EntryId        int    `json:"entry_id" gorm:"type:int(11);"`            // job启动时返回的id
+	EntryId        int    `json:"entryId" gorm:"type:int(11);"`             // job启动时返回的id
 	CreateBy       string `json:"createBy" gorm:"type:varchar(128);comment:创建人"`
 	UpdateBy       string `json:"updateBy" gorm:"type:varchar(128);comment:更新者"`
 	model.BaseModel

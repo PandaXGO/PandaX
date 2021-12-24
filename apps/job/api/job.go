@@ -133,6 +133,7 @@ func (l *JobApi) StartJobForService(rc *ctx.ReqCtx) {
 		j.CronExpression = job.CronExpression
 		j.JobId = job.JobId
 		j.Name = job.JobName
+		j.JobGroup = job.JobGroup
 		j.MisfirePolicy = job.MisfirePolicy
 		job.EntryId, err = jobs.AddJob(jobs.Crontab, j)
 		biz.ErrIsNil(err, "添加JOB失败")
@@ -142,6 +143,7 @@ func (l *JobApi) StartJobForService(rc *ctx.ReqCtx) {
 		j.CronExpression = job.CronExpression
 		j.JobId = job.JobId
 		j.Name = job.JobName
+		j.JobGroup = job.JobGroup
 		j.Args = job.Args
 		j.MisfirePolicy = job.MisfirePolicy
 		job.EntryId, err = jobs.AddJob(jobs.Crontab, j)
