@@ -168,19 +168,6 @@ func (m *sysMenuModelImpl) GetMenuRole(data entity.MenuRole) *[]entity.MenuRole 
 	return &menus
 }
 
-//func (m *sysMenuModelImpl) InitPaths(menu *entity.SysMenu) {
-//	parentMenu := new(entity.SysMenu)
-//	if int(menu.ParentId) != 0 {
-//		parentMenu = m.FindOne(menu.ParentId)
-//		biz.IsTrue(parentMenu.Paths != "", "父级paths异常，请尝试对当前节点父级菜单进行更新操作！")
-//		menu.Paths = parentMenu.Paths + "/" + kgo.KConv.Int2Str(menu.MenuId)
-//	} else {
-//		menu.Paths = "/0/" + kgo.KConv.Int2Str(menu.MenuId)
-//	}
-//	global.Db.Table(m.table).Where("menu_id = ?", menu.MenuId).Update("paths", menu.Paths)
-//	return
-//}
-
 func DiguiMenu(menulist *[]entity.SysMenu, menu entity.SysMenu) entity.SysMenu {
 	list := *menulist
 
@@ -201,6 +188,7 @@ func DiguiMenu(menulist *[]entity.SysMenu, menu entity.SysMenu) entity.SysMenu {
 		mi.Permission = list[j].Permission
 		mi.ParentId = list[j].ParentId
 		mi.IsAffix = list[j].IsAffix
+		mi.IsIframe = list[j].IsIframe
 		mi.IsLink = list[j].IsLink
 		mi.Component = list[j].Component
 		mi.Sort = list[j].Sort

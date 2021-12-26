@@ -439,7 +439,7 @@ func Build(menus []entity.SysMenu) []vo.RouterVo {
 			IsHide:      equals("1", ms.IsHide),
 			IsKeepAlive: equals("0", ms.IsKeepAlive),
 			IsAffix:     equals("0", ms.IsAffix),
-			IsFrame:     equals("0", ms.IsFrame),
+			IsIframe:    equals("0", ms.IsIframe),
 			Auth:        auth,
 			Icon:        ms.Icon,
 		}

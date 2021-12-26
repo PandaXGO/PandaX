@@ -30,7 +30,7 @@ func InitNoticeRouter(router *gin.RouterGroup) {
 	})
 
 	deleteNoticeLog := ctx.NewLogInfo("删除通知信息")
-	notice.DELETE(":postId", func(c *gin.Context) {
+	notice.DELETE(":noticeId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(deleteNoticeLog).Handle(s.DeleteNotice)
 	})
 }

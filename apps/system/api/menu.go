@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 	"pandax/base/biz"
@@ -91,7 +90,6 @@ func (m *MenuApi) GetMenuList(rc *ctx.ReqCtx) {
 	status := rc.GinCtx.Query("status")
 
 	menu := entity.SysMenu{MenuName: menuName, Status: status}
-	log.Println(menuName)
 	if menu.MenuName == "" {
 		rc.ResData = m.MenuApp.SelectMenu(menu)
 	} else {

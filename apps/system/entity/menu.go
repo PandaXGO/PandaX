@@ -11,7 +11,7 @@ type SysMenu struct {
 	Icon        string    `json:"icon" gorm:"type:varchar(128);"`
 	Path        string    `json:"path" gorm:"type:varchar(128);"`
 	Component   string    `json:"component" gorm:"type:varchar(255);"` // 组件路径
-	IsFrame     string    `json:"isFrame" gorm:"type:varchar(1);"`     //是否为外链
+	IsIframe    string    `json:"isIframe" gorm:"type:varchar(1);"`    //是否为内嵌
 	IsLink      string    `json:"isLink" gorm:"type:varchar(11);"`     //是否超链接菜单
 	MenuType    string    `json:"menuType" gorm:"type:varchar(1);"`    //菜单类型（M目录 C菜单 F按钮）
 	IsHide      string    `json:"isHide" gorm:"type:varchar(1);"`      //显示状态（0显示 1隐藏）

@@ -114,7 +114,8 @@ func Setup() {
 	}
 	sysJob := entity.SysJob{}
 	for i := 0; i < len(jobList); i++ {
-		if jobList[i].Status != "0" && jobList[i].EntryId > 0 {
+		//去除禁用的
+		if jobList[i].Status != "0" {
 			continue
 		}
 		if jobList[i].JobType == "1" {

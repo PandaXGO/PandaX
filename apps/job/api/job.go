@@ -1,6 +1,7 @@
 package api
 
 import (
+	"pandax/apps/job/api/from"
 	"pandax/apps/job/entity"
 	"pandax/apps/job/jobs"
 	"pandax/apps/job/services"
@@ -150,4 +151,21 @@ func (l *JobApi) StartJobForService(rc *ctx.ReqCtx) {
 		biz.ErrIsNil(err, "添加JOB失败")
 	}
 	l.JobApp.Update(*job)
+}
+
+// @Summary 修改JOB状态
+// @Description 获取JSON
+// @Tags 任务
+// @Accept  application/json
+// @Product application/json
+// @Param data body from.JobStatus true "body"
+// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
+// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
+// @Router /job/changeStatus [put]
+// @Security X-TOKEN
+func (l *JobApi) UpdateStatusJob(rc *ctx.ReqCtx) {
+	var job from.JobStatus
+	ginx.BindJsonAndValid(rc.GinCtx, &job)
+
+	l.JobApp.Update(entity.SysJob{JobId: job.JobId, Status: job.Status})
 }

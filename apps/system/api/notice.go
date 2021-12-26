@@ -33,7 +33,8 @@ func (p *NoticeApi) GetNoticeList(rc *ctx.ReqCtx) {
 	// 获取部门的子部门id
 	one := p.DeptApp.FindOne(rc.LoginAccount.DeptId)
 	split := strings.Split(strings.Trim(one.DeptPath, "/"), "/")
-	ids := utils.DeptPCIds(split, rc.LoginAccount.DeptId, false)
+	// 获取所有父部门id
+	ids := utils.DeptPCIds(split, rc.LoginAccount.DeptId, true)
 	notice := entity.SysNotice{NoticeType: noticeType, Title: title, DeptIds: ids}
 	list, total := p.NoticeApp.FindListPage(pageNum, pageSize, notice)
 
@@ -58,6 +59,7 @@ func (p *NoticeApi) GetNoticeList(rc *ctx.ReqCtx) {
 func (p *NoticeApi) InsertNotice(rc *ctx.ReqCtx) {
 	var notice entity.SysNotice
 	ginx.BindJsonAndValid(rc.GinCtx, &notice)
+	notice.UserName = rc.LoginAccount.UserName
 	p.NoticeApp.Insert(notice)
 }
 

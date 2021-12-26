@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"github.com/kakuilan/kgo"
-	"log"
 	"strings"
 	"text/template"
 )
@@ -78,7 +77,6 @@ func DeptPCIds(deptIds []string, id int64, isP bool) []int64 {
 	is := true
 	for _, deptId := range deptIds {
 		did := kgo.KConv.Str2Int64(deptId)
-		log.Println(did)
 		if is {
 			pRes = append(pRes, did)
 		}

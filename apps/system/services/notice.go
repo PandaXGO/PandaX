@@ -50,7 +50,7 @@ func (m *sysNoticeModelImpl) FindListPage(page, pageSize int, data entity.SysNot
 		db = db.Where("notice_type = ?", data.NoticeType)
 	}
 	if len(data.DeptIds) > 0 {
-		db = db.Where("`dept_id` in (?)", data.DeptIds)
+		db = db.Where("dept_id in (?)", data.DeptIds)
 	}
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
@@ -65,5 +65,5 @@ func (m *sysNoticeModelImpl) Update(data entity.SysNotice) *entity.SysNotice {
 }
 
 func (m *sysNoticeModelImpl) Delete(postIds []int64) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysNotice{}, "`notice_id` in (?)", postIds).Error, "删除通知失败")
+	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysNotice{}, "notice_id in (?)", postIds).Error, "删除通知失败")
 }

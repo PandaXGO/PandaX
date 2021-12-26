@@ -25,16 +25,13 @@ require (
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/mssola/user_agent v0.5.3
 	github.com/onsi/ginkgo v1.16.4 // indirect
-	github.com/robfig/cron/v3 v3.0.1 // indirect
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/swaggo/gin-swagger v1.3.3 // indirect
+	github.com/swaggo/gin-swagger v1.3.3
 	github.com/swaggo/swag v1.7.6
-	github.com/urfave/cli v1.20.0 // indirect
 	github.com/xuri/excelize/v2 v2.4.1
 	golang.org/x/net v0.0.0-20211116231205-47ca1ff31462 // indirect
 	golang.org/x/sys v0.0.0-20211117180635-dee7805ff2e1 // indirect
-	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
-	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gorm.io/driver/mysql v1.2.0
 	gorm.io/driver/postgres v1.2.3
 )

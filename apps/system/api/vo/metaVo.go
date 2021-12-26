@@ -19,7 +19,7 @@ type MetaVo struct {
 	IsHide      bool     `json:"isHide"`
 	IsKeepAlive bool     `json:"isKeepAlive"`
 	IsAffix     bool     `json:"isAffix"`
-	IsFrame     bool     `json:"isFrame"`
+	IsIframe    bool     `json:"isIframe"`
 	Auth        []string `json:"auth"`
 	Icon        string   `json:"icon"`
 }

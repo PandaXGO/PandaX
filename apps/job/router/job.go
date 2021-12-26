@@ -48,4 +48,9 @@ func InitJobRouter(router *gin.RouterGroup) {
 	job.GET("/start/:jobId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(starteJobLog).Handle(jobApi.StartJobForService)
 	})
+
+	updateStatusJobLog := ctx.NewLogInfo("修改状态")
+	job.PUT("/changeStatus", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(updateStatusJobLog).Handle(jobApi.UpdateStatusJob)
+	})
 }

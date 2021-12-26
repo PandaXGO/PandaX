@@ -17,10 +17,8 @@ func TestGetRealAddressByIP(t *testing.T) {
 }
 
 func TestDeptPCIds(t *testing.T) {
-	ss := strings.Trim("/0/2/6/4", "/")
-
-	split := strings.Split(ss, "/")
+	split := strings.Split(strings.Trim("/0/2", "/"), "/")
 	log.Println("split", split)
-	ids := DeptPCIds(split, 4, false)
+	ids := DeptPCIds(split, 2, true)
 	t.Log(ids)
 }
