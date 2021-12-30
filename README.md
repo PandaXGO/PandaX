@@ -56,7 +56,6 @@
  
  **QQ群：467890197**  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=BqzPxK0qWQEyI7YhnSfxc-GsAMlAIgta&jump_from=webapi"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="PandaX快速开发交流群" title="PandaX快速开发交流群"></a>
     <div align="center"><img src="https://s3.bmp.ovh/imgs/2021/12/f0f93d5622ef9e47.jpg"/></div>
- **承接各种XX软件和小程序定制开发，请让我发挥专业的技能（后端+前端开发7年工龄的程序员，请对我有信心，超出你的期待哦）具体私聊** 
 
 ## ⚡ 内置功能
 
