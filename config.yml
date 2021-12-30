@@ -18,6 +18,8 @@ server:
   static:
     - relative-path: /assets
       root: ./static/assets
+    - relative-path: /form-generator
+      root: ./resource/form
   # 静态文件
   static-file:
     - relative-path: /
