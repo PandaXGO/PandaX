@@ -24,7 +24,7 @@ type (
 	}
 )
 
-var SysSysApiModelDao = &sysSysApiModelImpl{
+var SysSysApiModelDao SysApiModel = &sysSysApiModelImpl{
 	table: `sys_apis`,
 }
 

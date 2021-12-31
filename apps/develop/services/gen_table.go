@@ -1,0 +1,206 @@
+package services
+
+import (
+	"errors"
+	"pandax/apps/develop/entity"
+	"pandax/base/biz"
+	"pandax/base/config"
+	"pandax/base/global"
+	"strings"
+)
+
+/**
+ * @Description
+ * @Author Panda
+ * @Date 2021/12/31 8:58
+ **/
+
+type (
+	SysGenTableModel interface {
+		FindDbTablesListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64)
+		FindDbTableOne(tableName string) *entity.DevGenTable
+
+		// 导入表数据
+		Insert(data entity.DevGenTable)
+		FindOne(dictCode int64) *entity.DevGenTable
+		FindTree(data entity.DevGenTable) *[]entity.ToolsGenTableExtend
+		FindListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64)
+		Update(data entity.DevGenTable) *entity.DevGenTable
+		Delete(dictCode []int64)
+	}
+
+	devGenTableModelImpl struct {
+		table string
+	}
+)
+
+var DevGenTableModelDao SysGenTableModel = &devGenTableModelImpl{
+	table: "dev_gen_tables",
+}
+
+func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64) {
+	list := make([]entity.DevGenTable, 0)
+	var total int64 = 0
+	offset := pageSize * (page - 1)
+	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType == "postgresql" {
+		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
+	}
+	db := global.Db.Table("information_schema.tables")
+	db = db.Where("TABLE_NAME not in (select table_name from `" + config.Conf.Gen.Dbname + "`.sys_tables) ")
+	db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
+
+	if data.TableName != "" {
+		db = db.Where("table_name = ?", data.TableName)
+	}
+
+	err := db.Count(&total).Error
+	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
+	biz.ErrIsNil(err, "查询配置分页列表信息失败")
+	return &list, total
+}
+
+func (m *devGenTableModelImpl) FindDbTableOne(tableName string) *entity.DevGenTable {
+	resData := new(entity.DevGenTable)
+	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType == "postgresql" {
+		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
+	}
+	db := global.Db.Table("information_schema.tables")
+	db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
+	biz.IsTrue(tableName != "", "table name cannot be empty！")
+
+	db = db.Where("table_name = ?", tableName)
+	err := db.First(&resData).Error
+	biz.ErrIsNil(err, err.Error())
+	return resData
+}
+
+func (m *devGenTableModelImpl) Insert(dgt entity.DevGenTable) {
+	err := global.Db.Table(m.table).Create(&dgt).Error
+	biz.ErrIsNil(err, "新增生成代码表失败")
+	for i := 0; i < len(dgt.Columns); i++ {
+		dgt.Columns[i].TableId = dgt.TableId
+		SysSysConfigModelDao.Insert(dgt.Columns[i])
+	}
+}
+
+func (m *devGenTableModelImpl) FindOne(tableId int64) *entity.DevGenTable {
+	resData := new(entity.DevGenTable)
+	err := global.Db.Table(m.table).Where("`table_id` = ?", tableId).First(resData).Error
+	biz.ErrIsNil(err, "查询配置信息失败")
+	return resData
+}
+
+func (m *devGenTableModelImpl) FindTree(data entity.DevGenTable) *[]entity.ToolsGenTableExtend {
+	resData := make([]entity.ToolsGenTableExtend, 0)
+	db := global.Db.Table(m.table)
+
+	if data.TableName != "" {
+		db = db.Where("table_name = ?", data.TableName)
+	}
+	if data.TableId != 0 {
+		db = db.Where("table_id = ?", data.TableId)
+	}
+	if data.TableComment != "" {
+		db = db.Where("table_comment = ?", data.TableComment)
+	}
+	err := db.Find(&resData).Error
+	biz.ErrIsNil(err, err.Error())
+	for i := 0; i < len(resData); i++ {
+		var col entity.DevGenTableColumn
+		col.TableId = resData[i].TableId
+		columns := SysSysConfigModelDao.FindList(col)
+		resData[i].Columns = *columns
+	}
+	return &resData
+}
+
+func (m *devGenTableModelImpl) FindListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64) {
+	list := make([]entity.DevGenTable, 0)
+	var total int64 = 0
+	offset := pageSize * (page - 1)
+
+	db := global.Db.Table(m.table)
+	// 此处填写 where参数判断
+	if data.TableName != "" {
+		db = db.Where("table_name = ?", data.TableName)
+	}
+	if data.TableComment != "" {
+		db = db.Where("table_comment = ?", data.TableComment)
+	}
+	db.Where("delete_time IS NULL")
+	err := db.Count(&total).Error
+	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
+	biz.ErrIsNil(err, "查询生成代码列表信息失败")
+	return &list, total
+}
+
+func (m *devGenTableModelImpl) Update(data entity.DevGenTable) *entity.DevGenTable {
+	err := global.Db.Table(m.table).Model(&data).Updates(&data).Error
+	biz.ErrIsNil(err, "修改生成代码信息失败")
+
+	tableNames := make([]string, 0)
+	for i := range data.Columns {
+		if data.Columns[i].LinkTableName != "" {
+			tableNames = append(tableNames, data.Columns[i].LinkTableName)
+		}
+	}
+
+	tables := make([]entity.DevGenTable, 0)
+	tableMap := make(map[string]*entity.DevGenTable)
+	if len(tableNames) > 0 {
+		err = global.Db.Table(m.table).Where("table_name in (?)", tableNames).Find(&tables).Error
+		biz.ErrIsNil(err, err.Error())
+		for i := range tables {
+			tableMap[tables[i].TableName] = &tables[i]
+		}
+	}
+
+	for i := 0; i < len(data.Columns); i++ {
+		if data.Columns[i].LinkTableName != "" {
+			t, ok := tableMap[data.Columns[i].LinkTableName]
+			if ok {
+				data.Columns[i].LinkTableClass = t.ClassName
+				data.Columns[i].LinkTablePackage = t.ModuleName
+			} else {
+				tableNameList := strings.Split(data.Columns[i].LinkTableName, "_")
+				data.Columns[i].LinkTableClass = ""
+				data.Columns[i].LinkTablePackage = ""
+				for a := 0; a < len(tableNameList); a++ {
+					strStart := string([]byte(tableNameList[a])[:1])
+					strEnd := string([]byte(tableNameList[a])[1:])
+					data.Columns[i].LinkTableClass += strings.ToUpper(strStart) + strEnd
+					data.Columns[i].LinkTablePackage += strings.ToLower(strStart) + strings.ToLower(strEnd)
+				}
+			}
+		}
+		SysSysConfigModelDao.Update(data.Columns[i])
+	}
+	return &data
+}
+
+func (e *devGenTableModelImpl) DeleteTables(tableId int64) bool {
+	var err error
+	success := false
+	tx := global.Db.Begin()
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+	if err = tx.Table("sys_tables").Delete(entity.DevGenTable{}, "table_id = ?", tableId).Error; err != nil {
+		return success
+	}
+	if err = tx.Table("sys_columns").Delete(entity.DevGenTableColumn{}, "table_id = ?", tableId).Error; err != nil {
+		return success
+	}
+	success = true
+	return success
+}
+
+func (m *devGenTableModelImpl) Delete(configIds []int64) {
+	err := global.Db.Table(m.table).Delete(&entity.DevGenTable{}, "`table_id` in (?)", configIds).Error
+	biz.ErrIsNil(err, "删除生成代码信息失败")
+	return
+}

@@ -55,6 +55,12 @@ postgresql:
 casbin:
   model-path: './resource/rbac_model.conf'
 
+gen:
+  # 代码生成读取的数据库名称
+  dbname: pandax
+  # 代码生成是使用前端代码存放位置，需要指定到src文件夹，相对路径
+  frontpath: ../PandaUi/src
+
 log:
    # 日志等级, trace, debug, info, warn, error, fatal
   level: info

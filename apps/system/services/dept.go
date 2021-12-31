@@ -25,7 +25,7 @@ type (
 	}
 )
 
-var SysDeptModelDao = &sysDeptModelImpl{
+var SysDeptModelDao SysDeptModel = &sysDeptModelImpl{
 	table: `sys_depts`,
 }
 

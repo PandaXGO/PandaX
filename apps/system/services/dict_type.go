@@ -21,7 +21,7 @@ type (
 	}
 )
 
-var SysDictTypeModelDao = &sysDictTypeModelImpl{
+var SysDictTypeModelDao SysDictTypeModel = &sysDictTypeModelImpl{
 	table: `sys_dict_types`,
 }
 

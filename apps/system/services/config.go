@@ -21,7 +21,7 @@ type (
 	}
 )
 
-var SysSysConfigModelDao = &sysSysConfigModelImpl{
+var SysSysConfigModelDao SysConfigModel = &sysSysConfigModelImpl{
 	table: `sys_configs`,
 }
 

@@ -25,7 +25,6 @@ type (
 	}
 )
 
-var con = global.Db
 var SysUserModelDao SysUserModel = &sysUserModelImpl{
 	table: `sys_users`,
 }

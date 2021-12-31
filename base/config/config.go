@@ -44,6 +44,7 @@ type Config struct {
 	Mysql      *Mysql      `yaml:"mysql"`
 	Postgresql *Postgresql `yaml:"postgresql"`
 	Casbin     *Casbin     `yaml:"casbin"`
+	Gen        *Gen        `yaml:"gen"`
 	Log        *Log        `yaml:"log"`
 }
 
