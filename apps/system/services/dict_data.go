@@ -33,7 +33,7 @@ func (m *sysDictDataModelImpl) Insert(data entity.SysDictData) *entity.SysDictDa
 
 func (m *sysDictDataModelImpl) FindOne(codeId int64) *entity.SysDictData {
 	resData := new(entity.SysDictData)
-	err := global.Db.Table(m.table).Where("`dict_code` = ?", codeId).First(resData).Error
+	err := global.Db.Table(m.table).Where("dict_code = ?", codeId).First(resData).Error
 	biz.ErrIsNil(err, "查询字典数据信息失败")
 	return resData
 }
@@ -88,7 +88,7 @@ func (m *sysDictDataModelImpl) Update(data entity.SysDictData) *entity.SysDictDa
 }
 
 func (m *sysDictDataModelImpl) Delete(codeIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysDept{}, "`dict_code` in (?)", codeIds).Error
+	err := global.Db.Table(m.table).Delete(&entity.SysDept{}, "dict_code in (?)", codeIds).Error
 	biz.ErrIsNil(err, "删除字典数据信息失败")
 	return
 }

@@ -33,7 +33,7 @@ func (m *sysDictTypeModelImpl) Insert(data entity.SysDictType) *entity.SysDictTy
 
 func (m *sysDictTypeModelImpl) FindOne(dictId int64) *entity.SysDictType {
 	resData := new(entity.SysDictType)
-	err := global.Db.Table(m.table).Where("`dict_id` = ?", dictId).First(resData).Error
+	err := global.Db.Table(m.table).Where("dict_id = ?", dictId).First(resData).Error
 	biz.ErrIsNil(err, "查询字典类型信息失败")
 	return resData
 }
@@ -88,7 +88,7 @@ func (m *sysDictTypeModelImpl) Update(data entity.SysDictType) *entity.SysDictTy
 }
 
 func (m *sysDictTypeModelImpl) Delete(dictIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysDictType{}, "`dict_id` in (?)", dictIds).Error
+	err := global.Db.Table(m.table).Delete(&entity.SysDictType{}, "dict_id in (?)", dictIds).Error
 	biz.ErrIsNil(err, "删除字典类型信息失败")
 	return
 }

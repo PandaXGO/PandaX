@@ -23,7 +23,7 @@ var SysRoleDeptModelDao SysRoleDeptModel = &sysRoleDeptImpl{
 }
 
 func (m *sysRoleDeptImpl) Insert(roleId int64, deptIds []int64) bool {
-	sql := "INSERT INTO `sys_role_depts` (`role_id`,`dept_id`) VALUES "
+	sql := "INSERT INTO sys_role_depts (role_id, dept_id) VALUES "
 
 	for i := 0; i < len(deptIds); i++ {
 		if len(deptIds)-1 == i {

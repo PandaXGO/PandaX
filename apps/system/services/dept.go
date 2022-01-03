@@ -45,7 +45,7 @@ func (m *sysDeptModelImpl) Insert(data entity.SysDept) *entity.SysDept {
 
 func (m *sysDeptModelImpl) FindOne(deptId int64) *entity.SysDept {
 	resData := new(entity.SysDept)
-	err := global.Db.Table(m.table).Where("`dept_id` = ?", deptId).First(resData).Error
+	err := global.Db.Table(m.table).Where("dept_id = ?", deptId).First(resData).Error
 	biz.ErrIsNil(err, "查询部门信息失败")
 	return resData
 }
@@ -116,7 +116,7 @@ func (m *sysDeptModelImpl) Update(data entity.SysDept) *entity.SysDept {
 }
 
 func (m *sysDeptModelImpl) Delete(deptIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysDept{}, "`dept_id` in (?)", deptIds).Error
+	err := global.Db.Table(m.table).Delete(&entity.SysDept{}, "dept_id in (?)", deptIds).Error
 	biz.ErrIsNil(err, "删除部门信息失败")
 	return
 }

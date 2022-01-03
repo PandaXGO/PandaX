@@ -34,7 +34,7 @@ func (m *logLoginModelImpl) Insert(data entity.LogLogin) *entity.LogLogin {
 
 func (m *logLoginModelImpl) FindOne(infoId int64) *entity.LogLogin {
 	resData := new(entity.LogLogin)
-	err := global.Db.Table(m.table).Where("`info_id` = ?", infoId).First(resData).Error
+	err := global.Db.Table(m.table).Where("info_id = ?", infoId).First(resData).Error
 	biz.ErrIsNil(err, "查询登录日志信息失败")
 	return resData
 }
@@ -54,7 +54,7 @@ func (m *logLoginModelImpl) FindListPage(page, pageSize int, data entity.LogLogi
 	if data.Username != "" {
 		db = db.Where("username like ?", "%"+data.Username+"%")
 	}
-	err := db.Where("`delete_time` IS NULL").Count(&total).Error
+	err := db.Where("delete_time IS NULL").Count(&total).Error
 	err = db.Order("info_id desc").Limit(pageSize).Offset(offset).Find(&list).Error
 
 	biz.ErrIsNil(err, "查询登录分页日志信息失败")
@@ -68,7 +68,7 @@ func (m *logLoginModelImpl) Update(data entity.LogLogin) *entity.LogLogin {
 }
 
 func (m *logLoginModelImpl) Delete(infoIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.LogLogin{}, "`info_id` in (?)", infoIds).Error
+	err := global.Db.Table(m.table).Delete(&entity.LogLogin{}, "info_id in (?)", infoIds).Error
 	biz.ErrIsNil(err, "删除登录日志信息失败")
 	return
 }

@@ -4,10 +4,10 @@ import "pandax/base/model"
 
 type SysDept struct {
 	DeptId   int64     `json:"deptId" gorm:"primary_key;AUTO_INCREMENT"` //部门编码
-	ParentId int64     `json:"parentId" gorm:"type:int(11);comment:上级部门"`
+	ParentId int64     `json:"parentId" gorm:"type:int;comment:上级部门"`
 	DeptPath string    `json:"deptPath" gorm:"type:varchar(255);comment:部门路径"`
 	DeptName string    `json:"deptName"  gorm:"type:varchar(128);comment:部门名称"`
-	Sort     int64     `json:"sort" gorm:"type:int(4);comment:排序"`
+	Sort     int64     `json:"sort" gorm:"type:int;comment:排序"`
 	Leader   string    `json:"leader" gorm:"type:varchar(64);comment:负责人"` // userId
 	Phone    string    `json:"phone" gorm:"type:varchar(11);comment:手机"`
 	Email    string    `json:"email" gorm:"type:varchar(64);comment:邮箱"`

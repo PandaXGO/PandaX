@@ -5,6 +5,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 
+	devRouter "pandax/apps/develop/router"
 	jobRouter "pandax/apps/job/router"
 	logRouter "pandax/apps/log/router"
 	sysRouter "pandax/apps/system/router"
@@ -65,6 +66,7 @@ func InitRouter() *gin.Engine {
 		sysRouter.InitUserRouter(sys)
 		sysRouter.InitNoticeRouter(sys)
 	}
+	// 任务
 	job := router.Group("job")
 	{
 		jobRouter.InitJobRouter(job)
@@ -73,6 +75,12 @@ func InitRouter() *gin.Engine {
 	log := router.Group("log")
 	{
 		logRouter.InitLogRouter(log)
+	}
+	// 代码生成
+	dev := router.Group("develop/code")
+	{
+		devRouter.InitGenTableRouter(dev)
+		devRouter.InitGenRouter(dev)
 	}
 	return router
 }

@@ -32,7 +32,7 @@ func (m *sysNoticeModelImpl) Insert(data entity.SysNotice) *entity.SysNotice {
 
 func (m *sysNoticeModelImpl) FindOne(postId int64) *entity.SysNotice {
 	resData := new(entity.SysNotice)
-	err := global.Db.Table(m.table).Where("`post_id` = ?", postId).First(resData).Error
+	err := global.Db.Table(m.table).Where("post_id = ?", postId).First(resData).Error
 	biz.ErrIsNil(err, "查询通知失败")
 	return resData
 }

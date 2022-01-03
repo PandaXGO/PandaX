@@ -8,7 +8,7 @@ type SysConfig struct {
 	ConfigKey   string `json:"configKey" gorm:"type:varchar(128);comment:ConfigKey"`
 	ConfigValue string `json:"configValue" gorm:"type:varchar(255);comment:ConfigValue"`
 	ConfigType  string `json:"configType" gorm:"type:varchar(64);comment:是否系统内置0，1"`
-	IsFrontend  int    `json:"isFrontend" gorm:"type:varchar(64);comment:是否前台"`
+	IsFrontend  string `json:"isFrontend" gorm:"type:varchar(1);comment:是否前台"`
 	Remark      string `json:"remark" gorm:"type:varchar(128);comment:Remark"`
 	model.BaseModel
 }

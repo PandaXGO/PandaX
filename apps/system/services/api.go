@@ -114,6 +114,6 @@ func (m *sysSysApiModelImpl) Update(api entity.SysApi) *entity.SysApi {
 }
 
 func (m *sysSysApiModelImpl) Delete(ids []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysApi{}, "`id` in (?)", ids).Error
+	err := global.Db.Table(m.table).Delete(&entity.SysApi{}, "id in (?)", ids).Error
 	biz.ErrIsNil(err, "删除配置信息失败")
 }

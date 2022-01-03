@@ -7,7 +7,7 @@ server:
   model: release
   port: 7788
   cors: true
-  db-type: mysql
+  db-type: postgresql
   isInitTable: false
   excel-dir: ./resource/excel/
   tls:
@@ -48,7 +48,7 @@ postgresql:
   password: 123456
   host: 127.0.0.1
   port: 5432
-  db-name: postgres
+  db-name: pandax
   max-idle-conns: 10
   max-open-conns: 10
 

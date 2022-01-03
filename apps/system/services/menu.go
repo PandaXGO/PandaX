@@ -38,7 +38,7 @@ func (m *sysMenuModelImpl) Insert(data entity.SysMenu) *entity.SysMenu {
 
 func (m *sysMenuModelImpl) FindOne(menuId int64) *entity.SysMenu {
 	resData := new(entity.SysMenu)
-	err := global.Db.Table(m.table).Where("`menu_id` = ?", menuId).First(resData).Error
+	err := global.Db.Table(m.table).Where("menu_id = ?", menuId).First(resData).Error
 	biz.ErrIsNil(err, "查询菜单失败")
 	return resData
 }
@@ -91,7 +91,7 @@ func (m *sysMenuModelImpl) Update(data entity.SysMenu) *entity.SysMenu {
 }
 
 func (m *sysMenuModelImpl) Delete(menuIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysMenu{}, "`menu_id` in (?)", menuIds).Error
+	err := global.Db.Table(m.table).Delete(&entity.SysMenu{}, "menu_id in (?)", menuIds).Error
 	biz.ErrIsNil(err, "修改菜单失败")
 	return
 }

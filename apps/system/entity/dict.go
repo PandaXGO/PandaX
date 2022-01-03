@@ -4,7 +4,7 @@ import "pandax/base/model"
 
 type SysDictData struct {
 	DictCode  int64  `json:"dictCode" gorm:"primary_key;AUTO_INCREMENT"`
-	DictSort  int    `json:"dictSort" gorm:"type:int(11);comment:排序"`
+	DictSort  int    `json:"dictSort" gorm:"type:int;comment:排序"`
 	DictLabel string `json:"dictLabel" gorm:"type:varchar(64);comment:标签"`
 	DictValue string `json:"dictValue" gorm:"type:varchar(64);comment:值"`
 	DictType  string `json:"dictType" gorm:"type:varchar(64);comment:字典类型"`

@@ -10,7 +10,7 @@ type SysRole struct {
 	RoleName  string              `json:"roleName" gorm:"type:varchar(128);comment:角色名称"`
 	Status    string              `json:"status" gorm:"type:varchar(1);comment:状态"`
 	RoleKey   string              `json:"roleKey" gorm:"type:varchar(128);comment:角色代码"`
-	RoleSort  int64               `json:"roleSort" gorm:"type:int(4);comment:角色排序"`
+	RoleSort  int64               `json:"roleSort" gorm:"type:int;comment:角色排序"`
 	DataScope string              `json:"dataScope" gorm:"type:varchar(1);comment:数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）"`
 	Flag      string              `json:"flag" gorm:"type:varchar(128);comment:删除标识"`
 	CreateBy  string              `json:"createBy" gorm:"type:varchar(128);"`

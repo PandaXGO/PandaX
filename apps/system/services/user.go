@@ -46,7 +46,7 @@ func (m *sysUserModelImpl) Insert(data entity.SysUser) *entity.SysUser {
 
 	// check 用户名
 	var count int64
-	global.Db.Table(m.table).Where("username = ? and `delete_time` IS NULL", data.Username).Count(&count)
+	global.Db.Table(m.table).Where("username = ? and delete_time IS NULL", data.Username).Count(&count)
 	biz.IsTrue(count == 0, "账户已存在！")
 
 	biz.ErrIsNil(global.Db.Table(m.table).Create(&data).Error, "添加用户失败")
@@ -172,7 +172,7 @@ func (m *sysUserModelImpl) Update(data entity.SysUser) *entity.SysUser {
 }
 
 func (m *sysUserModelImpl) Delete(userIds []int64) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysUser{}, "`user_id` in (?)", userIds).Error, "删除用户失败")
+	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysUser{}, "user_id in (?)", userIds).Error, "删除用户失败")
 }
 
 func (m *sysUserModelImpl) SetPwd(data entity.SysUser, pwd entity.SysUserPwd) bool {

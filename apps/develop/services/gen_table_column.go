@@ -16,37 +16,25 @@ import (
 
 type (
 	SysGenTableColumnModel interface {
-		FindDbTablesColumnListPage(page, pageSize int, data entity.DevGenTableColumn) (*[]entity.DevGenTableColumn, int64)
-		FindDbTableColumnList(tableName string) *[]entity.DevGenTableColumn
+		FindDbTablesColumnListPage(page, pageSize int, data entity.DBColumns) (*[]entity.DBColumns, int64)
+		FindDbTableColumnList(tableName string) *[]entity.DBColumns
 
 		Insert(data entity.DevGenTableColumn) *entity.DevGenTableColumn
-		FindList(data entity.DevGenTableColumn) *[]entity.DevGenTableColumn
+		FindList(data entity.DevGenTableColumn, exclude bool) *[]entity.DevGenTableColumn
 		Update(data entity.DevGenTableColumn) *entity.DevGenTableColumn
 	}
 
 	devTableColumnModelImpl struct {
-		table              string
-		ColumnTypeStr      []string //数据库字符串类型
-		ColumnTypeTime     []string //数据库时间类型
-		ColumnTypeNumber   []string //数据库数字类型
-		ColumnNameNotEdit  []string //页面不需要编辑字段
-		ColumnNameNotList  []string //页面不需要显示的列表字段
-		ColumnNameNotQuery []string //页面不需要查询字段
+		table string
 	}
 )
 
-var SysSysConfigModelDao SysGenTableColumnModel = &devTableColumnModelImpl{
-	table:              "dev_gen_table_columns",
-	ColumnTypeStr:      []string{"char", "varchar", "narchar", "varchar2", "tinytext", "text", "mediumtext", "longtext"},
-	ColumnTypeTime:     []string{"datetime", "time", "date", "timestamp"},
-	ColumnTypeNumber:   []string{"tinyint", "smallint", "mediumint", "int", "number", "integer", "bigint", "float", "float", "double", "decimal"},
-	ColumnNameNotEdit:  []string{"id", "created_by", "created_at", "updated_by", "updated_at", "deleted_at"},
-	ColumnNameNotList:  []string{"id", "created_by", "updated_by", "created_at", "updated_at", "deleted_at"},
-	ColumnNameNotQuery: []string{"id", "created_by", "updated_by", "created_at", "updated_at", "deleted_at", "remark"},
+var DevTableColumnModelDao SysGenTableColumnModel = &devTableColumnModelImpl{
+	table: "dev_gen_table_columns",
 }
 
-func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int, data entity.DevGenTableColumn) (*[]entity.DevGenTableColumn, int64) {
-	list := make([]entity.DevGenTableColumn, 0)
+func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int, data entity.DBColumns) (*[]entity.DBColumns, int64) {
+	list := make([]entity.DBColumns, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
 	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType == "postgresql" {
@@ -66,8 +54,8 @@ func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int,
 	return &list, total
 }
 
-func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) *[]entity.DevGenTableColumn {
-	resData := make([]entity.DevGenTableColumn, 0)
+func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) *[]entity.DBColumns {
+	resData := make([]entity.DBColumns, 0)
 	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType == "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
@@ -87,10 +75,20 @@ func (m *devTableColumnModelImpl) Insert(dgt entity.DevGenTableColumn) *entity.D
 	return &dgt
 }
 
-func (m *devTableColumnModelImpl) FindList(data entity.DevGenTableColumn) *[]entity.DevGenTableColumn {
+func (m *devTableColumnModelImpl) FindList(data entity.DevGenTableColumn, exclude bool) *[]entity.DevGenTableColumn {
 	list := make([]entity.DevGenTableColumn, 0)
-	err := global.Db.Table(m.table).Where("table_id = ?", data.TableId).Find(&list).Error
-
+	db := global.Db.Table(m.table).Where("table_id = ?", data.TableId)
+	if exclude {
+		notIn := make([]string, 6)
+		notIn = append(notIn, "id")
+		notIn = append(notIn, "create_by")
+		notIn = append(notIn, "update_by")
+		notIn = append(notIn, "created_at")
+		notIn = append(notIn, "updated_at")
+		notIn = append(notIn, "deleted_at")
+		db = db.Where(" column_name not in(?)", notIn)
+	}
+	err := db.Find(&list).Error
 	biz.ErrIsNil(err, "查询生成代码字段表信息失败")
 	return &list
 }

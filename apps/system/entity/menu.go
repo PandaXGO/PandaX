@@ -6,13 +6,13 @@ type SysMenu struct {
 	MenuId      int64     `json:"menuId" gorm:"primary_key;AUTO_INCREMENT"`
 	MenuName    string    `json:"menuName" gorm:"type:varchar(128);"`
 	Title       string    `json:"title" gorm:"type:varchar(64);"`
-	ParentId    int64     `json:"parentId" gorm:"type:int(11);"`
-	Sort        int64     `json:"sort" gorm:"type:int(4);"`
+	ParentId    int64     `json:"parentId" gorm:"type:int;"`
+	Sort        int64     `json:"sort" gorm:"type:int;"`
 	Icon        string    `json:"icon" gorm:"type:varchar(128);"`
 	Path        string    `json:"path" gorm:"type:varchar(128);"`
 	Component   string    `json:"component" gorm:"type:varchar(255);"` // 组件路径
 	IsIframe    string    `json:"isIframe" gorm:"type:varchar(1);"`    //是否为内嵌
-	IsLink      string    `json:"isLink" gorm:"type:varchar(11);"`     //是否超链接菜单
+	IsLink      string    `json:"isLink" gorm:"type:varchar(255);"`    //是否超链接菜单
 	MenuType    string    `json:"menuType" gorm:"type:varchar(1);"`    //菜单类型（M目录 C菜单 F按钮）
 	IsHide      string    `json:"isHide" gorm:"type:varchar(1);"`      //显示状态（0显示 1隐藏）
 	IsKeepAlive string    `json:"isKeepAlive" gorm:"type:varchar(1);"` //是否缓存组件状态（0是 1否）

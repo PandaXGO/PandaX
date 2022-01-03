@@ -1,14 +1,16 @@
 package entity
 
 type DevGenTableColumn struct {
-	ColumnId         int64  `gorm:"column_id,primary" json:"columnId"` // 编号
-	TableId          int64  `gorm:"table_id"          json:"tableId"`  // 归属表编号
+	ColumnId         int64  `gorm:"primaryKey;autoIncrement" json:"columnId"` // 编号
+	TableId          int64  `gorm:"table_id"          json:"tableId"`         // 归属表编号
 	TableName        string `gorm:"table_name" 		  json:"tableName"`
-	ColumnName       string `gorm:"column_name"       json:"columnName"`        // 列名称
-	ColumnComment    string `gorm:"column_comment"    json:"columnComment"`     // 列描述
-	ColumnType       string `gorm:"column_type"       json:"columnType"`        // 列类型
-	GoType           string `gorm:"go_type"           json:"goType"`            // Go类型
-	GoField          string `gorm:"go_field"          json:"goField"`           // Go字段名
+	ColumnName       string `gorm:"column_name"       json:"columnName"`    // 列名称
+	ColumnComment    string `gorm:"column_comment"    json:"columnComment"` // 列描述
+	ColumnType       string `gorm:"column_type"       json:"columnType"`    // 列类型
+	ColumnKey        string `gorm:"column_key"        json:"columnKey"`
+	GoType           string `gorm:"go_type"           json:"goType"`  // Go类型
+	GoField          string `gorm:"go_field"          json:"goField"` // Go字段名
+	JsonField        string `gorm:"json_field;" json:"jsonField"`
 	HtmlField        string `gorm:"html_field"        json:"htmlField"`         // html字段名
 	IsPk             string `gorm:"is_pk"             json:"isPk"`              // 是否主键（1是）
 	IsIncrement      string `gorm:"is_increment"      json:"isIncrement"`       // 是否自增（1是）
@@ -26,4 +28,19 @@ type DevGenTableColumn struct {
 	LinkTablePackage string `gorm:"link_table_package" json:"linkTablePackage"` // 关联表包名
 	LinkLabelId      string `gorm:"link_label_id"      json:"linkLabelId"`      // 关联表键名
 	LinkLabelName    string `gorm:"link_label_name"    json:"linkLabelName"`    // 关联表字段值
+}
+
+type DBColumns struct {
+	TableSchema            string `gorm:"column:TABLE_SCHEMA" json:"tableSchema"`
+	TableName              string `gorm:"column:TABLE_NAME" json:"tableName"`
+	ColumnName             string `gorm:"column:COLUMN_NAME" json:"columnName"`
+	ColumnDefault          string `gorm:"column:COLUMN_DEFAULT" json:"columnDefault"`
+	IsNullable             string `gorm:"column:IS_NULLABLE" json:"isNullable"`
+	DataType               string `gorm:"column:DATA_TYPE" json:"dataType"`
+	CharacterMaximumLength string `gorm:"column:CHARACTER_MAXIMUM_LENGTH" json:"characterMaximumLength"`
+	CharacterSetName       string `gorm:"column:CHARACTER_SET_NAME" json:"characterSetName"`
+	ColumnType             string `gorm:"column:COLUMN_TYPE" json:"columnType"`
+	ColumnKey              string `gorm:"column:COLUMN_KEY" json:"columnKey"`
+	Extra                  string `gorm:"column:EXTRA" json:"extra"`
+	ColumnComment          string `gorm:"column:COLUMN_COMMENT" json:"columnComment"`
 }

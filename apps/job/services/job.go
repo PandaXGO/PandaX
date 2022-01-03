@@ -35,7 +35,7 @@ func (m *jobModelImpl) Insert(data entity.SysJob) *entity.SysJob {
 
 func (m *jobModelImpl) FindOne(jobId int64) *entity.SysJob {
 	resData := new(entity.SysJob)
-	err := global.Db.Table(m.table).Where("`job_id` = ?", jobId).First(resData).Error
+	err := global.Db.Table(m.table).Where("job_id = ?", jobId).First(resData).Error
 	biz.ErrIsNil(err, "查询任务信息失败")
 	return resData
 }
@@ -55,7 +55,7 @@ func (m *jobModelImpl) FindListPage(page, pageSize int, data entity.SysJob) (*[]
 	if data.JobGroup != "" {
 		db = db.Where("job_group = ?", data.JobGroup)
 	}
-	err := db.Where("`delete_time` IS NULL").Count(&total).Error
+	err := db.Where("delete_time IS NULL").Count(&total).Error
 	err = db.Order("create_time desc").Limit(pageSize).Offset(offset).Find(&list).Error
 
 	biz.ErrIsNil(err, "查询任务分页信息失败")
@@ -88,14 +88,14 @@ func (m *jobModelImpl) Update(data entity.SysJob) *entity.SysJob {
 }
 
 func (m *jobModelImpl) Delete(jobIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysJob{}, "`job_id` in (?)", jobIds).Error
+	err := global.Db.Table(m.table).Delete(&entity.SysJob{}, "job_id in (?)", jobIds).Error
 	biz.ErrIsNil(err, "删除操作日志信息失败")
 	return
 }
 
 func (m *jobModelImpl) FindByEntryId(entryId int64) *entity.SysJob {
 	resData := new(entity.SysJob)
-	err := global.Db.Table(m.table).Where("`entry_id` = ?", entryId).First(resData).Error
+	err := global.Db.Table(m.table).Where("entry_id = ?", entryId).First(resData).Error
 	biz.ErrIsNil(err, "查询失败")
 	return resData
 }

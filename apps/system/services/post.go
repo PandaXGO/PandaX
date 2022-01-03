@@ -33,7 +33,7 @@ func (m *sysPostModelImpl) Insert(data entity.SysPost) *entity.SysPost {
 
 func (m *sysPostModelImpl) FindOne(postId int64) *entity.SysPost {
 	resData := new(entity.SysPost)
-	err := global.Db.Table(m.table).Where("`post_id` = ?", postId).First(resData).Error
+	err := global.Db.Table(m.table).Where("post_id = ?", postId).First(resData).Error
 	biz.ErrIsNil(err, "查询岗位失败")
 	return resData
 }
@@ -90,5 +90,5 @@ func (m *sysPostModelImpl) Update(data entity.SysPost) *entity.SysPost {
 }
 
 func (m *sysPostModelImpl) Delete(postIds []int64) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysPost{}, "`post_id` in (?)", postIds).Error, "删除岗位失败")
+	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysPost{}, "post_id in (?)", postIds).Error, "删除岗位失败")
 }

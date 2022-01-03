@@ -30,7 +30,7 @@ var SysRoleModelDao SysRoleModel = &sysRoleModel{
 
 func (m *sysRoleModel) Insert(data entity.SysRole) *entity.SysRole {
 	var i int64 = 0
-	global.Db.Table(m.table).Where("(role_name = ? or role_key = ?) and `delete_time` IS NULL", data.RoleName, data.RoleKey).Count(&i)
+	global.Db.Table(m.table).Where("(role_name = ? or role_key = ?) and delete_time IS NULL", data.RoleName, data.RoleKey).Count(&i)
 	biz.IsTrue(i == 0, "角色名称或者角色标识已经存在！")
 
 	data.UpdateBy = ""
@@ -42,7 +42,7 @@ func (m *sysRoleModel) Insert(data entity.SysRole) *entity.SysRole {
 
 func (m *sysRoleModel) FindOne(roleId int64) *entity.SysRole {
 	resData := new(entity.SysRole)
-	biz.ErrIsNil(global.Db.Table(m.table).Where("`role_id` = ?", roleId).First(resData).Error, "查询角色失败")
+	biz.ErrIsNil(global.Db.Table(m.table).Where("role_id = ?", roleId).First(resData).Error, "查询角色失败")
 	return resData
 }
 
@@ -102,7 +102,7 @@ func (m *sysRoleModel) Update(data entity.SysRole) *entity.SysRole {
 }
 
 func (m *sysRoleModel) Delete(roleIds []int64) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysRole{}, "`role_id` in (?)", roleIds).Error, "删除角色失败")
+	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysRole{}, "role_id in (?)", roleIds).Error, "删除角色失败")
 	return
 }
 

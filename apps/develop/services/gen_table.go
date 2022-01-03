@@ -6,6 +6,7 @@ import (
 	"pandax/base/biz"
 	"pandax/base/config"
 	"pandax/base/global"
+	"pandax/base/utils"
 	"strings"
 )
 
@@ -17,16 +18,16 @@ import (
 
 type (
 	SysGenTableModel interface {
-		FindDbTablesListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64)
-		FindDbTableOne(tableName string) *entity.DevGenTable
+		FindDbTablesListPage(page, pageSize int, data entity.DBTables) (*[]entity.DBTables, int64)
+		FindDbTableOne(tableName string) *entity.DBTables
 
 		// 导入表数据
 		Insert(data entity.DevGenTable)
-		FindOne(dictCode int64) *entity.DevGenTable
-		FindTree(data entity.DevGenTable) *[]entity.ToolsGenTableExtend
+		FindOne(data entity.DevGenTable, exclude bool) *entity.DevGenTable
+		FindTree(data entity.DevGenTable) *[]entity.DevGenTable
 		FindListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64)
 		Update(data entity.DevGenTable) *entity.DevGenTable
-		Delete(dictCode []int64)
+		Delete(tableIds []int64)
 	}
 
 	devGenTableModelImpl struct {
@@ -38,36 +39,52 @@ var DevGenTableModelDao SysGenTableModel = &devGenTableModelImpl{
 	table: "dev_gen_tables",
 }
 
-func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64) {
-	list := make([]entity.DevGenTable, 0)
+func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data entity.DBTables) (*[]entity.DBTables, int64) {
+	list := make([]entity.DBTables, 0)
+	pgdata := make([]map[string]interface{}, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
-	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType == "postgresql" {
+	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType != "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
+
 	db := global.Db.Table("information_schema.tables")
-	db = db.Where("TABLE_NAME not in (select table_name from `" + config.Conf.Gen.Dbname + "`.sys_tables) ")
-	db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
-
-	if data.TableName != "" {
-		db = db.Where("table_name = ?", data.TableName)
+	if config.Conf.Server.DbType == "mysql" {
+		db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
 	}
-
-	err := db.Count(&total).Error
-	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询配置分页列表信息失败")
-	return &list, total
+	if config.Conf.Server.DbType == "postgresql" {
+		db = db.Where("table_schema = ? ", "public")
+	}
+	db = db.Where("table_name NOT LIKE 'dev_%'")
+	if data.TableName != "" {
+		db = db.Where("table_name like ?", "%"+data.TableName+"%")
+	}
+	if config.Conf.Server.DbType == "mysql" {
+		err := db.Limit(pageSize).Offset(offset).Find(&list).Offset(-1).Limit(-1).Count(&total).Error
+		biz.ErrIsNil(err, "查询配置分页列表信息失败")
+		return &list, total
+	} else {
+		err := db.Limit(pageSize).Offset(offset).Find(&pgdata).Offset(-1).Limit(-1).Count(&total).Error
+		biz.ErrIsNil(err, "查询配置分页列表信息失败")
+		for _, pd := range pgdata {
+			list = append(list, entity.DBTables{TableName: utils.B2S(pd["table_name"].([]uint8))})
+		}
+		return &list, total
+	}
 }
 
-func (m *devGenTableModelImpl) FindDbTableOne(tableName string) *entity.DevGenTable {
-	resData := new(entity.DevGenTable)
+func (m *devGenTableModelImpl) FindDbTableOne(tableName string) *entity.DBTables {
+	resData := new(entity.DBTables)
 	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType == "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
 	db := global.Db.Table("information_schema.tables")
-	db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
-	biz.IsTrue(tableName != "", "table name cannot be empty！")
-
+	if config.Conf.Server.DbType != "mysql" {
+		db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
+	}
+	if config.Conf.Server.DbType != "postgresql" {
+		db = db.Where("table_schema= ? ", "public")
+	}
 	db = db.Where("table_name = ?", tableName)
 	err := db.First(&resData).Error
 	biz.ErrIsNil(err, err.Error())
@@ -79,19 +96,31 @@ func (m *devGenTableModelImpl) Insert(dgt entity.DevGenTable) {
 	biz.ErrIsNil(err, "新增生成代码表失败")
 	for i := 0; i < len(dgt.Columns); i++ {
 		dgt.Columns[i].TableId = dgt.TableId
-		SysSysConfigModelDao.Insert(dgt.Columns[i])
+		DevTableColumnModelDao.Insert(dgt.Columns[i])
 	}
 }
 
-func (m *devGenTableModelImpl) FindOne(tableId int64) *entity.DevGenTable {
+func (m *devGenTableModelImpl) FindOne(data entity.DevGenTable, exclude bool) *entity.DevGenTable {
 	resData := new(entity.DevGenTable)
-	err := global.Db.Table(m.table).Where("`table_id` = ?", tableId).First(resData).Error
+	db := global.Db.Table(m.table)
+	if data.TableName != "" {
+		db = db.Where("table_name = ?", data.TableName)
+	}
+	if data.TableId != 0 {
+		db = db.Where("table_id = ?", data.TableId)
+	}
+	if data.TableComment != "" {
+		db = db.Where("table_comment = ?", data.TableComment)
+	}
+	err := db.First(resData).Error
 	biz.ErrIsNil(err, "查询配置信息失败")
+	list := DevTableColumnModelDao.FindList(entity.DevGenTableColumn{TableId: resData.TableId}, exclude)
+	resData.Columns = *list
 	return resData
 }
 
-func (m *devGenTableModelImpl) FindTree(data entity.DevGenTable) *[]entity.ToolsGenTableExtend {
-	resData := make([]entity.ToolsGenTableExtend, 0)
+func (m *devGenTableModelImpl) FindTree(data entity.DevGenTable) *[]entity.DevGenTable {
+	resData := make([]entity.DevGenTable, 0)
 	db := global.Db.Table(m.table)
 
 	if data.TableName != "" {
@@ -108,7 +137,7 @@ func (m *devGenTableModelImpl) FindTree(data entity.DevGenTable) *[]entity.Tools
 	for i := 0; i < len(resData); i++ {
 		var col entity.DevGenTableColumn
 		col.TableId = resData[i].TableId
-		columns := SysSysConfigModelDao.FindList(col)
+		columns := DevTableColumnModelDao.FindList(col, false)
 		resData[i].Columns = *columns
 	}
 	return &resData
@@ -173,7 +202,7 @@ func (m *devGenTableModelImpl) Update(data entity.DevGenTable) *entity.DevGenTab
 				}
 			}
 		}
-		SysSysConfigModelDao.Update(data.Columns[i])
+		DevTableColumnModelDao.Update(data.Columns[i])
 	}
 	return &data
 }
@@ -200,7 +229,7 @@ func (e *devGenTableModelImpl) DeleteTables(tableId int64) bool {
 }
 
 func (m *devGenTableModelImpl) Delete(configIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.DevGenTable{}, "`table_id` in (?)", configIds).Error
+	err := global.Db.Table(m.table).Delete(&entity.DevGenTable{}, "table_id in (?)", configIds).Error
 	biz.ErrIsNil(err, "删除生成代码信息失败")
 	return
 }

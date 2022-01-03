@@ -37,7 +37,7 @@ func (m *sysRoleMenuImpl) Insert(roleId int64, menuId []int64) bool {
 	biz.ErrIsNil(global.Db.Table("sys_menus").Where("menu_id in (?)", menuId).Find(&menu).Error, "查询菜单失败")
 
 	//拼接 sql 串
-	sql := "INSERT INTO `sys_role_menus` (`role_id`,`menu_id`,`role_name`) VALUES "
+	sql := "INSERT INTO sys_role_menus (role_id,menu_id,role_name) VALUES "
 
 	for i := 0; i < len(menu); i++ {
 		if len(menu)-1 == i {

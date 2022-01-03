@@ -1,8 +1,8 @@
 package entity
 
 type SysRoleMenu struct {
-	RoleId   int64  `gorm:"type:int(11)"`
-	MenuId   int64  `gorm:"type:int(11)"`
+	RoleId   int64  `gorm:"type:int"`
+	MenuId   int64  `gorm:"type:int"`
 	RoleName string `gorm:"type:varchar(128)"`
 	Id       int64  `gorm:"primary_key;AUTO_INCREMENT;column:id" json:"id" form:"id"`
 }

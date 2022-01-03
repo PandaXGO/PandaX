@@ -22,6 +22,34 @@ func UnicodeIndex(str, substr string) int {
 	return result
 }
 
+func ReplaceString(pattern, replace, src string) (string, error) {
+	if r, err := GetRegexp(pattern); err == nil {
+		return r.ReplaceAllString(src, replace), nil
+	} else {
+		return "", err
+	}
+}
+
+func Contains(haystack, needle string, startOffset ...int) int {
+	length := len(haystack)
+	offset := 0
+	if len(startOffset) > 0 {
+		offset = startOffset[0]
+	}
+	if length == 0 || offset > length || -offset > length {
+		return -1
+	}
+
+	if offset < 0 {
+		offset += length
+	}
+	pos := strings.Index(strings.ToLower(haystack[offset:]), strings.ToLower(needle))
+	if pos == -1 {
+		return -1
+	}
+	return pos + offset
+}
+
 // 字符串模板解析
 func TemplateResolve(temp string, data interface{}) string {
 	t, _ := template.New("string-temp").Parse(temp)
@@ -57,6 +85,14 @@ func ReverStrTemplate(temp, str string, res map[string]interface{}) {
 	if nextContain != -1 {
 		ReverStrTemplate(next, kgo.KStr.Trim(kgo.KStr.Substr(str, UnicodeIndex(str, value)+kgo.KStr.MbStrlen(value), kgo.KStr.MbStrlen(str))), res)
 	}
+}
+
+func B2S(bs []uint8) string {
+	ba := []byte{}
+	for _, b := range bs {
+		ba = append(ba, byte(b))
+	}
+	return string(ba)
 }
 
 func IdsStrToIdsIntGroup(keys string) []int64 {

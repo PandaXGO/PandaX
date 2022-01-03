@@ -9,6 +9,8 @@ import (
 	"pandax/base/config"
 	"pandax/base/global"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
 func GormInit(ty string) *gorm.DB {
@@ -53,6 +55,7 @@ func GormPostgresql() *gorm.DB {
 		global.Log.Panic("未找到数据库配置信息")
 		return nil
 	}
+	global.Log.Infof("连接postgres [%s]", m.PgDsn())
 	db, err := sql.Open("postgres", m.PgDsn())
 	if err != nil {
 		global.Log.Panicf("连接postgresql失败! [%s]", err.Error())

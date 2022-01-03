@@ -43,7 +43,7 @@ func (m *logJobModelImpl) FindListPage(page, pageSize int, data entity.LogJob) (
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
 	}
-	err := db.Where("`delete_time` IS NULL").Count(&total).Error
+	err := db.Where("delete_time IS NULL").Count(&total).Error
 	err = db.Order("log_id desc").Limit(pageSize).Offset(offset).Find(&list).Error
 
 	biz.ErrIsNil(err, "查询登录分页日志信息失败")
@@ -51,7 +51,7 @@ func (m *logJobModelImpl) FindListPage(page, pageSize int, data entity.LogJob) (
 }
 
 func (m *logJobModelImpl) Delete(logIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.LogJob{}, "`log_id` in (?)", logIds).Error
+	err := global.Db.Table(m.table).Delete(&entity.LogJob{}, "log_id in (?)", logIds).Error
 	biz.ErrIsNil(err, "删除登录日志信息失败")
 	return
 }

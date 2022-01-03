@@ -33,7 +33,7 @@ func (m *sysSysConfigModelImpl) Insert(data entity.SysConfig) *entity.SysConfig 
 
 func (m *sysSysConfigModelImpl) FindOne(configId int64) *entity.SysConfig {
 	resData := new(entity.SysConfig)
-	err := global.Db.Table(m.table).Where("`config_id` = ?", configId).First(resData).Error
+	err := global.Db.Table(m.table).Where("config_id = ?", configId).First(resData).Error
 	biz.ErrIsNil(err, "查询配置信息失败")
 	return resData
 }
@@ -88,7 +88,7 @@ func (m *sysSysConfigModelImpl) Update(data entity.SysConfig) *entity.SysConfig 
 }
 
 func (m *sysSysConfigModelImpl) Delete(configIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysConfig{}, "`config_id` in (?)", configIds).Error
+	err := global.Db.Table(m.table).Delete(&entity.SysConfig{}, "config_id in (?)", configIds).Error
 	biz.ErrIsNil(err, "删除配置信息失败")
 	return
 }
