@@ -2,7 +2,6 @@ package gen
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/kakuilan/kgo"
 	"os"
 	"pandax/apps/develop/entity"
@@ -12,6 +11,7 @@ import (
 	"pandax/base/utils"
 	"strconv"
 	"strings"
+	"sync"
 	"text/template"
 )
 
@@ -193,146 +193,152 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 	}
 	data.FunctionName = data.TableComment
 	data.FunctionAuthor = "panda"
-
+	wg := sync.WaitGroup{}
 	dcs := *dbColumn
 	for i := 0; i < len(dcs); i++ {
-		var column entity.DevGenTableColumn
-		column.ColumnComment = dcs[i].ColumnComment
-		column.ColumnName = dcs[i].ColumnName
-		column.ColumnType = dcs[i].ColumnType
-		column.Sort = i + 1
-		column.IsPk = "0"
+		index := i
+		wg.Add(1)
+		go func(wg *sync.WaitGroup, i int) {
+			var column entity.DevGenTableColumn
+			column.ColumnComment = dcs[i].ColumnComment
+			column.ColumnName = dcs[i].ColumnName
+			column.ColumnType = dcs[i].ColumnType
+			column.Sort = i + 1
+			column.IsPk = "0"
 
-		nameList := strings.Split(dcs[i].ColumnName, "_")
-		for i := 0; i < len(nameList); i++ {
-			strStart := string([]byte(nameList[i])[:1])
-			strend := string([]byte(nameList[i])[1:])
-			column.GoField += strings.ToUpper(strStart) + strend
-			if i == 0 {
-				column.JsonField = strings.ToLower(strStart) + strend
-			} else {
-				column.JsonField += strings.ToUpper(strStart) + strend
+			nameList := strings.Split(dcs[i].ColumnName, "_")
+			for i := 0; i < len(nameList); i++ {
+				strStart := string([]byte(nameList[i])[:1])
+				strend := string([]byte(nameList[i])[1:])
+				column.GoField += strings.ToUpper(strStart) + strend
+				if i == 0 {
+					column.JsonField = strings.ToLower(strStart) + strend
+				} else {
+					column.JsonField += strings.ToUpper(strStart) + strend
+				}
 			}
-		}
-		if strings.Contains(dcs[i].ColumnKey, "PR") {
-			column.IsPk = "1"
-			data.PkColumn = dcs[i].ColumnName
-			data.PkGoField = column.GoField
-			data.PkJsonField = column.JsonField
-		}
+			if strings.Contains(dcs[i].ColumnKey, "PR") {
+				column.IsPk = "1"
+				data.PkColumn = dcs[i].ColumnName
+				data.PkGoField = column.GoField
+				data.PkJsonField = column.JsonField
+			}
 
-		dataType := s.GetDbType(column.ColumnType)
-		if s.IsStringObject(dataType) {
-			//字段为字符串类型
-			column.GoType = "string"
-			columnLength := s.GetColumnLength(column.ColumnType)
-			if columnLength >= 500 {
-				column.HtmlType = "textarea"
-			} else {
+			dataType := s.GetDbType(column.ColumnType)
+			if s.IsStringObject(dataType) {
+				//字段为字符串类型
+				column.GoType = "string"
+				columnLength := s.GetColumnLength(column.ColumnType)
+				if columnLength >= 500 {
+					column.HtmlType = "textarea"
+				} else {
+					column.HtmlType = "input"
+				}
+			} else if s.IsTimeObject(dataType) {
+				//字段为时间类型
+				column.GoType = "Time"
+				column.HtmlType = "datetime"
+			} else if s.IsNumberObject(dataType) {
+				//字段为数字类型
 				column.HtmlType = "input"
-			}
-		} else if s.IsTimeObject(dataType) {
-			//字段为时间类型
-			column.GoType = "Time"
-			column.HtmlType = "datetime"
-		} else if s.IsNumberObject(dataType) {
-			//字段为数字类型
-			column.HtmlType = "input"
-			t, _ := utils.ReplaceString(`\(.+\)`, "", column.ColumnType)
-			t = strings.Split(strings.TrimSpace(t), " ")[0]
-			t = strings.ToLower(t)
-			// 如果是浮点型
-			switch t {
-			case "float", "double", "decimal":
-				column.GoType = "float64"
-			case "bit", "int", "tinyint", "small_int", "smallint", "medium_int", "mediumint":
-				if utils.Contains(column.ColumnType, "unsigned") != -1 {
-					column.GoType = "uint"
-				} else {
-					column.GoType = "int"
-				}
-			case "big_int", "bigint":
-				if utils.Contains(column.ColumnType, "unsigned") != -1 {
-					column.GoType = "uint64"
-				} else {
-					column.GoType = "int64"
+				t, _ := utils.ReplaceString(`\(.+\)`, "", column.ColumnType)
+				t = strings.Split(strings.TrimSpace(t), " ")[0]
+				t = strings.ToLower(t)
+				// 如果是浮点型
+				switch t {
+				case "float", "double", "decimal":
+					column.GoType = "float64"
+				case "bit", "int", "tinyint", "small_int", "smallint", "medium_int", "mediumint":
+					if utils.Contains(column.ColumnType, "unsigned") != -1 {
+						column.GoType = "uint"
+					} else {
+						column.GoType = "int"
+					}
+				case "big_int", "bigint":
+					if utils.Contains(column.ColumnType, "unsigned") != -1 {
+						column.GoType = "uint64"
+					} else {
+						column.GoType = "int64"
+					}
 				}
 			}
-		}
-		//新增字段
-		if s.IsNotEdit(column.ColumnName) {
-			column.IsRequired = "0"
-			column.IsInsert = "0"
-		} else {
-			column.IsInsert = "1"
-			if strings.Index(column.ColumnName, "name") >= 0 || strings.Index(column.ColumnName, "status") >= 0 {
-				column.IsRequired = "1"
+			//新增字段
+			if s.IsNotEdit(column.ColumnName) {
+				column.IsRequired = "0"
+				column.IsInsert = "0"
+			} else {
+				column.IsInsert = "1"
+				if strings.Index(column.ColumnName, "name") >= 0 || strings.Index(column.ColumnName, "status") >= 0 {
+					column.IsRequired = "1"
+				}
 			}
-		}
 
-		// 编辑字段
-		if s.IsNotEdit(column.ColumnName) {
-			column.IsEdit = "0"
-		} else {
-			if column.IsPk == "1" {
+			// 编辑字段
+			if s.IsNotEdit(column.ColumnName) {
 				column.IsEdit = "0"
 			} else {
-				column.IsEdit = "1"
+				if column.IsPk == "1" {
+					column.IsEdit = "0"
+				} else {
+					column.IsEdit = "1"
+				}
 			}
-		}
-		// 列表字段
-		if s.IsNotList(column.ColumnName) {
-			column.IsList = "0"
-		} else {
-			column.IsList = "1"
-		}
-		// 查询字段
-		if s.IsNotQuery(column.ColumnName) {
-			column.IsQuery = "0"
-		} else {
-			column.IsQuery = "1"
-		}
+			// 列表字段
+			if s.IsNotList(column.ColumnName) {
+				column.IsList = "0"
+			} else {
+				column.IsList = "1"
+			}
+			// 查询字段
+			if s.IsNotQuery(column.ColumnName) {
+				column.IsQuery = "0"
+			} else {
+				column.IsQuery = "1"
+			}
 
-		// 查询字段类型
-		if s.CheckNameColumn(column.ColumnName) {
-			column.QueryType = "LIKE"
-		} else {
-			column.QueryType = "EQ"
-		}
-		// 状态字段设置单选框
-		if s.CheckStatusColumn(column.ColumnName) {
-			column.HtmlType = "radio"
-		} else if s.CheckTypeColumn(column.ColumnName) || s.CheckSexColumn(column.ColumnName) {
-			// 类型&性别字段设置下拉框
-			column.HtmlType = "select"
-		}
-		data.Columns = append(data.Columns, column)
+			// 查询字段类型
+			if s.CheckNameColumn(column.ColumnName) {
+				column.QueryType = "LIKE"
+			} else {
+				column.QueryType = "EQ"
+			}
+			// 状态字段设置单选框
+			if s.CheckStatusColumn(column.ColumnName) {
+				column.HtmlType = "radio"
+			} else if s.CheckTypeColumn(column.ColumnName) || s.CheckSexColumn(column.ColumnName) {
+				// 类型&性别字段设置下拉框
+				column.HtmlType = "select"
+			}
+			data.Columns = append(data.Columns, column)
+			wg.Done()
+		}(&wg, index)
 	}
+	wg.Wait()
 	return data
 }
 
 // 视图预览
 func Preview(tableId int64) map[string]interface{} {
 	t1, err := template.ParseFiles("resource/template/go/entity.template")
-	biz.ErrIsNil(err, fmt.Sprintf("entity模版读取失败！错误详情：%s", err.Error()))
+	biz.ErrIsNil(err, "entity模版读取失败")
 
-	t2, err := template.ParseFiles("resource/template/go/api.template")
-	biz.ErrIsNil(err, fmt.Sprintf("api模版读取失败！错误详情：%s", err.Error()))
+	t2, err := template.ParseFiles("resource/template/go/service.template")
+	biz.ErrIsNil(err, "service模版读取失败")
 
-	t3, err := template.ParseFiles("resource/template/go/service.template")
-	biz.ErrIsNil(err, fmt.Sprintf("service模版读取失败！错误详情：%s", err.Error()))
-
-	t4, err := template.ParseFiles("resource/template/go/router.template")
-	biz.ErrIsNil(err, fmt.Sprintf("router模版读取失败！错误详情：%s", err.Error()))
-
-	t5, err := template.ParseFiles("resource/template/js/api.template")
-	biz.ErrIsNil(err, fmt.Sprintf("js模版读取失败！错误详情：%s", err.Error()))
-
-	t6, err := template.ParseFiles("resource/template/vue/list-vue.template")
-	biz.ErrIsNil(err, fmt.Sprintf("vue列表模版读取失败！错误详情：%s", err.Error()))
-
-	t7, err := template.ParseFiles("resource/template/vue/edit-vue.template")
-	biz.ErrIsNil(err, fmt.Sprintf("vue编辑模版读取失败！错误详情：%s", err.Error()))
+	//t3, err := template.ParseFiles("resource/template/go/api.template")
+	//biz.ErrIsNil(err, "api模版读取失败！")
+	//
+	//t4, err := template.ParseFiles("resource/template/go/router.template")
+	//biz.ErrIsNil(err, "router模版读取失败")
+	//
+	//t5, err := template.ParseFiles("resource/template/js/api.template")
+	//biz.ErrIsNil(err, "js模版读取失败")
+	//
+	//t6, err := template.ParseFiles("resource/template/vue/list-vue.template")
+	//biz.ErrIsNil(err, "vue列表模版读取失败！")
+	//
+	//t7, err := template.ParseFiles("resource/template/vue/edit-vue.template")
+	//biz.ErrIsNil(err,"vue编辑模版读取失败！")
 
 	tab := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: tableId}, false)
 
@@ -340,25 +346,25 @@ func Preview(tableId int64) map[string]interface{} {
 	err = t1.Execute(&b1, tab)
 	var b2 bytes.Buffer
 	err = t2.Execute(&b2, tab)
-	var b3 bytes.Buffer
-	err = t3.Execute(&b3, tab)
-	var b4 bytes.Buffer
-	err = t4.Execute(&b4, tab)
-	var b5 bytes.Buffer
-	err = t5.Execute(&b5, tab)
-	var b6 bytes.Buffer
-	err = t6.Execute(&b6, tab)
-	var b7 bytes.Buffer
-	err = t7.Execute(&b7, tab)
+	//var b3 bytes.Buffer
+	//err = t3.Execute(&b3, tab)
+	//var b4 bytes.Buffer
+	//err = t4.Execute(&b4, tab)
+	//var b5 bytes.Buffer
+	//err = t5.Execute(&b5, tab)
+	//var b6 bytes.Buffer
+	//err = t6.Execute(&b6, tab)
+	//var b7 bytes.Buffer
+	//err = t7.Execute(&b7, tab)
 
 	mp := make(map[string]interface{})
 	mp["template/entity.template"] = b1.String()
-	mp["template/api.template"] = b2.String()
-	mp["template/service.template"] = b3.String()
-	mp["template/router.template"] = b4.String()
-	mp["template/jsApi.template"] = b5.String()
-	mp["template/listVue.template"] = b6.String()
-	mp["template/editVue.template"] = b7.String()
+	mp["template/service.template"] = b2.String()
+	//mp["template/api.template"] = b3.String()
+	//mp["template/router.template"] = b4.String()
+	//mp["template/jsApi.template"] = b5.String()
+	//mp["template/listVue.template"] = b6.String()
+	//mp["template/editVue.template"] = b7.String()
 	return mp
 }
 
@@ -369,24 +375,24 @@ func GenCode(tableId int64) {
 	tab.ModuleName = strings.Replace(tab.TableName, "_", "-", -1)
 
 	t1, err := template.ParseFiles("resource/template/go/entity.template")
-	biz.ErrIsNil(err, fmt.Sprintf("entity模版读取失败！错误详情：%s", err.Error()))
+	biz.ErrIsNil(err, "entity模版读取失败！")
 
-	t2, err := template.ParseFiles("resource/template/go/api.template")
-	biz.ErrIsNil(err, fmt.Sprintf("api模版读取失败！错误详情：%s", err.Error()))
+	t2, err := template.ParseFiles("resource/template/go/service.template")
+	biz.ErrIsNil(err, "service模版读取失败！")
 
-	t3, err := template.ParseFiles("resource/template/go/service.template")
-	biz.ErrIsNil(err, fmt.Sprintf("service模版读取失败！错误详情：%s", err.Error()))
-
-	t4, err := template.ParseFiles("resource/template/go/router.template")
-	biz.ErrIsNil(err, fmt.Sprintf("router模版读取失败！错误详情：%s", err.Error()))
-
-	t5, err := template.ParseFiles("resource/template/js/api.template")
-	biz.ErrIsNil(err, fmt.Sprintf("js模版读取失败！错误详情：%s", err.Error()))
-
-	t6, err := template.ParseFiles("resource/template/vue/list-vue.template")
-	biz.ErrIsNil(err, fmt.Sprintf("vue列表模版读取失败！错误详情：%s", err.Error()))
-	t7, err := template.ParseFiles("resource/template/vue/edit-vue.template")
-	biz.ErrIsNil(err, fmt.Sprintf("vue编辑模版读取失败！错误详情：%s", err.Error()))
+	//t3, err := template.ParseFiles("resource/template/go/api.template")
+	//biz.ErrIsNil(err, "api模版读取失败！")
+	//
+	//t4, err := template.ParseFiles("resource/template/go/router.template")
+	//biz.ErrIsNil(err, "router模版读取失败！")
+	//
+	//t5, err := template.ParseFiles("resource/template/js/api.template")
+	//biz.ErrIsNil(err, "js模版读取失败！")
+	//
+	//t6, err := template.ParseFiles("resource/template/vue/list-vue.template")
+	//biz.ErrIsNil(err, "vue列表模版读取失败！")
+	//t7, err := template.ParseFiles("resource/template/vue/edit-vue.template")
+	//biz.ErrIsNil(err, "vue编辑模版读取失败！")
 
 	kgo.KFile.Mkdir("./apps/"+tab.PackageName+"/api/", os.ModePerm)
 	kgo.KFile.Mkdir("./apps/"+tab.PackageName+"/entity/", os.ModePerm)
@@ -400,22 +406,22 @@ func GenCode(tableId int64) {
 	err = t1.Execute(&b1, tab)
 	var b2 bytes.Buffer
 	err = t2.Execute(&b2, tab)
-	var b3 bytes.Buffer
-	err = t3.Execute(&b3, tab)
-	var b4 bytes.Buffer
-	err = t4.Execute(&b4, tab)
-	var b5 bytes.Buffer
-	err = t5.Execute(&b5, tab)
-	var b6 bytes.Buffer
-	err = t6.Execute(&b6, tab)
-	var b7 bytes.Buffer
-	err = t7.Execute(&b7, tab)
+	//var b3 bytes.Buffer
+	//err = t3.Execute(&b3, tab)
+	//var b4 bytes.Buffer
+	//err = t4.Execute(&b4, tab)
+	//var b5 bytes.Buffer
+	//err = t5.Execute(&b5, tab)
+	//var b6 bytes.Buffer
+	//err = t6.Execute(&b6, tab)
+	//var b7 bytes.Buffer
+	//err = t7.Execute(&b7, tab)
 
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/entity/"+tab.TableName+".go", b1.Bytes())
-	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/api/"+tab.TableName+".go", b2.Bytes())
-	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/services/"+tab.TableName+".go", b3.Bytes())
-	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/router/"+tab.TableName+".go", b4.Bytes())
-	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/"+tab.ModuleName+".js", b5.Bytes())
-	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/index.vue", b6.Bytes())
-	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/"+"component"+"/index.vue", b7.Bytes())
+	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/services/"+tab.TableName+".go", b2.Bytes())
+	//kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/api/"+tab.TableName+".go", b3.Bytes())
+	//kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/router/"+tab.TableName+".go", b4.Bytes())
+	//kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/"+tab.ModuleName+".js", b5.Bytes())
+	//kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/index.vue", b6.Bytes())
+	//kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/"+"component"+"/index.vue", b7.Bytes())
 }

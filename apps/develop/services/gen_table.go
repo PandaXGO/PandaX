@@ -75,7 +75,7 @@ func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data ent
 
 func (m *devGenTableModelImpl) FindDbTableOne(tableName string) *entity.DBTables {
 	resData := new(entity.DBTables)
-	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType == "postgresql" {
+	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType != "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
 	db := global.Db.Table("information_schema.tables")

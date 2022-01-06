@@ -8,7 +8,10 @@ import (
 )
 
 func ErrIsNil(err error, msg string, params ...interface{}) {
-	if err != nil && err.Error() != "record not found" {
+	if err != nil {
+		if err.Error() == "record not found" {
+			return
+		}
 		global.Log.Error(msg + ": " + err.Error())
 		panic(NewBizErr(fmt.Sprintf(msg, params...)))
 	}

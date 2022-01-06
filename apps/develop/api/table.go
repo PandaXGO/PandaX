@@ -8,6 +8,7 @@ import (
 	"pandax/base/ginx"
 	"pandax/base/utils"
 	"strings"
+	"sync"
 )
 
 type GenTableApi struct {
@@ -111,11 +112,19 @@ func (g *GenTableApi) GetTableTree(rc *ctx.ReqCtx) {
 // @Router /develop/code/table [post]
 // @Security Bearer
 func (g *GenTableApi) Insert(rc *ctx.ReqCtx) {
-	tablesList := strings.Split(rc.GinCtx.Query("tableName"), ",")
+	tablesList := strings.Split(rc.GinCtx.Query("tables"), ",")
+
+	wg := sync.WaitGroup{}
 	for i := 0; i < len(tablesList); i++ {
-		genTable := gen.ToolsGenTableColumn.GenTableInit(tablesList[i])
-		g.GenTableApp.Insert(genTable)
+		index := i
+		wg.Add(1)
+		go func(wg *sync.WaitGroup, index int) {
+			genTable := gen.ToolsGenTableColumn.GenTableInit(tablesList[index])
+			g.GenTableApp.Insert(genTable)
+			wg.Done()
+		}(&wg, index)
 	}
+	wg.Wait()
 }
 
 // @Summary 修改表结构

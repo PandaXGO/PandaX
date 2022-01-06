@@ -7,7 +7,7 @@ server:
   model: release
   port: 7788
   cors: true
-  db-type: postgresql
+  db-type: mysql
   isInitTable: false
   excel-dir: ./resource/excel/
   tls:

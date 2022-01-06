@@ -37,12 +37,16 @@ func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int,
 	list := make([]entity.DBColumns, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
-	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType == "postgresql" {
+	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType != "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
-
 	db := global.Db.Table("information_schema.COLUMNS")
-	db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
+	if config.Conf.Server.DbType == "mysql" {
+		db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
+	}
+	if config.Conf.Server.DbType == "postgresql" {
+		db = db.Where("table_schema = ? ", "public")
+	}
 
 	if data.TableName != "" {
 		db = db.Where("table_name = ?", data.TableName)
@@ -56,16 +60,21 @@ func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int,
 
 func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) *[]entity.DBColumns {
 	resData := make([]entity.DBColumns, 0)
-	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType == "postgresql" {
+	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType != "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
 	db := global.Db.Table("information_schema.columns")
-	db = db.Where("table_schema = ? ", config.Conf.Gen.Dbname)
+	if config.Conf.Server.DbType == "mysql" {
+		db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
+	}
+	if config.Conf.Server.DbType == "postgresql" {
+		db = db.Where("table_schema = ? ", "public")
+	}
 	biz.IsTrue(tableName != "", "table name cannot be empty！")
 
 	db = db.Where("table_name = ?", tableName)
-	err := db.First(&resData).Error
-	biz.ErrIsNil(err, err.Error())
+	err := db.Find(&resData).Error
+	biz.ErrIsNil(err, "查询表字段失败")
 	return &resData
 }
 
