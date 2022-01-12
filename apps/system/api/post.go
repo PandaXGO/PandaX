@@ -3,8 +3,8 @@ package api
 import (
 	"errors"
 	"fmt"
-	entity "pandax/apps/system/entity"
-	services "pandax/apps/system/services"
+	"pandax/apps/system/entity"
+	"pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/ctx"
 	"pandax/base/ginx"

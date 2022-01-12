@@ -13,12 +13,12 @@ import (
 )
 
 type (
-	{{.FunctionName}}Model interface {
-		Insert(data entity.{{.FunctionName}}) *entity.{{.FunctionName}}
-		FindOne({{.PkJsonField}} int64) *entity.{{.FunctionName}}
-		FindListPage(page, pageSize int, data entity.{{.FunctionName}}) (*[]entity.{{.FunctionName}}, int64)
-		FindList(data entity.{{ .FunctionName }}) *[]entity.{{.FunctionName}}
-		Update(data entity.{{.FunctionName}}) *entity.{{.FunctionName}}
+	{{.ClassName}}Model interface {
+		Insert(data entity.{{.ClassName}}) *entity.{{.ClassName}}
+		FindOne({{.PkJsonField}} int64) *entity.{{.ClassName}}
+		FindListPage(page, pageSize int, data entity.{{.ClassName}}) (*[]entity.{{.ClassName}}, int64)
+		FindList(data entity.{{ .ClassName }}) *[]entity.{{.ClassName}}
+		Update(data entity.{{.ClassName}}) *entity.{{.ClassName}}
 		Delete({{.PkJsonField}}s []int64)
 	}
 
@@ -26,10 +26,9 @@ type (
 		table string
 	}
 )
+{{$model := .ClassName }}
 
-{{$model := .FunctionName }}
-
-var {{.FunctionName}}ModelDao {{.FunctionName}}Model = &{{.BusinessName}}ModelImpl{
+var {{.ClassName}}ModelDao {{.ClassName}}Model = &{{.BusinessName}}ModelImpl{
 	table: `{{.TableName}}`,
 }
 

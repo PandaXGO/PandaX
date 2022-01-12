@@ -1,57 +1,46 @@
 // ==========================================================================
-// GFast自动生成路由代码，只生成一次，按需修改,再次生成不会覆盖.
-// 生成日期：{{.table.CreateTime}}
-// 生成路径: {{.table.PackageName}}/router/{{.table.BusinessName}}.go
-// 生成人：{{.table.FunctionAuthor}}
+// 生成日期：{{.CreatedAt}}
+// 生成路径: apps/{{.PackageName}}/router/{{.TableName}}.go
+// 生成人：{{.FunctionAuthor}}
 // ==========================================================================
-////
 package router
 
 import (
-    "{{.table.PackageName}}/api"
-    "gfast/middleware"
-    "github.com/gogf/gf/frame/g"
-    "github.com/gogf/gf/net/ghttp"
-    {{if ne $.table.ModuleName "system"}}
-    sysApi "gfast/app/system/api"
-    {{end}}
+	"github.com/gin-gonic/gin"
+	"pandax/apps/{{.PackageName}}/api"
+	"pandax/apps/{{.PackageName}}/services"
+	"pandax/base/ctx"
 )
 
-{{$plugin:=""}}
-{{if ContainsI $.table.PackageName "plugins"}}
-{{$plugin = "plugins/"}}
-{{end}}
+func Init{{.ClassName}}Router(router *gin.RouterGroup) {
+	s := &api.{{.ClassName}}Api{
+		{{.ClassName}}App: services.{{.ClassName}}ModelDao,
+	}
+	routerGroup := router.Group("{{.BusinessName}}")
 
+	{{.ClassName}}ListLog := ctx.NewLogInfo("获取{{.FunctionName}}分页列表")
+	routerGroup.GET("list", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog({{.ClassName}}ListLog).Handle(s.Get{{.ClassName}}List)
+	})
 
-//加载路由
-func init() {
-    s := g.Server()
-    s.Group("/", func(group *ghttp.RouterGroup) {
-        group.Group("/{{$plugin}}{{.table.ModuleName}}", func(group *ghttp.RouterGroup) {
-            group.Group("/{{.table.BusinessName | CaseCamelLower}}", func(group *ghttp.RouterGroup) {
-                //gToken拦截器
-                {{if ne $.table.ModuleName "system"}}
-                sysApi.GfToken.AuthMiddleware(group)
-                {{else}}
-                api.GfToken.AuthMiddleware(group)
-                {{end}}
-                //context拦截器
-                group.Middleware(middleware.Ctx, middleware.Auth)
-                {{if ne $.table.ModuleName "system"}}
-                //后台操作日志记录
-                group.Hook("/*", ghttp.HookAfterOutput, sysApi.SysOperLog.OperationLog)
-                {{end}}
-                group.GET("list", api.{{.table.ClassName}}.List)
-                group.GET("get", api.{{.table.ClassName}}.Get)
-                group.POST("add", api.{{.table.ClassName}}.Add)
-                group.PUT("edit", api.{{.table.ClassName}}.Edit)
-                group.DELETE("delete", api.{{.table.ClassName}}.Delete)
-                {{range $index,$column:= .table.Columns}}
-                {{if and (HasSuffix $column.ColumnName "status") (eq $column.IsList "1") }}
-                group.PUT("change{{$column.GoField}}",api.{{$.table.ClassName}}.Change{{$column.GoField}})
-                {{end}}
-                {{end}}
-            })
-        })
-    })
+	{{.ClassName}}Log := ctx.NewLogInfo("获取{{.FunctionName}}信息")
+	routerGroup.GET(":{{.PkJsonField}}", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog({{.ClassName}}Log).Handle(s.Get{{.ClassName}})
+	})
+
+	insert{{.ClassName}}Log := ctx.NewLogInfo("添加{{.FunctionName}}信息")
+	routerGroup.POST("", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(insert{{.ClassName}}Log).Handle(s.Insert{{.ClassName}})
+	})
+
+	update{{.ClassName}}Log := ctx.NewLogInfo("修改{{.FunctionName}}信息")
+	routerGroup.PUT("", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(update{{.ClassName}}Log).Handle(s.Update{{.ClassName}})
+	})
+
+	delete{{.ClassName}}Log := ctx.NewLogInfo("删除{{.FunctionName}}信息")
+	routerGroup.DELETE(":{{.PkJsonField}}", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(delete{{.ClassName}}Log).Handle(s.Delete{{.ClassName}})
+	})
 }
+

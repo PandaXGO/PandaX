@@ -23,10 +23,4 @@ func InitGenRouter(router *gin.RouterGroup) {
 	gen.GET("code/:tableId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(genCodeLog).Handle(genApi.GenCode)
 	})
-
-	genApiLog := ctx.NewLogInfo("生成菜单和api配置")
-	gen.GET("menuAndApi/:tableId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(genApiLog).Handle(genApi.AutoApi)
-	})
-
 }

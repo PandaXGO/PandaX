@@ -8,6 +8,7 @@ import (
 	"pandax/apps/develop/services"
 	"pandax/base/biz"
 	"pandax/base/config"
+	"pandax/base/global"
 	"pandax/base/utils"
 	"strconv"
 	"strings"
@@ -222,6 +223,10 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 				data.PkColumn = dcs[i].ColumnName
 				data.PkGoField = column.GoField
 				data.PkJsonField = column.JsonField
+				global.Log.Info("是否自增主键", dcs[i].Extra)
+				if dcs[i].Extra == "auto_increment" {
+					column.IsIncrement = "1"
+				}
 			}
 
 			dataType := s.GetDbType(column.ColumnType)
@@ -236,7 +241,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 				}
 			} else if s.IsTimeObject(dataType) {
 				//字段为时间类型
-				column.GoType = "Time"
+				column.GoType = "time.Time"
 				column.HtmlType = "datetime"
 			} else if s.IsNumberObject(dataType) {
 				//字段为数字类型
@@ -267,12 +272,12 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 				column.IsRequired = "0"
 				column.IsInsert = "0"
 			} else {
+				column.IsRequired = "0"
 				column.IsInsert = "1"
 				if strings.Index(column.ColumnName, "name") >= 0 || strings.Index(column.ColumnName, "status") >= 0 {
 					column.IsRequired = "1"
 				}
 			}
-
 			// 编辑字段
 			if s.IsNotEdit(column.ColumnName) {
 				column.IsEdit = "0"
@@ -325,20 +330,20 @@ func Preview(tableId int64) map[string]interface{} {
 	t2, err := template.ParseFiles("resource/template/go/service.template")
 	biz.ErrIsNil(err, "service模版读取失败")
 
-	//t3, err := template.ParseFiles("resource/template/go/api.template")
-	//biz.ErrIsNil(err, "api模版读取失败！")
-	//
-	//t4, err := template.ParseFiles("resource/template/go/router.template")
-	//biz.ErrIsNil(err, "router模版读取失败")
-	//
-	//t5, err := template.ParseFiles("resource/template/js/api.template")
-	//biz.ErrIsNil(err, "js模版读取失败")
-	//
-	//t6, err := template.ParseFiles("resource/template/vue/list-vue.template")
-	//biz.ErrIsNil(err, "vue列表模版读取失败！")
-	//
-	//t7, err := template.ParseFiles("resource/template/vue/edit-vue.template")
-	//biz.ErrIsNil(err,"vue编辑模版读取失败！")
+	t3, err := template.ParseFiles("resource/template/go/api.template")
+	biz.ErrIsNil(err, "api模版读取失败！")
+
+	t4, err := template.ParseFiles("resource/template/go/router.template")
+	biz.ErrIsNil(err, "router模版读取失败")
+
+	t5, err := template.ParseFiles("resource/template/js/api.template")
+	biz.ErrIsNil(err, "js模版读取失败")
+
+	t6, err := template.ParseFiles("resource/template/vue/list-vue.template")
+	biz.ErrIsNil(err, "vue列表模版读取失败！")
+
+	t7, err := template.ParseFiles("resource/template/vue/edit-vue.template")
+	biz.ErrIsNil(err, "vue编辑模版读取失败！")
 
 	tab := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: tableId}, false)
 
@@ -346,25 +351,25 @@ func Preview(tableId int64) map[string]interface{} {
 	err = t1.Execute(&b1, tab)
 	var b2 bytes.Buffer
 	err = t2.Execute(&b2, tab)
-	//var b3 bytes.Buffer
-	//err = t3.Execute(&b3, tab)
-	//var b4 bytes.Buffer
-	//err = t4.Execute(&b4, tab)
-	//var b5 bytes.Buffer
-	//err = t5.Execute(&b5, tab)
-	//var b6 bytes.Buffer
-	//err = t6.Execute(&b6, tab)
-	//var b7 bytes.Buffer
-	//err = t7.Execute(&b7, tab)
+	var b3 bytes.Buffer
+	err = t3.Execute(&b3, tab)
+	var b4 bytes.Buffer
+	err = t4.Execute(&b4, tab)
+	var b5 bytes.Buffer
+	err = t5.Execute(&b5, tab)
+	var b6 bytes.Buffer
+	err = t6.Execute(&b6, tab)
+	var b7 bytes.Buffer
+	err = t7.Execute(&b7, tab)
 
 	mp := make(map[string]interface{})
 	mp["template/entity.template"] = b1.String()
 	mp["template/service.template"] = b2.String()
-	//mp["template/api.template"] = b3.String()
-	//mp["template/router.template"] = b4.String()
-	//mp["template/jsApi.template"] = b5.String()
-	//mp["template/listVue.template"] = b6.String()
-	//mp["template/editVue.template"] = b7.String()
+	mp["template/api.template"] = b3.String()
+	mp["template/router.template"] = b4.String()
+	mp["template/jsApi.template"] = b5.String()
+	mp["template/listVue.template"] = b6.String()
+	mp["template/editVue.template"] = b7.String()
 	return mp
 }
 
@@ -380,19 +385,19 @@ func GenCode(tableId int64) {
 	t2, err := template.ParseFiles("resource/template/go/service.template")
 	biz.ErrIsNil(err, "service模版读取失败！")
 
-	//t3, err := template.ParseFiles("resource/template/go/api.template")
-	//biz.ErrIsNil(err, "api模版读取失败！")
-	//
-	//t4, err := template.ParseFiles("resource/template/go/router.template")
-	//biz.ErrIsNil(err, "router模版读取失败！")
-	//
-	//t5, err := template.ParseFiles("resource/template/js/api.template")
-	//biz.ErrIsNil(err, "js模版读取失败！")
-	//
-	//t6, err := template.ParseFiles("resource/template/vue/list-vue.template")
-	//biz.ErrIsNil(err, "vue列表模版读取失败！")
-	//t7, err := template.ParseFiles("resource/template/vue/edit-vue.template")
-	//biz.ErrIsNil(err, "vue编辑模版读取失败！")
+	t3, err := template.ParseFiles("resource/template/go/api.template")
+	biz.ErrIsNil(err, "api模版读取失败！")
+
+	t4, err := template.ParseFiles("resource/template/go/router.template")
+	biz.ErrIsNil(err, "router模版读取失败！")
+
+	t5, err := template.ParseFiles("resource/template/js/api.template")
+	biz.ErrIsNil(err, "js模版读取失败！")
+
+	t6, err := template.ParseFiles("resource/template/vue/list-vue.template")
+	biz.ErrIsNil(err, "vue列表模版读取失败！")
+	t7, err := template.ParseFiles("resource/template/vue/edit-vue.template")
+	biz.ErrIsNil(err, "vue编辑模版读取失败！")
 
 	kgo.KFile.Mkdir("./apps/"+tab.PackageName+"/api/", os.ModePerm)
 	kgo.KFile.Mkdir("./apps/"+tab.PackageName+"/entity/", os.ModePerm)
@@ -406,22 +411,22 @@ func GenCode(tableId int64) {
 	err = t1.Execute(&b1, tab)
 	var b2 bytes.Buffer
 	err = t2.Execute(&b2, tab)
-	//var b3 bytes.Buffer
-	//err = t3.Execute(&b3, tab)
-	//var b4 bytes.Buffer
-	//err = t4.Execute(&b4, tab)
-	//var b5 bytes.Buffer
-	//err = t5.Execute(&b5, tab)
-	//var b6 bytes.Buffer
-	//err = t6.Execute(&b6, tab)
-	//var b7 bytes.Buffer
-	//err = t7.Execute(&b7, tab)
+	var b3 bytes.Buffer
+	err = t3.Execute(&b3, tab)
+	var b4 bytes.Buffer
+	err = t4.Execute(&b4, tab)
+	var b5 bytes.Buffer
+	err = t5.Execute(&b5, tab)
+	var b6 bytes.Buffer
+	err = t6.Execute(&b6, tab)
+	var b7 bytes.Buffer
+	err = t7.Execute(&b7, tab)
 
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/entity/"+tab.TableName+".go", b1.Bytes())
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/services/"+tab.TableName+".go", b2.Bytes())
-	//kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/api/"+tab.TableName+".go", b3.Bytes())
-	//kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/router/"+tab.TableName+".go", b4.Bytes())
-	//kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/"+tab.ModuleName+".js", b5.Bytes())
-	//kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/index.vue", b6.Bytes())
-	//kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/"+"component"+"/index.vue", b7.Bytes())
+	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/api/"+tab.TableName+".go", b3.Bytes())
+	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/router/"+tab.TableName+".go", b4.Bytes())
+	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/"+tab.ModuleName+".js", b5.Bytes())
+	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/index.vue", b6.Bytes())
+	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/"+"component"+"/editModule.vue", b7.Bytes())
 }

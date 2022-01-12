@@ -133,7 +133,7 @@ func (m *devGenTableModelImpl) FindTree(data entity.DevGenTable) *[]entity.DevGe
 		db = db.Where("table_comment = ?", data.TableComment)
 	}
 	err := db.Find(&resData).Error
-	biz.ErrIsNil(err, err.Error())
+	biz.ErrIsNil(err, "获取TableTree失败")
 	for i := 0; i < len(resData); i++ {
 		var col entity.DevGenTableColumn
 		col.TableId = resData[i].TableId

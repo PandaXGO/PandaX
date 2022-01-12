@@ -4,20 +4,17 @@
 // 生成人：{{.FunctionAuthor}}
 // ==========================================================================
 package entity
+{{$hasGTime:=true}}
 
-import (
-    import "pandax/base/model"
-)
+{{if $hasGTime}}import "time"{{end}}
 
-type {{.FunctionName}} struct {
-	model.BaseAutoModel
-    {{- range .Columns -}}
-    {{- if eq .IsQuery "1" }}
-    {{.GoField}} {{.GoType}} `json:"{{.JsonField}}"  gorm:"type:{{.ColumnType}};comment:{{.ColumnComment}}" binding:"required"`
-    {{- end }}
-    {{- end }}
+
+type {{.ClassName}} struct {
+	{{range $index, $column := .Columns}}
+        {{if eq $column.IsPk "1"}} {{$column.GoField}}  {{if eq $column.GoType "Time"}}time.Time{{else}}{{$column.GoType}}{{end}}         `gorm:"primary_key;{{if eq $column.IsIncrement "1"}}AUTO_INCREMENT{{end}}" json:"{{$column.JsonField}}"`    // {{$column.ColumnComment}} {{else}} {{$column.GoField}}    {{if eq $column.GoType "Time"}}time.Time{{else}}{{$column.GoType}}{{end}}         `gorm:"{{$column.ColumnName}};type:{{$column.ColumnType}};comment:{{$column.ColumnComment}}" json:"{{$column.JsonField}}" {{if eq $column.IsRequired "1"}}binding:"required"{{end}}`    // {{$column.ColumnComment}} {{end}}
+    {{end}}
 }
 
-func ({{.FunctionName}}) TableName() string {
+func ({{.ClassName}}) TableName() string {
 	return "{{.TableName}}"
 }

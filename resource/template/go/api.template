@@ -1,188 +1,99 @@
 // ==========================================================================
-// GFast自动生成控制器相关代码，只生成一次，按需修改,再次生成不会覆盖.
-// 生成日期：{{.table.CreateTime}}
-// 生成路径: {{.table.PackageName}}/api/{{.table.BusinessName}}.go
-// 生成人：{{.table.FunctionAuthor}}
+// 生成日期：{{.CreatedAt}}
+// 生成路径: apps/{{.PackageName}}/api/{{.TableName}}.go
+// 生成人：{{.FunctionAuthor}}
 // ==========================================================================
-////
-{{$structName := .table.BusinessName | CaseCamelLower}}
-
-package api
-
-{{$hasGStr:=false}}
-{{$gjsonTag:=false}}
-{{$libTag:=false}}
-{{range $index,$column:=.table.Columns}}
-{{if eq $column.HtmlType "checkbox"}}
-{{$hasGStr = true}}
-{{else if eq $column.HtmlType "images" "file" "files"}}
-{{$gjsonTag = true}}
-{{$libTag = true}}
-{{end}}
-{{end}}
-
 import (
-    {{if ne $.table.ModuleName "system"}}
-    sysApi "gfast/app/system/api"
-    {{end}}
-    {{if $libTag}}
-    "gfast/library"
-    {{end}}
-    "{{.table.PackageName}}/dao"
-    "{{.table.PackageName}}/service"
-    "github.com/gogf/gf/frame/g"
-    "github.com/gogf/gf/net/ghttp"
-    "github.com/gogf/gf/util/gvalid"
-    {{if $hasGStr}}
-    "github.com/gogf/gf/text/gstr"
-    {{end}}
-    {{if $gjsonTag}}
-    "github.com/gogf/gf/encoding/gjson"
-    {{end}}
+	"pandax/apps/{{.PackageName}}/entity"
+	"pandax/apps/{{.PackageName}}/services"
+	"pandax/base/ctx"
+	"pandax/base/ginx"
+	"pandax/base/utils"
 )
 
-type {{$structName}} struct {
-    {{if ne $.table.ModuleName "system"}}
-    sysApi.SystemBase
-    {{else}}
-    SystemBase
-    {{end}}
+type {{.ClassName}}Api struct {
+	{{.ClassName}}App services.{{.ClassName}}Model
 }
 
-var {{.table.ClassName}} = new({{$structName}})
+// @Summary {{.FunctionName}}列表数据
+// @Tags {{.FunctionName}}
+// @Param pageSize query int false "页条数"
+// @Param pageNum query int false "页码"
+// @Success 200 {string} string "{"code": 200, "data": [...]}"
+// @Router /{{.PackageName}}/{{.BusinessName}}/list [get]
+// @Security
+func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *ctx.ReqCtx) {
 
-// List 列表
-func (c *{{$structName}}) List(r *ghttp.Request) {
-	var req *dao.{{.table.ClassName}}SearchReq
-	//获取参数
-	if err := r.Parse(&req); err != nil {
-		c.FailJsonExit(r, err.(gvalid.Error).FirstString())
+	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+
+	data := entity.{{.ClassName}}{}
+	list, total := p.{{.ClassName}}App.FindListPage(pageNum, pageSize, data)
+
+	rc.ResData = map[string]interface{}{
+		"data":     list,
+		"total":    total,
+		"pageNum":  pageNum,
+		"pageSize": pageSize,
 	}
-	req.Ctx = r.GetCtx()
-	total, page, list, err := service.{{.table.ClassName}}.GetList(req)
-	if err != nil {
-		c.FailJsonExit(r, err.Error())
-	}
-	result := g.Map{
-		"currentPage": page,
-		"total":       total,
-		"list":        list,
-	}
-	c.SusJsonExit(r, result)
 }
 
-// Add 添加
-func (c *{{$structName}}) Add(r *ghttp.Request) {
-    var req *dao.{{.table.ClassName}}AddReq
-    //获取参数
-    if err := r.Parse(&req); err != nil {
-        c.FailJsonExit(r, err.(gvalid.Error).FirstString())
-    }
-    {{range $index,$column:= .table.Columns}}
-    {{if eq $column.ColumnName "created_by"}}
-    req.CreatedBy = c.GetCurrentUser(r.GetCtx()).GetUserId()
-    {{end}}
-    {{if eq $column.HtmlType "checkbox"}}
-    {{$column.HtmlField}} := r.GetStrings("{{$column.HtmlField}}")
-    if len({{$column.HtmlField}})>0{
-       req.{{$column.GoField}} = gstr.Join({{$column.HtmlField}},",")
-    }else{
-       req.{{$column.GoField}} = ""
-    }
-    {{else if eq $column.HtmlType "images" "file" "files"}}
-    up{{$column.GoField}}:=gjson.New(req.{{$column.GoField}})
-    for _,obj:=range up{{$column.GoField}}.Array(){
-        mp := obj.(g.MapStrAny)
-        var err error
-        mp["url"],err = library.GetFilesPath(mp["url"].(string))
-        if err!=nil{
-            c.FailJsonExit(r, err.Error())
-        }
-    }
-    req.{{$column.GoField}} = up{{$column.GoField}}.MustToJsonString()
-    {{end}}
-    {{end}}
-    err := service.{{.table.ClassName}}.Add(r.GetCtx(),req)
-    if err != nil {
-        c.FailJsonExit(r, err.Error())
-    }
-    c.SusJsonExit(r, "添加成功")
+// @Summary 获取{{.FunctionName}}
+// @Description 获取JSON
+// @Tags {{.FunctionName}}
+// @Param {{.PkJsonField}} path int true "{{.PkJsonField}}"
+// @Success 200 {string} string "{"code": 200, "data": [...]}"
+// @Router /{{.PackageName}}/{{.BusinessName}}/{{ "{" }}{{.PkJsonField}} {{"}"}}[get]
+// @Security
+func (p *{{.ClassName}}Api) Get{{.ClassName}}(rc *ctx.ReqCtx) {
+	{{.PkJsonField}} := ginx.PathParamInt(rc.GinCtx, "{{.PkJsonField}}")
+	p.{{.ClassName}}App.FindOne(int64({{.PkJsonField}}))
 }
 
+// @Summary 添加{{.FunctionName}}
+// @Description 获取JSON
+// @Tags {{.FunctionName}}
+// @Accept  application/json
+// @Product application/json
+// @Param data body entity.{{.ClassName}} true "data"
+// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
+// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
+// @Router /{{.PackageName}}/{{.BusinessName}} [post]
+// @Security X-TOKEN
+func (p *{{.ClassName}}Api) Insert{{.ClassName}}(rc *ctx.ReqCtx) {
+	var data entity.{{.ClassName}}
+	ginx.BindJsonAndValid(rc.GinCtx, &data)
 
-// Get 获取
-func (c *{{$structName}}) Get(r *ghttp.Request) {
-	id := r.Get{{$.table.PkColumn.GoType | CaseCamel}}("id")
-	info, err := service.{{.table.ClassName}}.GetInfoById(r.GetCtx(),id)
-	if err != nil {
-		c.FailJsonExit(r, err.Error())
-	}
-	c.SusJsonExit(r, info)
+	p.{{.ClassName}}App.Insert(data)
 }
 
-// Edit 修改
-func (c *{{$structName}}) Edit(r *ghttp.Request) {
-    var req *dao.{{.table.ClassName}}EditReq
-    //获取参数
-    if err := r.Parse(&req); err != nil {
-        c.FailJsonExit(r, err.(gvalid.Error).FirstString())
-    }
-    {{range $index,$column:= .table.Columns}}
-    {{if eq $column.ColumnName "updated_by"}}
-    req.UpdatedBy = c.GetCurrentUser(r.GetCtx()).GetUserId() //获取登陆用户id
-    {{end}}
-    {{if eq $column.HtmlType "checkbox"}}
-    {{$column.HtmlField}} := r.GetStrings("{{$column.HtmlField}}")
-    if len({{$column.HtmlField}})>0{
-       req.{{$column.GoField}} = gstr.Join({{$column.HtmlField}},",")
-    }else{
-       req.{{$column.GoField}} = ""
-    }
-    {{else if eq $column.HtmlType "images" "file" "files"}}
-    up{{$column.GoField}}:=gjson.New(req.{{$column.GoField}})
-    for _,obj:=range up{{$column.GoField}}.Array(){
-        mp := obj.(g.MapStrAny)
-        var err error
-        mp["url"],err = library.GetFilesPath(mp["url"].(string))
-        if err!=nil{
-            c.FailJsonExit(r, err.Error())
-        }
-    }
-    req.{{$column.GoField}} = up{{$column.GoField}}.MustToJsonString()
-    {{end}}
-    {{end}}
-    err := service.{{.table.ClassName}}.Edit(r.GetCtx(),req)
-    if err != nil {
-        c.FailJsonExit(r, err.Error())
-    }
-    c.SusJsonExit(r, "修改成功")
+// @Summary 修改{{.FunctionName}}
+// @Description 获取JSON
+// @Tags {{.FunctionName}}
+// @Accept  application/json
+// @Product application/json
+// @Param data body entity.{{.ClassName}} true "body"
+// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
+// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
+// @Router /{{.PackageName}}/{{.BusinessName}} [put]
+// @Security X-TOKEN
+func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *ctx.ReqCtx) {
+	var data entity.{{.ClassName}}
+	ginx.BindJsonAndValid(rc.GinCtx, &data)
+
+	p.{{.ClassName}}App.Update(post)
 }
 
+// @Summary 删除{{.FunctionName}}
+// @Description 删除数据
+// @Tags {{.FunctionName}}
+// @Param {{.PkJsonField}} path string true "{{.PkJsonField}}"
+// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
+// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
+// @Router /{{.PackageName}}/{{.BusinessName}}/{{ "{" }}{{.PkJsonField}} {{"}"}} [delete]
+func (p *{{.ClassName}}Api) Delete{{.ClassName}}(rc *ctx.ReqCtx) {
 
-// Delete 删除
-func (c *{{$structName}}) Delete(r *ghttp.Request) {
-	ids := r.GetInts("ids")
-	err := service.{{.table.ClassName}}.DeleteByIds(r.GetCtx(),ids)
-	if err != nil {
-		c.FailJsonExit(r, err.Error())
-	}
-	c.SusJsonExit(r, "删除成功")
+	{{.PkJsonField}} := rc.GinCtx.Param("{{.PkJsonField}}")
+	{{.PkJsonField}}s := utils.IdsStrToIdsIntGroup({{.PkJsonField}})
+    p.{{.ClassName}}App.Delete({{.PkJsonField}}s)
 }
-
-{{range $index,$column:= .table.Columns}}
-{{if and (HasSuffix $column.ColumnName "status") (eq $column.IsList "1") }}
-// Change{{$column.GoField}} 修改状态
-func (c *{{$structName}}) Change{{$column.GoField}}(r *ghttp.Request){
-	   var req *dao.{{$.table.ClassName}}{{$column.GoField}}Req
-	   //获取参数
-	   if err := r.Parse(&req); err != nil {
-	       c.FailJsonExit(r, err.(gvalid.Error).FirstString())
-	   }
-	   if err := service.{{$.table.ClassName}}.Change{{$column.GoField}}(r.GetCtx(),req); err != nil {
-	       c.FailJsonExit(r, err.Error())
-	   } else {
-	       c.SusJsonExit(r, "状态设置成功")
-	   }
-}
-{{end}}
-{{end}}

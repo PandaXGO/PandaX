@@ -19,7 +19,7 @@ type GenApi struct {
 // @Router /develop/code/gen/preview/{tableId} [get]
 // @Security X-TOKEN
 func (e *GenApi) Preview(rc *ctx.ReqCtx) {
-	tableId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("tableId"))
+	tableId := ginx.PathParamInt(rc.GinCtx, "tableId")
 	rc.ResData = gen.Preview(int64(tableId))
 }
 
@@ -31,11 +31,6 @@ func (e *GenApi) Preview(rc *ctx.ReqCtx) {
 // @Router /develop/code/gen/code/{tableId} [get]
 // @Security X-TOKEN
 func (e *GenApi) GenCode(rc *ctx.ReqCtx) {
-	tableId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("tableId"))
+	tableId := ginx.PathParamInt(rc.GinCtx, "tableId")
 	gen.GenCode(int64(tableId))
-}
-
-//自动创建菜单，api
-func (e *GenApi) AutoApi(rc *ctx.ReqCtx) {
-
 }
