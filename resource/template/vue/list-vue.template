@@ -21,7 +21,7 @@
       <el-form-item label="状态" prop="status">
         <el-select
           v-model="queryParams.status"
-          placeholder="岗位状态"
+          placeholder="状态"
           clearable
           size="small"
           style="width: 240px"
@@ -211,13 +211,13 @@ export default {
       return proxy.selectDictLabel(state.statusOptions, row.status);
     };
 
-    // 打开新增岗位弹窗
+    // 打开新增弹窗
     const onOpenAddModule = (row: object) => {
       row = [];
       state.title = "添加{{.FunctionName}}";
       editModuleRef.value.openDialog(row);
     };
-    // 打开编辑岗位弹窗
+    // 打开编辑弹窗
     const onOpenEditModule = (row: object) => {
       state.title = "修改{{.FunctionName}}";
       editModuleRef.value.openDialog(row);

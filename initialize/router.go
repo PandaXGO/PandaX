@@ -8,6 +8,7 @@ import (
 	devRouter "pandax/apps/develop/router"
 	jobRouter "pandax/apps/job/router"
 	logRouter "pandax/apps/log/router"
+	resRouter "pandax/apps/resource/router"
 	sysRouter "pandax/apps/system/router"
 
 	"pandax/base/config"
@@ -81,6 +82,11 @@ func InitRouter() *gin.Engine {
 	{
 		devRouter.InitGenTableRouter(dev)
 		devRouter.InitGenRouter(dev)
+	}
+	// 资源管理
+	res := router.Group("resource")
+	{
+		resRouter.InitResOssRouter(res)
 	}
 	return router
 }

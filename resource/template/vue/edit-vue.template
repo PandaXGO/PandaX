@@ -15,7 +15,7 @@
             <el-form-item label="名称" prop="name">
               <el-input
                 v-model="ruleForm.name"
-                placeholder="请输入岗位名称"
+                placeholder="请输入名称"
               />
             </el-form-item>
           </el-col>
@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { reactive, toRefs, ref, unref, getCurrentInstance } from "vue";
-import { update{{.ClassName}}, add{{.ClassName}} } from "/@/api/system/post";
+import { update{{.ClassName}}, add{{.ClassName}} } from "/@/api/{{.PackageName}}/{{.BusinessName}}";
 import { ElMessage } from "element-plus";
 
 export default {
@@ -67,14 +67,13 @@ export default {
       // 是否显示弹出层
       isShowDialog: false,
 
-      // 岗位对象
       ruleForm: {
         {{.PkJsonField}}: 0, // ID
         name: "", // 名称
         // 更多参数需要遍历，等-等
         status: "0",  //状态
       },
-      // 岗位状态数据字典
+      // 状态数据字典
       statusOptions: [],
       // 表单校验
       ruleRules: {
@@ -92,7 +91,7 @@ export default {
       }
       state.isShowDialog = true;
 
-      // 查询岗位状态数据字典
+      // 查询状态数据字典
       proxy.getDicts("sys_normal_disable").then((response: any) => {
         state.statusOptions = response.data;
       });
@@ -133,7 +132,7 @@ export default {
     };
     // 表单初始化，方法：`resetFields()` 无法使用
     const initForm = () => {
-      state.ruleForm.{{.PkJsonField}} = 0; // 岗位ID
+      state.ruleForm.{{.PkJsonField}} = 0; // ID
       // 更多参数初始化
     };
 

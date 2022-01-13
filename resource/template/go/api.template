@@ -81,7 +81,7 @@ func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *ctx.ReqCtx) {
 	var data entity.{{.ClassName}}
 	ginx.BindJsonAndValid(rc.GinCtx, &data)
 
-	p.{{.ClassName}}App.Update(post)
+	p.{{.ClassName}}App.Update(data)
 }
 
 // @Summary 删除{{.FunctionName}}

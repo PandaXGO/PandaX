@@ -67,7 +67,7 @@ func (g *GenTableApi) GetTablePage(rc *ctx.ReqCtx) {
 // @Router /develop/code/table/info/{tableId} [get]
 // @Security Bearer
 func (g *GenTableApi) GetTableInfo(rc *ctx.ReqCtx) {
-	tableId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("tableId"))
+	tableId := ginx.PathParamInt(rc.GinCtx, "tableId")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableId: int64(tableId)}, true)
 	mp := make(map[string]interface{})
 	mp["list"] = result.Columns

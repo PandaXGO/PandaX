@@ -7,6 +7,7 @@ import (
 	devEntity "pandax/apps/develop/entity"
 	jobEntity "pandax/apps/job/entity"
 	logEntity "pandax/apps/log/entity"
+	resSourceEntity "pandax/apps/resource/entity"
 
 	"pandax/base/biz"
 	"pandax/base/config"
@@ -38,6 +39,7 @@ func InitTable() {
 				jobEntity.SysJob{},
 				devEntity.DevGenTable{},
 				devEntity.DevGenTableColumn{},
+				resSourceEntity.ResOss{},
 			),
 			"初始化表失败")
 
