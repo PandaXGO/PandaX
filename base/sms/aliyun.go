@@ -5,21 +5,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-type AliYun struct {
-}
-
-func NewAliYun() *AliYun {
-	return &AliYun{}
-}
-
-func (a *AliYun) GetBusiness(key string) Sms {
-	return a
-}
-
-func (a *AliYun) Send(phone []string, templateParam interface{}) error {
-	panic("implement me")
-}
-
 type AliConfig struct {
 	accessKeyId  string
 	accessSecret string
@@ -36,7 +21,7 @@ func NewAliSms(AliConfig AliConfig) *AliSms {
 	}
 }
 
-func (a *AliSms) send(PhoneNumbers, SignName, TemplateCode, TemplateParam string) error {
+func (a *AliSms) Send(PhoneNumbers, SignName, TemplateCode, TemplateParam string) error {
 	//客户端
 	client, err := dysmsapi.NewClientWithAccessKey(a.config.RegionId, a.config.accessKeyId, a.config.accessSecret)
 	if err != nil {

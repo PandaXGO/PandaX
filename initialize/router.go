@@ -87,6 +87,7 @@ func InitRouter() *gin.Engine {
 	res := router.Group("resource")
 	{
 		resRouter.InitResOssRouter(res)
+		resRouter.InitResEmailsRouter(res)
 	}
 	return router
 }

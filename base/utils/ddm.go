@@ -6,9 +6,17 @@ package utils
  * @Date 2022/1/13 17:16
  **/
 
-func Ddm(data string) string {
+func DdmKey(data string) string {
 	if len(data) < 6 {
 		return data
 	}
 	return data[:3] + "****" + data[len(data)-3:]
+}
+
+func DdmMail(data string) string {
+	return data[:3] + "****" + data[len(data)-8:]
+}
+
+func DdmPassword(data string) string {
+	return "******"
 }

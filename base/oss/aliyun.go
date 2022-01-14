@@ -21,7 +21,7 @@ func (c *AliConfig) CreateBucket() (bucket *aliOssSdk.Bucket, err error) {
 	endpoint := c.Endpoint
 	// 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建RAM账号。
 	accessKeyId := c.AccessKey
-	accessKeySecret := c.AccessKey
+	accessKeySecret := c.SecretKey
 	bucketName := c.Bucket
 	// 创建OSSClient实例。
 	ossClient, err := aliOssSdk.New(endpoint, accessKeyId, accessKeySecret)

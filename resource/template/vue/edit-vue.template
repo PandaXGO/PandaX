@@ -21,7 +21,7 @@
           </el-col>
 
           <el-col :span="24" >
-            <el-form-item label="岗位状态" prop="status">
+            <el-form-item label="状态" prop="status">
               <el-radio-group v-model="ruleForm.status">
                 <el-radio
                   v-for="dict in statusOptions"

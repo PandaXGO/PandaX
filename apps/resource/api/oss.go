@@ -1,11 +1,15 @@
 package api
 
 import (
+	"fmt"
 	"pandax/apps/resource/entity"
 	"pandax/apps/resource/services"
+	"pandax/base/biz"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
+	"pandax/base/oss"
 	"pandax/base/utils"
+	"time"
 )
 
 /**
@@ -22,8 +26,11 @@ type ResOssesApi struct {
 // @Tags ResOsses
 // @Param pageSize query int false "页条数"
 // @Param pageNum query int false "页码"
+// @Param status query string false "状态"
+// @Param category query string false "分类"
+// @Param ossCode query string false "编号"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /admin/resOsses/list [get]
+// @Router /resource/oss/list [get]
 // @Security
 func (p *ResOssesApi) GetResOssesList(rc *ctx.ReqCtx) {
 
@@ -37,8 +44,8 @@ func (p *ResOssesApi) GetResOssesList(rc *ctx.ReqCtx) {
 	list, total := p.ResOssesApp.FindListPage(pageNum, pageSize, data)
 	li := *list
 	for i, data := range li {
-		data.AccessKey = utils.Ddm(data.AccessKey)
-		data.SecretKey = utils.Ddm(data.SecretKey)
+		data.AccessKey = utils.DdmKey(data.AccessKey)
+		data.SecretKey = utils.DdmKey(data.SecretKey)
 		li[i] = data
 	}
 	rc.ResData = map[string]interface{}{
@@ -54,7 +61,7 @@ func (p *ResOssesApi) GetResOssesList(rc *ctx.ReqCtx) {
 // @Tags ResOsses
 // @Param ossId path int true "ossId"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /admin/resOsses/{ossId }[get]
+// @Router /resource/oss/{ossId }[get]
 // @Security
 func (p *ResOssesApi) GetResOsses(rc *ctx.ReqCtx) {
 	ossId := ginx.PathParamInt(rc.GinCtx, "ossId")
@@ -66,10 +73,10 @@ func (p *ResOssesApi) GetResOsses(rc *ctx.ReqCtx) {
 // @Tags ResOsses
 // @Accept  application/json
 // @Product application/json
-// @Param data body entity.ResOsses true "data"
+// @Param data body entity.ResOss true "data"
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /admin/resOsses [post]
+// @Router /resource/oss [post]
 // @Security X-TOKEN
 func (p *ResOssesApi) InsertResOsses(rc *ctx.ReqCtx) {
 	var data entity.ResOss
@@ -83,10 +90,10 @@ func (p *ResOssesApi) InsertResOsses(rc *ctx.ReqCtx) {
 // @Tags ResOsses
 // @Accept  application/json
 // @Product application/json
-// @Param data body entity.ResOsses true "body"
+// @Param data body entity.ResOss true "body"
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /admin/resOsses [put]
+// @Router /resource/oss [put]
 // @Security X-TOKEN
 func (p *ResOssesApi) UpdateResOsses(rc *ctx.ReqCtx) {
 	var data entity.ResOss
@@ -101,10 +108,64 @@ func (p *ResOssesApi) UpdateResOsses(rc *ctx.ReqCtx) {
 // @Param ossId path string true "ossId"
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /admin/resOsses/{ossId } [delete]
+// @Router /resource/oss/{ossId} [delete]
 func (p *ResOssesApi) DeleteResOsses(rc *ctx.ReqCtx) {
 
 	ossId := rc.GinCtx.Param("ossId")
 	ossIds := utils.IdsStrToIdsIntGroup(ossId)
 	p.ResOssesApp.Delete(ossIds)
+}
+
+// @Summary 上传文件ResOsses
+// @Description 上传文件
+// @Tags ResOsses
+// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
+// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
+// @Router /resource/oss/uploadFile [post]
+func (p *ResOssesApi) UplaodResOsses(rc *ctx.ReqCtx) {
+	file, _ := rc.GinCtx.FormFile("file")
+	ossCode, _ := rc.GinCtx.GetQuery("ossCode")
+	list := p.ResOssesApp.FindList(entity.ResOss{OssCode: ossCode})
+	li := *list
+	yunFileTmpPath := "uploads/" + time.Now().Format("2006-01-02") + "/" + file.Filename
+	// 读取本地文件。
+	f, openError := file.Open()
+	biz.ErrIsNil(openError, "function file.Open() Failed")
+	biz.ErrIsNil(NewOss(li[0]).PutObj(yunFileTmpPath, f), "上传OSS失败")
+
+	rc.ResData = fmt.Sprintf("https://%s.%s/%s", li[0].BucketName, li[0].Endpoint, yunFileTmpPath)
+}
+
+// @Summary 修改ResOsses状态
+// @Description 获取JSON
+// @Tags ResOsses
+// @Accept  application/json
+// @Product application/json
+// @Param data body entity.ResOss true "body"
+// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
+// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
+// @Router /resource/oss [put]
+// @Security X-TOKEN
+func (p *ResOssesApi) UpdateOssStatus(rc *ctx.ReqCtx) {
+	var data entity.ResOss
+	ginx.BindJsonAndValid(rc.GinCtx, &data)
+
+	p.ResOssesApp.Update(entity.ResOss{OssId: data.OssId, Status: data.Status})
+}
+
+func NewOss(ens entity.ResOss) oss.Driver {
+	switch ens.Category {
+	case "0":
+		return oss.NewAliOss(oss.AliConfig{
+			AccessKey: ens.AccessKey,
+			SecretKey: ens.SecretKey,
+			Bucket:    ens.BucketName,
+			Endpoint:  ens.Endpoint,
+		})
+	case "1":
+		//return oss.NewQnOss()
+	case "2":
+		//return oss.NewTencentOss()
+	}
+	return nil
 }

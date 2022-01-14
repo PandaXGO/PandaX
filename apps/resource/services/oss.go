@@ -60,7 +60,7 @@ func (m *resOssesModelImpl) FindListPage(page, pageSize int, data entity.ResOss)
 		db = db.Where("oss_id = ?", data.OssId)
 	}
 	if data.OssCode != "" {
-		db = db.Where("oss_code like ?", "%"+data.OssCode+"%")
+		db = db.Where("oss_code = ?", data.OssCode)
 	}
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
@@ -83,8 +83,10 @@ func (m *resOssesModelImpl) FindList(data entity.ResOss) *[]entity.ResOss {
 	if data.OssId != 0 {
 		db = db.Where("oss_id = ?", data.OssId)
 	}
-
-	db.Where("delete_time IS NULL")
+	if data.OssCode != "" {
+		db = db.Where("oss_code = ?", data.OssCode)
+	}
+	db.Where("status = '0' AND delete_time IS NULL")
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询ResOsses列表失败")
 	return &list
 }

@@ -132,7 +132,7 @@ func (g *GenTableApi) Insert(rc *ctx.ReqCtx) {
 // @Tags 工具 / 生成工具
 // @Accept  application/json
 // @Product application/json
-// @Param data body tools.SysTables true "body"
+// @Param data body entity.DevGenTable true "body"
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
 // @Router /develop/code/table [put]

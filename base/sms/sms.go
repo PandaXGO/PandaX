@@ -1,14 +1,13 @@
 package sms
 
 type Sms interface {
-	GetBusiness(key string) Sms
-	Send(phone []string, templateParam interface{}) error
+	Send(PhoneNumbers, SignName, TemplateCode, TemplateParam string) error
 }
 
 func NewDefaultSms(use string) Sms {
 	switch use {
 	case "AliYun":
-		return NewAliYun()
+		return NewAliSms(AliConfig{})
 	default:
 		panic("sms driver err")
 	}

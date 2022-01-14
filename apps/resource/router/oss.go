@@ -43,4 +43,14 @@ func InitResOssRouter(router *gin.RouterGroup) {
 	routerGroup.DELETE(":ossId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(deleteResOssesLog).Handle(s.DeleteResOsses)
 	})
+
+	uplaodResOssesLog := ctx.NewLogInfo("测试文件上传")
+	routerGroup.POST("uploadFile", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(uplaodResOssesLog).Handle(s.UplaodResOsses)
+	})
+
+	updateStatusOssLog := ctx.NewLogInfo("修改状态")
+	routerGroup.PUT("/changeStatus", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(updateStatusOssLog).Handle(s.UpdateOssStatus)
+	})
 }

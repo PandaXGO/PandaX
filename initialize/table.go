@@ -40,6 +40,7 @@ func InitTable() {
 				devEntity.DevGenTable{},
 				devEntity.DevGenTableColumn{},
 				resSourceEntity.ResOss{},
+				resSourceEntity.ResEmail{},
 			),
 			"初始化表失败")
 
