@@ -2,7 +2,6 @@ package email
 
 import (
 	"crypto/tls"
-	"errors"
 	"fmt"
 	"net/smtp"
 	"strings"
@@ -19,14 +18,9 @@ type Mail struct {
 	IsSSL    bool   `json:"isSsl"`    // 是否开启ssl
 }
 
-const (
-	TEXTTYPE = "TEXT"
-	HTMLTYPE = "HTML"
-)
-
-func (m Mail) Email(to, ty, subject string, body string) error {
+func (m Mail) Email(to, subject string, body string) error {
 	tos := strings.Split(to, ",")
-	return m.send(tos, ty, subject, body)
+	return m.send(tos, subject, body)
 }
 
 //@function: ErrorToEmail
@@ -34,12 +28,12 @@ func (m Mail) Email(to, ty, subject string, body string) error {
 //@param: subject string, body string
 //@return: error
 
-func (m Mail) ErrorToEmail(to, ty, subject string, body string) error {
+func (m Mail) ErrorToEmail(to, subject string, body string) error {
 	tos := strings.Split(to, ",")
 	if tos[len(to)-1] == "" { // 判断切片的最后一个元素是否为空,为空则移除
 		tos = tos[:len(tos)-1]
 	}
-	return m.send(tos, ty, subject, body)
+	return m.send(tos, subject, body)
 }
 
 //@function: send
@@ -47,7 +41,7 @@ func (m Mail) ErrorToEmail(to, ty, subject string, body string) error {
 //@param: subject string, body string
 //@return: error
 
-func (m Mail) send(to []string, ty, subject string, body string) error {
+func (m Mail) send(to []string, subject string, body string) error {
 
 	auth := smtp.PlainAuth("", m.From, m.Secret, m.Host)
 	e := email.NewEmail()
@@ -58,14 +52,6 @@ func (m Mail) send(to []string, ty, subject string, body string) error {
 	}
 	e.To = to
 	e.Subject = subject
-
-	if ty == TEXTTYPE {
-		e.Text = []byte(body)
-	} else if ty == HTMLTYPE {
-		e.HTML = []byte(body)
-	} else {
-		errors.New("邮件类型不正确")
-	}
 	e.HTML = []byte(body)
 	var err error
 	hostAddr := fmt.Sprintf("%s:%d", m.Host, m.Port)

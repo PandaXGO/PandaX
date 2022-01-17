@@ -853,7 +853,7 @@ CREATE TABLE `sys_users`  (
 -- ----------------------------
 -- Records of sys_users
 -- ----------------------------
-INSERT INTO `sys_users` VALUES (1, 'pandax', '13818888888', 1, NULL, '', '0', '1@qq.com', 2, 1, 'admin', '1', NULL, '0', '2021-12-03 09:46:55', '2021-12-03 10:51:34', NULL, 'panda', '$2a$10$EXMJ5huCCTlCmP2ITFkAJ.4Mgmq3JcZGUvtE.KLX8j7FmhiiTEEya', '1', '1');
+INSERT INTO `sys_users` VALUES (1, 'pandax', '13818888888', 1, NULL, '', '0', '1@qq.com', 2, 1, 'admin', '1', NULL, '0', '2021-12-03 09:46:55', '2021-12-03 10:51:34', NULL, 'panda', '$2a$10$cKFFTCzGOvaIHHJY2K45Zuwt8TD6oPzYi4s5MzYIBAWCLL6ZhouP2', '1', '1');
 INSERT INTO `sys_users` VALUES (3, '测试用户', '18435234356', 1, '', '', '0', '342@163.com', 3, 1, 'admin', '', '', '0', '2021-12-06 15:16:53', '2021-12-06 15:29:28', NULL, 'test', '$2a$10$4cHTracxWJLdhMmazvbm1urKyD3v5N2AYxAFtNYh6juU39kgae73e', '1', '1,4');
 INSERT INTO `sys_users` VALUES (4, 'panda', '18353366912', 2, '', '', '0', '2417920382@qq.com', 2, 4, 'panda', '', '', '0', '2021-12-19 15:58:09', '2021-12-19 16:06:54', NULL, 'admin', '$2a$10$cKFFTCzGOvaIHHJY2K45Zuwt8TD6oPzYi4s5MzYIBAWCLL6ZhouP2', '2', '4,1');
 

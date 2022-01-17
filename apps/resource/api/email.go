@@ -95,7 +95,12 @@ func (p *ResEmailsApi) InsertResEmails(rc *ctx.ReqCtx) {
 func (p *ResEmailsApi) UpdateResEmails(rc *ctx.ReqCtx) {
 	var data entity.ResEmail
 	ginx.BindJsonAndValid(rc.GinCtx, &data)
-
+	if utils.ISDdmMail(data.From) {
+		data.From = ""
+	}
+	if utils.IsDdmPassword(data.Secret) {
+		data.Secret = ""
+	}
 	p.ResEmailsApp.Update(data)
 }
 
@@ -153,5 +158,5 @@ func (p *ResEmailsApi) DebugMail(rc *ctx.ReqCtx) {
 		Secret:   one.Secret,
 		IsSSL:    one.IsSSL,
 	}
-	biz.ErrIsNil(ml.Email(data.To, email.TEXTTYPE, data.Subject, data.Body), "邮件发送失败")
+	biz.ErrIsNil(ml.Email(data.To, data.Subject, data.Body), "邮件发送失败")
 }

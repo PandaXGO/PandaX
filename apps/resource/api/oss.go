@@ -98,7 +98,12 @@ func (p *ResOssesApi) InsertResOsses(rc *ctx.ReqCtx) {
 func (p *ResOssesApi) UpdateResOsses(rc *ctx.ReqCtx) {
 	var data entity.ResOss
 	ginx.BindJsonAndValid(rc.GinCtx, &data)
-
+	if utils.IsDdmKey(data.AccessKey) {
+		data.AccessKey = ""
+	}
+	if utils.IsDdmKey(data.SecretKey) {
+		data.SecretKey = ""
+	}
 	p.ResOssesApp.Update(data)
 }
 
