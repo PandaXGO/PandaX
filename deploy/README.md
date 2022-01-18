@@ -15,9 +15,9 @@ sudo /usr/local/bin/k3s-uninstall.sh
 2. 构建Linux执行命令  
  go build -o pandax .
 4. 构建docker镜像 (修改版本号 xmadmin/pandax:v1.0)  
- docker build -t xmadmin/pandax:v1.0 --rm .
+ docker build -t xmadmin/pandax:v1.4 --rm .
 5. 上传daocker镜像  
- docker push xmadmin/pandax:v1.0
+ docker push xmadmin/pandax:v1.4
 6. 生成 deploy.yaml    
  kubectl kustomize deploy/manifest -o deploy/deploy.yaml
 7. k8s安装yaml   
