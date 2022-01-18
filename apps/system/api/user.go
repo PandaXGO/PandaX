@@ -254,7 +254,7 @@ func (u *UserApi) SysUserUpdatePwd(rc *ctx.ReqCtx) {
 // @Description 获取JSON
 // @Tags 用户
 // @Param userId path int true "用户编码"
-// @Success 200 {object} app.Response "{"code": 200, "data": [...]}"
+// @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/user/sysUser/{userId} [get]
 // @Security
 func (u *UserApi) GetSysUser(rc *ctx.ReqCtx) {

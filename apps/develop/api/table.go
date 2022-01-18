@@ -21,7 +21,7 @@ type GenTableApi struct {
 // @Param tableName query string false "tableName / 数据表名称"
 // @Param pageSize query int false "pageSize / 页条数"
 // @Param pageNum query int false "pageNum / 页码"
-// @Success 200 {object} response.Response "{"code": 200, "data": [...]}"
+// @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/db/list [get]
 func (g *GenTableApi) GetDBTableList(rc *ctx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
@@ -43,7 +43,7 @@ func (g *GenTableApi) GetDBTableList(rc *ctx.ReqCtx) {
 // @Param tableComment query string false "tableComment / 数据表描述"
 // @Param pageSize query int false "pageSize / 页条数"
 // @Param pageIndex query int false "pageIndex / 页码"
-// @Success 200 {object} response.Response "{"code": 200, "data": [...]}"
+// @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/list [get]
 func (g *GenTableApi) GetTablePage(rc *ctx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
@@ -63,7 +63,7 @@ func (g *GenTableApi) GetTablePage(rc *ctx.ReqCtx) {
 // @Description 获取JSON
 // @Tags 工具 / 生成工具
 // @Param tableId path int true "tableId"
-// @Success 200 {object} response.Response "{"code": 200, "data": [...]}"
+// @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/info/{tableId} [get]
 // @Security Bearer
 func (g *GenTableApi) GetTableInfo(rc *ctx.ReqCtx) {
@@ -79,7 +79,7 @@ func (g *GenTableApi) GetTableInfo(rc *ctx.ReqCtx) {
 // @Description 获取JSON
 // @Tags 工具 / 生成工具
 // @Param tableName query string false "tableName / 数据表名称"
-// @Success 200 {object} response.Response "{"code": 200, "data": [...]}"
+// @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/info/tableName [get]
 // @Security X-TOKEN
 func (g *GenTableApi) GetTableInfoByName(rc *ctx.ReqCtx) {
@@ -94,7 +94,7 @@ func (g *GenTableApi) GetTableInfoByName(rc *ctx.ReqCtx) {
 // @Summary 获取树表信息
 // @Description 获取JSON
 // @Tags 工具 / 生成工具
-// @Success 200 {object} response.Response "{"code": 200, "data": [...]}"
+// @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/tableTree [get]
 // @Security X-TOKEN
 func (g *GenTableApi) GetTableTree(rc *ctx.ReqCtx) {

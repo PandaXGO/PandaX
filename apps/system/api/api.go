@@ -76,7 +76,7 @@ func (s *SystemApiApi) GetApiList(rc *ctx.ReqCtx) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body request.GetById true "根据id获取api"
+// @Param id path int true "根据id获取api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /system/api/{id} [get]
 func (s *SystemApiApi) GetApiById(rc *ctx.ReqCtx) {
@@ -115,7 +115,7 @@ func (s *SystemApiApi) GetAllApis(rc *ctx.ReqCtx) {
 // @Security X-TOKEN
 // @accept application/json
 // @Produce application/json
-// @Param data body request.CasbinInReceive true "权限id, 权限模型列表"
+// @Param roleKey query string true "权限id, 权限模型列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /casbin/getPolicyPathByRoleId [get]
 func (s *SystemApiApi) GetPolicyPathByRoleId(rc *ctx.ReqCtx) {

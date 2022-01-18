@@ -61,7 +61,7 @@ func (p *ResOssesApi) GetResOssesList(rc *ctx.ReqCtx) {
 // @Tags ResOsses
 // @Param ossId path int true "ossId"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /resource/oss/{ossId }[get]
+// @Router /resource/oss/{ossId} [get]
 // @Security
 func (p *ResOssesApi) GetResOsses(rc *ctx.ReqCtx) {
 	ossId := ginx.PathParamInt(rc.GinCtx, "ossId")

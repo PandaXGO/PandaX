@@ -43,7 +43,7 @@ func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *ctx.ReqCtx) {
 // @Tags {{.FunctionName}}
 // @Param {{.PkJsonField}} path int true "{{.PkJsonField}}"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /{{.PackageName}}/{{.BusinessName}}/{{ "{" }}{{.PkJsonField}} {{"}"}}[get]
+// @Router /{{.PackageName}}/{{.BusinessName}}/{{"{"}}{{.PkJsonField}}{{"}"}} [get]
 // @Security
 func (p *{{.ClassName}}Api) Get{{.ClassName}}(rc *ctx.ReqCtx) {
 	{{.PkJsonField}} := ginx.PathParamInt(rc.GinCtx, "{{.PkJsonField}}")
@@ -90,7 +90,7 @@ func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *ctx.ReqCtx) {
 // @Param {{.PkJsonField}} path string true "{{.PkJsonField}}"
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /{{.PackageName}}/{{.BusinessName}}/{{ "{" }}{{.PkJsonField}} {{"}"}} [delete]
+// @Router /{{.PackageName}}/{{.BusinessName}}/{{"{"}}{{.PkJsonField}}{{"}"}} [delete]
 func (p *{{.ClassName}}Api) Delete{{.ClassName}}(rc *ctx.ReqCtx) {
 
 	{{.PkJsonField}} := rc.GinCtx.Param("{{.PkJsonField}}")

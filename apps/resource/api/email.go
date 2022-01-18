@@ -58,7 +58,7 @@ func (p *ResEmailsApi) GetResEmailsList(rc *ctx.ReqCtx) {
 // @Tags ResEmails
 // @Param mailId path int true "mailId"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /resource/email/{mailId }[get]
+// @Router /resource/email/{mailId} [get]
 // @Security
 func (p *ResEmailsApi) GetResEmails(rc *ctx.ReqCtx) {
 	mailId := ginx.PathParamInt(rc.GinCtx, "mailId")
@@ -110,7 +110,7 @@ func (p *ResEmailsApi) UpdateResEmails(rc *ctx.ReqCtx) {
 // @Param mailId path string true "mailId"
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /resource/email/{mailId } [delete]
+// @Router /resource/email/{mailId} [delete]
 func (p *ResEmailsApi) DeleteResEmails(rc *ctx.ReqCtx) {
 
 	mailId := rc.GinCtx.Param("mailId")
