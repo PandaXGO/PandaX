@@ -342,7 +342,7 @@ func (u *UserApi) InsertSysUser(rc *ctx.ReqCtx) {
 // @Tags 用户
 // @Accept  application/json
 // @Product application/json
-// @Param data body entity.SysUser true "用户数据"
+// @Param data body entity.SysUser true "用户数据"g
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/user/sysUser [put]

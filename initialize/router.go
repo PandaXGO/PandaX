@@ -51,6 +51,10 @@ func InitRouter() *gin.Engine {
 	if serverConfig.Cors {
 		router.Use(middleware.Cors())
 	}
+	// 流量限制
+	if serverConfig.Rate.IsRate {
+		router.Use(middleware.Rate())
+	}
 	// api接口
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// 设置路由组

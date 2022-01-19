@@ -6,6 +6,7 @@ type Server struct {
 	Port        int            `yaml:"port"`
 	Model       string         `yaml:"model"`
 	Cors        bool           `yaml:"cors"`
+	Rate        *Rate          `yaml:"rate"`
 	IsInitTable bool           `yaml:"isInitTable"`
 	DbType      string         `yaml:"db-type"`
 	ExcelDir    string         `yaml:"excel-dir"`
@@ -32,4 +33,9 @@ type Tls struct {
 	Enable   bool   `yaml:"enable"`    // 是否启用tls
 	KeyFile  string `yaml:"key-file"`  // 私钥文件路径
 	CertFile string `yaml:"cert-file"` // 证书文件路径
+}
+
+type Rate struct {
+	IsRate  bool    `yaml:"is-rate"`  // 是否限流
+	RateNum float64 `yaml:"rate-num"` // 限流数量
 }

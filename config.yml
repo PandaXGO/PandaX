@@ -7,6 +7,9 @@ server:
   model: release
   port: 7788
   cors: true
+  rate:
+    is-rate: true
+    rate-num: 100
   db-type: mysql
   isInitTable: false
   excel-dir: ./resource/excel/
@@ -37,7 +40,7 @@ redis:
   port: 6379
 
 mysql:
-  host: 127.0.0.1:3306
+  host: 47.104.252.2:3306
   username: pandax
   password: pandax
   db-name: pandax
