@@ -36,6 +36,6 @@ type Tls struct {
 }
 
 type Rate struct {
-	IsRate  bool    `yaml:"is-rate"`  // 是否限流
+	Enable  bool    `yaml:"enable"`   // 是否限流
 	RateNum float64 `yaml:"rate-num"` // 限流数量
 }

@@ -7,10 +7,12 @@ server:
   model: release
   port: 7788
   cors: true
+  # 接口限流
   rate:
-    is-rate: true
+    enable: true
     rate-num: 100
   db-type: mysql
+  # 是否开启数据库表初始化
   isInitTable: false
   excel-dir: ./resource/excel/
   tls:
@@ -40,7 +42,7 @@ redis:
   port: 6379
 
 mysql:
-  host: 47.104.252.2:3306
+  host: 127.0.0.1:3306
   username: pandax
   password: pandax
   db-name: pandax

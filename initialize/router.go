@@ -52,7 +52,7 @@ func InitRouter() *gin.Engine {
 		router.Use(middleware.Cors())
 	}
 	// 流量限制
-	if serverConfig.Rate.IsRate {
+	if serverConfig.Rate.Enable {
 		router.Use(middleware.Rate())
 	}
 	// api接口
