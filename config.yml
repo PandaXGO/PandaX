@@ -42,7 +42,7 @@ redis:
   port: 6379
 
 mysql:
-  host: 127.0.0.1:3306
+  host: 47.104.252.2:3306
   username: pandax
   password: pandax
   db-name: pandax

@@ -19,11 +19,9 @@ require (
 	github.com/casbin/casbin/v2 v2.37.4
 	github.com/casbin/gorm-adapter/v3 v3.4.6
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/didip/tollbooth v4.0.2+incompatible // indirect
-	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/didip/tollbooth v4.0.2+incompatible
 	github.com/google/uuid v1.3.0
-	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible // indirect
-	github.com/json-iterator/go v1.1.11 // indirect
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/kakuilan/kgo v0.1.8
 	github.com/lib/pq v1.10.4
 	github.com/mattn/go-isatty v0.0.13 // indirect
@@ -31,7 +29,8 @@ require (
 	github.com/mssola/user_agent v0.5.3
 	github.com/onsi/ginkgo v1.16.4 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
-	github.com/pkg/errors v0.8.1
+	github.com/pkg/errors v0.9.1
+	github.com/prometheus/common v0.32.1
 	github.com/qiniu/go-sdk/v7 v7.11.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.8.1
@@ -39,11 +38,14 @@ require (
 	github.com/swaggo/swag v1.7.6
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.33
 	github.com/xuri/excelize/v2 v2.4.1
-	golang.org/x/net v0.0.0-20211116231205-47ca1ff31462 // indirect
+	go.uber.org/zap v1.19.0
 	golang.org/x/sys v0.0.0-20211117180635-dee7805ff2e1 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
-	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
-	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
+	gopkg.in/igm/sockjs-go.v2 v2.1.0
 	gorm.io/driver/mysql v1.2.0
 	gorm.io/driver/postgres v1.2.3
+	k8s.io/api v0.23.2
+	k8s.io/apimachinery v0.23.2
+	k8s.io/client-go v0.23.2
+	k8s.io/kubectl v0.23.2
 )
