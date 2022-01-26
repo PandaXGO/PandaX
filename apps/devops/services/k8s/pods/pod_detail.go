@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"pandax/base/global"
 
 	v1 "k8s.io/api/core/v1"
 	res "k8s.io/apimachinery/pkg/api/resource"
@@ -16,7 +17,7 @@ import (
 	k8scommon "pandax/apps/devops/services/k8s/common"
 	"pandax/apps/devops/services/k8s/controller"
 	"pandax/apps/devops/services/k8s/dataselect"
-	"pandax/apps/devops/services/pkg/k8s/pvc"
+	"pandax/apps/devops/services/k8s/pvc"
 	"strconv"
 )
 

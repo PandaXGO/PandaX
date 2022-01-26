@@ -3,6 +3,7 @@ package statefulset
 import (
 	"context"
 	"fmt"
+	"pandax/base/global"
 
 	"go.uber.org/zap"
 	apps "k8s.io/api/apps/v1"
@@ -226,10 +227,10 @@ func ScaleStatefulSet(client *kubernetes.Clientset, ns string, name string, scal
 // GetStatusInfo is used to get the status information from the *apps.StatefulSetStatus
 func GetStatusInfo(statefulSetStatus *apps.StatefulSetStatus) StatusInfo {
 	return StatusInfo{
-		Replicas:          statefulSetStatus.Replicas,
-		Updated:           statefulSetStatus.UpdatedReplicas,
-		AvailableReplicas: statefulSetStatus.AvailableReplicas,
-		ReadyReplicas:     statefulSetStatus.ReadyReplicas,
-		CurrentReplicas:   statefulSetStatus.CurrentReplicas,
+		Replicas: statefulSetStatus.Replicas,
+		Updated:  statefulSetStatus.UpdatedReplicas,
+		//AvailableReplicas: statefulSetStatus.AvailableReplicas,
+		ReadyReplicas:   statefulSetStatus.ReadyReplicas,
+		CurrentReplicas: statefulSetStatus.CurrentReplicas,
 	}
 }

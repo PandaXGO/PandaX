@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"pandax/apps/devops/services/k8s/event"
+	"pandax/base/global"
 
 	"pandax/apps/devops/entity/k8s"
 	k8scommon "pandax/apps/devops/services/k8s/common"

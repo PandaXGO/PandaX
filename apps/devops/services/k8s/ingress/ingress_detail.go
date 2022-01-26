@@ -6,7 +6,7 @@ import (
 	"pandax/base/global"
 
 	//v1 "k8s.io/api/extensions/v1beta1"
-	v1 "k8s.io/api/networking/v1"
+	v1 "k8s.io/api/networking/v1beta1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	client "k8s.io/client-go/kubernetes"
 )
@@ -29,7 +29,7 @@ func GetIngressDetail(client *client.Clientset, namespace, name string) (*Ingres
 	global.Log.Info(fmt.Sprintf("Getting details of %s ingress in %s namespace", name, namespace))
 
 	//rawIngress, err := client.ExtensionsV1beta1().Ingresses(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
-	rawIngress, err := client.NetworkingV1().Ingresses(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
+	rawIngress, err := client.NetworkingV1beta1().Ingresses(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}

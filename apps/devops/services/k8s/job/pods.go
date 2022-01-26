@@ -2,6 +2,7 @@ package job
 
 import (
 	"context"
+	"pandax/base/global"
 
 	"go.uber.org/zap"
 	batch "k8s.io/api/batch/v1"

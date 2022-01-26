@@ -2,6 +2,7 @@ package daemonset
 
 import (
 	"context"
+	"pandax/base/global"
 
 	"go.uber.org/zap"
 	apps "k8s.io/api/apps/v1"

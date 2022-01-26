@@ -3,6 +3,7 @@ package statefulset
 import (
 	"context"
 	"fmt"
+	"pandax/base/global"
 
 	apps "k8s.io/api/apps/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -10,7 +11,7 @@ import (
 	k8scommon "pandax/apps/devops/services/k8s/common"
 	"pandax/apps/devops/services/k8s/dataselect"
 	"pandax/apps/devops/services/k8s/event"
-	"pandax/apps/devops/services/pkg/k8s/service"
+	"pandax/apps/devops/services/k8s/service"
 )
 
 // StatefulSetDetail is a presentation layer view of Kubernetes Stateful Set resource. This means it is Stateful

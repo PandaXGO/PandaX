@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"pandax/apps/devops/services/k8s/Init"
 	"pandax/apps/job/jobs"
 	"pandax/base/config"
 	"pandax/base/ctx"
@@ -13,6 +15,7 @@ import (
 func main() {
 	global.Db = starter.GormInit(config.Conf.Server.DbType)
 	initialize.InitTable()
+	Init.GetK8sClient(context.Background(), "./kubeconfig")
 	// gin后置 函数
 	ctx.UseAfterHandlerInterceptor(middleware.OperationHandler)
 	// gin前置 函数

@@ -3,12 +3,13 @@ package storageclass
 import (
 	"context"
 	"fmt"
+	"pandax/base/global"
 
 	storage "k8s.io/api/storage/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"pandax/apps/devops/services/k8s/dataselect"
-	"pandax/apps/devops/services/pkg/k8s/pv"
+	"pandax/apps/devops/services/k8s/pv"
 )
 
 // StorageClassDetail provides the presentation layer view of Storage Class resource.

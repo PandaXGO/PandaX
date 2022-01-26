@@ -7,7 +7,7 @@ import (
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
-	"pandax/apps/devops/services/pkg/k8s/logs"
+	"pandax/apps/devops/services/k8s/logs"
 )
 
 // maximum number of lines loaded from the apiserver

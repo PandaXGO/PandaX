@@ -3,6 +3,7 @@ package pvc
 import (
 	"context"
 	"fmt"
+	"pandax/base/global"
 
 	api "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"

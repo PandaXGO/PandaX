@@ -3,7 +3,7 @@ package ingress
 import (
 	"pandax/apps/devops/services/k8s/dataselect"
 	//v1 "k8s.io/api/extensions/v1beta1"
-	v1 "k8s.io/api/networking/v1"
+	v1 "k8s.io/api/networking/v1beta1"
 )
 
 // The code below allows to perform complex data section on []extensions.Ingress

@@ -3,12 +3,13 @@ package daemonset
 import (
 	"context"
 	"fmt"
+	"pandax/base/global"
 
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	k8scommon "pandax/apps/devops/services/k8s/common"
-	"pandax/apps/devops/services/pkg/k8s/service"
+	"pandax/apps/devops/services/k8s/service"
 )
 
 // DaemonSetDetail represents detailed information about a Daemon Set.

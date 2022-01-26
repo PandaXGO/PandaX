@@ -2,6 +2,7 @@ package cronjob
 
 import (
 	"context"
+	"pandax/base/global"
 
 	"go.uber.org/zap"
 	batch "k8s.io/api/batch/v1"
@@ -10,7 +11,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"pandax/apps/devops/entity/k8s"
 	k8scommon "pandax/apps/devops/services/k8s/common"
-	"pandax/apps/devops/services/pkg/k8s/job"
+	"pandax/apps/devops/services/k8s/job"
 	"strings"
 )
 

@@ -44,8 +44,8 @@ require (
 	gopkg.in/igm/sockjs-go.v2 v2.1.0
 	gorm.io/driver/mysql v1.2.0
 	gorm.io/driver/postgres v1.2.3
-	k8s.io/api v0.23.2
-	k8s.io/apimachinery v0.23.2
-	k8s.io/client-go v0.23.2
-	k8s.io/kubectl v0.23.2
+	k8s.io/api v0.18.19
+	k8s.io/apimachinery v0.18.19
+	k8s.io/client-go v0.18.19
+	k8s.io/kubectl v0.18.19
 )
