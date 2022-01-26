@@ -4,9 +4,14 @@
 // 生成人：{{.FunctionAuthor}}
 // ==========================================================================
 package entity
-{{$hasGTime:=true}}
 
-{{if $hasGTime}}import "time"{{end}}
+{{$hasGTime:=false}}
+{{- range $index, $column := .Columns -}}
+{{- if eq $column.GoType "Time" -}}
+{{$hasGTime = true}}
+{{- end -}}
+{{- end -}}
+{{if $hasGTime -}}import "time"{{- end }}
 
 
 type {{.ClassName}} struct {

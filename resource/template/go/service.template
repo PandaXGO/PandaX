@@ -51,10 +51,26 @@ func (m *{{.BusinessName}}ModelImpl) FindListPage(page, pageSize int, data entit
 	offset := pageSize * (page - 1)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	if data.{{.PkGoField}} != 0 {
-		db = db.Where("{{.PkColumn}} = ?", data.{{.PkGoField}})
-	}
-
+	{{- range $index, $column := .Columns -}}
+	{{- if eq $column.IsQuery "1" -}}
+    {{ if eq $column.QueryType "LIKE" }}
+    if data.{{$column.GoField}} != "" {
+        db = db.Where("{{$column.ColumnName}} like ?", "%"+data.{{$column.GoField}}+"%")
+    }
+    {{- end -}}
+    {{- if eq $column.QueryType "EQ" -}}
+    {{- if eq $column.GoType "string" }}
+    if data.{{$column.GoField}} != "" {
+        m = m.Where("{{$column.ColumnName}} = ?", data.{{$column.GoField}})
+    }
+    {{- else if or (eq $column.GoType "int") (eq $column.GoType "int64") (eq $column.GoType "uint") (eq $column.GoType "uint64") }}
+    if data.{{$column.GoField}} != 0 {
+        m = m.Where("{{$column.ColumnName}} = ?", data.{{$column.GoField}})
+    }
+    {{- end -}}
+    {{- end -}}
+    {{- end -}}
+    {{- end}}
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
@@ -66,10 +82,26 @@ func (m *{{.BusinessName}}ModelImpl) FindList(data entity.{{$model}}) *[]entity.
 	list := make([]entity.{{$model}}, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	if data.{{.PkGoField}} != 0 {
-		db = db.Where("{{.PkColumn}} = ?", data.{{.PkGoField}})
-	}
-
+    {{- range $index, $column := .Columns -}}
+	{{- if eq $column.IsQuery "1" -}}
+    {{- if eq $column.QueryType "LIKE" }}
+    if data.{{$column.GoField}} != "" {
+        db = db.Where("{{$column.ColumnName}} like ?", "%"+data.{{$column.GoField}}+"%")
+    }
+    {{- end -}}
+    {{- if eq $column.QueryType "EQ" -}}
+    {{- if eq $column.GoType "string" }}
+    if data.{{$column.GoField}} != "" {
+        db = db.Where("{{$column.ColumnName}} = ?", data.{{$column.GoField}})
+    }
+    {{- else if or (eq $column.GoType "int") (eq $column.GoType "int64") (eq $column.GoType "uint") (eq $column.GoType "uint64") }}
+    if data.{{$column.GoField}} != 0 {
+        db = db.Where("{{$column.ColumnName}} = ?", data.{{$column.GoField}})
+    }
+    {{- end -}}
+    {{- end -}}
+    {{- end -}}
+    {{- end}}
 	db.Where("delete_time IS NULL")
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询{{.TableComment}}列表失败")
 	return &list

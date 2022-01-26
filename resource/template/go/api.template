@@ -26,6 +26,15 @@ func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *ctx.ReqCtx) {
 
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+	{{- range $index, $column := .Columns -}}
+	{{- if eq $column.IsRequired "1" -}}
+	{{- if eq $column.GoType "string" }}
+
+	{{- end -}}
+
+    {{- end -}}
+	{{- end }}
+
 
 	data := entity.{{.ClassName}}{}
 	list, total := p.{{.ClassName}}App.FindListPage(pageNum, pageSize, data)
