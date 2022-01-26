@@ -8,47 +8,51 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="案例名称" prop="name">
-        <el-input
-          placeholder="请输入案例名称模糊查询"
-          clearable
-          size="small"
-          @keyup.enter="handleQuery"
-          style="width: 240px"
-          v-model="queryParams.name"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select
-          v-model="queryParams.status"
-          placeholder="状态"
-          clearable
-          size="small"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-        <el-form-item>
-          <el-button
-                  type="primary"
-                  size="mini"
-                  @click="handleQuery"
-          >
-            <SvgIcon name="elementSearch" />
-            搜索</el-button>
-          <el-button size="mini" @click="resetQuery">
-            <SvgIcon name="elementRefresh" />
-            重置
-          </el-button>
-        </el-form-item>
-
-
+    {{- range $index, $column := .Columns -}}
+    {{- if eq $column.IsRequired "1" -}}
+    {{- if eq $column.HtmlType "input" "textarea" }}
+    <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+    <el-input
+       v-model="queryParams.{{$column.JsonField}}"
+       placeholder="请输入{{$column.ColumnComment}}"
+       clearable
+       size="small"
+       @keyup.enter.native="handleQuery"
+    />
+     </el-form-item>
+     {{- else if and (eq $column.HtmlType "select" "radio" "checkbox") (ne $column.DictType "") }}
+     <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+       <el-select v-model="queryParams.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}" clearable size="small">
+           <el-option
+               v-for="dict in {{$column.JsonField}}Options"
+               :key="dict.dictValue"
+               :label="dict.dictLabel"
+               :value="dict.dictValue"
+           />
+       </el-select>
+     </el-form-item>
+     {{- else }}
+     <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+       <el-select v-model="queryParams.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}" clearable size="small">
+           <el-option label="请选择字典生成" value="" />
+       </el-select>
+     </el-form-item>
+     {{- end -}}
+     {{- end -}}
+     {{- end }}
+     <el-form-item>
+       <el-button
+               type="primary"
+               size="mini"
+               @click="handleQuery"
+       >
+         <SvgIcon name="elementSearch" />
+         搜索</el-button>
+       <el-button size="mini" @click="resetQuery">
+         <SvgIcon name="elementRefresh" />
+         重置
+       </el-button>
+     </el-form-item>
     </el-form>
     <!-- 操作按钮 -->
     <el-row :gutter="10" class="mb8">
@@ -82,19 +86,28 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="编号" align="center" prop="{{.PkJsonField}}" />
-      <el-table-column
-        label="状态"
-        align="center"
-        prop="status"
-      >
+      {{- range $index, $column := .Columns -}}
+      {{- if eq $column.IsPk "1"}}
+      <el-table-column label="编号" align="center" prop="{{$column.JsonField}}" />
+      {{- else if and (eq $column.IsList "1") (eq $column.HtmlType "datetime")}}
+      {{- if ne $column.ColumnComment "" }}
+      <el-table-column label="{{$column.ColumnComment}}" align="center" prop="{{$column.JsonField}}" width="180">
         <template #default="scope">
-          <el-tag
-                  :type="scope.row.status === '1' ? 'danger' : 'success'"
-                  disable-transitions
-          >{{"{{"}} statusFormat(scope.row){{"}}"}}</el-tag>
+             <span>{{"{{"}} dateStrFormat(scope.row.{{$column.JsonField}}) {{"}}"}}</span>
         </template>
       </el-table-column>
+      {{- end -}}
+      {{- else if and (eq $column.IsList "1") (ne $column.DictType "") }}
+      <el-table-column label="{{$column.ColumnComment}}" align="center" prop="{{$column.JsonField}}" >
+      <template #default="scope">
+          <el-tag :type="scope.row.{{$column.JsonField}} === '0' ? 'success': 'warning'" disable-transitions>{{"{{"}} {{$column.JsonField}}Format(scope.row) || '-- --' {{"}}"}}</el-tag>
+      </template>
+      </el-table-column>
+      {{- else if and (eq $column.IsList "1") (ne $column.JsonField "") (ne $column.JsonField "createTime") (ne $column.JsonField "updateTime") (ne $column.JsonField "deleteTime") }}
+      {{- if ne $column.ColumnComment "" }}
+      <el-table-column label="{{$column.ColumnComment}}" align="center" prop="{{$column.JsonField}}" />
+      {{- end -}}
+      {{- end -}}{{- end }}
       <el-table-column
         label="操作"
         align="center"
@@ -150,7 +163,7 @@ import { list{{.ClassName}}, del{{.ClassName}} } from "/@/api/{{.PackageName}}/{
 import EditModule from "./component/editModule.vue";
 
 export default {
-  name: "index",
+  name: "{{.ClassName}}",
   components: { EditModule },
   setup() {
     const { proxy } = getCurrentInstance() as any;
@@ -170,8 +183,12 @@ export default {
       tableData: [],
       // 总条数
       total: 0,
-      // 状态数据字典
-      statusOptions: [],
+      {{- range $index, $column := .Columns -}}
+      {{- if ne $column.DictType "" }}
+      // {{$column.JsonField}}Options字典数据
+      {{$column.JsonField}}Options: [],
+      {{- end -}}
+      {{- end }}
       // 查询参数
       queryParams: {
         // 页码
@@ -179,7 +196,11 @@ export default {
         // 每页大小
         pageSize: 10,
         // 以下为参数
-        // name: undefined,
+        {{- range $index, $column := .Columns -}}
+        {{- if eq $column.IsRequired "1" }}
+        {{$column.JsonField}}: undefined,
+        {{- end }}
+        {{- end }}
       },
     });
 
@@ -207,9 +228,13 @@ export default {
       handleQuery()
     }
 
-    const statusFormat = (row: any) => {
-      return proxy.selectDictLabel(state.statusOptions, row.status);
+    {{- range $index, $column := .Columns -}}
+    {{- if ne $column.DictType "" }}
+    const {{$column.JsonField}}Format = (row: any) => {
+       return proxy.selectDictLabel(state.{{$column.JsonField}}Options, row.{{$column.JsonField}});
     };
+    {{- end -}}
+    {{- end }}
 
     // 打开新增弹窗
     const onOpenAddModule = (row: object) => {
@@ -249,10 +274,14 @@ export default {
     onMounted(() => {
       // 查询岗位信息
       handleQuery();
-      // 查询状态数据字典
-      proxy.getDicts("sys_normal_disable").then((response: any) => {
-        state.statusOptions = response.data;
+      {{- range $index, $column := .Columns -}}
+      {{- if ne $column.DictType "" }}
+      proxy.getDicts("{{$column.DictType}}").then((response: any) => {
+          state.{{$column.JsonField}}Options = response.data;
       });
+      {{- end -}}
+      {{- end}}
+
       proxy.mittBus.on("onEdit{{.ClassName}}Module", (res: any) => {
         handleQuery();
       });
@@ -268,7 +297,11 @@ export default {
       handleCurrentChange,
       handleSizeChange,
       resetQuery,
-      statusFormat,
+      {{- range $index, $column := .Columns -}}
+      {{- if ne $column.DictType "" }}
+      {{$column.JsonField}}Format,
+      {{- end -}}
+      {{- end }}
       onOpenAddModule,
       onOpenEditModule,
       onTabelRowDel,

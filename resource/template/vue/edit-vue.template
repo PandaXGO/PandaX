@@ -10,29 +10,62 @@
         ref="ruleFormRef"
         label-width="80px"
       >
-        <el-row :gutter="35">
-          <el-col :span="24" >
-            <el-form-item label="名称" prop="name">
-              <el-input
-                v-model="ruleForm.name"
-                placeholder="请输入名称"
-              />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="24" >
-            <el-form-item label="状态" prop="status">
-              <el-radio-group v-model="ruleForm.status">
-                <el-radio
-                  v-for="dict in statusOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictValue"
-                  >{{"{{"}} dict.dictLabel {{"}}"}}
-                </el-radio>
+      {{- range $index, $column := .Columns -}}
+      {{- if and (eq $column.IsInsert "1") (ne $column.IsPk "1") -}}
+      {{- if eq $column.HtmlType "input" }}
+      el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+          <el-input v-model="ruleForm.{{$column.HtmlField}}" placeholder="请输入{{$column.ColumnComment}}" />
+      </el-form-item>
+      {{- else if eq $column.HtmlType "select" }}
+          {{if ne $column.DictType ""}}
+          el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+             <el-select v-model="ruleForm.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}">
+                 <el-option
+                     v-for="dict in {{$column.JsonField}}Options"
+                     :key="dict.dictValue"
+                     :label="dict.dictLabel"
+                 >{{"{{"}} dict.dictLabel {{"}}"}}</el-option>
+             </el-select>
+          </el-form-item>
+          {{- end }}
+      {{- else if eq $column.HtmlType "radio" }}
+          {{if ne $column.DictType ""}}
+          <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+              <el-radio-group v-model="ruleForm.{{$column.JsonField}}">
+                  <el-radio
+                   v-for="dict in {{$column.JsonField}}Options"
+                   :key="dict.dictValue"
+                   :label="dict.dictLabel"
+                  >{{"{{"}} dict.dictLabel {{"}}"}}</el-radio>
               </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
+          </el-form-item>
+          {{- end }}
+      {{- else if eq $column.HtmlType "datetime" }}
+      <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+          <el-date-picker clearable size="small" style="width: 200px"
+              v-model="ruleForm.{{$column.JsonField}}"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择{{$column.ColumnComment}}">
+          </el-date-picker>
+      </el-form-item>
+      {{- else if eq $column.HtmlType "textarea" -}}
+      <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+          <el-input v-model="ruleForm.{{$column.HtmlField}}" type="textarea" placeholder="请输入{{$column.ColumnComment}}" />
+      </el-form-item>
+      {{- else if eq $column.HtmlType "checkbox" }}
+       <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.ruleForm}}">
+          <el-checkbox-group v-model="ruleForm.{{$column.ruleForm}}">
+             <el-checkbox
+               v-for="dict in {{$column.ruleForm}}Options"
+               :key="dict.dictValue"
+               :label="dict.dictLabel"
+             >{{"{{"}} dict.dictLabel {{"}}"}}</el-checkbox>
+          </el-checkbox-group>
+       </el-form-item>
+      {{- end -}}
+      {{- end -}}
+      {{- end }}
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -68,13 +101,14 @@ export default {
       isShowDialog: false,
 
       ruleForm: {
-        {{.PkJsonField}}: 0, // ID
-        name: "", // 名称
-        // 更多参数需要遍历，等-等
-        status: "0",  //状态
+
       },
-      // 状态数据字典
-      statusOptions: [],
+      {{- range $index, $column := .Columns -}}
+      {{- if ne $column.DictType "" }}
+      // {{$column.JsonField}}Options字典数据
+      {{$column.JsonField}}Options: [],
+      {{- end -}}
+      {{- end }}
       // 表单校验
       ruleRules: {
 
@@ -91,11 +125,14 @@ export default {
       }
       state.isShowDialog = true;
 
-      // 查询状态数据字典
-      proxy.getDicts("sys_normal_disable").then((response: any) => {
-        state.statusOptions = response.data;
-      });
-    };
+     {{- range $index, $column := .Columns -}}
+     {{- if ne $column.DictType "" }}
+     proxy.getDicts("{{$column.DictType}}").then((response: any) => {
+         state.{{$column.JsonField}}Options = response.data;
+     });
+     {{- end -}}
+     {{- end}}
+    }
 
     // 关闭弹窗
     const closeDialog = (row?: object) => {

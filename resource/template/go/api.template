@@ -23,11 +23,19 @@ type {{.ClassName}}Api struct {
 // @Router /{{.PackageName}}/{{.BusinessName}}/list [get]
 // @Security
 func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *ctx.ReqCtx) {
-
+    data := entity.{{.ClassName}}{}
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+	{{- range $index, $column := .Columns -}}
+	{{- if eq $column.IsRequired "1" -}}
+	{{- if eq $column.GoType "string" }}
+    data.{{$column.GoField}} = rc.GinCtx.Query("{{$column.JsonField}}")
+    {{- else if or (eq $column.GoType "int") (eq $column.GoType "int64") (eq $column.GoType "uint") (eq $column.GoType "uint64") -}}
+    data.{{$column.GoField}} = ginx.QueryInt(rc.GinCtx, "{{$column.JsonField}}", 0)
+	{{- end -}}
+    {{- end -}}
+	{{- end }}
 
-	data := entity.{{.ClassName}}{}
 	list, total := p.{{.ClassName}}App.FindListPage(pageNum, pageSize, data)
 
 	rc.ResData = map[string]interface{}{

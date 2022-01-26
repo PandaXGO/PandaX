@@ -241,7 +241,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 				}
 			} else if s.IsTimeObject(dataType) {
 				//字段为时间类型
-				column.GoType = "time.Time"
+				column.GoType = "Time"
 				column.HtmlType = "datetime"
 			} else if s.IsNumberObject(dataType) {
 				//字段为数字类型
