@@ -2,7 +2,9 @@ package initialize
 
 import (
 	"fmt"
+
 	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 
 	devRouter "pandax/apps/develop/router"

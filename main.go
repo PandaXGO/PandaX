@@ -15,7 +15,7 @@ import (
 func main() {
 	global.Db = starter.GormInit(config.Conf.Server.DbType)
 	initialize.InitTable()
-	Init.GetK8sClient(context.Background(), "./kubeconfig")
+	Init.GetK8sClient(context.Background(), "")
 	// gin后置 函数
 	ctx.UseAfterHandlerInterceptor(middleware.OperationHandler)
 	// gin前置 函数

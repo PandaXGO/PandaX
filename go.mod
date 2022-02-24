@@ -3,11 +3,11 @@ module pandax
 go 1.16
 
 require (
-	github.com/gin-gonic/gin v1.7.4
+	github.com/gin-gonic/gin v1.7.7
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/gorilla/websocket v1.4.2
 	// ssh
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	gorm.io/gorm v1.22.3
 )
@@ -34,13 +34,14 @@ require (
 	github.com/qiniu/go-sdk/v7 v7.11.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/swaggo/gin-swagger v1.3.3
-	github.com/swaggo/swag v1.7.6
+	github.com/swaggo/gin-swagger v1.4.1
+	github.com/swaggo/swag v1.7.9
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.33
 	github.com/xuri/excelize/v2 v2.4.1
 	go.uber.org/zap v1.19.0
-	golang.org/x/sys v0.0.0-20211117180635-dee7805ff2e1 // indirect
+	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
+	golang.org/x/tools v0.1.9 // indirect
 	gopkg.in/igm/sockjs-go.v2 v2.1.0
 	gorm.io/driver/mysql v1.2.0
 	gorm.io/driver/postgres v1.2.3
