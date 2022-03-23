@@ -1,6 +1,6 @@
 ## K3S
 1. 安装  
-curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn INSTALL_K3S_VERSION="v1.18.20+k3s1" sh -
+curl -sfL http://rancher-mirror.cnrancher.com/k3s/k3s-install.sh | INSTALL_K3S_MIRROR=cn INSTALL_K3S_VERSION="v1.23.1+k3s1" sh -
 2. 卸载  
 sudo /usr/local/bin/k3s-uninstall.sh 
 
