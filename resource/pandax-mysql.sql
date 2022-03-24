@@ -439,11 +439,6 @@ CREATE TABLE `res_emails`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
--- Records of res_emails
--- ----------------------------
-INSERT INTO `res_emails` VALUES (1, '0', 'smtp.163.com', 25, '18610165312@163.com', '熊猫', 'DCXZCAGTCMSEGPZL', 0, '0', '2022-01-14 16:14:37', '2022-01-17 10:27:57', NULL);
-
--- ----------------------------
 -- Table structure for res_osses
 -- ----------------------------
 DROP TABLE IF EXISTS `res_osses`;
