@@ -20,8 +20,10 @@ require (
 	github.com/casbin/gorm-adapter/v3 v3.4.6
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didip/tollbooth v4.0.2+incompatible
+	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
+	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/kakuilan/kgo v0.1.8
 	github.com/lib/pq v1.10.4
 	github.com/mattn/go-isatty v0.0.13 // indirect
@@ -30,7 +32,6 @@ require (
 	github.com/onsi/ginkgo v1.16.4 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/common v0.32.1
 	github.com/qiniu/go-sdk/v7 v7.11.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.8.1
@@ -38,14 +39,9 @@ require (
 	github.com/swaggo/swag v1.7.6
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.33
 	github.com/xuri/excelize/v2 v2.4.1
-	go.uber.org/zap v1.19.0
 	golang.org/x/sys v0.0.0-20211117180635-dee7805ff2e1 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
-	gopkg.in/igm/sockjs-go.v2 v2.1.0
+	google.golang.org/protobuf v1.26.0-rc.1 // indirect
 	gorm.io/driver/mysql v1.2.0
 	gorm.io/driver/postgres v1.2.3
-	k8s.io/api v0.18.19
-	k8s.io/apimachinery v0.18.19
-	k8s.io/client-go v0.18.19
-	k8s.io/kubectl v0.18.19
 )
