@@ -12,7 +12,7 @@ import (
 var Conf *Config
 
 func init() {
-	configFilePath := flag.String("e", "./config.yml", "配置文件路径，默认为可执行文件目录")
+	configFilePath := flag.String("c", "./config.yml", "配置文件路径，默认为可执行文件目录")
 	flag.Parse()
 	// 获取启动参数中，配置文件的绝对路径
 	path, _ := filepath.Abs(*configFilePath)
