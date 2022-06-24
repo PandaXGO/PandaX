@@ -27,7 +27,10 @@ func InitUserRouter(router *gin.RouterGroup) {
 	user.POST("login", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(loginLog).WithNeedToken(false).WithNeedCasbin(false).Handle(s.Login)
 	})
-
+	authLog := ctx.NewLogInfo("认证信息")
+	user.GET("auth", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(authLog).WithNeedCasbin(false).Handle(s.Auth)
+	})
 	logoutLog := ctx.NewLogInfo("退出登录")
 	user.POST("logout", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(logoutLog).WithNeedToken(false).WithNeedCasbin(false).Handle(s.LogOut)
