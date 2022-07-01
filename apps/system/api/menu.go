@@ -36,7 +36,9 @@ func (m *MenuApi) GetMenuTreeSelect(rc *ctx.ReqCtx) {
 // @Router /system/menu/menuRole [get]
 // @Security X-TOKEN
 func (m *MenuApi) GetMenuRole(rc *ctx.ReqCtx) {
-	rc.ResData = Build(*m.MenuApp.SelectMenuRole(rc.LoginAccount.RoleKey))
+	roleKey := rc.GinCtx.Query("roleKey")
+	biz.IsTrue(roleKey != "", "请传入角色Key")
+	rc.ResData = Build(*m.MenuApp.SelectMenuRole(roleKey))
 }
 
 // @Summary 获取角色的菜单树

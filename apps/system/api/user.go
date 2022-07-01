@@ -88,16 +88,10 @@ func (u *UserApi) Login(rc *ctx.ReqCtx) {
 		})
 
 	biz.ErrIsNil(err, "生成Token失败")
-	//前端权限
-	permis := u.RoleMenuApp.GetPermis(role.RoleId)
-	menus := u.MenuApp.SelectMenuRole(role.RoleKey)
 
 	rc.ResData = map[string]interface{}{
-		"user":        login,
-		"permissions": permis,
-		"menus":       Build(*menus),
-		"token":       token,
-		"expire":      time.Now().Unix() + config.Conf.Jwt.ExpireTime,
+		"token":  token,
+		"expire": time.Now().Unix() + config.Conf.Jwt.ExpireTime,
 	}
 
 	var loginLog logEntity.LogLogin
@@ -115,6 +109,31 @@ func (u *UserApi) Login(rc *ctx.ReqCtx) {
 	loginLog.Msg = "登录成功"
 	loginLog.CreateBy = login.Username
 	u.LogLogin.Insert(loginLog)
+}
+
+// @Tags Base
+// @Summary 用户权限信息
+// @Param userName query string false "userName"
+// @Produce  application/json
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"成功"}"
+// @Router /system/user/auth [get]
+func (u *UserApi) Auth(rc *ctx.ReqCtx) {
+	userName := rc.GinCtx.Query("username")
+	biz.NotEmpty(userName, "用户名必传")
+	var user entity.SysUser
+	user.Username = userName
+	userData := u.UserApp.FindOne(user)
+	role := u.RoleApp.FindOne(userData.RoleId)
+	//前端权限
+	permis := u.RoleMenuApp.GetPermis(role.RoleId)
+	menus := u.MenuApp.SelectMenuRole(role.RoleKey)
+
+	rc.ResData = map[string]interface{}{
+		"user":        userData,
+		"role":        role,
+		"permissions": permis,
+		"menus":       Build(*menus),
+	}
 }
 
 // @Tags Base

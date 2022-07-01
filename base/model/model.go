@@ -94,7 +94,7 @@ func UpdateById(model interface{}) error {
 	return global.Db.Model(model).Updates(model).Error
 }
 func UpdateByWhere(model interface{}, where interface{}) error {
-	return global.Db.Model(model).Updates(model).Error
+	return global.Db.Model(model).Where(where).Updates(model).Error
 }
 
 // 根据id删除model
