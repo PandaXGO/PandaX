@@ -6,7 +6,6 @@ import (
 	"github.com/kakuilan/kgo"
 	"github.com/mssola/user_agent"
 	"net/http"
-	"os"
 	"pandax/apps/system/api/form"
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
@@ -411,6 +410,7 @@ func (u *UserApi) DeleteSysUser(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dict/type/export [get]
 func (u *UserApi) ExportUser(rc *ctx.ReqCtx) {
+	filename := rc.GinCtx.Query("filename")
 	status := rc.GinCtx.Query("status")
 	userName := rc.GinCtx.Query("username")
 	phone := rc.GinCtx.Query("phone")
@@ -420,15 +420,9 @@ func (u *UserApi) ExportUser(rc *ctx.ReqCtx) {
 	user.Username = userName
 	user.Phone = phone
 	list := u.UserApp.FindList(user)
-	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, "用户")
+	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
-
-	line, err := kgo.KFile.ReadFile(fileName)
-	if err != nil {
-		os.Remove(fileName)
-		biz.ErrIsNil(err, "读取文件失败")
-	}
-	rc.Download(line, fileName)
+	rc.Download(fileName)
 }
 
 // 构建前端路由

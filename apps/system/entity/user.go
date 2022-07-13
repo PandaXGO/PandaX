@@ -2,18 +2,9 @@ package entity
 
 import "pandax/base/model"
 
-type UserName struct {
-	Username string `gorm:"type:varchar(64)" json:"username"`
-}
-
-type PassWord struct {
-	// 密码
-	Password string `gorm:"type:varchar(128)" json:"password"`
-}
-
 type LoginM struct {
-	UserName
-	PassWord
+	Username string `gorm:"type:varchar(64)" json:"username"`
+	Password string `gorm:"type:varchar(128)" json:"password"`
 }
 
 type SysUserId struct {

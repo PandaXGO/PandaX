@@ -47,10 +47,11 @@ func PathParamInt(g *gin.Context, pm string) int {
 }
 
 // 文件下载
-func Download(g *gin.Context, data []byte, filename string) {
-	g.Header("Content-Type", "application/octet-stream")
-	g.Header("Content-Disposition", "attachment; filename="+filename)
-	g.Data(http.StatusOK, "application/octet-stream", data)
+func Download(g *gin.Context, filename string) {
+	g.Writer.Header().Add("success", "true")
+	g.Writer.Header().Set("Content-Length", "-1")
+	g.Writer.Header().Set("Content-Disposition", "attachment; filename="+filename)
+	g.File(filename)
 }
 
 // 返回统一成功结果

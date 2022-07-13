@@ -3,8 +3,6 @@ package api
 import (
 	"errors"
 	"fmt"
-	"github.com/kakuilan/kgo"
-	"os"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 	"pandax/base/biz"
@@ -194,18 +192,13 @@ func (r *RoleApi) DeleteRole(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dict/type/export [get]
 func (p *RoleApi) ExportRole(rc *ctx.ReqCtx) {
+	filename := rc.GinCtx.Query("filename")
 	status := rc.GinCtx.Query("status")
 	roleName := rc.GinCtx.Query("roleName")
 	roleKey := rc.GinCtx.Query("roleKey")
 
 	list := p.RoleApp.FindList(entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey})
-	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, "角色")
+	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
-
-	line, err := kgo.KFile.ReadFile(fileName)
-	if err != nil {
-		os.Remove(fileName)
-		biz.ErrIsNil(err, "读取文件失败")
-	}
-	rc.Download(line, fileName)
+	rc.Download(fileName)
 }

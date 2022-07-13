@@ -2,10 +2,8 @@ package utils
 
 import (
 	"fmt"
-	"github.com/kakuilan/kgo"
 	"github.com/xuri/excelize/v2"
 	"reflect"
-	"time"
 )
 
 func ExportExcel(head []string, datas [][]any, filePath string) error {
@@ -19,8 +17,8 @@ func ExportExcel(head []string, datas [][]any, filePath string) error {
 	return nil
 }
 
-func GetFileName(path, model string) string {
-	return path + fmt.Sprintf("%s_%s.xlsx", model, kgo.KTime.Date("20060102150405", time.Now()))
+func GetFileName(path, filename string) string {
+	return path + filename
 }
 
 func InterfaceToExcel(data any, fileName string) {

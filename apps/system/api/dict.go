@@ -2,8 +2,6 @@ package api
 
 import (
 	"fmt"
-	"github.com/kakuilan/kgo"
-	"os"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 	"pandax/base/biz"
@@ -128,20 +126,15 @@ func (p *DictApi) DeleteDictType(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dict/type/export [get]
 func (p *DictApi) ExportDictType(rc *ctx.ReqCtx) {
+	filename := rc.GinCtx.Query("filename")
 	status := rc.GinCtx.Query("status")
 	dictName := rc.GinCtx.Query("dictName")
 	dictType := rc.GinCtx.Query("dictType")
 
 	list := p.DictType.FindList(entity.SysDictType{Status: status, DictName: dictName, DictType: dictType})
-	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, "字典")
+	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
-
-	line, err := kgo.KFile.ReadFile(fileName)
-	if err != nil {
-		os.Remove(fileName)
-		biz.ErrIsNil(err, "读取文件失败")
-	}
-	rc.Download(line, fileName)
+	rc.Download(fileName)
 }
 
 // @Summary 字典数据列表
