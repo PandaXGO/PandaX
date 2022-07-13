@@ -11,16 +11,16 @@ import (
 )
 
 // 绑定并校验请求结构体参数  结构体添加 例如： binding:"required" 或binding:"required,gt=10"
-func BindJsonAndValid(g *gin.Context, data interface{}) {
+func BindJsonAndValid(g *gin.Context, data any) {
 	if err := g.ShouldBindJSON(data); err != nil {
-		panic(biz.NewBizErr("传参格式错误：" + err.Error()))
+		panic(any(biz.NewBizErr("传参格式错误：" + err.Error())))
 	}
 }
 
 // 绑定查询字符串到
-func BindQuery(g *gin.Context, data interface{}) {
+func BindQuery(g *gin.Context, data any) {
 	if err := g.ShouldBindQuery(data); err != nil {
-		panic(biz.NewBizErr(err.Error()))
+		panic(any(biz.NewBizErr(err.Error())))
 	}
 }
 
@@ -54,12 +54,15 @@ func Download(g *gin.Context, data []byte, filename string) {
 }
 
 // 返回统一成功结果
-func SuccessRes(g *gin.Context, data interface{}) {
+func SuccessRes(g *gin.Context, data any) {
 	g.JSON(http.StatusOK, model.Success(data))
 }
 
 // 返回失败结果集
-func ErrorRes(g *gin.Context, err interface{}) {
+func ErrorRes(g *gin.Context, err any) {
+	if err != nil {
+
+	}
 	switch t := err.(type) {
 	case *biz.BizError:
 		g.JSON(http.StatusOK, model.Error(t))

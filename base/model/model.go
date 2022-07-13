@@ -67,12 +67,12 @@ func Tx(funcs ...func(db *gorm.DB) error) (err error) {
 // 根据id获取实体对象。model需为指针类型（需要将查询出来的值赋值给model）
 //
 // 若error不为nil则为不存在该记录
-func GetById(model interface{}, id uint64, cols ...string) error {
+func GetById(model any, id uint64, cols ...string) error {
 	return global.Db.Select(cols).Where("id = ?", id).First(model).Error
 }
 
 // 根据id列表查询
-func GetByIdIn(model interface{}, list interface{}, ids []uint64, orderBy ...string) {
+func GetByIdIn(model any, list any, ids []uint64, orderBy ...string) {
 	var orderByStr string
 	if orderBy == nil {
 		orderByStr = "id desc"
@@ -83,46 +83,46 @@ func GetByIdIn(model interface{}, list interface{}, ids []uint64, orderBy ...str
 }
 
 // 根据id列表查询 model可以是对象，也可以是map[string]interface{}
-func CountBy(model interface{}) int64 {
+func CountBy(model any) int64 {
 	var count int64
 	global.Db.Model(model).Where(model).Count(&count)
 	return count
 }
 
 // 根据id更新model，更新字段为model中不为空的值，即int类型不为0，ptr类型不为nil这类字段值
-func UpdateById(model interface{}) error {
+func UpdateById(model any) error {
 	return global.Db.Model(model).Updates(model).Error
 }
-func UpdateByWhere(model interface{}, where interface{}) error {
+func UpdateByWhere(model any, where any) error {
 	return global.Db.Model(model).Where(where).Updates(model).Error
 }
 
 // 根据id删除model
-func DeleteById(model interface{}, id uint64) error {
+func DeleteById(model any, id uint64) error {
 	return global.Db.Delete(model, "id = ?", id).Error
 }
 
 // 根据条件删除
-func DeleteByCondition(model interface{}) error {
+func DeleteByCondition(model any) error {
 	return global.Db.Where(model).Delete(model).Error
 }
 
 // 插入model
-func Insert(model interface{}) error {
+func Insert(model any) error {
 	return global.Db.Create(model).Error
 }
 
 // 获取满足model中不为空的字段值条件的所有数据.
 //
 // list为数组类型 如 var users *[]User，可指定为非model结构体，即只包含需要返回的字段结构体
-func ListBy(model interface{}, list interface{}, cols ...string) {
+func ListBy(model any, list any, cols ...string) {
 	global.Db.Model(model).Select(cols).Where(model).Find(list)
 }
 
 // 获取满足model中不为空的字段值条件的所有数据.
 //
 // list为数组类型 如 var users *[]User，可指定为非model结构体
-func ListByOrder(model interface{}, list interface{}, order ...string) {
+func ListByOrder(model any, list any, order ...string) {
 	var orderByStr string
 	if order == nil {
 		orderByStr = "id desc"
@@ -135,19 +135,19 @@ func ListByOrder(model interface{}, list interface{}, order ...string) {
 // 获取满足model中不为空的字段值条件的单个对象。model需为指针类型（需要将查询出来的值赋值给model）
 //
 // 若 error不为nil，则为不存在该记录
-func GetBy(model interface{}, cols ...string) error {
+func GetBy(model any, cols ...string) error {
 	return global.Db.Select(cols).Where(model).First(model).Error
 }
 
 // 获取满足conditionModel中不为空的字段值条件的单个对象。model需为指针类型（需要将查询出来的值赋值给model）
 // toModel  需要查询的字段
 // 若 error不为nil，则为不存在该记录
-func GetByConditionTo(conditionModel interface{}, toModel interface{}) error {
+func GetByConditionTo(conditionModel any, toModel any) error {
 	return global.Db.Model(conditionModel).Where(conditionModel).First(toModel).Error
 }
 
 // 获取分页结果
-func GetPage(pageParam *PageParam, conditionModel interface{}, toModels interface{}, orderBy ...string) *PageResult {
+func GetPage(pageParam *PageParam, conditionModel any, toModels any, orderBy ...string) *PageResult {
 	var count int64
 	err := global.Db.Model(conditionModel).Where(conditionModel).Count(&count).Error
 	biz.ErrIsNilAppendErr(err, " 查询错误：%s")
@@ -169,7 +169,7 @@ func GetPage(pageParam *PageParam, conditionModel interface{}, toModels interfac
 }
 
 // 根据sql获取分页对象
-func GetPageBySql(sql string, param *PageParam, toModel interface{}, args ...interface{}) *PageResult {
+func GetPageBySql(sql string, param *PageParam, toModel any, args ...any) *PageResult {
 	db := global.Db
 	selectIndex := strings.Index(sql, "SELECT ") + 7
 	fromIndex := strings.Index(sql, " FROM")
@@ -188,12 +188,12 @@ func GetPageBySql(sql string, param *PageParam, toModel interface{}, args ...int
 	return &PageResult{Total: int64(count), List: toModel}
 }
 
-func GetListBySql(sql string, params ...interface{}) []map[string]interface{} {
-	var maps []map[string]interface{}
+func GetListBySql(sql string, params ...any) []map[string]any {
+	var maps []map[string]any
 	global.Db.Raw(sql, params).Scan(&maps)
 	return maps
 }
 
-func GetListBySql2Model(sql string, toEntity interface{}, params ...interface{}) error {
+func GetListBySql2Model(sql string, toEntity any, params ...any) error {
 	return global.Db.Raw(sql, params).Find(toEntity).Error
 }

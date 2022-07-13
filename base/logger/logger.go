@@ -2,9 +2,9 @@ package logger
 
 import (
 	"fmt"
+	"os"
 	"pandax/base/config"
 	"pandax/base/global"
-	"os"
 	"strings"
 	"time"
 

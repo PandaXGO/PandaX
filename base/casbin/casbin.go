@@ -22,7 +22,7 @@ func UpdateCasbin(roleKey string, casbinInfos []CasbinRule) error {
 }
 
 func UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod string) {
-	err := global.Db.Table("casbin_rule").Model(&CasbinRule{}).Where("v1 = ? AND v2 = ?", oldPath, oldMethod).Updates(map[string]interface{}{
+	err := global.Db.Table("casbin_rule").Model(&CasbinRule{}).Where("v1 = ? AND v2 = ?", oldPath, oldMethod).Updates(map[string]any{
 		"v1": newPath,
 		"v2": newMethod,
 	}).Error

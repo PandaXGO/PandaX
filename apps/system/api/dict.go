@@ -38,7 +38,7 @@ func (p *DictApi) GetDictTypeList(rc *ctx.ReqCtx) {
 	dictType := rc.GinCtx.Query("dictType")
 
 	list, total := p.DictType.FindListPage(pageNum, pageSize, entity.SysDictType{Status: status, DictName: dictName, DictType: dictType})
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

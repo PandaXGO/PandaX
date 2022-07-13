@@ -39,7 +39,7 @@ func (p *PostApi) GetPostList(rc *ctx.ReqCtx) {
 	post := entity.SysPost{Status: status, PostName: postName, PostCode: postCode}
 	list, total := p.PostApp.FindListPage(pageNum, pageSize, post)
 
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

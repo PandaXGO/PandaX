@@ -64,7 +64,7 @@ func getLogMsg(rc *ReqCtx) string {
 	return msg
 }
 
-func getErrMsg(rc *ReqCtx, err interface{}) string {
+func getErrMsg(rc *ReqCtx, err any) string {
 	msg := rc.LogInfo.Description
 	if !utils.IsBlank(reflect.ValueOf(rc.ReqParam)) {
 		rb, _ := json.Marshal(rc.ReqParam)

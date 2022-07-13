@@ -7,70 +7,70 @@ import (
 	"reflect"
 )
 
-func ErrIsNil(err error, msg string, params ...interface{}) {
+func ErrIsNil(err error, msg string, params ...any) {
 	if err != nil {
 		if err.Error() == "record not found" {
 			return
 		}
 		global.Log.Error(msg + ": " + err.Error())
-		panic(NewBizErr(fmt.Sprintf(msg, params...)))
+		panic(any(NewBizErr(fmt.Sprintf(msg, params...))))
 	}
 }
 
 func ErrIsNilAppendErr(err error, msg string) {
 	if err != nil {
-		panic(NewBizErr(fmt.Sprintf(msg, err.Error())))
+		panic(any(NewBizErr(fmt.Sprintf(msg, err.Error()))))
 	}
 }
 
 func IsNil(err error) {
 	switch t := err.(type) {
 	case *BizError:
-		panic(t)
+		panic(any(t))
 	case error:
 		global.Log.Error("非业务异常: " + err.Error())
-		panic(NewBizErr(fmt.Sprintf("非业务异常: %s", err.Error())))
+		panic(any(NewBizErr(fmt.Sprintf("非业务异常: %s", err.Error()))))
 	}
 }
 
-func IsTrue(exp bool, msg string, params ...interface{}) {
+func IsTrue(exp bool, msg string, params ...any) {
 	if !exp {
-		panic(NewBizErr(fmt.Sprintf(msg, params...)))
+		panic(any(NewBizErr(fmt.Sprintf(msg, params...))))
 	}
 }
 
 func IsTrueBy(exp bool, err BizError) {
 	if !exp {
-		panic(err)
+		panic(any(err))
 	}
 }
 
-func NotEmpty(str string, msg string, params ...interface{}) {
+func NotEmpty(str string, msg string, params ...any) {
 	if str == "" {
-		panic(NewBizErr(fmt.Sprintf(msg, params...)))
+		panic(any(NewBizErr(fmt.Sprintf(msg, params...))))
 	}
 }
 
-func NotNil(data interface{}, msg string) {
+func NotNil(data any, msg string) {
 	if reflect.ValueOf(data).IsNil() {
-		panic(NewBizErr(msg))
+		panic(any(NewBizErr(msg)))
 	}
 }
 
-func NotBlank(data interface{}, msg string) {
+func NotBlank(data any, msg string) {
 	if utils.IsBlank(reflect.ValueOf(data)) {
-		panic(NewBizErr(msg))
+		panic(any(NewBizErr(msg)))
 	}
 }
 
-func IsEquals(data interface{}, data1 interface{}, msg string) {
+func IsEquals(data any, data1 any, msg string) {
 	if data != data1 {
-		panic(NewBizErr(msg))
+		panic(any(NewBizErr(msg)))
 	}
 }
 
-func Nil(data interface{}, msg string) {
+func Nil(data any, msg string) {
 	if !reflect.ValueOf(data).IsNil() {
-		panic(NewBizErr(msg))
+		panic(any(NewBizErr(msg)))
 	}
 }

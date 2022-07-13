@@ -323,7 +323,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 }
 
 // 视图预览
-func Preview(tableId int64) map[string]interface{} {
+func Preview(tableId int64) map[string]any {
 	t1, err := template.ParseFiles("resource/template/go/entity.template")
 	biz.ErrIsNil(err, "entity模版读取失败")
 
@@ -362,7 +362,7 @@ func Preview(tableId int64) map[string]interface{} {
 	var b7 bytes.Buffer
 	err = t7.Execute(&b7, tab)
 
-	mp := make(map[string]interface{})
+	mp := make(map[string]any)
 	mp["template/entity.template"] = b1.String()
 	mp["template/service.template"] = b2.String()
 	mp["template/api.template"] = b3.String()

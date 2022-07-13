@@ -33,7 +33,7 @@ func (p *ConfigApi) GetConfigList(rc *ctx.ReqCtx) {
 	config := entity.SysConfig{ConfigName: configName, ConfigKey: configKey, ConfigType: configType}
 	list, total := p.ConfigApp.FindListPage(pageNum, pageSize, config)
 
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

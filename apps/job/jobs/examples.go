@@ -18,7 +18,7 @@ func InitJob() {
 type CronHandle struct {
 }
 
-func (t CronHandle) Exec(arg interface{}) error {
+func (t CronHandle) Exec(arg any) error {
 	str := time.Now().Format(timeFormat) + " [INFO] JobCore ExamplesOne exec success"
 	// TODO: 这里需要注意 Examples 传入参数是 string 所以 arg.(string)；请根据对应的类型进行转化；
 	switch arg.(type) {

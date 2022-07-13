@@ -44,7 +44,7 @@ func (r *RoleApi) GetRoleList(rc *ctx.ReqCtx) {
 	role := entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
 	list, total := r.RoleApp.FindListPage(pageNum, pageSize, role)
 
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

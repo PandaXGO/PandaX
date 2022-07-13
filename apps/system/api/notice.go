@@ -38,7 +38,7 @@ func (p *NoticeApi) GetNoticeList(rc *ctx.ReqCtx) {
 	notice := entity.SysNotice{NoticeType: noticeType, Title: title, DeptIds: ids}
 	list, total := p.NoticeApp.FindListPage(pageNum, pageSize, notice)
 
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

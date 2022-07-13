@@ -48,7 +48,7 @@ func (p *ResOssesApi) GetResOssesList(rc *ctx.ReqCtx) {
 		data.SecretKey = utils.DdmKey(data.SecretKey)
 		li[i] = data
 	}
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

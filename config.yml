@@ -5,7 +5,7 @@ app:
 server:
   # debug release test
   model: release
-  port: 8080
+  port: 7788
   cors: true
   # 接口限流
   rate:
@@ -23,8 +23,6 @@ server:
   static:
     - relative-path: /assets
       root: ./static/assets
-    - relative-path: /form-generator
-      root: ./resource/form
   # 静态文件
   static-file:
     - relative-path: /
@@ -42,7 +40,7 @@ redis:
   port: 6379
 
 mysql:
-  host: 127.0.0.1:3306
+  host: 127.0.0.1
   username: root
   password: 123456
   db-name: pandax

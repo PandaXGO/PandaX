@@ -45,7 +45,7 @@ func (p *ResEmailsApi) GetResEmailsList(rc *ctx.ReqCtx) {
 		data.Secret = utils.DdmPassword(data.Secret)
 		li[i] = data
 	}
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

@@ -41,7 +41,7 @@ var DevGenTableModelDao SysGenTableModel = &devGenTableModelImpl{
 
 func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data entity.DBTables) (*[]entity.DBTables, int64) {
 	list := make([]entity.DBTables, 0)
-	pgdata := make([]map[string]interface{}, 0)
+	pgdata := make([]map[string]any, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
 	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType != "postgresql" {

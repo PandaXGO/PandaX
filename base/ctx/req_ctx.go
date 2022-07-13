@@ -18,10 +18,10 @@ type ReqCtx struct {
 	RequiredPermission *Permission // 需要的权限信息，默认为nil，需要校验token
 	LoginAccount       *Claims     // 登录账号信息，只有校验token后才会有值
 
-	LogInfo  *LogInfo    // 日志相关信息
-	ReqParam interface{} // 请求参数，主要用于记录日志
-	ResData  interface{} // 响应结果
-	Err      interface{} // 请求错误
+	LogInfo  *LogInfo // 日志相关信息
+	ReqParam any      // 请求参数，主要用于记录日志
+	ResData  any      // 响应结果
+	Err      any      // 请求错误
 
 	timed int64 // 执行时间
 	noRes bool  // 无需返回结果，即文件下载等
@@ -30,7 +30,9 @@ type ReqCtx struct {
 func (rc *ReqCtx) Handle(handler HandlerFunc) {
 	ginCtx := rc.GinCtx
 	defer func() {
-		if err := recover(); err != nil {
+		var err any
+		err = recover()
+		if err != nil {
 			rc.Err = err
 			ginx.ErrorRes(ginCtx, err)
 		}
@@ -116,7 +118,7 @@ func UseAfterHandlerInterceptor(b HandlerInterceptorFunc) {
 }
 
 // 应用指定处理器拦截器，如果有一个错误则直接返回错误
-func ApplyHandlerInterceptor(his HandlerInterceptors, rc *ReqCtx) interface{} {
+func ApplyHandlerInterceptor(his HandlerInterceptors, rc *ReqCtx) any {
 	for _, handler := range his {
 		if err := handler(rc); err != nil {
 			return err

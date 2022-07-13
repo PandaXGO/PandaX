@@ -4601,11 +4601,11 @@ func (s *s) ReadDoc() string {
 	sInfo.Description = strings.Replace(sInfo.Description, "\n", "\\n", -1)
 
 	t, err := template.New("swagger_info").Funcs(template.FuncMap{
-		"marshal": func(v interface{}) string {
+		"marshal": func(v any) string {
 			a, _ := json.Marshal(v)
 			return string(a)
 		},
-		"escape": func(v interface{}) string {
+		"escape": func(v any) string {
 			// escape tabs
 			str := strings.Replace(v.(string), "\t", "\\t", -1)
 			// replace " with \", and if that results in \\", replace that with \\\"

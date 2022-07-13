@@ -52,7 +52,7 @@ func (j *JobApi) GetJobList(rc *ctx.ReqCtx) {
 	status := rc.GinCtx.Query("status")
 
 	list, total := j.JobApp.FindListPage(pageNum, pageSize, entity.SysJob{JobName: jobName, JobGroup: jobGroup, Status: status})
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

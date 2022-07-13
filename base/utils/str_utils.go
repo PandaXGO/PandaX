@@ -51,7 +51,7 @@ func Contains(haystack, needle string, startOffset ...int) int {
 }
 
 // 字符串模板解析
-func TemplateResolve(temp string, data interface{}) string {
+func TemplateResolve(temp string, data any) string {
 	t, _ := template.New("string-temp").Parse(temp)
 	var tmplBytes bytes.Buffer
 
@@ -62,7 +62,7 @@ func TemplateResolve(temp string, data interface{}) string {
 	return tmplBytes.String()
 }
 
-func ReverStrTemplate(temp, str string, res map[string]interface{}) {
+func ReverStrTemplate(temp, str string, res map[string]any) {
 	index := UnicodeIndex(temp, "{")
 	ei := UnicodeIndex(temp, "}") + 1
 	next := kgo.KStr.Trim(temp[ei:], " ")
