@@ -30,6 +30,7 @@ func InitTable() {
 				logEntity.LogOper{},
 				logEntity.LogJob{},
 				entity.SysUser{},
+				entity.SysTenants{},
 				entity.SysRole{},
 				entity.SysMenu{},
 				entity.SysPost{},

@@ -13,7 +13,7 @@ server:
     rate-num: 100
   db-type: mysql
   # 是否开启数据库表初始化
-  isInitTable: false
+  isInitTable: true
   excel-dir: ./resource/excel/
   tls:
     enable: false
@@ -40,9 +40,9 @@ redis:
   port: 6379
 
 mysql:
-  host: 127.0.0.1
-  username: root
-  password: 123456
+  host: 47.104.252.2
+  username: pandax
+  password: pandax
   db-name: pandax
   config: charset=utf8&loc=Local&parseTime=true
 
