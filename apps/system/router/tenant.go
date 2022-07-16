@@ -17,7 +17,7 @@ func InitSysTenantRouter(router *gin.RouterGroup) {
 	s := &api.SysTenantsApi{
 		SysTenantsApp: services.SysTenantModelDao,
 	}
-	routerGroup := router.Group("SysTenant")
+	routerGroup := router.Group("tenant")
 
 	SysTenantListLog := ctx.NewLogInfo("获取SysTenant分页列表")
 	routerGroup.GET("list", func(c *gin.Context) {

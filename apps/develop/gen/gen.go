@@ -3,6 +3,7 @@ package gen
 import (
 	"bytes"
 	"github.com/kakuilan/kgo"
+	"log"
 	"os"
 	"pandax/apps/develop/entity"
 	"pandax/apps/develop/services"
@@ -21,9 +22,9 @@ var (
 		ColumnTypeStr:      []string{"char", "varchar", "narchar", "varchar2", "tinytext", "text", "mediumtext", "longtext"},
 		ColumnTypeTime:     []string{"datetime", "time", "date", "timestamp"},
 		ColumnTypeNumber:   []string{"tinyint", "smallint", "mediumint", "int", "number", "integer", "bigint", "float", "float", "double", "decimal"},
-		ColumnNameNotEdit:  []string{"id", "created_by", "created_at", "updated_by", "updated_at", "deleted_at"},
-		ColumnNameNotList:  []string{"id", "created_by", "updated_by", "created_at", "updated_at", "deleted_at"},
-		ColumnNameNotQuery: []string{"id", "created_by", "updated_by", "created_at", "updated_at", "deleted_at", "remark"},
+		ColumnNameNotEdit:  []string{"create_by", "update_by", "create_time", "update_time", "delete_time"},
+		ColumnNameNotList:  []string{"create_by", "update_by", "update_time", "delete_time"},
+		ColumnNameNotQuery: []string{"create_by", "update_by", "create_time", "update_time", "delete_time", "remark"},
 	}
 )
 
@@ -84,6 +85,9 @@ func (s *toolsGenTableColumn) IsNumberObject(dataType string) bool {
 
 // IsNotEdit 是否不可编辑
 func (s *toolsGenTableColumn) IsNotEdit(name string) bool {
+	if strings.Contains(name, "id") {
+		return true
+	}
 	return s.IsExistInArray(name, s.ColumnNameNotEdit)
 }
 
@@ -173,14 +177,12 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 		strEnd := string([]byte(tableNameList[i])[1:])
 		// 大驼峰表名 结构体使用
 		data.ClassName += strings.ToUpper(strStart) + strEnd
-		// 小驼峰表名 js函数名和权限标识使用
-		if i == 0 {
+		// js函数名和权限标识使用
+		if i >= 1 {
 			data.BusinessName += strings.ToLower(strStart) + strEnd
-		} else {
-			data.BusinessName += strings.ToUpper(strStart) + strEnd
 		}
 	}
-	data.PackageName = "admin"
+	data.PackageName = "system"
 	data.TplCategory = "crud"
 	// 中横线表名称，接口路径、前端文件夹名称和js名称使用
 	data.ModuleName = strings.Replace(tableName, "_", "-", -1)
@@ -188,11 +190,11 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 	dbTable := services.DevGenTableModelDao.FindDbTableOne(tableName)
 	dbColumn := services.DevTableColumnModelDao.FindDbTableColumnList(tableName)
 
-	data.TableComment = dbTable.TableComment
+	data.TableComment = dbTable.TableComment //表描述
 	if dbTable.TableComment == "" {
 		data.TableComment = data.ClassName
 	}
-	data.FunctionName = data.TableComment
+	data.FunctionName = strings.ToUpper(data.BusinessName)
 	data.FunctionAuthor = "panda"
 	wg := sync.WaitGroup{}
 	dcs := *dbColumn
@@ -200,6 +202,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 		index := i
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, i int) {
+			log.Println(dcs[i].ColumnName)
 			var column entity.DevGenTableColumn
 			column.ColumnComment = dcs[i].ColumnComment
 			column.ColumnName = dcs[i].ColumnName
@@ -227,6 +230,10 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 				if dcs[i].Extra == "auto_increment" {
 					column.IsIncrement = "1"
 				}
+			}
+
+			if column.ColumnComment == "" {
+				column.ColumnComment = column.GoField
 			}
 
 			dataType := s.GetDbType(column.ColumnType)

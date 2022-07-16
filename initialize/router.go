@@ -62,6 +62,7 @@ func InitRouter() *gin.Engine {
 	// 设置路由组
 	sys := router.Group("system")
 	{
+		sysRouter.InitSysTenantRouter(sys)
 		sysRouter.InitSystemRouter(sys)
 		sysRouter.InitDeptRouter(sys)
 		sysRouter.InitConfigRouter(sys)

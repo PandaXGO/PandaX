@@ -13,7 +13,7 @@ server:
     rate-num: 100
   db-type: mysql
   # 是否开启数据库表初始化
-  isInitTable: true
+  isInitTable: false
   excel-dir: ./resource/excel/
   tls:
     enable: false

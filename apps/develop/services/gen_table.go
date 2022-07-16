@@ -231,5 +231,6 @@ func (e *devGenTableModelImpl) DeleteTables(tableId int64) bool {
 func (m *devGenTableModelImpl) Delete(configIds []int64) {
 	err := global.Db.Table(m.table).Delete(&entity.DevGenTable{}, "table_id in (?)", configIds).Error
 	biz.ErrIsNil(err, "删除生成代码信息失败")
+	DevTableColumnModelDao.Delete(configIds)
 	return
 }

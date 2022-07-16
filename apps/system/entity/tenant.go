@@ -12,8 +12,7 @@ import (
  **/
 
 type SysTenants struct {
-	model.BaseModel
-	TenantId   int64     `json:"tenantId" gorm:"primary_key;AUTO_INCREMENT"`
+	model.BaseAutoModel
 	TenantName string    `json:"tenantName" gorm:"type:varchar(255);comment:租户名"`
 	Remark     string    `json:"remark" gorm:"type:varchar(255);comment:备注"`
 	ExpireTime time.Time `json:"expireTime" gorm:"comment:过期时间"`

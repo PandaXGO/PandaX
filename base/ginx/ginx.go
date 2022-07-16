@@ -1,6 +1,7 @@
 package ginx
 
 import (
+	"encoding/json"
 	"net/http"
 	"pandax/base/biz"
 	"pandax/base/global"
@@ -22,6 +23,16 @@ func BindQuery(g *gin.Context, data any) {
 	if err := g.ShouldBindQuery(data); err != nil {
 		panic(any(biz.NewBizErr(err.Error())))
 	}
+}
+func ParamsToAny(g *gin.Context, in any) {
+	vars := make(map[string]any)
+	for _, v := range g.Params {
+		vars[v.Key] = v.Value
+	}
+	marshal, _ := json.Marshal(vars)
+	err := json.Unmarshal(marshal, in)
+	biz.ErrIsNil(err, "error get path value encoding unmarshal")
+	return
 }
 
 // 获取分页参数

@@ -48,9 +48,11 @@ func (m *SysTenantModelImpl) FindListPage(page, pageSize int, data entity.SysTen
 	var total int64 = 0
 	offset := pageSize * (page - 1)
 	db := global.Db.Table(m.table)
-	// 此处填写 where参数判断
-	if data.TenantId != 0 {
-		db = db.Where("tenant_id = ?", data.TenantId)
+	if data.TenantName != "" {
+		db = db.Where("tenant_name like ?", "%"+data.TenantName+"%")
+	}
+	if data.Id != 0 {
+		db = db.Where("id = ?", data.Id)
 	}
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
@@ -62,9 +64,11 @@ func (m *SysTenantModelImpl) FindListPage(page, pageSize int, data entity.SysTen
 func (m *SysTenantModelImpl) FindList(data entity.SysTenants) *[]entity.SysTenants {
 	list := make([]entity.SysTenants, 0)
 	db := global.Db.Table(m.table)
-	// 此处填写 where参数判断
-	if data.TenantId != 0 {
-		db = db.Where("tenant_id = ?", data.TenantId)
+	if data.TenantName != "" {
+		db = db.Where("tenant_name like ?", "%"+data.TenantName+"%")
+	}
+	if data.Id != 0 {
+		db = db.Where("id = ?", data.Id)
 	}
 	db.Where("delete_time IS NULL")
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询SysTenant列表失败")

@@ -23,4 +23,9 @@ func InitGenRouter(router *gin.RouterGroup) {
 	gen.GET("code/:tableId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(genCodeLog).Handle(genApi.GenCode)
 	})
+
+	genConfigureLog := ctx.NewLogInfo("生成配置")
+	gen.GET("configure/:tableId", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(genConfigureLog).Handle(genApi.GenCode)
+	})
 }
