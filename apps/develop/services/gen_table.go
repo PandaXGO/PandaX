@@ -7,7 +7,6 @@ import (
 	"pandax/base/config"
 	"pandax/base/global"
 	"pandax/base/utils"
-	"strings"
 )
 
 /**
@@ -178,7 +177,7 @@ func (m *devGenTableModelImpl) Update(data entity.DevGenTable) *entity.DevGenTab
 	tableMap := make(map[string]*entity.DevGenTable)
 	if len(tableNames) > 0 {
 		err = global.Db.Table(m.table).Where("table_name in (?)", tableNames).Find(&tables).Error
-		biz.ErrIsNil(err, err.Error())
+		biz.ErrIsNil(err, "关联表不存在")
 		for i := range tables {
 			tableMap[tables[i].TableName] = &tables[i]
 		}
@@ -189,17 +188,9 @@ func (m *devGenTableModelImpl) Update(data entity.DevGenTable) *entity.DevGenTab
 			t, ok := tableMap[data.Columns[i].LinkTableName]
 			if ok {
 				data.Columns[i].LinkTableClass = t.ClassName
-				data.Columns[i].LinkTablePackage = t.ModuleName
-			} else {
-				tableNameList := strings.Split(data.Columns[i].LinkTableName, "_")
-				data.Columns[i].LinkTableClass = ""
-				data.Columns[i].LinkTablePackage = ""
-				for a := 0; a < len(tableNameList); a++ {
-					strStart := string([]byte(tableNameList[a])[:1])
-					strEnd := string([]byte(tableNameList[a])[1:])
-					data.Columns[i].LinkTableClass += strings.ToUpper(strStart) + strEnd
-					data.Columns[i].LinkTablePackage += strings.ToLower(strStart) + strings.ToLower(strEnd)
-				}
+				data.Columns[i].LinkTablePackage = t.PackageName
+				data.Columns[i].LinkLabelId = t.PkColumn
+				data.Columns[i].LinkLabelName = t.PkGoField
 			}
 		}
 		DevTableColumnModelDao.Update(data.Columns[i])

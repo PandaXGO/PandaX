@@ -2,11 +2,14 @@ package gen
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/kakuilan/kgo"
 	"log"
 	"os"
 	"pandax/apps/develop/entity"
 	"pandax/apps/develop/services"
+	sysEntity "pandax/apps/system/entity"
+	sysServices "pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/config"
 	"pandax/base/global"
@@ -411,8 +414,8 @@ func GenCode(tableId int64) {
 	kgo.KFile.Mkdir("./apps/"+tab.PackageName+"/router/", os.ModePerm)
 	kgo.KFile.Mkdir("./apps/"+tab.PackageName+"/services/", os.ModePerm)
 	kgo.KFile.Mkdir(config.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/", os.ModePerm)
-	kgo.KFile.Mkdir(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/", os.ModePerm)
-	kgo.KFile.Mkdir(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/"+"component"+"/", os.ModePerm)
+	kgo.KFile.Mkdir(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/", os.ModePerm)
+	kgo.KFile.Mkdir(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/"+"component"+"/", os.ModePerm)
 
 	var b1 bytes.Buffer
 	err = t1.Execute(&b1, tab)
@@ -433,7 +436,105 @@ func GenCode(tableId int64) {
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/services/"+tab.TableName+".go", b2.Bytes())
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/api/"+tab.TableName+".go", b3.Bytes())
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/router/"+tab.TableName+".go", b4.Bytes())
-	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/"+tab.ModuleName+".js", b5.Bytes())
-	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/index.vue", b6.Bytes())
-	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.ModuleName+"/"+"component"+"/editModule.vue", b7.Bytes())
+	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/"+tab.BusinessName+".js", b5.Bytes())
+	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/index.vue", b6.Bytes())
+	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/"+"component"+"/editModule.vue", b7.Bytes())
+}
+
+// GenConfigure 生成菜单，api
+func GenConfigure(tableId, parentId int) {
+	tab := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: int64(tableId)}, false)
+
+	//生成菜单 一个菜单 三个按钮
+	component := "Layout"
+	if parentId != 0 {
+		component = fmt.Sprintf("/%s/%s/index", tab.PackageName, tab.BusinessName)
+	}
+	menu := sysEntity.SysMenu{
+		ParentId:    int64(parentId),
+		MenuName:    tab.TableComment,
+		MenuType:    "C",
+		Sort:        1,
+		Icon:        "elementSetting",
+		Path:        fmt.Sprintf("/%s/%s", tab.PackageName, tab.BusinessName),
+		Component:   component,
+		IsIframe:    "1",
+		IsHide:      "0",
+		IsKeepAlive: "1",
+		IsAffix:     "1",
+		Permission:  fmt.Sprintf("%s:%s:list", tab.PackageName, tab.BusinessName),
+		Status:      "0",
+		CreateBy:    "admin",
+	}
+	insert := sysServices.SysMenuModelDao.Insert(menu)
+	log.Println("insert", insert.MenuId)
+	//新增按钮
+	menuA := sysEntity.SysMenu{
+		ParentId:   insert.MenuId,
+		MenuName:   "新增" + tab.TableComment,
+		MenuType:   "F",
+		Sort:       1,
+		Permission: fmt.Sprintf("%s:%s:add", tab.PackageName, tab.BusinessName),
+		Status:     "0",
+		CreateBy:   "admin",
+	}
+	go sysServices.SysMenuModelDao.Insert(menuA)
+	//修改按钮
+	menuE := sysEntity.SysMenu{
+		ParentId:   insert.MenuId,
+		MenuName:   "修改" + tab.TableComment,
+		MenuType:   "F",
+		Sort:       2,
+		Permission: fmt.Sprintf("%s:%s:edit", tab.PackageName, tab.BusinessName),
+		Status:     "0",
+		CreateBy:   "admin",
+	}
+	go sysServices.SysMenuModelDao.Insert(menuE)
+	//删除按钮
+	menuD := sysEntity.SysMenu{
+		ParentId:   insert.MenuId,
+		MenuName:   "删除" + tab.TableComment,
+		MenuType:   "F",
+		Sort:       3,
+		Permission: fmt.Sprintf("%s:%s:delete", tab.PackageName, tab.BusinessName),
+		Status:     "0",
+		CreateBy:   "admin",
+	}
+	go sysServices.SysMenuModelDao.Insert(menuD)
+	//生成api
+	apiL := sysEntity.SysApi{
+		Path:        fmt.Sprintf("/%s/%s/list", tab.PackageName, tab.BusinessName),
+		Description: fmt.Sprintf("查询%s列表（分页）", tab.TableComment),
+		ApiGroup:    tab.BusinessName,
+		Method:      "GET",
+	}
+	go sysServices.SysApiModelDao.Insert(apiL)
+	apiG := sysEntity.SysApi{
+		Path:        fmt.Sprintf("/%s/%s/:%s", tab.PackageName, tab.BusinessName, tab.PkJsonField),
+		Description: fmt.Sprintf("获取%s信息", tab.TableComment),
+		ApiGroup:    tab.BusinessName,
+		Method:      "GET",
+	}
+	go sysServices.SysApiModelDao.Insert(apiG)
+	apiA := sysEntity.SysApi{
+		Path:        fmt.Sprintf("/%s/%s", tab.PackageName, tab.BusinessName),
+		Description: fmt.Sprintf("添加%s信息", tab.TableComment),
+		ApiGroup:    tab.BusinessName,
+		Method:      "POST",
+	}
+	go sysServices.SysApiModelDao.Insert(apiA)
+	apiE := sysEntity.SysApi{
+		Path:        fmt.Sprintf("/%s/%s", tab.PackageName, tab.BusinessName),
+		Description: fmt.Sprintf("修改%s信息", tab.TableComment),
+		ApiGroup:    tab.BusinessName,
+		Method:      "PUT",
+	}
+	go sysServices.SysApiModelDao.Insert(apiE)
+	apiD := sysEntity.SysApi{
+		Path:        fmt.Sprintf("/%s/%s/:%s", tab.PackageName, tab.BusinessName, tab.PkJsonField),
+		Description: fmt.Sprintf("删除%s信息", tab.TableComment),
+		ApiGroup:    tab.BusinessName,
+		Method:      "DELETE",
+	}
+	go sysServices.SysApiModelDao.Insert(apiD)
 }

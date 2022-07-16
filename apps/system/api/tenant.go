@@ -22,7 +22,7 @@ type SysTenantsApi struct {
 // @Param pageSize query int false "页条数"
 // @Param pageNum query int false "页码"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /admin/sysTenants/list [get]
+// @Router /admin/tenant/list [get]
 // @Security
 func (p *SysTenantsApi) GetSysTenantsList(rc *ctx.ReqCtx) {
 	data := entity.SysTenants{}
@@ -44,7 +44,7 @@ func (p *SysTenantsApi) GetSysTenantsList(rc *ctx.ReqCtx) {
 // @Tags SysTenants
 // @Param tenantId path int true "tenantId"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /admin/sysTenants/{tenantId} [get]
+// @Router /admin/tenant/{tenantId} [get]
 // @Security
 func (p *SysTenantsApi) GetSysTenants(rc *ctx.ReqCtx) {
 	tenantId := ginx.PathParamInt(rc.GinCtx, "tenantId")
@@ -59,7 +59,7 @@ func (p *SysTenantsApi) GetSysTenants(rc *ctx.ReqCtx) {
 // @Param data body entity.SysTenants true "data"
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /admin/sysTenants [post]
+// @Router /admin/tenant [post]
 // @Security X-TOKEN
 func (p *SysTenantsApi) InsertSysTenants(rc *ctx.ReqCtx) {
 	var data entity.SysTenants
@@ -76,7 +76,7 @@ func (p *SysTenantsApi) InsertSysTenants(rc *ctx.ReqCtx) {
 // @Param data body entity.SysTenants true "body"
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /admin/sysTenants [put]
+// @Router /admin/tenant [put]
 // @Security X-TOKEN
 func (p *SysTenantsApi) UpdateSysTenants(rc *ctx.ReqCtx) {
 	var data entity.SysTenants
@@ -91,9 +91,8 @@ func (p *SysTenantsApi) UpdateSysTenants(rc *ctx.ReqCtx) {
 // @Param tenantId path string true "tenantId"
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /admin/sysTenants/{tenantId} [delete]
+// @Router /admin/tenant/{tenantId} [delete]
 func (p *SysTenantsApi) DeleteSysTenants(rc *ctx.ReqCtx) {
-
 	tenantId := rc.GinCtx.Param("tenantId")
 	tenantIds := utils.IdsStrToIdsIntGroup(tenantId)
 	p.SysTenantsApp.Delete(tenantIds)

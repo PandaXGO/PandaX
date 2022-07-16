@@ -13,11 +13,8 @@ type DevGenTable struct {
 	BusinessName   string              `gorm:"business_name"      json:"businessName"`    // 生成业务名
 	FunctionName   string              `gorm:"function_name"      json:"functionName"`    // 生成功能名
 	FunctionAuthor string              `gorm:"function_author"    json:"functionAuthor"`  // 生成功能作者
-	TreeCode       string              `gorm:"tree_code"	  json:"treeCode"`
-	TreeParentCode string              `gorm:"tree_parent_code"   json:"treeParentCode"`
-	TreeName       string              `gorm:"tree_name"          json:"treeName"`
-	Options        string              `gorm:"options"            json:"options"` // 其它生成选项
-	Remark         string              `gorm:"remark"             json:"remark"`  // 备注
+	Options        string              `gorm:"options"            json:"options"`         // 其它生成选项
+	Remark         string              `gorm:"remark"             json:"remark"`          // 备注
 	PkColumn       string              `gorm:"pk_column;"         json:"pkColumn"`
 	PkGoField      string              `gorm:"pk_go_field"        json:"pkGoField"`
 	PkJsonField    string              `gorm:"pk_json_field"      json:"pkJsonField"`

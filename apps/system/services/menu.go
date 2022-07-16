@@ -32,7 +32,6 @@ var SysMenuModelDao SysMenuModel = &sysMenuModelImpl{
 func (m *sysMenuModelImpl) Insert(data entity.SysMenu) *entity.SysMenu {
 	err := global.Db.Table(m.table).Create(&data).Error
 	biz.ErrIsNil(err, "添加菜单失败")
-	//m.InitPaths(&data)
 	return &data
 }
 

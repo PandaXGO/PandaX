@@ -9,7 +9,7 @@ import (
 
 func InitApiRouter(router *gin.RouterGroup) {
 	s := &api.SystemApiApi{
-		ApiApp: services.SysSysApiModelDao,
+		ApiApp: services.SysApiModelDao,
 	}
 	api := router.Group("api")
 

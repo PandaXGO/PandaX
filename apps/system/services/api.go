@@ -19,16 +19,16 @@ type (
 		Delete(ids []int64)
 	}
 
-	sysSysApiModelImpl struct {
+	sysApiModelImpl struct {
 		table string
 	}
 )
 
-var SysSysApiModelDao SysApiModel = &sysSysApiModelImpl{
+var SysApiModelDao SysApiModel = &sysApiModelImpl{
 	table: `sys_apis`,
 }
 
-func (m *sysSysApiModelImpl) Insert(api entity.SysApi) *entity.SysApi {
+func (m *sysApiModelImpl) Insert(api entity.SysApi) *entity.SysApi {
 	err := global.Db.Table(m.table).Where("path = ? AND method = ?", api.Path, api.Method).First(&entity.SysApi{}).Error
 	biz.IsTrue(errors.Is(err, gorm.ErrRecordNotFound), "存在相同api")
 	err = global.Db.Table(m.table).Create(&api).Error
@@ -36,14 +36,14 @@ func (m *sysSysApiModelImpl) Insert(api entity.SysApi) *entity.SysApi {
 	return &api
 }
 
-func (m *sysSysApiModelImpl) FindOne(id int64) (resData *entity.SysApi) {
+func (m *sysApiModelImpl) FindOne(id int64) (resData *entity.SysApi) {
 	resData = new(entity.SysApi)
 	err := global.Db.Table(m.table).Where("id = ?", id).First(&resData).Error
 	biz.ErrIsNil(err, "查询Api失败")
 	return
 }
 
-func (m *sysSysApiModelImpl) FindListPage(page, pageSize int, data entity.SysApi) (*[]entity.SysApi, int64) {
+func (m *sysApiModelImpl) FindListPage(page, pageSize int, data entity.SysApi) (*[]entity.SysApi, int64) {
 	list := make([]entity.SysApi, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -73,7 +73,7 @@ func (m *sysSysApiModelImpl) FindListPage(page, pageSize int, data entity.SysApi
 	return &list, total
 }
 
-func (m *sysSysApiModelImpl) FindList(data entity.SysApi) *[]entity.SysApi {
+func (m *sysApiModelImpl) FindList(data entity.SysApi) *[]entity.SysApi {
 	list := make([]entity.SysApi, 0)
 	db := global.Db.Table(m.table)
 
@@ -98,7 +98,7 @@ func (m *sysSysApiModelImpl) FindList(data entity.SysApi) *[]entity.SysApi {
 	return &list
 }
 
-func (m *sysSysApiModelImpl) Update(api entity.SysApi) *entity.SysApi {
+func (m *sysApiModelImpl) Update(api entity.SysApi) *entity.SysApi {
 	var oldA entity.SysApi
 	err := global.Db.Table(m.table).Where("id = ?", api.Id).First(&oldA).Error
 	biz.ErrIsNil(err, "【修改api】查询api失败")
@@ -113,7 +113,7 @@ func (m *sysSysApiModelImpl) Update(api entity.SysApi) *entity.SysApi {
 	return &api
 }
 
-func (m *sysSysApiModelImpl) Delete(ids []int64) {
+func (m *sysApiModelImpl) Delete(ids []int64) {
 	err := global.Db.Table(m.table).Delete(&entity.SysApi{}, "id in (?)", ids).Error
 	biz.ErrIsNil(err, "删除配置信息失败")
 }
