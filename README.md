@@ -20,7 +20,7 @@
 ---
 系统在线文档
 ---
-* 文档地址 ：https://pandaadmin.gitee.io/pandax-docs
+* 文档地址 ：https://xm-go.gitee.io/pandax-docs/
 
  **> 未来会补充文档和视频，方便友友们使用！** 
 
@@ -54,7 +54,7 @@
 ## 联系我们
  **QQ：2417920382**  <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=2417920382&amp;site=qq&amp;menu=yes">    点击这里给我发消息</a>
  
- **QQ群：467890197**  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=BqzPxK0qWQEyI7YhnSfxc-GsAMlAIgta&jump_from=webapi"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="PandaX快速开发交流群" title="PandaX快速开发交流群"></a>
+ **QQ群：467890197**  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=BqzPxK0qWQEyI7YhnSfxc-GsAMlAIgta&jump_from=webapi"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="PandaX快速开发交流群" title="PandaX快速开发交流群"></a>
     <div align="center"><img src="https://s3.bmp.ovh/imgs/2021/12/f0f93d5622ef9e47.jpg"/></div>
 
 ## ⚡ 内置功能

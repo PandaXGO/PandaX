@@ -36,7 +36,7 @@ func Set(key string, val string, expiration time.Duration) {
 	cli.Set(key, val, expiration)
 }
 
-func HSet(key string, field string, val interface{}) {
+func HSet(key string, field string, val any) {
 	cli.HSet(key, field, val)
 }
 

@@ -6,7 +6,6 @@ import (
 	"github.com/kakuilan/kgo"
 	"github.com/mssola/user_agent"
 	"net/http"
-	"os"
 	"pandax/apps/system/api/form"
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
@@ -43,7 +42,7 @@ type UserApi struct {
 // @Router /system/user/getCaptcha [get]
 func (u *UserApi) GenerateCaptcha(c *gin.Context) {
 	id, image := captcha.Generate()
-	c.JSON(http.StatusOK, map[string]interface{}{"base64Captcha": image, "captchaId": id})
+	c.JSON(http.StatusOK, map[string]any{"base64Captcha": image, "captchaId": id})
 }
 
 // @Tags Base
@@ -55,7 +54,7 @@ func (u *UserApi) RefreshToken(rc *ctx.ReqCtx) {
 	tokenStr := rc.GinCtx.Request.Header.Get("X-TOKEN")
 	token, err := ctx.RefreshToken(tokenStr)
 	biz.ErrIsNil(err, "刷新token失败")
-	rc.ResData = map[string]interface{}{"token": token, "expire": time.Now().Unix() + config.Conf.Jwt.ExpireTime}
+	rc.ResData = map[string]any{"token": token, "expire": time.Now().Unix() + config.Conf.Jwt.ExpireTime}
 }
 
 // @Tags Base
@@ -89,7 +88,7 @@ func (u *UserApi) Login(rc *ctx.ReqCtx) {
 
 	biz.ErrIsNil(err, "生成Token失败")
 
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"token":  token,
 		"expire": time.Now().Unix() + config.Conf.Jwt.ExpireTime,
 	}
@@ -128,7 +127,7 @@ func (u *UserApi) Auth(rc *ctx.ReqCtx) {
 	permis := u.RoleMenuApp.GetPermis(role.RoleId)
 	menus := u.MenuApp.SelectMenuRole(role.RoleKey)
 
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"user":        userData,
 		"role":        role,
 		"permissions": permis,
@@ -183,7 +182,7 @@ func (u *UserApi) GetSysUserList(rc *ctx.ReqCtx) {
 	user.DeptId = int64(deptId)
 	list, total := u.UserApp.FindListPage(pageNum, pageSize, user)
 
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,
@@ -216,7 +215,7 @@ func (u *UserApi) GetSysUserProfile(rc *ctx.ReqCtx) {
 	roleIds := make([]int64, 0)
 	roleIds = append(roleIds, rc.LoginAccount.RoleId)
 
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":    user,
 		"postIds": postIds,
 		"roleIds": roleIds,
@@ -287,7 +286,7 @@ func (u *UserApi) GetSysUser(rc *ctx.ReqCtx) {
 
 	posts := u.PostApp.FindList(entity.SysPost{})
 
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":    result,
 		"postIds": result.PostIds,
 		"roleIds": result.RoleIds,
@@ -306,7 +305,7 @@ func (u *UserApi) GetSysUserInit(rc *ctx.ReqCtx) {
 	roles := u.RoleApp.FindList(entity.SysRole{})
 
 	posts := u.PostApp.FindList(entity.SysPost{})
-	mp := make(map[string]interface{}, 2)
+	mp := make(map[string]any, 2)
 	mp["roles"] = roles
 	mp["posts"] = posts
 	rc.ResData = mp
@@ -334,7 +333,7 @@ func (u *UserApi) GetUserRolePost(rc *ctx.ReqCtx) {
 		po := u.PostApp.FindOne(kgo.KConv.Str2Int64(postId))
 		posts = append(posts, *po)
 	}
-	mp := make(map[string]interface{}, 2)
+	mp := make(map[string]any, 2)
 	mp["roles"] = roles
 	mp["posts"] = posts
 	rc.ResData = mp
@@ -411,6 +410,7 @@ func (u *UserApi) DeleteSysUser(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dict/type/export [get]
 func (u *UserApi) ExportUser(rc *ctx.ReqCtx) {
+	filename := rc.GinCtx.Query("filename")
 	status := rc.GinCtx.Query("status")
 	userName := rc.GinCtx.Query("username")
 	phone := rc.GinCtx.Query("phone")
@@ -420,15 +420,9 @@ func (u *UserApi) ExportUser(rc *ctx.ReqCtx) {
 	user.Username = userName
 	user.Phone = phone
 	list := u.UserApp.FindList(user)
-	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, "用户")
+	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
-
-	line, err := kgo.KFile.ReadFile(fileName)
-	if err != nil {
-		os.Remove(fileName)
-		biz.ErrIsNil(err, "读取文件失败")
-	}
-	rc.Download(line, fileName)
+	rc.Download(fileName)
 }
 
 // 构建前端路由

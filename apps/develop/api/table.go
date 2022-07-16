@@ -28,7 +28,7 @@ func (g *GenTableApi) GetDBTableList(rc *ctx.ReqCtx) {
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 	tableName := rc.GinCtx.Query("tableName")
 	list, total := g.GenTableApp.FindDbTablesListPage(pageNum, pageSize, entity.DBTables{TableName: tableName})
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,
@@ -51,7 +51,7 @@ func (g *GenTableApi) GetTablePage(rc *ctx.ReqCtx) {
 	tableName := rc.GinCtx.Query("tableName")
 	tableComment := rc.GinCtx.Query("tableComment")
 	list, total := g.GenTableApp.FindListPage(pageNum, pageSize, entity.DevGenTable{TableName: tableName, TableComment: tableComment})
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,
@@ -69,7 +69,7 @@ func (g *GenTableApi) GetTablePage(rc *ctx.ReqCtx) {
 func (g *GenTableApi) GetTableInfo(rc *ctx.ReqCtx) {
 	tableId := ginx.PathParamInt(rc.GinCtx, "tableId")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableId: int64(tableId)}, true)
-	mp := make(map[string]interface{})
+	mp := make(map[string]any)
 	mp["list"] = result.Columns
 	mp["info"] = result
 	rc.ResData = mp
@@ -85,7 +85,7 @@ func (g *GenTableApi) GetTableInfo(rc *ctx.ReqCtx) {
 func (g *GenTableApi) GetTableInfoByName(rc *ctx.ReqCtx) {
 	tableName := rc.GinCtx.Query("tableName")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableName: tableName}, true)
-	mp := make(map[string]interface{})
+	mp := make(map[string]any)
 	mp["list"] = result.Columns
 	mp["info"] = result
 	rc.ResData = mp

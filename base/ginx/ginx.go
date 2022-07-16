@@ -1,6 +1,7 @@
 package ginx
 
 import (
+	"encoding/json"
 	"net/http"
 	"pandax/base/biz"
 	"pandax/base/global"
@@ -11,17 +12,27 @@ import (
 )
 
 // 绑定并校验请求结构体参数  结构体添加 例如： binding:"required" 或binding:"required,gt=10"
-func BindJsonAndValid(g *gin.Context, data interface{}) {
+func BindJsonAndValid(g *gin.Context, data any) {
 	if err := g.ShouldBindJSON(data); err != nil {
-		panic(biz.NewBizErr("传参格式错误：" + err.Error()))
+		panic(any(biz.NewBizErr("传参格式错误：" + err.Error())))
 	}
 }
 
 // 绑定查询字符串到
-func BindQuery(g *gin.Context, data interface{}) {
+func BindQuery(g *gin.Context, data any) {
 	if err := g.ShouldBindQuery(data); err != nil {
-		panic(biz.NewBizErr(err.Error()))
+		panic(any(biz.NewBizErr(err.Error())))
 	}
+}
+func ParamsToAny(g *gin.Context, in any) {
+	vars := make(map[string]any)
+	for _, v := range g.Params {
+		vars[v.Key] = v.Value
+	}
+	marshal, _ := json.Marshal(vars)
+	err := json.Unmarshal(marshal, in)
+	biz.ErrIsNil(err, "error get path value encoding unmarshal")
+	return
 }
 
 // 获取分页参数
@@ -47,19 +58,23 @@ func PathParamInt(g *gin.Context, pm string) int {
 }
 
 // 文件下载
-func Download(g *gin.Context, data []byte, filename string) {
-	g.Header("Content-Type", "application/octet-stream")
-	g.Header("Content-Disposition", "attachment; filename="+filename)
-	g.Data(http.StatusOK, "application/octet-stream", data)
+func Download(g *gin.Context, filename string) {
+	g.Writer.Header().Add("success", "true")
+	g.Writer.Header().Set("Content-Length", "-1")
+	g.Writer.Header().Set("Content-Disposition", "attachment; filename="+filename)
+	g.File(filename)
 }
 
 // 返回统一成功结果
-func SuccessRes(g *gin.Context, data interface{}) {
+func SuccessRes(g *gin.Context, data any) {
 	g.JSON(http.StatusOK, model.Success(data))
 }
 
 // 返回失败结果集
-func ErrorRes(g *gin.Context, err interface{}) {
+func ErrorRes(g *gin.Context, err any) {
+	if err != nil {
+
+	}
 	switch t := err.(type) {
 	case *biz.BizError:
 		g.JSON(http.StatusOK, model.Error(t))

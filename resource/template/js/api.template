@@ -1,7 +1,7 @@
-import request from '/@/utils/request';
+import request from '@/utils/request';
 
 // 查询{{.FunctionName}}列表
-export function list{{.ClassName}}(query:any) {
+export function list{{.FunctionName}}(query:any) {
 	return request({
 		url: '/{{.PackageName}}/{{.BusinessName}}/list',
 		method: 'get',
@@ -10,7 +10,7 @@ export function list{{.ClassName}}(query:any) {
 }
 
 // 查询{{.FunctionName}}详细
-export function get{{.ClassName}}({{.PkJsonField}}:number) {
+export function get{{.FunctionName}}({{.PkJsonField}}:number) {
 	return request({
 		url: '/{{.PackageName}}/{{.BusinessName}}/' + {{.PkJsonField}},
 		method: 'get'
@@ -18,7 +18,7 @@ export function get{{.ClassName}}({{.PkJsonField}}:number) {
 }
 
 // 新增{{.FunctionName}}
-export function add{{.ClassName}}(data:any) {
+export function add{{.FunctionName}}(data:any) {
 	return request({
 		url: '/{{.PackageName}}/{{.BusinessName}}',
 		method: 'post',
@@ -27,7 +27,7 @@ export function add{{.ClassName}}(data:any) {
 }
 
 // 修改{{.FunctionName}}
-export function update{{.ClassName}}(data:any) {
+export function update{{.FunctionName}}(data:any) {
 	return request({
 		url: '/{{.PackageName}}/{{.BusinessName}}',
 		method: 'put',
@@ -36,7 +36,7 @@ export function update{{.ClassName}}(data:any) {
 }
 
 // 删除{{.FunctionName}}
-export function del{{.ClassName}}({{.PkJsonField}}: string) {
+export function del{{.FunctionName}}({{.PkJsonField}}: string) {
 	return request({
 		url: '/{{.PackageName}}/{{.BusinessName}}/' + {{.PkJsonField}},
 		method: 'delete'

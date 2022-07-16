@@ -23,8 +23,6 @@ server:
   static:
     - relative-path: /assets
       root: ./static/assets
-    - relative-path: /form-generator
-      root: ./resource/form
   # 静态文件
   static-file:
     - relative-path: /
@@ -42,9 +40,9 @@ redis:
   port: 6379
 
 mysql:
-  host: 127.0.0.1:3306
-  username: root
-  password: 123456
+  host: 47.104.252.2
+  username: pandax
+  password: pandax
   db-name: pandax
   config: charset=utf8&loc=Local&parseTime=true
 

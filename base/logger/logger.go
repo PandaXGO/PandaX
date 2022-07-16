@@ -2,9 +2,9 @@ package logger
 
 import (
 	"fmt"
+	"os"
 	"pandax/base/config"
 	"pandax/base/global"
-	"os"
 	"strings"
 	"time"
 
@@ -28,7 +28,7 @@ func init() {
 	if level := logConf.Level; level != "" {
 		l, err := logrus.ParseLevel(level)
 		if err != nil {
-			panic(fmt.Sprintf("日志级别不存在: %s", level))
+			panic(any(fmt.Sprintf("日志级别不存在: %s", level)))
 		}
 		Log.SetLevel(l)
 	} else {
@@ -39,7 +39,7 @@ func init() {
 		//写入文件
 		file, err := os.OpenFile(logFile.GetFilename(), os.O_CREATE|os.O_APPEND|os.O_WRONLY, os.ModeAppend|0666)
 		if err != nil {
-			panic(fmt.Sprintf("创建日志文件失败: %s", err.Error()))
+			panic(any(fmt.Sprintf("创建日志文件失败: %s", err.Error())))
 		}
 
 		Log.Out = file

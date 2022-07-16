@@ -13,7 +13,7 @@ import (
 func main() {
 	global.Db = starter.GormInit(config.Conf.Server.DbType)
 	initialize.InitTable()
-	// gin后置 函数
+	// gin前置 函数
 	ctx.UseAfterHandlerInterceptor(middleware.OperationHandler)
 	// gin前置 函数
 	ctx.UseBeforeHandlerInterceptor(ctx.PermissionHandler)

@@ -35,7 +35,7 @@ func (m *DeptApi) GetDeptTreeRoleSelect(rc *ctx.ReqCtx) {
 	if roleId != 0 {
 		deptIds = m.RoleApp.GetRoleDeptId(entity.SysRole{RoleId: int64(roleId)})
 	}
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"depts":       result,
 		"checkedKeys": deptIds,
 	}

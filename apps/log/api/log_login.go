@@ -27,9 +27,8 @@ func (l *LogLoginApi) GetLoginLogList(rc *ctx.ReqCtx) {
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 	loginLocation := rc.GinCtx.Query("loginLocation")
 	username := rc.GinCtx.Query("username")
-
 	list, total := l.LogLoginApp.FindListPage(pageNum, pageSize, entity.LogLogin{LoginLocation: loginLocation, Username: username})
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

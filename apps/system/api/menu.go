@@ -57,7 +57,7 @@ func (m *MenuApi) GetMenuTreeRoleSelect(rc *ctx.ReqCtx) {
 	if roleId != 0 {
 		menuIds = m.RoleApp.GetRoleMeunId(entity.SysRole{RoleId: int64(roleId)})
 	}
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"menus":       result,
 		"checkedKeys": menuIds,
 	}
@@ -128,7 +128,7 @@ func (m *MenuApi) InsertMenu(rc *ctx.ReqCtx) {
 	m.MenuApp.Insert(menu)
 	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
 	menus := m.MenuApp.SelectMenuRole(rc.LoginAccount.RoleKey)
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"permissions": permis,
 		"menus":       Build(*menus),
 	}
@@ -149,7 +149,7 @@ func (m *MenuApi) UpdateMenu(rc *ctx.ReqCtx) {
 	m.MenuApp.Update(menu)
 	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
 	menus := m.MenuApp.SelectMenuRole(rc.LoginAccount.RoleKey)
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"permissions": permis,
 		"menus":       Build(*menus),
 	}

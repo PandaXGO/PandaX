@@ -22,6 +22,7 @@ type (
 		Insert(data entity.DevGenTableColumn) *entity.DevGenTableColumn
 		FindList(data entity.DevGenTableColumn, exclude bool) *[]entity.DevGenTableColumn
 		Update(data entity.DevGenTableColumn) *entity.DevGenTableColumn
+		Delete(tableId []int64)
 	}
 
 	devTableColumnModelImpl struct {
@@ -92,10 +93,10 @@ func (m *devTableColumnModelImpl) FindList(data entity.DevGenTableColumn, exclud
 		notIn = append(notIn, "id")
 		notIn = append(notIn, "create_by")
 		notIn = append(notIn, "update_by")
-		notIn = append(notIn, "created_at")
-		notIn = append(notIn, "updated_at")
-		notIn = append(notIn, "deleted_at")
-		db = db.Where(" column_name not in(?)", notIn)
+		notIn = append(notIn, "create_time")
+		notIn = append(notIn, "update_time")
+		notIn = append(notIn, "delete_time")
+		db = db.Where("column_name not in(?)", notIn)
 	}
 	err := db.Find(&list).Error
 	biz.ErrIsNil(err, "查询生成代码字段表信息失败")
@@ -106,4 +107,10 @@ func (m *devTableColumnModelImpl) Update(data entity.DevGenTableColumn) *entity.
 	err := global.Db.Table(m.table).Model(&data).Updates(&data).Error
 	biz.ErrIsNil(err, "修改生成代码字段表失败")
 	return &data
+}
+
+func (m *devTableColumnModelImpl) Delete(tableId []int64) {
+	err := global.Db.Table(m.table).Delete(&entity.DevGenTableColumn{}, "table_id in (?)", tableId).Error
+	biz.ErrIsNil(err, "删除生成代码字段表失败")
+	return
 }

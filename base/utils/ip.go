@@ -10,12 +10,13 @@ const ipurl = "http://whois.pconline.com.cn/ipJson.jsp"
 
 const UNKNOWN = "XX XX"
 
-//获取真实地址
+//GetRealAddressByIP 获取真实地址
 func GetRealAddressByIP(ip string) string {
 	if ip == "127.0.0.1" || ip == "localhost" {
 		return "内部IP"
 	}
 	url := fmt.Sprintf("%s?ip=%s&json=true", ipurl, ip)
+
 	res := httpclient.NewRequest(url).Get()
 	if res == nil || res.StatusCode != 200 {
 		return UNKNOWN

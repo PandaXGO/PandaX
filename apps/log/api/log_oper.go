@@ -31,7 +31,7 @@ func (l *LogOperApi) GetOperLogList(rc *ctx.ReqCtx) {
 	operName := rc.GinCtx.Query("operName")
 	title := rc.GinCtx.Query("title")
 	list, total := l.LogOperApp.FindListPage(pageNum, pageSize, entity.LogOper{BusinessType: businessType, OperName: operName, Title: title})
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

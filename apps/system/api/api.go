@@ -63,7 +63,7 @@ func (s *SystemApiApi) GetApiList(rc *ctx.ReqCtx) {
 	apiGroup := rc.GinCtx.Query("apiGroup")
 	api := entity.SysApi{Path: path, Description: description, Method: method, ApiGroup: apiGroup}
 	list, total := s.ApiApp.FindListPage(pageNum, pageSize, api)
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

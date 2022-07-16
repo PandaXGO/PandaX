@@ -2,27 +2,26 @@
   <div class="app-container">
     <el-card shadow="always">
     <!-- 查询 -->
-      <el-form
+    <el-form
       :model="queryParams"
       ref="queryForm"
       :inline="true"
       label-width="68px"
     >
     {{- range $index, $column := .Columns -}}
-    {{- if eq $column.IsRequired "1" -}}
+    {{- if and (eq $column.IsQuery "1") (ne $column.IsPk "1") (ne $column.JsonField "updateTime") (ne $column.JsonField "deleteTime") -}}
     {{- if eq $column.HtmlType "input" "textarea" }}
     <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
     <el-input
        v-model="queryParams.{{$column.JsonField}}"
        placeholder="请输入{{$column.ColumnComment}}"
        clearable
-       size="small"
        @keyup.enter.native="handleQuery"
     />
      </el-form-item>
-     {{- else if and (eq $column.HtmlType "select" "radio" "checkbox") (ne $column.DictType "") }}
+     {{- else if and (eq $column.HtmlType "switch" "select" "radio" "checkbox") (ne $column.DictType "") }}
      <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
-       <el-select v-model="queryParams.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}" clearable size="small">
+       <el-select v-model="queryParams.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}" clearable>
            <el-option
                v-for="dict in {{$column.JsonField}}Options"
                :key="dict.dictValue"
@@ -31,54 +30,48 @@
            />
        </el-select>
      </el-form-item>
-     {{- else }}
+     {{- else if eq $column.HtmlType "datetime" }}
      <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
-       <el-select v-model="queryParams.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}" clearable size="small">
-           <el-option label="请选择字典生成" value="" />
-       </el-select>
+       <el-date-picker clearable style="width: 200px"
+             v-model="queryParams.{{$column.JsonField}}"
+             type="datetime"
+             placeholder="选择{{$column.ColumnComment}}">
+       </el-date-picker>
      </el-form-item>
      {{- end -}}
      {{- end -}}
      {{- end }}
      <el-form-item>
-       <el-button
-               type="primary"
-               size="mini"
-               @click="handleQuery"
-       >
-         <SvgIcon name="elementSearch" />
-         搜索</el-button>
-       <el-button size="mini" @click="resetQuery">
+       <el-button type="primary" @click="handleQuery">
+         <SvgIcon name="elementSearch" />搜索</el-button>
+       <el-button @click="resetQuery">
          <SvgIcon name="elementRefresh" />
          重置
        </el-button>
      </el-form-item>
     </el-form>
-    <!-- 操作按钮 -->
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          size="mini"
-          v-auth="'{{.PackageName}}:{{.BusinessName}}:add'"
-          @click="onOpenAddModule"
-          ><SvgIcon name="elementPlus" />新增</el-button
-        >
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          size="mini"
-          v-auth="'{{.PackageName}}:{{.BusinessName}}:delete'"
-          :disabled="multiple"
-          @click="onTabelRowDel"
-          ><SvgIcon name="elementDelete" />删除</el-button
-        >
-      </el-col>
-    </el-row>
-
+    </el-card>
+    <el-card class="box-card">
+        <template #header>
+           <div class="card-header">
+             <span class="card-header-text">岗位列表</span>
+             <div>
+               <el-button
+                  type="primary"
+                  plain
+                  v-auth="'{{.PackageName}}:{{.BusinessName}}:add'"
+                  @click="onOpenAddModule"
+                  ><SvgIcon name="elementPlus" />新增</el-button>
+               <el-button
+                 type="danger"
+                 plain
+                 v-auth="'{{.PackageName}}:{{.BusinessName}}:delete'"
+                 :disabled="multiple"
+                 @click="onTabelRowDel"
+                 ><SvgIcon name="elementDelete" />删除</el-button>
+             </div>
+           </div>
+        </template>
     <!--数据表格-->
     <el-table
       v-loading="loading"
@@ -107,7 +100,8 @@
       {{- if ne $column.ColumnComment "" }}
       <el-table-column label="{{$column.ColumnComment}}" align="center" prop="{{$column.JsonField}}" />
       {{- end -}}
-      {{- end -}}{{- end }}
+      {{- end -}}
+      {{- end }}
       <el-table-column
         label="操作"
         align="center"
@@ -115,15 +109,12 @@
       >
         <template #default="scope">
           <el-button
-            size="mini"
-            type="text"
+            text type="primary"
             v-auth="'{{.PackageName}}:{{.BusinessName}}:edit'"
             @click="onOpenEditModule(scope.row)"
             ><SvgIcon name="elementEdit" />修改</el-button>
           <el-button
-            v-if="scope.row.parentId != 0"
-            size="mini"
-            type="text"
+            text type="primary"
             v-auth="'{{.PackageName}}:{{.BusinessName}}:delete'"
             @click="onTabelRowDel(scope.row)"
             ><SvgIcon name="elementDelete" />删除</el-button>
@@ -132,16 +123,16 @@
     </el-table>
     <!-- 分页设置-->
     <div v-show="total > 0">
-      <el-divider></el-divider>
-      <el-pagination
-              background
-              :total="total"
-              :current-page="queryParams.pageNum"
-              :page-size="queryParams.pageSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-      />
+        <el-divider></el-divider>
+        <el-pagination
+            background
+            :total="total"
+            :current-page="queryParams.pageNum"
+            :page-size="queryParams.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+        />
     </div>
     </el-card>
     <!-- 添加或修改岗位对话框 -->
@@ -159,11 +150,11 @@ import {
   onUnmounted,
 } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
-import { list{{.ClassName}}, del{{.ClassName}} } from "/@/api/{{.PackageName}}/{{.BusinessName}}";
+import { list{{.FunctionName}}, del{{.FunctionName}} } from "@/api/{{.PackageName}}/{{.BusinessName}}";
 import EditModule from "./component/editModule.vue";
 
 export default {
-  name: "{{.ClassName}}",
+  name: "{{.FunctionName}}",
   components: { EditModule },
   setup() {
     const { proxy } = getCurrentInstance() as any;
@@ -179,7 +170,7 @@ export default {
       multiple: true,
       // 弹出层标题
       title: "",
-      // 岗位表格数据
+      // 表格数据
       tableData: [],
       // 总条数
       total: 0,
@@ -197,17 +188,17 @@ export default {
         pageSize: 10,
         // 以下为参数
         {{- range $index, $column := .Columns -}}
-        {{- if eq $column.IsRequired "1" }}
+        {{- if eq $column.IsQuery "1" }}
         {{$column.JsonField}}: undefined,
         {{- end }}
         {{- end }}
       },
     });
 
-    /** 查询岗位列表 */
+    /** 查询列表 */
     const handleQuery = () => {
       state.loading = true;
-      list{{.ClassName}}(state.queryParams).then((response) => {
+      list{{.FunctionName}}(state.queryParams).then((response:any) => {
         state.tableData = response.data.data;
         state.total = response.data.total;
         state.loading = false;
@@ -215,7 +206,11 @@ export default {
     };
     /** 重置按钮操作 */
     const resetQuery = () => {
-      //state.queryParams.name = undefined;
+       {{- range $index, $column := .Columns -}}
+       {{- if eq $column.IsQuery "1" }}
+       state.queryParams.{{$column.JsonField}} = undefined;
+       {{- end }}
+       {{- end }}
       handleQuery();
     };
 
@@ -239,26 +234,26 @@ export default {
     // 打开新增弹窗
     const onOpenAddModule = (row: object) => {
       row = [];
-      state.title = "添加{{.FunctionName}}";
+      state.title = "添加{{.TableComment}}";
       editModuleRef.value.openDialog(row);
     };
     // 打开编辑弹窗
     const onOpenEditModule = (row: object) => {
-      state.title = "修改{{.FunctionName}}";
+      state.title = "修改{{.TableComment}}";
       editModuleRef.value.openDialog(row);
     };
     /** 删除按钮操作 */
     const onTabelRowDel = (row: any) => {
       const {{.PkJsonField}}s = row.{{.PkJsonField}} || state.ids;
       ElMessageBox({
-        message: '是否确认删除岗位编号为"' + {{.PkJsonField}}s + '"的数据项?',
+        message: '是否确认删除编号为"' + {{.PkJsonField}}s + '"的数据项?',
         title: "警告",
         showCancelButton: true,
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then(function () {
-        return del{{.ClassName}}({{.PkJsonField}}s).then(() => {
+        return del{{.FunctionName}}({{.PkJsonField}}s).then(() => {
           handleQuery();
           ElMessage.success("删除成功");
         });
@@ -282,13 +277,13 @@ export default {
       {{- end -}}
       {{- end}}
 
-      proxy.mittBus.on("onEdit{{.ClassName}}Module", (res: any) => {
+      proxy.mittBus.on("onEdit{{.FunctionName}}Module", (res: any) => {
         handleQuery();
       });
     });
     // 页面卸载时
     onUnmounted(() => {
-      proxy.mittBus.off("onEdit{{.ClassName}}Module");
+      proxy.mittBus.off("onEdit{{.FunctionName}}Module");
     });
     return {
       editModuleRef,

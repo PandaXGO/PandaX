@@ -29,5 +29,5 @@ type Postgresql struct {
 }
 
 func (m *Postgresql) PgDsn() string {
-	return fmt.Sprintf("host=%s port=%d user=%s"+" password=%s dbname=%s sslmode=disable", m.Host, m.Port, m.Username, m.Password, m.Dbname)
+	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", m.Host, m.Port, m.Username, m.Password, m.Dbname)
 }

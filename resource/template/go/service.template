@@ -4,7 +4,7 @@
 // 生成人：{{.FunctionAuthor}}
 // ==========================================================================
 
-package service
+package services
 
 import (
     "pandax/apps/{{.PackageName}}/entity"
@@ -53,25 +53,62 @@ func (m *{{.BusinessName}}ModelImpl) FindListPage(page, pageSize int, data entit
 	// 此处填写 where参数判断
 	{{- range $index, $column := .Columns -}}
 	{{- if eq $column.IsQuery "1" -}}
-    {{ if eq $column.QueryType "LIKE" }}
+    {{- if eq $column.QueryType "LIKE" }}
     if data.{{$column.GoField}} != "" {
         db = db.Where("{{$column.ColumnName}} like ?", "%"+data.{{$column.GoField}}+"%")
     }
     {{- end -}}
-    {{- if eq $column.QueryType "EQ" -}}
+    {{- if or (eq $column.QueryType "EQ") (eq $column.QueryType "NE") -}}
     {{- if eq $column.GoType "string" }}
     if data.{{$column.GoField}} != "" {
-        m = m.Where("{{$column.ColumnName}} = ?", data.{{$column.GoField}})
+        {{- if eq $column.QueryType "EQ" }}
+        db = db.Where("{{$column.ColumnName}} = ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "NE"}}
+        db = db.Where("{{$column.ColumnName}} != ?", data.{{$column.GoField}})
+        {{- end }}
     }
     {{- else if or (eq $column.GoType "int") (eq $column.GoType "int64") (eq $column.GoType "uint") (eq $column.GoType "uint64") }}
     if data.{{$column.GoField}} != 0 {
-        m = m.Where("{{$column.ColumnName}} = ?", data.{{$column.GoField}})
+        {{- if eq $column.QueryType "EQ" }}
+        db = db.Where("{{$column.ColumnName}} = ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "NE"}}
+        db = db.Where("{{$column.ColumnName}} != ?", data.{{$column.GoField}})
+        {{- end }}
+    }
+    {{- end -}}
+    {{- end -}}
+    {{- if or (eq $column.QueryType "GT") (eq $column.QueryType "GTE") (eq $column.QueryType "LT") (eq $column.QueryType "LTE")}}
+    {{- if eq $column.GoType "Time" }}
+    if data.{{$column.GoField}}.Unix() > 0 {
+        {{- if eq $column.QueryType "GT" }}
+        db = db.Where("{{$column.ColumnName}} > ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "GTE"}}
+        db = db.Where("{{$column.ColumnName}} >= ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "LT"}}
+        db = db.Where("{{$column.ColumnName}} < ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "LTE"}}
+        db = db.Where("{{$column.ColumnName}} <= ?", data.{{$column.GoField}})
+        {{- end }}
+    }
+    {{- else if or (eq $column.GoType "int") (eq $column.GoType "int64") (eq $column.GoType "uint") (eq $column.GoType "uint64") }}
+    if data.{{$column.GoField}} != 0 {
+        {{- if eq $column.QueryType "GT" }}
+        db = db.Where("{{$column.ColumnName}} > ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "GTE"}}
+        db = db.Where("{{$column.ColumnName}} >= ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "LT"}}
+        db = db.Where("{{$column.ColumnName}} < ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "LTE"}}
+        db = db.Where("{{$column.ColumnName}} <= ?", data.{{$column.GoField}})
+        {{- end }}
     }
     {{- end -}}
     {{- end -}}
     {{- end -}}
+    {{- if eq $column.ColumnName "delete_time" }}
+    db.Where("delete_time IS NULL")
+    {{- end -}}
     {{- end}}
-	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
 	biz.ErrIsNil(err, "查询{{.TableComment}}分页列表失败")
@@ -89,20 +126,57 @@ func (m *{{.BusinessName}}ModelImpl) FindList(data entity.{{$model}}) *[]entity.
         db = db.Where("{{$column.ColumnName}} like ?", "%"+data.{{$column.GoField}}+"%")
     }
     {{- end -}}
-    {{- if eq $column.QueryType "EQ" -}}
+    {{- if or (eq $column.QueryType "EQ") (eq $column.QueryType "NE") -}}
     {{- if eq $column.GoType "string" }}
     if data.{{$column.GoField}} != "" {
+        {{- if eq $column.QueryType "EQ" }}
         db = db.Where("{{$column.ColumnName}} = ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "NE"}}
+        db = db.Where("{{$column.ColumnName}} != ?", data.{{$column.GoField}})
+        {{- end }}
     }
     {{- else if or (eq $column.GoType "int") (eq $column.GoType "int64") (eq $column.GoType "uint") (eq $column.GoType "uint64") }}
     if data.{{$column.GoField}} != 0 {
+        {{- if eq $column.QueryType "EQ" }}
         db = db.Where("{{$column.ColumnName}} = ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "NE"}}
+        db = db.Where("{{$column.ColumnName}} != ?", data.{{$column.GoField}})
+        {{- end }}
+    }
+    {{- end -}}
+    {{- end -}}
+    {{- if or (eq $column.QueryType "GT") (eq $column.QueryType "GTE") (eq $column.QueryType "LT") (eq $column.QueryType "LTE")}}
+    {{- if eq $column.GoType "Time" }}
+    if data.{{$column.GoField}}.Unix() > 0 {
+        {{- if eq $column.QueryType "GT" }}
+        db = db.Where("{{$column.ColumnName}} > ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "GTE"}}
+        db = db.Where("{{$column.ColumnName}} >= ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "LT"}}
+        db = db.Where("{{$column.ColumnName}} < ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "LTE"}}
+        db = db.Where("{{$column.ColumnName}} <= ?", data.{{$column.GoField}})
+        {{- end }}
+    }
+    {{- else if or (eq $column.GoType "int") (eq $column.GoType "int64") (eq $column.GoType "uint") (eq $column.GoType "uint64") }}
+    if data.{{$column.GoField}} != 0 {
+        {{- if eq $column.QueryType "GT" }}
+        db = db.Where("{{$column.ColumnName}} > ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "GTE"}}
+        db = db.Where("{{$column.ColumnName}} >= ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "LT"}}
+        db = db.Where("{{$column.ColumnName}} < ?", data.{{$column.GoField}})
+        {{- else if $column.QueryType "LTE"}}
+        db = db.Where("{{$column.ColumnName}} <= ?", data.{{$column.GoField}})
+        {{- end }}
     }
     {{- end -}}
     {{- end -}}
     {{- end -}}
+    {{- if eq $column.ColumnName "delete_time" }}
+    db.Where("delete_time IS NULL")
+    {{- end -}}
     {{- end}}
-	db.Where("delete_time IS NULL")
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询{{.TableComment}}列表失败")
 	return &list
 }

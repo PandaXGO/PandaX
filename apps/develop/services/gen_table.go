@@ -41,7 +41,7 @@ var DevGenTableModelDao SysGenTableModel = &devGenTableModelImpl{
 
 func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data entity.DBTables) (*[]entity.DBTables, int64) {
 	list := make([]entity.DBTables, 0)
-	pgdata := make([]map[string]interface{}, 0)
+	pgdata := make([]map[string]any, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
 	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType != "postgresql" {
@@ -231,5 +231,6 @@ func (e *devGenTableModelImpl) DeleteTables(tableId int64) bool {
 func (m *devGenTableModelImpl) Delete(configIds []int64) {
 	err := global.Db.Table(m.table).Delete(&entity.DevGenTable{}, "table_id in (?)", configIds).Error
 	biz.ErrIsNil(err, "删除生成代码信息失败")
+	DevTableColumnModelDao.Delete(configIds)
 	return
 }

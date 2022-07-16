@@ -31,7 +31,7 @@ func (l *LogJobApi) GetJobLogList(rc *ctx.ReqCtx) {
 	status := rc.GinCtx.Query("status")
 
 	list, total := l.LogJobApp.FindListPage(pageNum, pageSize, entity.LogJob{Name: name, JobGroup: jobGroup, Status: status})
-	rc.ResData = map[string]interface{}{
+	rc.ResData = map[string]any{
 		"data":     list,
 		"total":    total,
 		"pageNum":  pageNum,

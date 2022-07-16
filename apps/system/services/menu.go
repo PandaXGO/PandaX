@@ -84,9 +84,8 @@ func (m *sysMenuModelImpl) FindList(data entity.SysMenu) *[]entity.SysMenu {
 }
 
 func (m *sysMenuModelImpl) Update(data entity.SysMenu) *entity.SysMenu {
-	err := global.Db.Table(m.table).Updates(&data).Error
+	err := global.Db.Table(m.table).Select("*").Updates(data).Error
 	biz.ErrIsNil(err, "修改菜单失败")
-	//m.InitPaths(&data)
 	return &data
 }
 

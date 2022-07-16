@@ -44,7 +44,7 @@ type aliOss struct {
 func NewAliOss(c AliConfig) Driver {
 	bucket, err := c.CreateBucket()
 	if err != nil {
-		panic(err)
+		panic(any(err))
 	}
 	return &aliOss{
 		bucket: bucket,

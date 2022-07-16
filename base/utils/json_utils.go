@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 )
 
-func Json2Map(jsonStr string) map[string]interface{} {
-	var res map[string]interface{}
+func Json2Map(jsonStr string) map[string]any {
+	var res map[string]any
 	if jsonStr == "" {
 		return res
 	}

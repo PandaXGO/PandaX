@@ -1,8 +1,8 @@
 <template>
-  <div class="system-menu-container">
-    <el-dialog v-model="isShowDialog" width="769px">
+  <div class="system-{{.BusinessName}}-container">
+    <el-dialog v-model="isShowDialog" width="769px" center>
       <template #title>
-        <div style="font-size: large" v-drag="['.system-menu-container .el-dialog', '.system-menu-container .el-dialog__header']">{{"{{"}}title{{"}}"}}</div>
+        <div style="font-size: large" v-drag="['.system-{{.BusinessName}}-container .el-dialog', '.system-{{.BusinessName}}-container .el-dialog__header']">{{"{{"}}title{{"}}"}}</div>
       </template>
       <el-form
         :model="ruleForm"
@@ -11,14 +11,18 @@
         label-width="80px"
       >
       {{- range $index, $column := .Columns -}}
-      {{- if and (eq $column.IsInsert "1") (ne $column.IsPk "1") -}}
+      {{- if and (eq $column.IsInsert "1") (ne $column.IsPk "1")  (ne $column.JsonField "createTime") (ne $column.JsonField "updateTime") (ne $column.JsonField "deleteTime") -}}
       {{- if eq $column.HtmlType "input" }}
+      <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+          <el-input v-model="ruleForm.{{$column.JsonField}}" placeholder="请输入{{$column.ColumnComment}}" />
+      </el-form-item>
+      {{- else if eq $column.HtmlType "switch" }}
       el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
-          <el-input v-model="ruleForm.{{$column.HtmlField}}" placeholder="请输入{{$column.ColumnComment}}" />
+          <el-switch v-model="ruleForm.{{$column.HtmlField}}" />
       </el-form-item>
       {{- else if eq $column.HtmlType "select" }}
           {{if ne $column.DictType ""}}
-          el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+          <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
              <el-select v-model="ruleForm.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}">
                  <el-option
                      v-for="dict in {{$column.JsonField}}Options"
@@ -42,11 +46,10 @@
           {{- end }}
       {{- else if eq $column.HtmlType "datetime" }}
       <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
-          <el-date-picker clearable size="small" style="width: 200px"
-              v-model="ruleForm.{{$column.JsonField}}"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="选择{{$column.ColumnComment}}">
+          <el-date-picker clearable style="width: 200px"
+                 v-model="ruleForm.{{$column.JsonField}}"
+                 type="datetime"
+                 placeholder="选择{{$column.ColumnComment}}">
           </el-date-picker>
       </el-form-item>
       {{- else if eq $column.HtmlType "textarea" -}}
@@ -69,10 +72,8 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="onCancel" size="small">取 消</el-button>
-          <el-button type="primary" @click="onSubmit" size="small"
-            >编 辑</el-button
-          >
+          <el-button @click="onCancel">取 消</el-button>
+          <el-button type="primary" @click="onSubmit">编 辑</el-button>
         </span>
       </template>
     </el-dialog>
@@ -81,7 +82,7 @@
 
 <script lang="ts">
 import { reactive, toRefs, ref, unref, getCurrentInstance } from "vue";
-import { update{{.ClassName}}, add{{.ClassName}} } from "/@/api/{{.PackageName}}/{{.BusinessName}}";
+import { update{{.FunctionName}}, add{{.FunctionName}} } from "@/api/{{.PackageName}}/{{.BusinessName}}";
 import { ElMessage } from "element-plus";
 
 export default {
@@ -99,9 +100,19 @@ export default {
     const state = reactive({
       // 是否显示弹出层
       isShowDialog: false,
-
+      loading: false,
       ruleForm: {
-
+      {{- range $index, $column := .Columns -}}
+      {{- if or (eq $column.IsInsert "1") (eq $column.IsPk "1") }}
+      {{- if or (eq $column.GoType "int") (eq $column.GoType "int64")}}
+      {{$column.JsonField}}: 0,
+      {{- else if eq $column.GoType "string"}}
+      {{$column.JsonField}}: "",
+      {{- else }}
+      {{$column.JsonField}}: undefined,
+      {{- end}}
+      {{- end}}
+      {{- end}}
       },
       {{- range $index, $column := .Columns -}}
       {{- if ne $column.DictType "" }}
@@ -111,20 +122,30 @@ export default {
       {{- end }}
       // 表单校验
       ruleRules: {
-
+       {{- range $index, $column := .Columns -}}
+       {{- if eq $column.IsRequired "1" }}
+        {{$column.JsonField}}: [
+          { required: true, message: "{{$column.ColumnComment}}不能为空", trigger: "blur" }
+        ],
+       {{- end}}
+       {{- end}}
       },
     });
     // 打开弹窗
     const openDialog = (row: any) => {
       if (row.{{.PkJsonField}} && row.{{.PkJsonField}} != undefined && row.{{.PkJsonField}} != 0) {
-        state.ruleForm = row;
         state.ruleForm.{{.PkJsonField}}=row.{{.PkJsonField}}; // ID
+        {{- range $index, $column := .Columns -}}
+        {{- if eq $column.IsInsert "1" }}
+        state.ruleForm.{{$column.JsonField}} = row.{{$column.JsonField}}
+        {{- end}}
+        {{- end}}
         // 更多参数
       } else {
         initForm();
       }
       state.isShowDialog = true;
-
+      state.loading = false;
      {{- range $index, $column := .Columns -}}
      {{- if ne $column.DictType "" }}
      proxy.getDicts("{{$column.DictType}}").then((response: any) => {
@@ -136,7 +157,7 @@ export default {
 
     // 关闭弹窗
     const closeDialog = (row?: object) => {
-      proxy.mittBus.emit("onEdit{{.ClassName}}Module", row);
+      proxy.mittBus.emit("onEdit{{.FunctionName}}Module", row);
       state.isShowDialog = false;
     };
     // 取消
@@ -150,16 +171,15 @@ export default {
       if (!formWrap) return;
       formWrap.validate((valid: boolean) => {
         if (valid) {
-          if (
-            state.ruleForm.{{.PkJsonField}} != undefined &&
-            state.ruleForm.{{.PkJsonField}} != 0
-          ) {
-            update{{.ClassName}}(state.ruleForm).then((response) => {
+          state.loading = true;
+          if (state.ruleForm.{{.PkJsonField}} != undefined && state.ruleForm.{{.PkJsonField}} != 0) {
+            update{{.FunctionName}}(state.ruleForm).then((response) => {
               ElMessage.success("修改成功");
+              state.loading = false;
               closeDialog(state.ruleForm); // 关闭弹窗
             });
           } else {
-            add{{.ClassName}}(state.ruleForm).then((response) => {
+            add{{.FunctionName}}(state.ruleForm).then((response) => {
               ElMessage.success("新增成功");
               closeDialog(state.ruleForm); // 关闭弹窗
             });
@@ -170,7 +190,17 @@ export default {
     // 表单初始化，方法：`resetFields()` 无法使用
     const initForm = () => {
       state.ruleForm.{{.PkJsonField}} = 0; // ID
-      // 更多参数初始化
+      {{- range $index, $column := .Columns -}}
+      {{- if or (eq $column.IsInsert "1") (eq $column.IsPk "1") }}
+      {{- if or (eq $column.GoType "int") (eq $column.GoType "int64")}}
+      state.ruleForm.{{$column.JsonField}} = 0;
+      {{- else if eq $column.GoType "string"}}
+      state.ruleForm.{{$column.JsonField}} = "";
+      {{- else }}
+      state.ruleForm.{{$column.JsonField}} = undefined;
+      {{- end}}
+      {{- end}}
+      {{- end}}
     };
 
     return {
