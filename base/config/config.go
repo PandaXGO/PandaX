@@ -8,23 +8,19 @@ import (
 	"path/filepath"
 )
 
-// 配置文件映射对象
-var Conf *Config
-
-func init() {
-	configFilePath := flag.String("c", "./config.yml", "配置文件路径，默认为可执行文件目录")
-	flag.Parse()
+func InitConfig(configFilePath string) *Config {
 	// 获取启动参数中，配置文件的绝对路径
-	path, _ := filepath.Abs(*configFilePath)
+	path, _ := filepath.Abs(configFilePath)
 	startConfigParam = &CmdConfigParam{ConfigFilePath: path}
 	// 读取配置文件信息
 	yc := &Config{}
 	if err := utils.LoadYml(startConfigParam.ConfigFilePath, yc); err != nil {
-		panic(fmt.Sprintf("读取配置文件[%s]失败: %s", startConfigParam.ConfigFilePath, err.Error()))
+		panic(any(fmt.Sprintf("读取配置文件[%s]失败: %s", startConfigParam.ConfigFilePath, err.Error())))
 	}
 	// 校验配置文件内容信息
 	yc.Valid()
-	Conf = yc
+	return yc
+
 }
 
 // 启动配置参数

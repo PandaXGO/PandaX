@@ -3,7 +3,7 @@ package services
 import (
 	"pandax/apps/log/entity"
 	"pandax/base/biz"
-	"pandax/base/global"
+	"pandax/pkg/global"
 )
 
 type (

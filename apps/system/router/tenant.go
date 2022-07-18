@@ -23,7 +23,10 @@ func InitSysTenantRouter(router *gin.RouterGroup) {
 	routerGroup.GET("list", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(SysTenantListLog).Handle(s.GetSysTenantsList)
 	})
-
+	SysTenantAllLog := ctx.NewLogInfo("获取SysTenant列表")
+	routerGroup.GET("lists", func(c *gin.Context) {
+		ctx.NewReqCtxWithGin(c).WithLog(SysTenantAllLog).Handle(s.GetSysTenantsAll)
+	})
 	SysTenantLog := ctx.NewLogInfo("获取SysTenant信息")
 	routerGroup.GET(":tenantId", func(c *gin.Context) {
 		ctx.NewReqCtxWithGin(c).WithLog(SysTenantLog).Handle(s.GetSysTenants)

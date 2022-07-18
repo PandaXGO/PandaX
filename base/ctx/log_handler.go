@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"pandax/base/biz"
-	"pandax/base/logger"
 	"pandax/base/utils"
+	"pandax/pkg/global"
 	"reflect"
 	"runtime/debug"
 
@@ -42,10 +42,10 @@ func LogHandler(rc *ReqCtx) error {
 	lfs[req.Method] = req.URL.Path
 
 	if err := rc.Err; err != nil {
-		logger.Log.WithFields(lfs).Error(getErrMsg(rc, err))
+		global.Log.WithFields(lfs).Error(getErrMsg(rc, err))
 		return nil
 	}
-	logger.Log.WithFields(lfs).Info(getLogMsg(rc))
+	global.Log.WithFields(lfs).Info(getLogMsg(rc))
 	return nil
 }
 

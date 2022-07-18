@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"pandax/apps/system/entity"
 	"pandax/base/biz"
-	"pandax/base/global"
+	"pandax/pkg/global"
 )
 
 type (

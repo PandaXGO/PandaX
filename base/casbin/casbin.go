@@ -4,16 +4,15 @@ import (
 	"github.com/casbin/casbin/v2"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
 	"pandax/base/biz"
-	"pandax/base/config"
-	"pandax/base/global"
+	"pandax/pkg/global"
 	"sync"
 )
 
-func UpdateCasbin(roleKey string, casbinInfos []CasbinRule) error {
-	ClearCasbin(0, roleKey)
+func UpdateCasbin(tenantId string, roleKey string, casbinInfos []CasbinRule) error {
+	ClearCasbin(0, tenantId, roleKey)
 	rules := [][]string{}
 	for _, v := range casbinInfos {
-		rules = append(rules, []string{roleKey, v.Path, v.Method})
+		rules = append(rules, []string{tenantId, roleKey, v.Path, v.Method})
 	}
 	e := Casbin()
 	success, _ := e.AddPolicies(rules)
@@ -22,20 +21,20 @@ func UpdateCasbin(roleKey string, casbinInfos []CasbinRule) error {
 }
 
 func UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod string) {
-	err := global.Db.Table("casbin_rule").Model(&CasbinRule{}).Where("v1 = ? AND v2 = ?", oldPath, oldMethod).Updates(map[string]any{
-		"v1": newPath,
-		"v2": newMethod,
+	err := global.Db.Table("casbin_rule").Model(&CasbinRule{}).Where("v2 = ? AND v3 = ?", oldPath, oldMethod).Updates(map[string]any{
+		"v2": newPath,
+		"v3": newMethod,
 	}).Error
 	biz.ErrIsNil(err, "修改api失败")
 }
 
-func GetPolicyPathByRoleId(roleKey string) (pathMaps []CasbinRule) {
+func GetPolicyPathByRoleId(tenantId, roleKey string) (pathMaps []CasbinRule) {
 	e := Casbin()
-	list := e.GetFilteredPolicy(0, roleKey)
+	list := e.GetFilteredPolicy(0, tenantId, roleKey)
 	for _, v := range list {
 		pathMaps = append(pathMaps, CasbinRule{
-			Path:   v[1],
-			Method: v[2],
+			Path:   v[2],
+			Method: v[3],
 		})
 	}
 	return pathMaps
@@ -57,7 +56,7 @@ func Casbin() *casbin.SyncedEnforcer {
 	once.Do(func() {
 		a, err := gormadapter.NewAdapterByDB(global.Db)
 		biz.ErrIsNil(err, "新建权限适配器失败")
-		syncedEnforcer, err = casbin.NewSyncedEnforcer(config.Conf.Casbin.ModelPath, a)
+		syncedEnforcer, err = casbin.NewSyncedEnforcer(global.Conf.Casbin.ModelPath, a)
 		biz.ErrIsNil(err, "新建权限适配器失败")
 	})
 	_ = syncedEnforcer.LoadPolicy()

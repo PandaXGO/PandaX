@@ -11,9 +11,8 @@ import (
 	sysEntity "pandax/apps/system/entity"
 	sysServices "pandax/apps/system/services"
 	"pandax/base/biz"
-	"pandax/base/config"
-	"pandax/base/global"
 	"pandax/base/utils"
+	"pandax/pkg/global"
 	"strconv"
 	"strings"
 	"sync"
@@ -413,9 +412,9 @@ func GenCode(tableId int64) {
 	kgo.KFile.Mkdir("./apps/"+tab.PackageName+"/entity/", os.ModePerm)
 	kgo.KFile.Mkdir("./apps/"+tab.PackageName+"/router/", os.ModePerm)
 	kgo.KFile.Mkdir("./apps/"+tab.PackageName+"/services/", os.ModePerm)
-	kgo.KFile.Mkdir(config.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/", os.ModePerm)
-	kgo.KFile.Mkdir(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/", os.ModePerm)
-	kgo.KFile.Mkdir(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/"+"component"+"/", os.ModePerm)
+	kgo.KFile.Mkdir(global.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/", os.ModePerm)
+	kgo.KFile.Mkdir(global.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/", os.ModePerm)
+	kgo.KFile.Mkdir(global.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/"+"component"+"/", os.ModePerm)
 
 	var b1 bytes.Buffer
 	err = t1.Execute(&b1, tab)
@@ -436,9 +435,9 @@ func GenCode(tableId int64) {
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/services/"+tab.TableName+".go", b2.Bytes())
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/api/"+tab.TableName+".go", b3.Bytes())
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/router/"+tab.TableName+".go", b4.Bytes())
-	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/"+tab.BusinessName+".js", b5.Bytes())
-	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/index.vue", b6.Bytes())
-	kgo.KFile.WriteFile(config.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/"+"component"+"/editModule.vue", b7.Bytes())
+	kgo.KFile.WriteFile(global.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/"+tab.BusinessName+".js", b5.Bytes())
+	kgo.KFile.WriteFile(global.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/index.vue", b6.Bytes())
+	kgo.KFile.WriteFile(global.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/"+"component"+"/editModule.vue", b7.Bytes())
 }
 
 // GenConfigure 生成菜单，api

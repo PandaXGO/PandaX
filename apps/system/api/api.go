@@ -8,6 +8,7 @@ import (
 	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
+	"strconv"
 )
 
 type SystemApiApi struct {
@@ -120,5 +121,6 @@ func (s *SystemApiApi) GetAllApis(rc *ctx.ReqCtx) {
 // @Router /casbin/getPolicyPathByRoleId [get]
 func (s *SystemApiApi) GetPolicyPathByRoleId(rc *ctx.ReqCtx) {
 	roleKey := rc.GinCtx.Query("roleKey")
-	rc.ResData = casbin.GetPolicyPathByRoleId(roleKey)
+	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
+	rc.ResData = casbin.GetPolicyPathByRoleId(tenantId, roleKey)
 }

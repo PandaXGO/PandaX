@@ -3,7 +3,7 @@ package services
 import (
 	"pandax/apps/resource/entity"
 	"pandax/base/biz"
-	"pandax/base/global"
+	"pandax/pkg/global"
 )
 
 /**

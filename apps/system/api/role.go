@@ -7,11 +7,11 @@ import (
 	services "pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/casbin"
-	"pandax/base/config"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
-	"pandax/base/global"
 	"pandax/base/utils"
+	"pandax/pkg/global"
+	"strconv"
 )
 
 type RoleApi struct {
@@ -79,11 +79,13 @@ func (r *RoleApi) InsertRole(rc *ctx.ReqCtx) {
 	var role entity.SysRole
 	ginx.BindJsonAndValid(rc.GinCtx, &role)
 	role.CreateBy = rc.LoginAccount.UserName
+	role.TenantId = rc.LoginAccount.TenantId
 	insert := r.RoleApp.Insert(role)
 	role.RoleId = insert.RoleId
 	r.RoleMenuApp.Insert(insert.RoleId, role.MenuIds)
 	//添加权限
-	casbin.UpdateCasbin(role.RoleKey, role.ApiIds)
+	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
+	casbin.UpdateCasbin(tenantId, role.RoleKey, role.ApiIds)
 }
 
 // @Summary 修改用户角色
@@ -106,7 +108,8 @@ func (r *RoleApi) UpdateRole(rc *ctx.ReqCtx) {
 	// 添加角色菜单绑定
 	r.RoleMenuApp.Insert(role.RoleId, role.MenuIds)
 	//修改api权限
-	casbin.UpdateCasbin(role.RoleKey, role.ApiIds)
+	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
+	casbin.UpdateCasbin(tenantId, role.RoleKey, role.ApiIds)
 }
 
 // @Summary 修改用户角色状态
@@ -198,7 +201,7 @@ func (p *RoleApi) ExportRole(rc *ctx.ReqCtx) {
 	roleKey := rc.GinCtx.Query("roleKey")
 
 	list := p.RoleApp.FindList(entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey})
-	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, filename)
+	fileName := utils.GetFileName(global.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
 	rc.Download(fileName)
 }

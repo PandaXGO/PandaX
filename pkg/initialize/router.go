@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"fmt"
+	"pandax/pkg/global"
 
 	ginSwagger "github.com/swaggo/gin-swagger"
 
@@ -13,8 +14,7 @@ import (
 	resRouter "pandax/apps/resource/router"
 	sysRouter "pandax/apps/system/router"
 
-	"pandax/base/config"
-	"pandax/middleware"
+	"pandax/pkg/middleware"
 
 	_ "pandax/docs"
 
@@ -25,7 +25,7 @@ import (
 
 func InitRouter() *gin.Engine {
 	// server配置
-	serverConfig := config.Conf.Server
+	serverConfig := global.Conf.Server
 	gin.SetMode(serverConfig.Model)
 
 	var router = gin.New()

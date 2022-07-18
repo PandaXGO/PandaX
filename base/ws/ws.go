@@ -3,7 +3,7 @@ package ws
 import (
 	"encoding/json"
 	"net/http"
-	"pandax/base/global"
+	"pandax/pkg/global"
 	"time"
 
 	"github.com/gorilla/websocket"

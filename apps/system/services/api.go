@@ -6,7 +6,7 @@ import (
 	"pandax/apps/system/entity"
 	"pandax/base/biz"
 	"pandax/base/casbin"
-	"pandax/base/global"
+	"pandax/pkg/global"
 )
 
 type (

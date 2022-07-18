@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/didip/tollbooth"
 	"github.com/gin-gonic/gin"
-	"pandax/base/config"
+	"pandax/pkg/global"
 )
 
 /**
@@ -14,7 +14,7 @@ import (
 
 //限流中间件
 func Rate() gin.HandlerFunc {
-	lmt := tollbooth.NewLimiter(config.Conf.Server.Rate.RateNum, nil)
+	lmt := tollbooth.NewLimiter(global.Conf.Server.Rate.RateNum, nil)
 	lmt.SetMessage("已经超出接口请求限制，稍后再试.")
 	return func(c *gin.Context) {
 		httpError := tollbooth.LimitByRequest(lmt, c.Writer, c.Request)

@@ -1,8 +1,11 @@
 package ctx
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"pandax/base/biz"
 	"pandax/base/casbin"
+	"pandax/pkg/global"
+	"strconv"
 )
 
 type Permission struct {
@@ -34,7 +37,8 @@ func PermissionHandler(rc *ReqCtx) error {
 	if tokenStr == "" {
 		return biz.PermissionErr
 	}
-	loginAccount, err := ParseToken(tokenStr)
+	j := NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
+	loginAccount, err := j.ParseToken(tokenStr)
 	if err != nil || loginAccount == nil {
 		return biz.PermissionErr
 	}
@@ -45,7 +49,8 @@ func PermissionHandler(rc *ReqCtx) error {
 	}
 	e := casbin.Casbin()
 	// 判断策略中是否存在
-	success, _ := e.Enforce(loginAccount.RoleKey, rc.GinCtx.Request.URL.Path, rc.GinCtx.Request.Method)
+	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
+	success, err := e.Enforce(tenantId, loginAccount.RoleKey, rc.GinCtx.Request.URL.Path, rc.GinCtx.Request.Method)
 	if !success {
 		return biz.CasbinErr
 	}

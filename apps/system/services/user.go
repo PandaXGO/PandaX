@@ -5,7 +5,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"pandax/apps/system/entity"
 	"pandax/base/biz"
-	"pandax/base/global"
+	"pandax/pkg/global"
+	"time"
 )
 
 type (
@@ -31,12 +32,19 @@ var SysUserModelDao SysUserModel = &sysUserModelImpl{
 
 func (m *sysUserModelImpl) Login(u entity.Login) *entity.SysUser {
 	user := new(entity.SysUser)
+
 	err := global.Db.Table(m.table).Where("username = ? ", u.Username).Find(user)
 	biz.ErrIsNil(err.Error, "查询用户信息失败")
 
 	// 验证密码
 	b := kgo.KEncr.PasswordVerify([]byte(u.Password), []byte(user.Password))
 	biz.IsTrue(b, "密码错误")
+
+	//验证租户
+	if SysTenantModelDao.FindOne(user.TenantId).ExpireTime.Unix() < time.Now().Unix() {
+		biz.IsTrue(b, "租户已经过期")
+	}
+
 	return user
 }
 
@@ -61,27 +69,25 @@ func (m *sysUserModelImpl) FindOne(data entity.SysUser) *entity.SysUserView {
 	if data.UserId != 0 {
 		db = db.Where("user_id = ?", data.UserId)
 	}
-
+	if data.TenantId != 0 {
+		db = db.Where("tenant_id = ?", data.TenantId)
+	}
 	if data.Username != "" {
 		db = db.Where("username = ?", data.Username)
 	}
-
 	if data.Password != "" {
 		db = db.Where("password = ?", data.Password)
 	}
-
 	if data.RoleId != 0 {
 		db = db.Where("role_id = ?", data.RoleId)
 	}
-
 	if data.DeptId != 0 {
 		db = db.Where("dept_id = ?", data.DeptId)
 	}
-
 	if data.PostId != 0 {
 		db = db.Where("post_id = ?", data.PostId)
 	}
-	biz.ErrIsNil(db.First(resData).Error, "查询用户失败")
+	biz.ErrIsNil(db.Preload("SysTenants").First(resData).Error, "查询用户失败")
 
 	return resData
 }
@@ -96,7 +102,9 @@ func (m *sysUserModelImpl) FindListPage(page, pageSize int, data entity.SysUser)
 	if data.Username != "" {
 		db = db.Where("sys_users.username = ?", data.Username)
 	}
-
+	if data.TenantId != 0 {
+		db = db.Where("sys_users.tenant_id = ?", data.TenantId)
+	}
 	if data.NickName != "" {
 		db = db.Where("sys_users.nick_name like ?", "%"+data.NickName+"%")
 	}
@@ -113,7 +121,7 @@ func (m *sysUserModelImpl) FindListPage(page, pageSize int, data entity.SysUser)
 	}
 	db.Where("sys_users.delete_time IS NULL")
 	err := db.Count(&total).Error
-	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
+	err = db.Limit(pageSize).Offset(offset).Preload("SysTenants").Find(&list).Error
 	biz.ErrIsNil(err, "查询用户分页列表失败")
 	return &list, total
 }
@@ -126,7 +134,9 @@ func (m *sysUserModelImpl) FindList(data entity.SysUser) *[]entity.SysUserView {
 	if data.UserId != 0 {
 		db = db.Where("user_id = ?", data.UserId)
 	}
-
+	if data.TenantId != 0 {
+		db = db.Where("tenant_id = ?", data.TenantId)
+	}
 	if data.Username != "" {
 		db = db.Where("username = ?", data.Username)
 	}

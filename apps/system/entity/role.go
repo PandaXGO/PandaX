@@ -8,6 +8,7 @@ import (
 type SysRole struct {
 	model.BaseModel
 	RoleId    int64               `json:"roleId" gorm:"primary_key;AUTO_INCREMENT"`
+	TenantId  int64               `json:"tenantId" gorm:"type:int"`
 	RoleName  string              `json:"roleName" gorm:"type:varchar(128);comment:角色名称"`
 	Status    string              `json:"status" gorm:"type:varchar(1);comment:状态"`
 	RoleKey   string              `json:"roleKey" gorm:"type:varchar(128);comment:角色代码"`

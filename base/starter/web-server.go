@@ -1,16 +1,15 @@
 package starter
 
 import (
-	"pandax/base/config"
-	"pandax/base/global"
+	"pandax/pkg/global"
 
 	"github.com/gin-gonic/gin"
 )
 
 func RunWebServer(web *gin.Engine) {
-	server := config.Conf.Server
+	server := global.Conf.Server
 	port := server.GetPort()
-	if app := config.Conf.App; app != nil {
+	if app := global.Conf.App; app != nil {
 		global.Log.Infof("%s- Listening and serving HTTP on %s", app.GetAppInfo(), port)
 	} else {
 		global.Log.Infof("Listening and serving HTTP on %s", port)

@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"pandax/base/global"
 	"regexp"
 	"sync"
 )
@@ -33,7 +32,6 @@ func GetRegexp(pattern string) (regex *regexp.Regexp, err error) {
 	// it compiles the pattern and creates one.
 	regex, err = regexp.Compile(pattern)
 	if err != nil {
-		global.Log.Warnf(`regexp.Compile failed for pattern "%s"`, pattern)
 		return
 	}
 	// Cache the result object using writing lock.

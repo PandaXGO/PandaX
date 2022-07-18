@@ -5,11 +5,10 @@ import (
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 	"pandax/base/biz"
-	"pandax/base/config"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
-	"pandax/base/global"
 	"pandax/base/utils"
+	"pandax/pkg/global"
 )
 
 type DictApi struct {
@@ -132,7 +131,7 @@ func (p *DictApi) ExportDictType(rc *ctx.ReqCtx) {
 	dictType := rc.GinCtx.Query("dictType")
 
 	list := p.DictType.FindList(entity.SysDictType{Status: status, DictName: dictName, DictType: dictType})
-	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, filename)
+	fileName := utils.GetFileName(global.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
 	rc.Download(fileName)
 }

@@ -6,8 +6,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"pandax/base/config"
-	"pandax/base/global"
+	"pandax/pkg/global"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -23,7 +22,7 @@ func GormInit(ty string) *gorm.DB {
 	return nil
 }
 func GormMysql() *gorm.DB {
-	m := config.Conf.Mysql
+	m := global.Conf.Mysql
 	if m == nil || m.Dbname == "" {
 		global.Log.Panic("未找到数据库配置信息")
 		return nil
@@ -50,7 +49,7 @@ func GormMysql() *gorm.DB {
 }
 
 func GormPostgresql() *gorm.DB {
-	m := config.Conf.Postgresql
+	m := global.Conf.Postgresql
 	if m == nil || m.Dbname == "" {
 		global.Log.Panic("未找到数据库配置信息")
 		return nil

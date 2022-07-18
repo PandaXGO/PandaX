@@ -16,11 +16,10 @@ import (
 	"pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/captcha"
-	"pandax/base/config"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
-	"pandax/base/global"
 	"pandax/base/utils"
+	"pandax/pkg/global"
 	"strings"
 	"time"
 )
@@ -52,9 +51,10 @@ func (u *UserApi) GenerateCaptcha(c *gin.Context) {
 // @Router /system/user/refreshToken [get]
 func (u *UserApi) RefreshToken(rc *ctx.ReqCtx) {
 	tokenStr := rc.GinCtx.Request.Header.Get("X-TOKEN")
-	token, err := ctx.RefreshToken(tokenStr)
+	j := ctx.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
+	token, err := j.RefreshToken(tokenStr)
 	biz.ErrIsNil(err, "刷新token失败")
-	rc.ResData = map[string]any{"token": token, "expire": time.Now().Unix() + config.Conf.Jwt.ExpireTime}
+	rc.ResData = map[string]any{"token": token, "expire": time.Now().Unix() + global.Conf.Jwt.ExpireTime}
 }
 
 // @Tags Base
@@ -70,27 +70,26 @@ func (u *UserApi) Login(rc *ctx.ReqCtx) {
 
 	login := u.UserApp.Login(entity.Login{Username: l.Username, Password: l.Password})
 	role := u.RoleApp.FindOne(login.RoleId)
-
-	token, err := ctx.CreateToken(
-		ctx.Claims{
-			UserId:   login.UserId,
-			UserName: login.Username,
-			RoleId:   login.RoleId,
-			RoleKey:  role.RoleKey,
-			DeptId:   login.DeptId,
-			PostId:   login.PostId,
-			StandardClaims: jwt.StandardClaims{
-				NotBefore: time.Now().Unix() - 1000,                       // 签名生效时间
-				ExpiresAt: time.Now().Unix() + config.Conf.Jwt.ExpireTime, // 过期时间 7天  配置文件
-				Issuer:    "PandaX",                                       // 签名的发行者
-			},
-		})
-
+	j := ctx.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
+	token, err := j.CreateToken(ctx.Claims{
+		UserId:   login.UserId,
+		TenantId: login.TenantId,
+		UserName: login.Username,
+		RoleId:   login.RoleId,
+		RoleKey:  role.RoleKey,
+		DeptId:   login.DeptId,
+		PostId:   login.PostId,
+		StandardClaims: jwt.StandardClaims{
+			NotBefore: time.Now().Unix() - 1000,                       // 签名生效时间
+			ExpiresAt: time.Now().Unix() + global.Conf.Jwt.ExpireTime, // 过期时间 7天  配置文件
+			Issuer:    "PandaX",                                       // 签名的发行者
+		},
+	})
 	biz.ErrIsNil(err, "生成Token失败")
 
 	rc.ResData = map[string]any{
 		"token":  token,
-		"expire": time.Now().Unix() + config.Conf.Jwt.ExpireTime,
+		"expire": time.Now().Unix() + global.Conf.Jwt.ExpireTime,
 	}
 
 	var loginLog logEntity.LogLogin
@@ -420,7 +419,7 @@ func (u *UserApi) ExportUser(rc *ctx.ReqCtx) {
 	user.Username = userName
 	user.Phone = phone
 	list := u.UserApp.FindList(user)
-	fileName := utils.GetFileName(config.Conf.Server.ExcelDir, filename)
+	fileName := utils.GetFileName(global.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
 	rc.Download(fileName)
 }

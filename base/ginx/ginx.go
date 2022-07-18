@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"pandax/base/biz"
-	"pandax/base/global"
 	"pandax/base/model"
+	"pandax/pkg/global"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

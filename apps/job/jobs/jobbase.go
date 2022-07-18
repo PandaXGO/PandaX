@@ -8,8 +8,8 @@ import (
 	logEntity "pandax/apps/log/entity"
 	logServices "pandax/apps/log/services"
 
-	"pandax/base/global"
 	"pandax/base/httpclient"
+	"pandax/pkg/global"
 	"sync"
 	"time"
 

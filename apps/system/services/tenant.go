@@ -8,7 +8,7 @@ package services
 import (
 	"pandax/apps/system/entity"
 	"pandax/base/biz"
-	"pandax/base/global"
+	"pandax/pkg/global"
 )
 
 type (
@@ -38,7 +38,7 @@ func (m *SysTenantModelImpl) Insert(data entity.SysTenants) *entity.SysTenants {
 
 func (m *SysTenantModelImpl) FindOne(tenantId int64) *entity.SysTenants {
 	resData := new(entity.SysTenants)
-	err := global.Db.Table(m.table).Where("tenant_id = ?", tenantId).First(resData).Error
+	err := global.Db.Table(m.table).Where("id = ?", tenantId).First(resData).Error
 	biz.ErrIsNil(err, "查询SysTenant失败")
 	return resData
 }
@@ -81,5 +81,5 @@ func (m *SysTenantModelImpl) Update(data entity.SysTenants) *entity.SysTenants {
 }
 
 func (m *SysTenantModelImpl) Delete(tenantIds []int64) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysTenants{}, "tenant_id in (?)", tenantIds).Error, "删除SysTenant失败")
+	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysTenants{}, "id in (?)", tenantIds).Error, "删除SysTenant失败")
 }

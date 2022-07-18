@@ -2,7 +2,6 @@ package biz
 
 import (
 	"fmt"
-	"pandax/base/global"
 	"pandax/base/utils"
 	"reflect"
 )
@@ -12,7 +11,6 @@ func ErrIsNil(err error, msg string, params ...any) {
 		if err.Error() == "record not found" {
 			return
 		}
-		global.Log.Error(msg + ": " + err.Error())
 		panic(any(NewBizErr(fmt.Sprintf(msg, params...))))
 	}
 }
@@ -28,7 +26,6 @@ func IsNil(err error) {
 	case *BizError:
 		panic(any(t))
 	case error:
-		global.Log.Error("非业务异常: " + err.Error())
 		panic(any(NewBizErr(fmt.Sprintf("非业务异常: %s", err.Error()))))
 	}
 }

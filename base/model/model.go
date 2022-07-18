@@ -3,7 +3,7 @@ package model
 import (
 	"fmt"
 	"pandax/base/biz"
-	"pandax/base/global"
+	"pandax/pkg/global"
 	"strconv"
 
 	"strings"
@@ -48,7 +48,9 @@ func (m *Model) SetBaseInfo(account *LoginAccount) {
 func Tx(funcs ...func(db *gorm.DB) error) (err error) {
 	tx := global.Db.Begin()
 	defer func() {
-		if r := recover(); r != nil {
+		var err any
+		err = recover()
+		if err != nil {
 			tx.Rollback()
 			err = fmt.Errorf("%v", err)
 		}

@@ -4,8 +4,7 @@ import (
 	"errors"
 	"pandax/apps/develop/entity"
 	"pandax/base/biz"
-	"pandax/base/config"
-	"pandax/base/global"
+	"pandax/pkg/global"
 )
 
 /**
@@ -38,14 +37,14 @@ func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int,
 	list := make([]entity.DBColumns, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
-	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType != "postgresql" {
+	if global.Conf.Server.DbType != "mysql" && global.Conf.Server.DbType != "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
 	db := global.Db.Table("information_schema.COLUMNS")
-	if config.Conf.Server.DbType == "mysql" {
-		db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
+	if global.Conf.Server.DbType == "mysql" {
+		db = db.Where("table_schema= ? ", global.Conf.Gen.Dbname)
 	}
-	if config.Conf.Server.DbType == "postgresql" {
+	if global.Conf.Server.DbType == "postgresql" {
 		db = db.Where("table_schema = ? ", "public")
 	}
 
@@ -61,14 +60,14 @@ func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int,
 
 func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) *[]entity.DBColumns {
 	resData := make([]entity.DBColumns, 0)
-	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType != "postgresql" {
+	if global.Conf.Server.DbType != "mysql" && global.Conf.Server.DbType != "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
 	db := global.Db.Table("information_schema.columns")
-	if config.Conf.Server.DbType == "mysql" {
-		db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
+	if global.Conf.Server.DbType == "mysql" {
+		db = db.Where("table_schema= ? ", global.Conf.Gen.Dbname)
 	}
-	if config.Conf.Server.DbType == "postgresql" {
+	if global.Conf.Server.DbType == "postgresql" {
 		db = db.Where("table_schema = ? ", "public")
 	}
 	biz.IsTrue(tableName != "", "table name cannot be empty！")

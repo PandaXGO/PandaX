@@ -8,8 +8,8 @@ import (
 	"pandax/base/biz"
 	"pandax/base/ctx"
 	"pandax/base/ginx"
-	"pandax/base/global"
 	"pandax/base/utils"
+	"pandax/pkg/global"
 )
 
 type DeptApi struct {

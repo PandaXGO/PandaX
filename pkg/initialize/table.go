@@ -1,22 +1,18 @@
 package initialize
 
 import (
-	"pandax/apps/system/entity"
-	//"pandax/base/casbin"
-
 	devEntity "pandax/apps/develop/entity"
 	jobEntity "pandax/apps/job/entity"
 	logEntity "pandax/apps/log/entity"
 	resSourceEntity "pandax/apps/resource/entity"
-
+	"pandax/apps/system/entity"
 	"pandax/base/biz"
-	"pandax/base/config"
-	"pandax/base/global"
+	"pandax/pkg/global"
 )
 
 // 初始化时如果没有表创建表
 func InitTable() {
-	m := config.Conf.Server
+	m := global.Conf.Server
 	if m.IsInitTable {
 		biz.ErrIsNil(
 			global.Db.AutoMigrate(
@@ -44,6 +40,5 @@ func InitTable() {
 				resSourceEntity.ResEmail{},
 			),
 			"初始化表失败")
-
 	}
 }

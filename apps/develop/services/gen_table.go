@@ -4,9 +4,8 @@ import (
 	"errors"
 	"pandax/apps/develop/entity"
 	"pandax/base/biz"
-	"pandax/base/config"
-	"pandax/base/global"
 	"pandax/base/utils"
+	"pandax/pkg/global"
 )
 
 /**
@@ -43,22 +42,22 @@ func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data ent
 	pgdata := make([]map[string]any, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
-	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType != "postgresql" {
+	if global.Conf.Server.DbType != "mysql" && global.Conf.Server.DbType != "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
 
 	db := global.Db.Table("information_schema.tables")
-	if config.Conf.Server.DbType == "mysql" {
-		db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
+	if global.Conf.Server.DbType == "mysql" {
+		db = db.Where("table_schema= ? ", global.Conf.Gen.Dbname)
 	}
-	if config.Conf.Server.DbType == "postgresql" {
+	if global.Conf.Server.DbType == "postgresql" {
 		db = db.Where("table_schema = ? ", "public")
 	}
 	db = db.Where("table_name NOT LIKE 'dev_%'")
 	if data.TableName != "" {
 		db = db.Where("table_name like ?", "%"+data.TableName+"%")
 	}
-	if config.Conf.Server.DbType == "mysql" {
+	if global.Conf.Server.DbType == "mysql" {
 		err := db.Limit(pageSize).Offset(offset).Find(&list).Offset(-1).Limit(-1).Count(&total).Error
 		biz.ErrIsNil(err, "查询配置分页列表信息失败")
 		return &list, total
@@ -74,14 +73,14 @@ func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data ent
 
 func (m *devGenTableModelImpl) FindDbTableOne(tableName string) *entity.DBTables {
 	resData := new(entity.DBTables)
-	if config.Conf.Server.DbType != "mysql" && config.Conf.Server.DbType != "postgresql" {
+	if global.Conf.Server.DbType != "mysql" && global.Conf.Server.DbType != "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
 	db := global.Db.Table("information_schema.tables")
-	if config.Conf.Server.DbType != "mysql" {
-		db = db.Where("table_schema= ? ", config.Conf.Gen.Dbname)
+	if global.Conf.Server.DbType != "mysql" {
+		db = db.Where("table_schema= ? ", global.Conf.Gen.Dbname)
 	}
-	if config.Conf.Server.DbType != "postgresql" {
+	if global.Conf.Server.DbType != "postgresql" {
 		db = db.Where("table_schema= ? ", "public")
 	}
 	db = db.Where("table_name = ?", tableName)

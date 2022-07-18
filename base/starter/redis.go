@@ -2,15 +2,14 @@ package starter
 
 import (
 	"fmt"
-	"pandax/base/config"
-	"pandax/base/global"
+	"pandax/pkg/global"
 
 	"github.com/go-redis/redis"
 )
 
 func ConnRedis() *redis.Client {
 	// 设置redis客户端
-	redisConf := config.Conf.Redis
+	redisConf := global.Conf.Redis
 	if redisConf == nil {
 		global.Log.Panic("未找到redis配置信息")
 	}

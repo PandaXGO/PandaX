@@ -4,24 +4,21 @@ import (
 	"fmt"
 	"os"
 	"pandax/base/config"
-	"pandax/base/global"
 	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
 )
 
-var Log = logrus.New()
-
-func init() {
+func InitLog(logConf *config.Log) *logrus.Logger {
+	var Log = logrus.New()
 	Log.SetFormatter(new(LogFormatter))
 	Log.SetReportCaller(true)
 
-	logConf := config.Conf.Log
 	// 如果不存在日志配置信息，则默认debug级别
 	if logConf == nil {
 		Log.SetLevel(logrus.DebugLevel)
-		return
+		return nil
 	}
 
 	// 根据配置文件设置日志级别
@@ -44,8 +41,7 @@ func init() {
 
 		Log.Out = file
 	}
-
-	global.Log = Log
+	return Log
 }
 
 type LogFormatter struct{}
