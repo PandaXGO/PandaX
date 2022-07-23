@@ -38,8 +38,12 @@ func (r *RoleApi) GetRoleList(rc *ctx.ReqCtx) {
 	status := rc.GinCtx.Query("status")
 	roleName := rc.GinCtx.Query("roleName")
 	roleKey := rc.GinCtx.Query("roleKey")
-
 	role := entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
+
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		role.TenantId = rc.LoginAccount.TenantId
+	}
+
 	list, total := r.RoleApp.FindListPage(pageNum, pageSize, role)
 
 	rc.ResData = map[string]any{
@@ -199,8 +203,12 @@ func (p *RoleApi) ExportRole(rc *ctx.ReqCtx) {
 	status := rc.GinCtx.Query("status")
 	roleName := rc.GinCtx.Query("roleName")
 	roleKey := rc.GinCtx.Query("roleKey")
+	role := entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		role.TenantId = rc.LoginAccount.TenantId
+	}
+	list := p.RoleApp.FindList(role)
 
-	list := p.RoleApp.FindList(entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey})
 	fileName := utils.GetFileName(global.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
 	rc.Download(fileName)

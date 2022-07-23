@@ -179,6 +179,10 @@ func (u *UserApi) GetSysUserList(rc *ctx.ReqCtx) {
 	user.Username = userName
 	user.Phone = phone
 	user.DeptId = int64(deptId)
+
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		user.TenantId = rc.LoginAccount.TenantId
+	}
 	list, total := u.UserApp.FindListPage(pageNum, pageSize, user)
 
 	rc.ResData = map[string]any{
@@ -281,9 +285,17 @@ func (u *UserApi) GetSysUser(rc *ctx.ReqCtx) {
 	user.UserId = int64(userId)
 	result := u.UserApp.FindOne(user)
 
-	roles := u.RoleApp.FindList(entity.SysRole{})
+	var role entity.SysRole
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		role.TenantId = rc.LoginAccount.TenantId
+	}
+	roles := u.RoleApp.FindList(role)
 
-	posts := u.PostApp.FindList(entity.SysPost{})
+	var post entity.SysPost
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		post.TenantId = rc.LoginAccount.TenantId
+	}
+	posts := u.PostApp.FindList(post)
 
 	rc.ResData = map[string]any{
 		"data":    result,
@@ -301,9 +313,17 @@ func (u *UserApi) GetSysUser(rc *ctx.ReqCtx) {
 // @Router /system/user/getInit [get]
 // @Security
 func (u *UserApi) GetSysUserInit(rc *ctx.ReqCtx) {
-	roles := u.RoleApp.FindList(entity.SysRole{})
 
-	posts := u.PostApp.FindList(entity.SysPost{})
+	var role entity.SysRole
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		role.TenantId = rc.LoginAccount.TenantId
+	}
+	roles := u.RoleApp.FindList(role)
+	var post entity.SysPost
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		post.TenantId = rc.LoginAccount.TenantId
+	}
+	posts := u.PostApp.FindList(post)
 	mp := make(map[string]any, 2)
 	mp["roles"] = roles
 	mp["posts"] = posts
@@ -418,22 +438,24 @@ func (u *UserApi) ExportUser(rc *ctx.ReqCtx) {
 	user.Status = status
 	user.Username = userName
 	user.Phone = phone
+
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		user.TenantId = rc.LoginAccount.TenantId
+	}
+
 	list := u.UserApp.FindList(user)
 	fileName := utils.GetFileName(global.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
 	rc.Download(fileName)
 }
 
-// 构建前端路由
+// Build 构建前端路由
 func Build(menus []entity.SysMenu) []vo.RouterVo {
 	equals := func(a string, b string) bool {
 		if a == b {
 			return true
 		}
 		return false
-	}
-	if len(menus) == 0 {
-
 	}
 	rvs := make([]vo.RouterVo, 0)
 	for _, ms := range menus {

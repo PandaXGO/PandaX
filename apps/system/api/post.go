@@ -37,6 +37,11 @@ func (p *PostApi) GetPostList(rc *ctx.ReqCtx) {
 	postName := rc.GinCtx.Query("postName")
 	postCode := rc.GinCtx.Query("postCode")
 	post := entity.SysPost{Status: status, PostName: postName, PostCode: postCode}
+
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		post.TenantId = rc.LoginAccount.TenantId
+	}
+
 	list, total := p.PostApp.FindListPage(pageNum, pageSize, post)
 
 	rc.ResData = map[string]any{
@@ -72,7 +77,7 @@ func (p *PostApi) GetPost(rc *ctx.ReqCtx) {
 func (p *PostApi) InsertPost(rc *ctx.ReqCtx) {
 	var post entity.SysPost
 	ginx.BindJsonAndValid(rc.GinCtx, &post)
-
+	post.TenantId = rc.LoginAccount.TenantId
 	post.CreateBy = rc.LoginAccount.UserName
 	p.PostApp.Insert(post)
 }

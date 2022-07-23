@@ -4,6 +4,7 @@ import "pandax/base/model"
 
 type SysPost struct {
 	PostId   int64  `gorm:"primary_key;AUTO_INCREMENT" json:"postId"`
+	TenantId int64  `json:"tenantId" gorm:"type:int;comment:租户Id"`
 	PostName string `gorm:"type:varchar(128);comment:岗位名称" json:"postName"`
 	PostCode string `gorm:"type:varchar(128);comment:岗位代码" json:"postCode"`
 	Sort     int64  `gorm:"type:int;comment:岗位排序" json:"sort"`

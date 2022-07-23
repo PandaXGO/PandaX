@@ -28,8 +28,12 @@ type DeptApi struct {
 // @Security X-TOKEN
 func (m *DeptApi) GetDeptTreeRoleSelect(rc *ctx.ReqCtx) {
 	roleId := ginx.PathParamInt(rc.GinCtx, "roleId")
+	var dept entity.SysDept
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		dept.TenantId = rc.LoginAccount.TenantId
+	}
 
-	result := m.DeptApp.SelectDeptLable(entity.SysDept{})
+	result := m.DeptApp.SelectDeptLable(dept)
 
 	deptIds := make([]int64, 0)
 	if roleId != 0 {
@@ -57,7 +61,9 @@ func (a *DeptApi) GetDeptList(rc *ctx.ReqCtx) {
 	status := rc.GinCtx.Query("status")
 	deptId := ginx.QueryInt(rc.GinCtx, "deptId", 0)
 	dept := entity.SysDept{DeptName: deptName, Status: status, DeptId: int64(deptId)}
-
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		dept.TenantId = rc.LoginAccount.TenantId
+	}
 	if dept.DeptName == "" {
 		rc.ResData = a.DeptApp.SelectDept(dept)
 	} else {
@@ -72,7 +78,12 @@ func (a *DeptApi) GetDeptList(rc *ctx.ReqCtx) {
 // @Router /system/dept/ordinaryDeptLis [get]
 // @Security
 func (a *DeptApi) GetOrdinaryDeptList(rc *ctx.ReqCtx) {
-	rc.ResData = a.DeptApp.FindList(entity.SysDept{})
+	var dept entity.SysDept
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		dept.TenantId = rc.LoginAccount.TenantId
+	}
+
+	rc.ResData = a.DeptApp.FindList(dept)
 }
 
 // @Summary 所有部门树数据
@@ -89,7 +100,9 @@ func (a *DeptApi) GetDeptTree(rc *ctx.ReqCtx) {
 	status := rc.GinCtx.Query("status")
 	deptId := ginx.QueryInt(rc.GinCtx, "deptId", 0)
 	dept := entity.SysDept{DeptName: deptName, Status: status, DeptId: int64(deptId)}
-
+	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
+		dept.TenantId = rc.LoginAccount.TenantId
+	}
 	rc.ResData = a.DeptApp.SelectDept(dept)
 }
 
@@ -119,7 +132,7 @@ func (a *DeptApi) InsertDept(rc *ctx.ReqCtx) {
 	var dept entity.SysDept
 	g := rc.GinCtx
 	ginx.BindJsonAndValid(g, &dept)
-
+	dept.TenantId = rc.LoginAccount.TenantId
 	dept.CreateBy = rc.LoginAccount.UserName
 	a.DeptApp.Insert(dept)
 }

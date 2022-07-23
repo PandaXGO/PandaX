@@ -113,3 +113,11 @@ func (p *SysTenantsApi) DeleteSysTenants(rc *ctx.ReqCtx) {
 	tenantIds := utils.IdsStrToIdsIntGroup(tenantId)
 	p.SysTenantsApp.Delete(tenantIds)
 }
+
+// IsTenantAdmin 是否为主租户
+func IsTenantAdmin(tenantId int64) bool {
+	if tenantId == 1 {
+		return true
+	}
+	return false
+}
