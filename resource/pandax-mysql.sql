@@ -1,17 +1,15 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 阿里云-pandax
+ Source Server         : pandax
  Source Server Type    : MySQL
  Source Server Version : 50562
- Source Host           : 47.104.252.2:3306
- Source Schema         : pandax
 
  Target Server Type    : MySQL
  Target Server Version : 50562
  File Encoding         : 65001
 
- Date: 18/07/2022 11:39:14
+ Date: 23/07/2022 10:27:43
 */
 
 SET NAMES utf8mb4;
@@ -32,7 +30,7 @@ CREATE TABLE `casbin_rule`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `idx_casbin_rule`(`ptype`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2266 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2315 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of casbin_rule
@@ -154,55 +152,55 @@ INSERT INTO `casbin_rule` VALUES ('p', '1', 'admin', '/system/user/getInit', 'GE
 INSERT INTO `casbin_rule` VALUES ('p', '1', 'admin', '/system/user/getRoPo', 'GET', '', '', 2262);
 INSERT INTO `casbin_rule` VALUES ('p', '1', 'admin', '/system/user/list', 'GET', '', '', 2255);
 INSERT INTO `casbin_rule` VALUES ('p', '1', 'admin', '/system/user/pwd', 'PUT', '', '', 2259);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/gen/preview/:tableId', 'GET', '', '', 2121);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/table/db/list', 'GET', '', '', 2116);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/table/info/:tableId', 'GET', '', '', 2118);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/table/info/tableName', 'GET', '', '', 2119);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/table/list', 'GET', '', '', 2117);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/table/tableTree', 'GET', '', '', 2120);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/job/:jobId', 'GET', '', '', 2123);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/job/list', 'GET', '', '', 2122);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/log/logJob/list', 'GET', '', '', 2126);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/log/logLogin/list', 'GET', '', '', 2124);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/log/logOper/list', 'GET', '', '', 2125);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/resource/email/:mailId', 'GET', '', '', 2128);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/resource/email/list', 'GET', '', '', 2127);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/resource/oss/:ossId', 'GET', '', '', 2137);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/resource/oss/list', 'GET', '', '', 2136);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/api/:id', 'GET', '', '', 2103);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/api/all', 'GET', '', '', 2101);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/api/getPolicyPathByRoleId', 'GET', '', '', 2102);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/api/list', 'GET', '', '', 2100);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/config/:configId', 'GET', '', '', 2106);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/config/configKey', 'GET', '', '', 2105);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/config/list', 'GET', '', '', 2104);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dept/:deptId', 'GET', '', '', 2108);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dept/deptTree', 'GET', '', '', 2110);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dept/list', 'GET', '', '', 2107);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dept/roleDeptTreeSelect/:roleId', 'GET', '', '', 2109);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dict/data/:dictCode', 'GET', '', '', 2115);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dict/data/list', 'GET', '', '', 2113);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dict/data/type', 'GET', '', '', 2114);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dict/type/:dictId', 'GET', '', '', 2112);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dict/type/list', 'GET', '', '', 2111);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/:menuId', 'GET', '', '', 2134);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/list', 'GET', '', '', 2133);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/menuPaths', 'GET', '', '', 2132);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/menuRole', 'GET', '', '', 2130);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/menuTreeSelect', 'GET', '', '', 2129);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/roleMenuTreeSelect/:roleId', 'GET', '', '', 2131);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/notice/list', 'GET', '', '', 2135);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/post/:postId', 'GET', '', '', 2139);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/post/list', 'GET', '', '', 2138);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/role/:roleId', 'GET', '', '', 2141);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/role/list', 'GET', '', '', 2140);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/tenant/:tenantId', 'GET', '', '', 2143);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/tenant/list', 'GET', '', '', 2142);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/tenant/lists', 'GET', '', '', 2144);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/user/getById/:userId', 'GET', '', '', 2146);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/user/getInit', 'GET', '', '', 2147);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/user/getRoPo', 'GET', '', '', 2148);
-INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/user/list', 'GET', '', '', 2145);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/gen/preview/:tableId', 'GET', '', '', 2287);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/table/db/list', 'GET', '', '', 2282);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/table/info/:tableId', 'GET', '', '', 2284);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/table/info/tableName', 'GET', '', '', 2285);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/table/list', 'GET', '', '', 2283);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/develop/code/table/tableTree', 'GET', '', '', 2286);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/job/:jobId', 'GET', '', '', 2289);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/job/list', 'GET', '', '', 2288);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/log/logJob/list', 'GET', '', '', 2292);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/log/logLogin/list', 'GET', '', '', 2290);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/log/logOper/list', 'GET', '', '', 2291);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/resource/email/:mailId', 'GET', '', '', 2294);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/resource/email/list', 'GET', '', '', 2293);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/resource/oss/:ossId', 'GET', '', '', 2303);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/resource/oss/list', 'GET', '', '', 2302);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/api/:id', 'GET', '', '', 2269);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/api/all', 'GET', '', '', 2267);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/api/getPolicyPathByRoleId', 'GET', '', '', 2268);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/api/list', 'GET', '', '', 2266);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/config/:configId', 'GET', '', '', 2272);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/config/configKey', 'GET', '', '', 2271);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/config/list', 'GET', '', '', 2270);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dept/:deptId', 'GET', '', '', 2274);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dept/deptTree', 'GET', '', '', 2276);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dept/list', 'GET', '', '', 2273);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dept/roleDeptTreeSelect/:roleId', 'GET', '', '', 2275);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dict/data/:dictCode', 'GET', '', '', 2281);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dict/data/list', 'GET', '', '', 2279);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dict/data/type', 'GET', '', '', 2280);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dict/type/:dictId', 'GET', '', '', 2278);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/dict/type/list', 'GET', '', '', 2277);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/:menuId', 'GET', '', '', 2300);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/list', 'GET', '', '', 2299);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/menuPaths', 'GET', '', '', 2298);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/menuRole', 'GET', '', '', 2296);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/menuTreeSelect', 'GET', '', '', 2295);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/menu/roleMenuTreeSelect/:roleId', 'GET', '', '', 2297);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/notice/list', 'GET', '', '', 2301);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/post/:postId', 'GET', '', '', 2305);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/post/list', 'GET', '', '', 2304);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/role/:roleId', 'GET', '', '', 2307);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/role/list', 'GET', '', '', 2306);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/tenant/:tenantId', 'GET', '', '', 2309);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/tenant/list', 'GET', '', '', 2308);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/tenant/lists', 'GET', '', '', 2310);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/user/getById/:userId', 'GET', '', '', 2312);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/user/getInit', 'GET', '', '', 2313);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/user/getRoPo', 'GET', '', '', 2314);
+INSERT INTO `casbin_rule` VALUES ('p', '1', 'manage', '/system/user/list', 'GET', '', '', 2311);
 
 -- ----------------------------
 -- Table structure for dev_gen_table_columns
@@ -394,11 +392,90 @@ CREATE TABLE `log_logins`  (
   `update_time` datetime NULL DEFAULT NULL,
   `delete_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`info_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3402 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3481 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of log_logins
 -- ----------------------------
+INSERT INTO `log_logins` VALUES (3402, 'admin', '0', '127.0.0.1', '内部IP', 'Chrome 92.0.4515.107', 'Windows 10', 'Windows', '2022-07-18 11:47:32', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36', '登录成功', '2022-07-18 11:47:32', '2022-07-18 11:47:32', NULL);
+INSERT INTO `log_logins` VALUES (3403, 'admin', '0', '111.15.24.100', 'ɽ��ʡ������ �ƶ�', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-18 11:57:19', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-18 11:57:19', '2022-07-18 11:57:19', NULL);
+INSERT INTO `log_logins` VALUES (3404, 'admin', '0', '127.0.0.1', '内部IP', 'Edge 92.0.902.84', 'Windows 10', 'Windows', '2022-07-18 11:57:39', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Edg/92.0.902.84', '登录成功', '2022-07-18 11:57:39', '2022-07-18 11:57:39', NULL);
+INSERT INTO `log_logins` VALUES (3405, 'admin', '0', '124.92.142.49', '����ʡ������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-18 13:40:13', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-18 13:40:13', '2022-07-18 13:40:13', NULL);
+INSERT INTO `log_logins` VALUES (3406, 'admin', '0', '120.231.240.109', '�㶫ʡ ��ͨ', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-18 13:59:58', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-18 13:59:58', '2022-07-18 13:59:58', NULL);
+INSERT INTO `log_logins` VALUES (3407, 'admin', '0', '127.0.0.1', '内部IP', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-18 16:43:34', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-18 16:43:35', '2022-07-18 16:43:35', NULL);
+INSERT INTO `log_logins` VALUES (3408, 'admin', '0', '27.17.253.211', '����ʡ�人�� ����', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-18 15:35:13', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-18 15:35:13', '2022-07-18 15:35:13', NULL);
+INSERT INTO `log_logins` VALUES (3409, 'admin', '0', '27.17.253.211', '����ʡ�人�� ����', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-18 16:09:52', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-18 16:09:52', '2022-07-18 16:09:52', NULL);
+INSERT INTO `log_logins` VALUES (3410, 'admin', '0', '119.97.203.46', '����ʡ�人�� ����', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-18 16:32:23', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-18 16:32:23', '2022-07-18 16:32:23', NULL);
+INSERT INTO `log_logins` VALUES (3411, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-18 16:46:06', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-18 16:46:06', '2022-07-18 16:46:06', NULL);
+INSERT INTO `log_logins` VALUES (3412, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-18 16:56:15', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-18 16:56:15', '2022-07-18 16:56:15', NULL);
+INSERT INTO `log_logins` VALUES (3413, 'admin', '0', '182.35.53.116', 'ɽ��ʡ̩���� ����', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 00:09:41', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 00:09:41', '2022-07-19 00:09:41', NULL);
+INSERT INTO `log_logins` VALUES (3414, 'admin', '0', '121.204.36.125', '����ʡ������ ����', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 09:59:02', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 09:59:02', '2022-07-19 09:59:02', NULL);
+INSERT INTO `log_logins` VALUES (3415, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 10:50:42', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 10:50:42', '2022-07-19 10:50:42', NULL);
+INSERT INTO `log_logins` VALUES (3416, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 10:51:14', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 10:51:14', '2022-07-19 10:51:14', NULL);
+INSERT INTO `log_logins` VALUES (3417, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 11:39:18', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 11:39:18', '2022-07-19 11:39:18', NULL);
+INSERT INTO `log_logins` VALUES (3418, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 13:42:19', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 13:42:19', '2022-07-19 13:42:19', NULL);
+INSERT INTO `log_logins` VALUES (3419, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 13:42:53', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 13:42:53', '2022-07-19 13:42:53', NULL);
+INSERT INTO `log_logins` VALUES (3420, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 13:43:59', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 13:43:59', '2022-07-19 13:43:59', NULL);
+INSERT INTO `log_logins` VALUES (3421, 'admin', '0', '222.175.246.74', 'ɽ��ʡ�Ͳ��� ����', 'Chrome 92.0.4515.107', 'Windows 10', 'Windows', '2022-07-19 13:45:28', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36', '登录成功', '2022-07-19 13:45:28', '2022-07-19 13:45:28', NULL);
+INSERT INTO `log_logins` VALUES (3422, 'admin', '0', '222.175.246.74', 'ɽ��ʡ�Ͳ��� ����', 'Chrome 92.0.4515.107', 'Windows 10', 'Windows', '2022-07-19 14:02:06', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36', '登录成功', '2022-07-19 14:02:06', '2022-07-19 14:02:06', NULL);
+INSERT INTO `log_logins` VALUES (3423, 'panda', '0', '222.175.246.74', 'ɽ��ʡ�Ͳ��� ����', 'Chrome 92.0.4515.107', 'Windows 10', 'Windows', '2022-07-19 14:03:04', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36', '登录成功', '2022-07-19 14:03:04', '2022-07-19 14:03:04', NULL);
+INSERT INTO `log_logins` VALUES (3424, 'admin', '0', '113.251.17.192', '������ ����', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-19 14:21:34', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-19 14:21:34', '2022-07-19 14:21:34', NULL);
+INSERT INTO `log_logins` VALUES (3425, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 14:59:14', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 14:59:14', '2022-07-19 14:59:14', NULL);
+INSERT INTO `log_logins` VALUES (3426, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 15:00:51', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 15:00:51', '2022-07-19 15:00:51', NULL);
+INSERT INTO `log_logins` VALUES (3427, 'admin', '0', '222.94.127.75', '����ʡ�Ͼ��� (��ϼ��)����ADSL', 'Chrome 103.0.0.0', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-19 15:03:38', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 15:03:38', '2022-07-19 15:03:38', NULL);
+INSERT INTO `log_logins` VALUES (3428, 'admin', '0', '121.69.84.210', '������ ����ͨ', 'Chrome 104.0.0.0', 'Windows 10', 'Windows', '2022-07-19 15:05:33', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36', '登录成功', '2022-07-19 15:05:33', '2022-07-19 15:05:33', NULL);
+INSERT INTO `log_logins` VALUES (3429, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 15:13:01', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 15:13:01', '2022-07-19 15:13:01', NULL);
+INSERT INTO `log_logins` VALUES (3430, 'admin', '0', '171.35.156.50', '����ʡ������ ��ͨ', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 16:20:56', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 16:20:56', '2022-07-19 16:20:56', NULL);
+INSERT INTO `log_logins` VALUES (3431, 'admin', '0', '182.116.65.22', '����ʡ������ ��ͨ', 'Chrome 103.0.0.0', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-19 17:00:10', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 17:00:10', '2022-07-19 17:00:10', NULL);
+INSERT INTO `log_logins` VALUES (3432, 'admin', '0', '114.102.130.30', '����ʡ�Ϸ��� ����', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-19 18:42:10', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 18:42:10', '2022-07-19 18:42:10', NULL);
+INSERT INTO `log_logins` VALUES (3433, 'admin', '0', '218.75.42.2', '�㽭ʡ������ ����', 'Edge 105.0.1300.0', 'Windows 10', 'Windows', '2022-07-19 20:06:22', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.0 Safari/537.36 Edg/105.0.1300.0', '登录成功', '2022-07-19 20:06:22', '2022-07-19 20:06:22', NULL);
+INSERT INTO `log_logins` VALUES (3434, 'admin', '0', '180.167.217.166', '�Ϻ��� ����', 'Chrome 103.0.0.0', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-19 23:57:59', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-19 23:57:59', '2022-07-19 23:57:59', NULL);
+INSERT INTO `log_logins` VALUES (3435, 'admin', '0', '222.209.109.51', '�Ĵ�ʡ�ɶ��� ����ADSL', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-20 09:08:05', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-20 09:08:05', '2022-07-20 09:08:05', NULL);
+INSERT INTO `log_logins` VALUES (3436, 'admin', '0', '221.207.12.12', '�ຣʡ������ ��ͨ', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-20 09:33:15', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-20 09:33:15', '2022-07-20 09:33:15', NULL);
+INSERT INTO `log_logins` VALUES (3437, 'admin', '0', '119.131.144.47', '�㶫ʡ������ ����', 'Chrome 103.0.0.0', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-20 09:38:26', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-20 09:38:26', '2022-07-20 09:38:26', NULL);
+INSERT INTO `log_logins` VALUES (3438, 'admin', '0', '218.108.15.68', '�㽭ʡ������ ��������', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-20 10:08:04', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-20 10:08:04', '2022-07-20 10:08:04', NULL);
+INSERT INTO `log_logins` VALUES (3439, 'admin', '0', '39.170.37.78', '�㽭ʡ������ �ƶ�', 'Chrome 103.0.0.0', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-20 11:22:22', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-20 11:22:22', '2022-07-20 11:22:22', NULL);
+INSERT INTO `log_logins` VALUES (3440, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-20 12:02:55', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-20 12:02:55', '2022-07-20 12:02:55', NULL);
+INSERT INTO `log_logins` VALUES (3441, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-20 13:10:13', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-20 13:10:13', '2022-07-20 13:10:13', NULL);
+INSERT INTO `log_logins` VALUES (3442, 'admin', '0', '222.129.54.58', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-20 14:47:53', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-20 14:47:53', '2022-07-20 14:47:53', NULL);
+INSERT INTO `log_logins` VALUES (3443, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-20 14:51:58', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-20 14:51:58', '2022-07-20 14:51:58', NULL);
+INSERT INTO `log_logins` VALUES (3444, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-20 14:52:15', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-20 14:52:15', '2022-07-20 14:52:15', NULL);
+INSERT INTO `log_logins` VALUES (3445, 'admin', '0', '175.9.209.183', '����ʡ��ɳ�� ����', 'Chrome 103.0.0.0', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-20 15:14:28', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-20 15:14:28', '2022-07-20 15:14:28', NULL);
+INSERT INTO `log_logins` VALUES (3446, 'admin', '0', '175.9.209.183', '����ʡ��ɳ�� ����', 'Firefox 102.0', 'Intel Mac OS X 10.15', 'Macintosh', '2022-07-20 17:41:36', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0) Gecko/20100101 Firefox/102.0', '登录成功', '2022-07-20 17:41:36', '2022-07-20 17:41:36', NULL);
+INSERT INTO `log_logins` VALUES (3447, 'admin', '0', '39.128.79.75', '����ʡ��ͨ�� ��ͨ', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-20 18:26:13', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-20 18:26:13', '2022-07-20 18:26:13', NULL);
+INSERT INTO `log_logins` VALUES (3448, 'admin', '0', '113.251.17.192', '������ ����', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-20 18:35:08', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-20 18:35:08', '2022-07-20 18:35:08', NULL);
+INSERT INTO `log_logins` VALUES (3449, 'admin', '0', '106.201.241.21', ' ӡ��BHARTIAIRTEL�û�', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-20 20:49:47', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-20 20:49:47', '2022-07-20 20:49:47', NULL);
+INSERT INTO `log_logins` VALUES (3450, 'admin', '0', '211.97.121.88', '����ʡ������ ��ͨ', 'Chrome 100.0.4896.75', 'Windows 10', 'Windows', '2022-07-20 22:01:27', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36', '登录成功', '2022-07-20 22:01:27', '2022-07-20 22:01:27', NULL);
+INSERT INTO `log_logins` VALUES (3451, 'admin', '0', '115.60.131.32', '����ʡ֣���� ��ͨ', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-20 22:54:53', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-20 22:54:53', '2022-07-20 22:54:53', NULL);
+INSERT INTO `log_logins` VALUES (3452, 'admin', '0', '120.235.110.204', '�㶫ʡ������ �ƶ�', 'Chrome 100.0.4896.127', 'Windows 10', 'Windows', '2022-07-21 00:19:51', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36', '登录成功', '2022-07-21 00:19:51', '2022-07-21 00:19:51', NULL);
+INSERT INTO `log_logins` VALUES (3453, 'admin', '0', '61.144.53.34', '�㶫ʡ��������ɳ�� ����ADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-21 01:54:29', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 01:54:29', '2022-07-21 01:54:29', NULL);
+INSERT INTO `log_logins` VALUES (3454, 'admin', '0', '111.197.236.161', '������ ��ͨ', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-21 09:14:52', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 09:14:52', '2022-07-21 09:14:52', NULL);
+INSERT INTO `log_logins` VALUES (3455, 'admin', '0', '222.129.41.224', '������ ��ͨADSL', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-21 13:12:35', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 13:12:35', '2022-07-21 13:12:35', NULL);
+INSERT INTO `log_logins` VALUES (3456, 'admin', '0', '110.87.82.45', '����ʡ������ ����', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-21 13:46:34', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 13:46:34', '2022-07-21 13:46:34', NULL);
+INSERT INTO `log_logins` VALUES (3457, 'admin', '0', '103.239.206.29', '�㶫ʡ������ BGP', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-21 13:47:11', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 13:47:11', '2022-07-21 13:47:11', NULL);
+INSERT INTO `log_logins` VALUES (3458, 'admin', '0', '106.2.199.3', '������ �����ƴ�ʵҵ���޹�˾', 'Safari 15.5', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-21 13:57:02', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15', '登录成功', '2022-07-21 13:57:02', '2022-07-21 13:57:02', NULL);
+INSERT INTO `log_logins` VALUES (3459, 'admin', '0', '182.150.25.236', '�Ĵ�ʡ�ɶ��� ����', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-21 14:15:08', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-21 14:15:08', '2022-07-21 14:15:08', NULL);
+INSERT INTO `log_logins` VALUES (3460, 'admin', '0', '106.85.137.109', '������ ����', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-21 14:25:27', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 14:25:27', '2022-07-21 14:25:27', NULL);
+INSERT INTO `log_logins` VALUES (3461, 'admin', '0', '114.84.116.248', '�Ϻ��� ����', 'Chrome 103.0.0.0', 'Intel Mac OS X 10_14_6', 'Macintosh', '2022-07-21 14:27:46', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 14:27:46', '2022-07-21 14:27:46', NULL);
+INSERT INTO `log_logins` VALUES (3462, 'admin', '0', '61.242.128.44', '����ʡ ��ͨ', 'Chrome 103.0.0.0', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-21 15:34:55', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 15:34:55', '2022-07-21 15:34:55', NULL);
+INSERT INTO `log_logins` VALUES (3463, 'admin', '0', '183.66.202.50', '������ ����', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-21 15:48:06', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 15:48:06', '2022-07-21 15:48:06', NULL);
+INSERT INTO `log_logins` VALUES (3464, 'admin', '0', '36.152.100.44', '����ʡ�Ͼ��� �ƶ�', 'Chrome 102.0.0.0', 'Windows 10', 'Windows', '2022-07-21 15:48:43', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36', '登录成功', '2022-07-21 15:48:43', '2022-07-21 15:48:43', NULL);
+INSERT INTO `log_logins` VALUES (3465, 'admin', '0', '36.152.100.44', '����ʡ�Ͼ��� �ƶ�', 'Chrome 102.0.0.0', 'Windows 10', 'Windows', '2022-07-21 16:26:32', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36', '登录成功', '2022-07-21 16:26:32', '2022-07-21 16:26:32', NULL);
+INSERT INTO `log_logins` VALUES (3466, 'admin', '0', '175.42.2.18', '����ʡ������ ��ͨ', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-21 17:31:16', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 17:31:16', '2022-07-21 17:31:16', NULL);
+INSERT INTO `log_logins` VALUES (3467, 'admin', '0', '113.108.77.68', '�㶫ʡ������ ����', 'Edge 103.0.1264.62', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-21 17:34:53', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-21 17:34:53', '2022-07-21 17:34:53', NULL);
+INSERT INTO `log_logins` VALUES (3468, 'test', '0', '112.49.232.149', '����ʡ������ ��ͨ', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-21 18:29:57', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-21 18:29:57', '2022-07-21 18:29:57', NULL);
+INSERT INTO `log_logins` VALUES (3469, 'admin', '0', '60.217.68.103', 'ɽ��ʡ������ ��ͨ', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-21 18:44:51', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-21 18:44:51', '2022-07-21 18:44:51', NULL);
+INSERT INTO `log_logins` VALUES (3470, 'admin', '0', '58.60.1.47', '�㶫ʡ������ ����', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-22 00:35:34', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-22 00:35:34', '2022-07-22 00:35:34', NULL);
+INSERT INTO `log_logins` VALUES (3471, 'admin', '0', '60.217.68.103', 'ɽ��ʡ������ ��ͨ', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-22 09:01:29', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-22 09:01:29', '2022-07-22 09:01:29', NULL);
+INSERT INTO `log_logins` VALUES (3472, 'admin', '0', '159.138.32.243', '���� ��Ϊ��˾', 'Chrome 103.0.0.0', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-22 11:11:36', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-22 11:11:36', '2022-07-22 11:11:36', NULL);
+INSERT INTO `log_logins` VALUES (3473, 'admin', '0', '112.49.232.149', '����ʡ������ ��ͨ', 'Chrome 103.0.0.0', 'Windows 10', 'Windows', '2022-07-22 11:36:46', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-22 11:36:46', '2022-07-22 11:36:46', NULL);
+INSERT INTO `log_logins` VALUES (3474, 'admin', '0', '165.154.224.13', ' ���ô�', 'Chrome 103.0.0.0', 'Linux x86_64', 'X11', '2022-07-22 13:26:15', '0', '0', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-22 13:26:15', '2022-07-22 13:26:15', NULL);
+INSERT INTO `log_logins` VALUES (3475, 'admin', '0', '120.40.98.110', '����ʡ������ ����', 'Chrome 94.0.4606.81', 'Windows 10', 'Windows', '2022-07-22 18:03:31', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36', '登录成功', '2022-07-22 18:03:31', '2022-07-22 18:03:31', NULL);
+INSERT INTO `log_logins` VALUES (3476, 'admin', '0', '115.60.128.186', '����ʡ֣���� ��ͨ', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-22 21:53:52', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-22 21:53:52', '2022-07-22 21:53:52', NULL);
+INSERT INTO `log_logins` VALUES (3477, 'admin', '0', '218.5.163.180', '����ʡȪ���� ����ADSL', 'Edge 103.0.1264.62', 'Windows 10', 'Windows', '2022-07-23 00:50:22', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36 Edg/103.0.1264.62', '登录成功', '2022-07-23 00:50:22', '2022-07-23 00:50:22', NULL);
+INSERT INTO `log_logins` VALUES (3478, 'admin', '0', '120.229.69.82', '�㶫ʡ������ ��ͨ', 'Chrome 97.0.4692.71', 'Windows 10', 'Windows', '2022-07-23 07:59:03', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36', '登录成功', '2022-07-23 07:59:03', '2022-07-23 07:59:03', NULL);
+INSERT INTO `log_logins` VALUES (3479, 'admin', '0', '118.113.5.72', '�Ĵ�ʡ�ɶ��� ����', 'Chrome 103.0.0.0', 'Intel Mac OS X 10_15_7', 'Macintosh', '2022-07-23 09:41:24', '0', '0', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36', '登录成功', '2022-07-23 09:41:24', '2022-07-23 09:41:24', NULL);
+INSERT INTO `log_logins` VALUES (3480, 'admin', '0', '127.0.0.1', '内部IP', 'Chrome 92.0.4515.107', 'Windows 10', 'Windows', '2022-07-23 10:18:32', '0', '0', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36', '登录成功', '2022-07-23 10:18:32', '2022-07-23 10:18:32', NULL);
 
 -- ----------------------------
 -- Table structure for log_opers
@@ -419,13 +496,27 @@ CREATE TABLE `log_opers`  (
   `update_time` datetime NULL DEFAULT NULL,
   `delete_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`oper_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 914 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 928 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of log_opers
 -- ----------------------------
 INSERT INTO `log_opers` VALUES (912, '清空操作日志信息', '3', 'DELETE', 'panda', '/log/logOper/all', '127.0.0.1', '内部IP', '', '0', '2022-07-18 11:36:32', '2022-07-18 11:36:32', NULL);
 INSERT INTO `log_opers` VALUES (913, '清空登录日志信息', '3', 'DELETE', 'panda', '/log/logLogin/all', '127.0.0.1', '内部IP', '', '0', '2022-07-18 11:37:43', '2022-07-18 11:37:43', NULL);
+INSERT INTO `log_opers` VALUES (914, '修改角色信息', '2', 'PUT', 'panda', '/system/role', '222.175.246.74', 'ɽ��ʡ�Ͳ��� ����', '', '0', '2022-07-19 14:03:34', '2022-07-19 14:03:34', NULL);
+INSERT INTO `log_opers` VALUES (915, '修改状态', '2', 'PUT', 'admin', '/job/changeStatus', '121.69.84.210', '������ ����ͨ', '', '0', '2022-07-19 15:07:09', '2022-07-19 15:07:09', NULL);
+INSERT INTO `log_opers` VALUES (916, '添加通知信息', '1', 'POST', 'admin', '/system/notice', '182.116.65.22', '����ʡ������ ��ͨ', '', '0', '2022-07-19 17:06:20', '2022-07-19 17:06:20', NULL);
+INSERT INTO `log_opers` VALUES (917, '修改状态', '2', 'PUT', 'admin', '/job/changeStatus', '121.69.84.210', '������ ����ͨ', '', '0', '2022-07-19 18:04:42', '2022-07-19 18:04:42', NULL);
+INSERT INTO `log_opers` VALUES (918, '修改SysTenant信息', '2', 'PUT', 'admin', '/system/tenant', '114.102.130.30', '����ʡ�Ϸ��� ����', '', '0', '2022-07-19 18:45:18', '2022-07-19 18:45:18', NULL);
+INSERT INTO `log_opers` VALUES (919, '修改状态', '2', 'PUT', 'admin', '/resource/oss/changeStatus', '180.167.217.166', '�Ϻ��� ����', '', '0', '2022-07-20 00:03:56', '2022-07-20 00:03:56', NULL);
+INSERT INTO `log_opers` VALUES (920, '添加SysTenant信息', '1', 'POST', 'admin', '/system/tenant', '119.131.144.47', '�㶫ʡ������ ����', '', '0', '2022-07-20 09:59:02', '2022-07-20 09:59:02', NULL);
+INSERT INTO `log_opers` VALUES (921, '修改角色信息', '2', 'PUT', 'admin', '/system/role', '222.129.41.224', '������ ��ͨADSL', '', '0', '2022-07-20 16:39:14', '2022-07-20 16:39:14', NULL);
+INSERT INTO `log_opers` VALUES (922, '添加用户信息', '1', 'POST', 'admin', '/system/user', '120.235.110.204', '�㶫ʡ������ �ƶ�', '', '0', '2022-07-21 00:20:54', '2022-07-21 00:20:54', NULL);
+INSERT INTO `log_opers` VALUES (923, '修改用户状态', '2', 'PUT', 'admin', '/system/user/changeStatus', '120.235.110.204', '�㶫ʡ������ �ƶ�', '', '0', '2022-07-21 00:21:05', '2022-07-21 00:21:05', NULL);
+INSERT INTO `log_opers` VALUES (924, '修改用户状态', '2', 'PUT', 'admin', '/system/user/changeStatus', '120.235.110.204', '�㶫ʡ������ �ƶ�', '', '0', '2022-07-21 00:21:07', '2022-07-21 00:21:07', NULL);
+INSERT INTO `log_opers` VALUES (925, '修改用户状态', '2', 'PUT', 'admin', '/system/user/changeStatus', '120.235.110.204', '�㶫ʡ������ �ƶ�', '', '0', '2022-07-21 00:21:07', '2022-07-21 00:21:07', NULL);
+INSERT INTO `log_opers` VALUES (926, '添加用户信息', '1', 'POST', 'admin', '/system/user', '103.239.206.29', '�㶫ʡ������ BGP', '', '0', '2022-07-21 13:51:57', '2022-07-21 13:51:57', NULL);
+INSERT INTO `log_opers` VALUES (927, '新增表', '1', 'POST', 'admin', '/develop/code/table', '159.138.32.243', '���� ��Ϊ��˾', '', '0', '2022-07-22 11:13:38', '2022-07-22 11:13:38', NULL);
 
 -- ----------------------------
 -- Table structure for res_emails
@@ -645,6 +736,7 @@ INSERT INTO `sys_configs` VALUES (1, '账号初始密码', 'sys.user.initPasswor
 DROP TABLE IF EXISTS `sys_depts`;
 CREATE TABLE `sys_depts`  (
   `dept_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `parent_id` int(11) NULL DEFAULT NULL COMMENT '上级部门',
   `dept_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '部门路径',
   `dept_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '部门名称',
@@ -664,9 +756,9 @@ CREATE TABLE `sys_depts`  (
 -- ----------------------------
 -- Records of sys_depts
 -- ----------------------------
-INSERT INTO `sys_depts` VALUES (2, 0, '/0/2', '熊猫科技', 0, 'xm', '18353366836', '342@qq.com', '0', 'admin', 'admin', '2021-12-01 17:31:53', '2021-12-02 08:56:19', NULL);
-INSERT INTO `sys_depts` VALUES (3, 2, '/0/2/3', '研发部', 1, 'panda', '18353366543', 'ewr@qq.com', '0', 'admin', 'admin', '2021-12-01 17:37:43', '2021-12-02 08:55:56', NULL);
-INSERT INTO `sys_depts` VALUES (7, 2, '/0/2/7', '营销部', 2, 'panda', '18353333333', '342@qq.com', '0', 'panda', 'panda', '2021-12-24 10:46:24', '2021-12-24 10:47:15', NULL);
+INSERT INTO `sys_depts` VALUES (2, NULL, 0, '/0/2', '熊猫科技', 0, 'xm', '18353366836', '342@qq.com', '0', 'admin', 'admin', '2021-12-01 17:31:53', '2021-12-02 08:56:19', NULL);
+INSERT INTO `sys_depts` VALUES (3, NULL, 2, '/0/2/3', '研发部', 1, 'panda', '18353366543', 'ewr@qq.com', '0', 'admin', 'admin', '2021-12-01 17:37:43', '2021-12-02 08:55:56', NULL);
+INSERT INTO `sys_depts` VALUES (7, NULL, 2, '/0/2/7', '营销部', 2, 'panda', '18353333333', '342@qq.com', '0', 'panda', 'panda', '2021-12-24 10:46:24', '2021-12-24 10:47:15', NULL);
 
 -- ----------------------------
 -- Table structure for sys_dict_data
@@ -956,6 +1048,7 @@ INSERT INTO `sys_notices` VALUES (3, '版本更新通知：任务功能，通知
 DROP TABLE IF EXISTS `sys_posts`;
 CREATE TABLE `sys_posts`  (
   `post_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `tenant_id` int(11) NULL DEFAULT NULL COMMENT '租户id',
   `post_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '岗位名称',
   `post_code` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '岗位代码',
   `sort` int(4) NULL DEFAULT NULL COMMENT '岗位排序',
@@ -972,11 +1065,11 @@ CREATE TABLE `sys_posts`  (
 -- ----------------------------
 -- Records of sys_posts
 -- ----------------------------
-INSERT INTO `sys_posts` VALUES (1, '首席执行官', 'CEO', 1, '0', '首席执行官', 'panda', '', '2021-12-02 09:21:44', '2022-07-16 17:36:32', NULL);
-INSERT INTO `sys_posts` VALUES (3, '首席技术执行官', 'CTO', 1, '0', '', 'admin', '', '2021-12-02 09:21:44', '2021-12-02 09:25:59', '2021-12-02 09:27:41');
-INSERT INTO `sys_posts` VALUES (4, '首席技术执行官', 'CTO', 2, '0', '', 'panda', '', '2021-12-02 09:21:44', '2022-07-16 17:37:42', NULL);
-INSERT INTO `sys_posts` VALUES (5, '123', '123', 0, '0', '', 'admin', '', '2021-12-18 00:33:28', '2021-12-18 00:33:28', '2021-12-28 14:11:52');
-INSERT INTO `sys_posts` VALUES (6, 'wr', 'rw', 0, '0', '', 'panda', '', '2022-07-16 16:55:57', '2022-07-16 16:55:57', '2022-07-16 16:56:08');
+INSERT INTO `sys_posts` VALUES (1, NULL, '首席执行官', 'CEO', 1, '0', '首席执行官', 'panda', '', '2021-12-02 09:21:44', '2022-07-16 17:36:32', NULL);
+INSERT INTO `sys_posts` VALUES (3, NULL, '首席技术执行官', 'CTO', 1, '0', '', 'admin', '', '2021-12-02 09:21:44', '2021-12-02 09:25:59', '2021-12-02 09:27:41');
+INSERT INTO `sys_posts` VALUES (4, NULL, '首席技术执行官', 'CTO', 2, '0', '', 'panda', '', '2021-12-02 09:21:44', '2022-07-16 17:37:42', NULL);
+INSERT INTO `sys_posts` VALUES (5, NULL, '123', '123', 0, '0', '', 'admin', '', '2021-12-18 00:33:28', '2021-12-18 00:33:28', '2021-12-28 14:11:52');
+INSERT INTO `sys_posts` VALUES (6, NULL, 'wr', 'rw', 0, '0', '', 'panda', '', '2022-07-16 16:55:57', '2022-07-16 16:55:57', '2022-07-16 16:56:08');
 
 -- ----------------------------
 -- Table structure for sys_role_depts
@@ -1005,93 +1098,11 @@ CREATE TABLE `sys_role_menus`  (
   `menu_id` int(11) NULL DEFAULT NULL,
   `role_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2957 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3043 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_menus
 -- ----------------------------
-INSERT INTO `sys_role_menus` VALUES (2788, 2, 1, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2789, 2, 3, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2790, 2, 4, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2791, 2, 5, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2792, 2, 6, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2793, 2, 7, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2794, 2, 8, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2795, 2, 9, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2796, 2, 10, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2797, 2, 11, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2798, 2, 12, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2799, 2, 13, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2800, 2, 14, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2801, 2, 15, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2802, 2, 16, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2803, 2, 17, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2804, 2, 18, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2805, 2, 19, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2806, 2, 20, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2807, 2, 21, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2808, 2, 22, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2809, 2, 23, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2810, 2, 25, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2811, 2, 26, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2812, 2, 28, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2813, 2, 29, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2814, 2, 30, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2815, 2, 31, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2816, 2, 32, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2817, 2, 33, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2818, 2, 34, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2819, 2, 35, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2820, 2, 36, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2821, 2, 37, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2822, 2, 38, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2823, 2, 39, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2824, 2, 40, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2825, 2, 41, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2826, 2, 42, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2827, 2, 43, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2828, 2, 44, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2829, 2, 45, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2830, 2, 46, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2831, 2, 47, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2832, 2, 48, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2833, 2, 49, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2834, 2, 50, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2835, 2, 51, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2836, 2, 52, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2837, 2, 53, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2838, 2, 54, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2839, 2, 55, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2840, 2, 56, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2841, 2, 57, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2842, 2, 58, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2843, 2, 59, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2844, 2, 60, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2845, 2, 61, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2846, 2, 62, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2847, 2, 63, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2848, 2, 64, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2849, 2, 65, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2850, 2, 66, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2851, 2, 67, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2852, 2, 68, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2853, 2, 69, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2854, 2, 70, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2855, 2, 71, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2856, 2, 72, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2857, 2, 73, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2858, 2, 74, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2859, 2, 75, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2860, 2, 76, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2861, 2, 77, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2862, 2, 78, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2863, 2, 79, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2864, 2, 80, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2865, 2, 81, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2866, 2, 83, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2867, 2, 84, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2868, 2, 85, 'manage');
-INSERT INTO `sys_role_menus` VALUES (2869, 2, 86, 'manage');
 INSERT INTO `sys_role_menus` VALUES (2870, 1, 1, 'admin');
 INSERT INTO `sys_role_menus` VALUES (2871, 1, 3, 'admin');
 INSERT INTO `sys_role_menus` VALUES (2872, 1, 4, 'admin');
@@ -1179,6 +1190,92 @@ INSERT INTO `sys_role_menus` VALUES (2953, 1, 87, 'admin');
 INSERT INTO `sys_role_menus` VALUES (2954, 1, 88, 'admin');
 INSERT INTO `sys_role_menus` VALUES (2955, 1, 89, 'admin');
 INSERT INTO `sys_role_menus` VALUES (2956, 1, 90, 'admin');
+INSERT INTO `sys_role_menus` VALUES (2957, 2, 1, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2958, 2, 3, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2959, 2, 4, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2960, 2, 5, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2961, 2, 6, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2962, 2, 7, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2963, 2, 8, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2964, 2, 9, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2965, 2, 10, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2966, 2, 11, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2967, 2, 12, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2968, 2, 13, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2969, 2, 14, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2970, 2, 15, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2971, 2, 16, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2972, 2, 17, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2973, 2, 18, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2974, 2, 19, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2975, 2, 20, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2976, 2, 21, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2977, 2, 22, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2978, 2, 23, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2979, 2, 25, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2980, 2, 26, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2981, 2, 28, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2982, 2, 29, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2983, 2, 30, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2984, 2, 31, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2985, 2, 32, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2986, 2, 33, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2987, 2, 34, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2988, 2, 35, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2989, 2, 36, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2990, 2, 37, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2991, 2, 38, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2992, 2, 39, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2993, 2, 40, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2994, 2, 41, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2995, 2, 42, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2996, 2, 43, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2997, 2, 44, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2998, 2, 45, 'manage');
+INSERT INTO `sys_role_menus` VALUES (2999, 2, 46, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3000, 2, 47, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3001, 2, 48, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3002, 2, 49, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3003, 2, 50, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3004, 2, 51, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3005, 2, 52, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3006, 2, 53, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3007, 2, 54, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3008, 2, 55, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3009, 2, 56, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3010, 2, 57, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3011, 2, 58, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3012, 2, 59, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3013, 2, 60, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3014, 2, 61, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3015, 2, 62, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3016, 2, 63, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3017, 2, 64, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3018, 2, 65, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3019, 2, 66, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3020, 2, 67, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3021, 2, 68, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3022, 2, 69, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3023, 2, 70, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3024, 2, 71, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3025, 2, 72, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3026, 2, 73, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3027, 2, 74, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3028, 2, 75, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3029, 2, 76, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3030, 2, 77, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3031, 2, 78, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3032, 2, 79, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3033, 2, 80, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3034, 2, 81, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3035, 2, 83, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3036, 2, 84, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3037, 2, 85, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3038, 2, 86, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3039, 2, 87, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3040, 2, 88, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3041, 2, 89, 'manage');
+INSERT INTO `sys_role_menus` VALUES (3042, 2, 90, 'manage');
 
 -- ----------------------------
 -- Table structure for sys_roles
@@ -1205,17 +1302,17 @@ CREATE TABLE `sys_roles`  (
 -- Records of sys_roles
 -- ----------------------------
 INSERT INTO `sys_roles` VALUES (1, '超管理员', 1, '0', 'admin', '2', 1, 'admin', 'panda', '超级管理', '2021-12-02 16:03:26', '2022-07-18 10:57:14', NULL);
-INSERT INTO `sys_roles` VALUES (2, '管理员', 1, '0', 'manage', '', 2, 'panda', 'panda', '', '2021-12-19 16:06:20', '2022-07-18 10:56:59', NULL);
+INSERT INTO `sys_roles` VALUES (2, '管理员', 1, '0', 'manage', '', 2, 'panda', 'panda', '', '2021-12-19 16:06:20', '2022-07-19 14:03:34', NULL);
 
 -- ----------------------------
 -- Table structure for sys_tenants
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_tenants`;
 CREATE TABLE `sys_tenants`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `create_time` datetime NULL DEFAULT NULL,
   `update_time` datetime NULL DEFAULT NULL,
   `delete_time` datetime NULL DEFAULT NULL,
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `tenant_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '租户名',
   `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
   `expire_time` datetime NULL DEFAULT NULL COMMENT '过期时间',
@@ -1225,7 +1322,7 @@ CREATE TABLE `sys_tenants`  (
 -- ----------------------------
 -- Records of sys_tenants
 -- ----------------------------
-INSERT INTO `sys_tenants` VALUES ('2022-07-16 18:28:33', '2022-07-16 18:28:33', NULL, 1, '熊猫科技', '鹅鹅鹅', '2099-07-16 00:00:00');
+INSERT INTO `sys_tenants` VALUES (1, '2022-07-16 18:28:33', '2022-07-16 18:28:33', NULL, '熊猫科技', '鹅鹅鹅', '2099-07-16 00:00:00');
 
 -- ----------------------------
 -- Table structure for sys_users
