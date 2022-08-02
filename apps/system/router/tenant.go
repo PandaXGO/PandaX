@@ -7,10 +7,10 @@ package router
  **/
 
 import (
+	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/gin-gonic/gin"
 	"pandax/apps/system/api"
 	"pandax/apps/system/services"
-	"pandax/base/ginx"
 )
 
 func InitSysTenantRouter(router *gin.RouterGroup) {
@@ -20,26 +20,26 @@ func InitSysTenantRouter(router *gin.RouterGroup) {
 	routerGroup := router.Group("tenant")
 
 	routerGroup.GET("list", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取SysTenant分页列表").Handle(s.GetSysTenantsList)
+		restfulx.NewReqCtx(c).WithLog("获取SysTenant分页列表").Handle(s.GetSysTenantsList)
 	})
 
 	routerGroup.GET("lists", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取SysTenant列表").Handle(s.GetSysTenantsAll)
+		restfulx.NewReqCtx(c).WithLog("获取SysTenant列表").Handle(s.GetSysTenantsAll)
 	})
 
 	routerGroup.GET(":tenantId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取SysTenant信息").Handle(s.GetSysTenants)
+		restfulx.NewReqCtx(c).WithLog("获取SysTenant信息").Handle(s.GetSysTenants)
 	})
 
 	routerGroup.POST("", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("添加SysTenant信息").Handle(s.InsertSysTenants)
+		restfulx.NewReqCtx(c).WithLog("添加SysTenant信息").Handle(s.InsertSysTenants)
 	})
 
 	routerGroup.PUT("", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("修改SysTenant信息").Handle(s.UpdateSysTenants)
+		restfulx.NewReqCtx(c).WithLog("修改SysTenant信息").Handle(s.UpdateSysTenants)
 	})
 
 	routerGroup.DELETE(":tenantId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("删除SysTenant信息").Handle(s.DeleteSysTenants)
+		restfulx.NewReqCtx(c).WithLog("删除SysTenant信息").Handle(s.DeleteSysTenants)
 	})
 }

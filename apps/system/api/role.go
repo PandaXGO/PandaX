@@ -3,12 +3,12 @@ package api
 import (
 	"errors"
 	"fmt"
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/casbin"
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
-	"pandax/base/biz"
-	"pandax/base/casbin"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 	"pandax/pkg/global"
 	"strconv"
 )
@@ -31,9 +31,9 @@ type RoleApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/role/rolelist [get]
 // @Security
-func (r *RoleApi) GetRoleList(rc *ginx.ReqCtx) {
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+func (r *RoleApi) GetRoleList(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 	status := rc.GinCtx.Query("status")
 	roleName := rc.GinCtx.Query("roleName")
 	roleKey := rc.GinCtx.Query("roleKey")
@@ -61,8 +61,8 @@ func (r *RoleApi) GetRoleList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 400, "message": "抱歉未找到相关信息"}"
 // @Router /system/role [get]
 // @Security X-TOKEN
-func (r *RoleApi) GetRole(rc *ginx.ReqCtx) {
-	roleId := ginx.PathParamInt(rc.GinCtx, "roleId")
+func (r *RoleApi) GetRole(rc *restfulx.ReqCtx) {
+	roleId := restfulx.PathParamInt(rc.GinCtx, "roleId")
 	role := r.RoleApp.FindOne(int64(roleId))
 	role.MenuIds = r.RoleApp.GetRoleMeunId(entity.SysRole{RoleId: int64(roleId)})
 
@@ -78,9 +78,9 @@ func (r *RoleApi) GetRole(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/role [post]
-func (r *RoleApi) InsertRole(rc *ginx.ReqCtx) {
+func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	ginx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindJsonAndValid(rc.GinCtx, &role)
 	role.CreateBy = rc.LoginAccount.UserName
 	role.TenantId = rc.LoginAccount.TenantId
 	insert := r.RoleApp.Insert(role)
@@ -100,9 +100,9 @@ func (r *RoleApi) InsertRole(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
 // @Router /system/role [put]
-func (r *RoleApi) UpdateRole(rc *ginx.ReqCtx) {
+func (r *RoleApi) UpdateRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	ginx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindJsonAndValid(rc.GinCtx, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	r.RoleApp.Update(role)
@@ -124,9 +124,9 @@ func (r *RoleApi) UpdateRole(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
 // @Router /system/role/changeStatus [put]
-func (r *RoleApi) UpdateRoleStatus(rc *ginx.ReqCtx) {
+func (r *RoleApi) UpdateRoleStatus(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	ginx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindJsonAndValid(rc.GinCtx, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	r.RoleApp.Update(role)
@@ -141,9 +141,9 @@ func (r *RoleApi) UpdateRoleStatus(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
 // @Router /system/role/dataScope [put]
-func (r *RoleApi) UpdateRoleDataScope(rc *ginx.ReqCtx) {
+func (r *RoleApi) UpdateRoleDataScope(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	ginx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindJsonAndValid(rc.GinCtx, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	update := r.RoleApp.Update(role)
@@ -162,7 +162,7 @@ func (r *RoleApi) UpdateRoleDataScope(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/role/{roleId} [delete]
-func (r *RoleApi) DeleteRole(rc *ginx.ReqCtx) {
+func (r *RoleApi) DeleteRole(rc *restfulx.ReqCtx) {
 	roleId := rc.GinCtx.Param("roleId")
 	roleIds := utils.IdsStrToIdsIntGroup(roleId)
 
@@ -197,7 +197,7 @@ func (r *RoleApi) DeleteRole(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dict/type/export [get]
-func (p *RoleApi) ExportRole(rc *ginx.ReqCtx) {
+func (p *RoleApi) ExportRole(rc *restfulx.ReqCtx) {
 	filename := rc.GinCtx.Query("filename")
 	status := rc.GinCtx.Query("status")
 	roleName := rc.GinCtx.Query("roleName")

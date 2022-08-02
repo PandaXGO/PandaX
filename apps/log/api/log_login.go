@@ -1,10 +1,10 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 )
 
 type LogLoginApi struct {
@@ -21,9 +21,9 @@ type LogLoginApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /log/logLogin/list [get]
 // @Security
-func (l *LogLoginApi) GetLoginLogList(rc *ginx.ReqCtx) {
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+func (l *LogLoginApi) GetLoginLogList(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 	loginLocation := rc.GinCtx.Query("loginLocation")
 	username := rc.GinCtx.Query("username")
 	list, total := l.LogLoginApp.FindListPage(pageNum, pageSize, entity.LogLogin{LoginLocation: loginLocation, Username: username})
@@ -42,8 +42,8 @@ func (l *LogLoginApi) GetLoginLogList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /log/logLogin/{infoId} [get]
 // @Security
-func (l *LogLoginApi) GetLoginLog(rc *ginx.ReqCtx) {
-	infoId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("infoId"))
+func (l *LogLoginApi) GetLoginLog(rc *restfulx.ReqCtx) {
+	infoId := restfulx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("infoId"))
 	rc.ResData = l.LogLoginApp.FindOne(int64(infoId))
 }
 
@@ -57,9 +57,9 @@ func (l *LogLoginApi) GetLoginLog(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /log/logLogin [put]
 // @Security X-TOKEN
-func (l *LogLoginApi) UpdateLoginLog(rc *ginx.ReqCtx) {
+func (l *LogLoginApi) UpdateLoginLog(rc *restfulx.ReqCtx) {
 	var log entity.LogLogin
-	ginx.BindJsonAndValid(rc.GinCtx, &log)
+	restfulx.BindJsonAndValid(rc.GinCtx, &log)
 	l.LogLoginApp.Update(log)
 }
 
@@ -70,7 +70,7 @@ func (l *LogLoginApi) UpdateLoginLog(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logLogin/{infoId} [delete]
-func (l *LogLoginApi) DeleteLoginLog(rc *ginx.ReqCtx) {
+func (l *LogLoginApi) DeleteLoginLog(rc *restfulx.ReqCtx) {
 	infoIds := rc.GinCtx.Param("infoId")
 	group := utils.IdsStrToIdsIntGroup(infoIds)
 	l.LogLoginApp.Delete(group)
@@ -82,6 +82,6 @@ func (l *LogLoginApi) DeleteLoginLog(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logLogin/all [delete]
-func (l *LogLoginApi) DeleteAll(rc *ginx.ReqCtx) {
+func (l *LogLoginApi) DeleteAll(rc *restfulx.ReqCtx) {
 	l.LogLoginApp.DeleteAll()
 }

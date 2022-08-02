@@ -3,11 +3,11 @@ package api
 import (
 	"errors"
 	"fmt"
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
-	"pandax/base/biz"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 	"pandax/pkg/global"
 )
 
@@ -28,10 +28,10 @@ type PostApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/post [get]
 // @Security
-func (p *PostApi) GetPostList(rc *ginx.ReqCtx) {
+func (p *PostApi) GetPostList(rc *restfulx.ReqCtx) {
 
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 	status := rc.GinCtx.Query("status")
 	postName := rc.GinCtx.Query("postName")
 	postCode := rc.GinCtx.Query("postCode")
@@ -58,8 +58,8 @@ func (p *PostApi) GetPostList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/post/{postId} [get]
 // @Security
-func (p *PostApi) GetPost(rc *ginx.ReqCtx) {
-	postId := ginx.PathParamInt(rc.GinCtx, "postId")
+func (p *PostApi) GetPost(rc *restfulx.ReqCtx) {
+	postId := restfulx.PathParamInt(rc.GinCtx, "postId")
 	p.PostApp.FindOne(int64(postId))
 }
 
@@ -73,9 +73,9 @@ func (p *PostApi) GetPost(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/post [post]
 // @Security X-TOKEN
-func (p *PostApi) InsertPost(rc *ginx.ReqCtx) {
+func (p *PostApi) InsertPost(rc *restfulx.ReqCtx) {
 	var post entity.SysPost
-	ginx.BindJsonAndValid(rc.GinCtx, &post)
+	restfulx.BindJsonAndValid(rc.GinCtx, &post)
 	post.TenantId = rc.LoginAccount.TenantId
 	post.CreateBy = rc.LoginAccount.UserName
 	p.PostApp.Insert(post)
@@ -91,9 +91,9 @@ func (p *PostApi) InsertPost(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/post [put]
 // @Security X-TOKEN
-func (p *PostApi) UpdatePost(rc *ginx.ReqCtx) {
+func (p *PostApi) UpdatePost(rc *restfulx.ReqCtx) {
 	var post entity.SysPost
-	ginx.BindJsonAndValid(rc.GinCtx, &post)
+	restfulx.BindJsonAndValid(rc.GinCtx, &post)
 
 	post.CreateBy = rc.LoginAccount.UserName
 	p.PostApp.Update(post)
@@ -106,7 +106,7 @@ func (p *PostApi) UpdatePost(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/post/{postId} [delete]
-func (p *PostApi) DeletePost(rc *ginx.ReqCtx) {
+func (p *PostApi) DeletePost(rc *restfulx.ReqCtx) {
 
 	postId := rc.GinCtx.Param("postId")
 	postIds := utils.IdsStrToIdsIntGroup(postId)

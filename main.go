@@ -1,13 +1,13 @@
 package main
 
 import (
+	"github.com/XM-GO/PandaKit/config"
+	"github.com/XM-GO/PandaKit/logger"
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/starter"
 	"github.com/spf13/cobra"
 	"os"
 	"pandax/apps/job/jobs"
-	"pandax/base/config"
-	"pandax/base/ginx"
-	"pandax/base/logger"
-	"pandax/base/starter"
 	"pandax/pkg/global"
 	"pandax/pkg/initialize"
 	"pandax/pkg/middleware"
@@ -31,11 +31,11 @@ var rootCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		ginx.UseAfterHandlerInterceptor(middleware.OperationHandler)
+		restfulx.UseAfterHandlerInterceptor(middleware.OperationHandler)
 		// gin前置 函数
-		ginx.UseBeforeHandlerInterceptor(ginx.PermissionHandler)
+		restfulx.UseBeforeHandlerInterceptor(restfulx.PermissionHandler)
 		// gin后置 函数
-		ginx.UseAfterHandlerInterceptor(ginx.LogHandler)
+		restfulx.UseAfterHandlerInterceptor(restfulx.LogHandler)
 		go func() {
 			// 启动系统调度任务
 			jobs.InitJob()

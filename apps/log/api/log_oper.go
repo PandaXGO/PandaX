@@ -1,11 +1,11 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	"log"
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 )
 
 type LogOperApi struct {
@@ -22,9 +22,9 @@ type LogOperApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /log/logOper/list [get]
 // @Security
-func (l *LogOperApi) GetOperLogList(rc *ginx.ReqCtx) {
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+func (l *LogOperApi) GetOperLogList(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 
 	businessType := rc.GinCtx.Query("businessType")
 	operName := rc.GinCtx.Query("operName")
@@ -45,8 +45,8 @@ func (l *LogOperApi) GetOperLogList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /log/logOper/{operId} [get]
 // @Security
-func (l *LogOperApi) GetOperLog(rc *ginx.ReqCtx) {
-	operId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("operId"))
+func (l *LogOperApi) GetOperLog(rc *restfulx.ReqCtx) {
+	operId := restfulx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("operId"))
 	rc.ResData = l.LogOperApp.FindOne(int64(operId))
 }
 
@@ -57,7 +57,7 @@ func (l *LogOperApi) GetOperLog(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logOper/{operId} [delete]
-func (l *LogOperApi) DeleteOperLog(rc *ginx.ReqCtx) {
+func (l *LogOperApi) DeleteOperLog(rc *restfulx.ReqCtx) {
 	operIds := rc.GinCtx.Param("operId")
 	group := utils.IdsStrToIdsIntGroup(operIds)
 	log.Println("group", group)
@@ -70,6 +70,6 @@ func (l *LogOperApi) DeleteOperLog(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logOper/all [delete]
-func (l *LogOperApi) DeleteAll(rc *ginx.ReqCtx) {
+func (l *LogOperApi) DeleteAll(rc *restfulx.ReqCtx) {
 	l.LogOperApp.DeleteAll()
 }

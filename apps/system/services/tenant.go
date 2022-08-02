@@ -6,8 +6,8 @@ package services
  * @Date 2022/7/14 17:49
  **/
 import (
+	"github.com/XM-GO/PandaKit/biz"
 	"pandax/apps/system/entity"
-	"pandax/base/biz"
 	"pandax/pkg/global"
 )
 

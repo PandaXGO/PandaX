@@ -1,13 +1,13 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/biz"
+	email "github.com/XM-GO/PandaKit/mail"
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/resource/api/from"
 	"pandax/apps/resource/entity"
 	"pandax/apps/resource/services"
-	"pandax/base/biz"
-	"pandax/base/ginx"
-	email "pandax/base/mail"
-	"pandax/base/utils"
 )
 
 /**
@@ -29,10 +29,10 @@ type ResEmailsApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /resource/email/list [get]
 // @Security
-func (p *ResEmailsApi) GetResEmailsList(rc *ginx.ReqCtx) {
+func (p *ResEmailsApi) GetResEmailsList(rc *restfulx.ReqCtx) {
 
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 	status := rc.GinCtx.Query("status")
 	category := rc.GinCtx.Query("category")
 
@@ -59,8 +59,8 @@ func (p *ResEmailsApi) GetResEmailsList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /resource/email/{mailId} [get]
 // @Security
-func (p *ResEmailsApi) GetResEmails(rc *ginx.ReqCtx) {
-	mailId := ginx.PathParamInt(rc.GinCtx, "mailId")
+func (p *ResEmailsApi) GetResEmails(rc *restfulx.ReqCtx) {
+	mailId := restfulx.PathParamInt(rc.GinCtx, "mailId")
 	p.ResEmailsApp.FindOne(int64(mailId))
 }
 
@@ -74,9 +74,9 @@ func (p *ResEmailsApi) GetResEmails(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /resource/email [post]
 // @Security X-TOKEN
-func (p *ResEmailsApi) InsertResEmails(rc *ginx.ReqCtx) {
+func (p *ResEmailsApi) InsertResEmails(rc *restfulx.ReqCtx) {
 	var data entity.ResEmail
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 
 	p.ResEmailsApp.Insert(data)
 }
@@ -91,9 +91,9 @@ func (p *ResEmailsApi) InsertResEmails(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /resource/email [put]
 // @Security X-TOKEN
-func (p *ResEmailsApi) UpdateResEmails(rc *ginx.ReqCtx) {
+func (p *ResEmailsApi) UpdateResEmails(rc *restfulx.ReqCtx) {
 	var data entity.ResEmail
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 	if utils.ISDdmMail(data.From) {
 		data.From = ""
 	}
@@ -110,7 +110,7 @@ func (p *ResEmailsApi) UpdateResEmails(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /resource/email/{mailId} [delete]
-func (p *ResEmailsApi) DeleteResEmails(rc *ginx.ReqCtx) {
+func (p *ResEmailsApi) DeleteResEmails(rc *restfulx.ReqCtx) {
 
 	mailId := rc.GinCtx.Param("mailId")
 	mailIds := utils.IdsStrToIdsIntGroup(mailId)
@@ -127,9 +127,9 @@ func (p *ResEmailsApi) DeleteResEmails(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /resource/oss [put]
 // @Security X-TOKEN
-func (p *ResEmailsApi) UpdateMailStatus(rc *ginx.ReqCtx) {
+func (p *ResEmailsApi) UpdateMailStatus(rc *restfulx.ReqCtx) {
 	var data entity.ResEmail
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 
 	p.ResEmailsApp.Update(entity.ResEmail{MailId: data.MailId, Status: data.Status})
 }
@@ -144,9 +144,9 @@ func (p *ResEmailsApi) UpdateMailStatus(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /resource/email/debugMail [post]
 // @Security X-TOKEN
-func (p *ResEmailsApi) DebugMail(rc *ginx.ReqCtx) {
+func (p *ResEmailsApi) DebugMail(rc *restfulx.ReqCtx) {
 	var data from.SendMail
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 
 	one := p.ResEmailsApp.FindOne(data.MailId)
 	ml := email.Mail{

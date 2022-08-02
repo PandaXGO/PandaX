@@ -1,13 +1,13 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/job/api/from"
 	"pandax/apps/job/entity"
 	"pandax/apps/job/jobs"
 	"pandax/apps/job/services"
-	"pandax/base/biz"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 )
 
 type JobApi struct {
@@ -24,9 +24,9 @@ type JobApi struct {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /job/job [post]
 // @Security X-TOKEN
-func (j *JobApi) CreateJob(rc *ginx.ReqCtx) {
+func (j *JobApi) CreateJob(rc *restfulx.ReqCtx) {
 	var job entity.SysJob
-	ginx.BindJsonAndValid(rc.GinCtx, &job)
+	restfulx.BindJsonAndValid(rc.GinCtx, &job)
 
 	job.CreateBy = rc.LoginAccount.UserName
 	j.JobApp.Insert(job)
@@ -43,9 +43,9 @@ func (j *JobApi) CreateJob(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /job/list [get]
 // @Security
-func (j *JobApi) GetJobList(rc *ginx.ReqCtx) {
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+func (j *JobApi) GetJobList(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 	jobName := rc.GinCtx.Query("jobName")
 	jobGroup := rc.GinCtx.Query("jobGroup")
 	status := rc.GinCtx.Query("status")
@@ -66,8 +66,8 @@ func (j *JobApi) GetJobList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /job/{jobId} [get]
 // @Security
-func (j *JobApi) GetJob(rc *ginx.ReqCtx) {
-	jobId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("jobId"))
+func (j *JobApi) GetJob(rc *restfulx.ReqCtx) {
+	jobId := restfulx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("jobId"))
 	rc.ResData = j.JobApp.FindOne(int64(jobId))
 }
 
@@ -81,9 +81,9 @@ func (j *JobApi) GetJob(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /job [put]
 // @Security X-TOKEN
-func (l *JobApi) UpdateJob(rc *ginx.ReqCtx) {
+func (l *JobApi) UpdateJob(rc *restfulx.ReqCtx) {
 	var job entity.SysJob
-	ginx.BindJsonAndValid(rc.GinCtx, &job)
+	restfulx.BindJsonAndValid(rc.GinCtx, &job)
 	l.JobApp.Update(job)
 }
 
@@ -94,7 +94,7 @@ func (l *JobApi) UpdateJob(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /job/{jobId} [delete]
-func (l *JobApi) DeleteJob(rc *ginx.ReqCtx) {
+func (l *JobApi) DeleteJob(rc *restfulx.ReqCtx) {
 	jobIds := rc.GinCtx.Param("jobId")
 	group := utils.IdsStrToIdsIntGroup(jobIds)
 	l.JobApp.Delete(group)
@@ -107,8 +107,8 @@ func (l *JobApi) DeleteJob(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /job/stop/{jobId} [get]
-func (l *JobApi) StopJobForService(rc *ginx.ReqCtx) {
-	jobId := ginx.PathParamInt(rc.GinCtx, "jobId")
+func (l *JobApi) StopJobForService(rc *restfulx.ReqCtx) {
+	jobId := restfulx.PathParamInt(rc.GinCtx, "jobId")
 	job := l.JobApp.FindOne(int64(jobId))
 	jobs.Remove(jobs.Crontab, job.EntryId)
 }
@@ -119,8 +119,8 @@ func (l *JobApi) StopJobForService(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /job/stop/{jobId} [get]
-func (l *JobApi) StartJobForService(rc *ginx.ReqCtx) {
-	jobId := ginx.PathParamInt(rc.GinCtx, "jobId")
+func (l *JobApi) StartJobForService(rc *restfulx.ReqCtx) {
+	jobId := restfulx.PathParamInt(rc.GinCtx, "jobId")
 	job := l.JobApp.FindOne(int64(jobId))
 
 	biz.IsTrue(job.Status == "0", "以关闭的任务不能开启")
@@ -162,9 +162,9 @@ func (l *JobApi) StartJobForService(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /job/changeStatus [put]
 // @Security X-TOKEN
-func (l *JobApi) UpdateStatusJob(rc *ginx.ReqCtx) {
+func (l *JobApi) UpdateStatusJob(rc *restfulx.ReqCtx) {
 	var job from.JobStatus
-	ginx.BindJsonAndValid(rc.GinCtx, &job)
+	restfulx.BindJsonAndValid(rc.GinCtx, &job)
 
 	l.JobApp.Update(entity.SysJob{JobId: job.JobId, Status: job.Status})
 }

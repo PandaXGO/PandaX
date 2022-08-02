@@ -1,11 +1,11 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/develop/entity"
 	"pandax/apps/develop/gen"
 	"pandax/apps/develop/services"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 	"strings"
 	"sync"
 )
@@ -22,9 +22,9 @@ type GenTableApi struct {
 // @Param pageNum query int false "pageNum / 页码"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/db/list [get]
-func (g *GenTableApi) GetDBTableList(rc *ginx.ReqCtx) {
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+func (g *GenTableApi) GetDBTableList(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 	tableName := rc.GinCtx.Query("tableName")
 	list, total := g.GenTableApp.FindDbTablesListPage(pageNum, pageSize, entity.DBTables{TableName: tableName})
 	rc.ResData = map[string]any{
@@ -44,9 +44,9 @@ func (g *GenTableApi) GetDBTableList(rc *ginx.ReqCtx) {
 // @Param pageIndex query int false "pageIndex / 页码"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/list [get]
-func (g *GenTableApi) GetTablePage(rc *ginx.ReqCtx) {
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+func (g *GenTableApi) GetTablePage(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 	tableName := rc.GinCtx.Query("tableName")
 	tableComment := rc.GinCtx.Query("tableComment")
 	list, total := g.GenTableApp.FindListPage(pageNum, pageSize, entity.DevGenTable{TableName: tableName, TableComment: tableComment})
@@ -65,8 +65,8 @@ func (g *GenTableApi) GetTablePage(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/info/{tableId} [get]
 // @Security Bearer
-func (g *GenTableApi) GetTableInfo(rc *ginx.ReqCtx) {
-	tableId := ginx.PathParamInt(rc.GinCtx, "tableId")
+func (g *GenTableApi) GetTableInfo(rc *restfulx.ReqCtx) {
+	tableId := restfulx.PathParamInt(rc.GinCtx, "tableId")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableId: int64(tableId)}, true)
 	mp := make(map[string]any)
 	mp["list"] = result.Columns
@@ -81,7 +81,7 @@ func (g *GenTableApi) GetTableInfo(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/info/tableName [get]
 // @Security X-TOKEN
-func (g *GenTableApi) GetTableInfoByName(rc *ginx.ReqCtx) {
+func (g *GenTableApi) GetTableInfoByName(rc *restfulx.ReqCtx) {
 	tableName := rc.GinCtx.Query("tableName")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableName: tableName}, true)
 	mp := make(map[string]any)
@@ -96,7 +96,7 @@ func (g *GenTableApi) GetTableInfoByName(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/tableTree [get]
 // @Security X-TOKEN
-func (g *GenTableApi) GetTableTree(rc *ginx.ReqCtx) {
+func (g *GenTableApi) GetTableTree(rc *restfulx.ReqCtx) {
 	rc.ResData = g.GenTableApp.FindTree(entity.DevGenTable{})
 }
 
@@ -110,7 +110,7 @@ func (g *GenTableApi) GetTableTree(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
 // @Router /develop/code/table [post]
 // @Security Bearer
-func (g *GenTableApi) Insert(rc *ginx.ReqCtx) {
+func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
 	tablesList := strings.Split(rc.GinCtx.Query("tables"), ",")
 
 	wg := sync.WaitGroup{}
@@ -136,9 +136,9 @@ func (g *GenTableApi) Insert(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
 // @Router /develop/code/table [put]
 // @Security Bearer
-func (g *GenTableApi) Update(rc *ginx.ReqCtx) {
+func (g *GenTableApi) Update(rc *restfulx.ReqCtx) {
 	var data entity.DevGenTable
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 	g.GenTableApp.Update(data)
 }
 
@@ -150,7 +150,7 @@ func (g *GenTableApi) Update(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": -1, "message": "删除失败"}"
 // @Router /develop/code/table/{tableId} [delete]
-func (g *GenTableApi) Delete(rc *ginx.ReqCtx) {
+func (g *GenTableApi) Delete(rc *restfulx.ReqCtx) {
 	tableIds := rc.GinCtx.Param("tableId")
 	group := utils.IdsStrToIdsIntGroup(tableIds)
 	g.GenTableApp.Delete(group)

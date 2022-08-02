@@ -1,10 +1,10 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/restfulx"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
-	"pandax/base/biz"
-	"pandax/base/ginx"
 )
 
 type MenuApi struct {
@@ -22,7 +22,7 @@ type MenuApi struct {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/menu/menuTreSelect [get]
 // @Security X-TOKEN
-func (m *MenuApi) GetMenuTreeSelect(rc *ginx.ReqCtx) {
+func (m *MenuApi) GetMenuTreeSelect(rc *restfulx.ReqCtx) {
 	lable := m.MenuApp.SelectMenuLable(entity.SysMenu{})
 	rc.ResData = lable
 }
@@ -34,7 +34,7 @@ func (m *MenuApi) GetMenuTreeSelect(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 400, "message": "抱歉未找到相关信息"}"
 // @Router /system/menu/menuRole [get]
 // @Security X-TOKEN
-func (m *MenuApi) GetMenuRole(rc *ginx.ReqCtx) {
+func (m *MenuApi) GetMenuRole(rc *restfulx.ReqCtx) {
 	roleKey := rc.GinCtx.Query("roleKey")
 	biz.IsTrue(roleKey != "", "请传入角色Key")
 	rc.ResData = Build(*m.MenuApp.SelectMenuRole(roleKey))
@@ -48,8 +48,8 @@ func (m *MenuApi) GetMenuRole(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 400, "message": "抱歉未找到相关信息"}"
 // @Router /system/menu/menuTreRoleSelect/{roleId} [get]
 // @Security X-TOKEN
-func (m *MenuApi) GetMenuTreeRoleSelect(rc *ginx.ReqCtx) {
-	roleId := ginx.PathParamInt(rc.GinCtx, "roleId")
+func (m *MenuApi) GetMenuTreeRoleSelect(rc *restfulx.ReqCtx) {
+	roleId := restfulx.PathParamInt(rc.GinCtx, "roleId")
 
 	result := m.MenuApp.SelectMenuLable(entity.SysMenu{})
 	menuIds := make([]int64, 0)
@@ -70,7 +70,7 @@ func (m *MenuApi) GetMenuTreeRoleSelect(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 400, "message": "抱歉未找到相关信息"}"
 // @Router /system/menu/menuPaths [get]
 // @Security X-TOKEN
-func (m *MenuApi) GetMenuPaths(rc *ginx.ReqCtx) {
+func (m *MenuApi) GetMenuPaths(rc *restfulx.ReqCtx) {
 	roleKey := rc.GinCtx.Query("roleKey")
 	biz.IsTrue(roleKey != "", "请传入角色Key")
 	rc.ResData = m.RoleMenuApp.GetMenuPaths(entity.SysRoleMenu{RoleName: roleKey})
@@ -86,7 +86,7 @@ func (m *MenuApi) GetMenuPaths(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 400, "message": "抱歉未找到相关信息"}"
 // @Router /system/menu/menuList [get]
 // @Security Bearer
-func (m *MenuApi) GetMenuList(rc *ginx.ReqCtx) {
+func (m *MenuApi) GetMenuList(rc *restfulx.ReqCtx) {
 	menuName := rc.GinCtx.Query("menuName")
 	status := rc.GinCtx.Query("status")
 
@@ -106,8 +106,8 @@ func (m *MenuApi) GetMenuList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 400, "message": "抱歉未找到相关信息"}"
 // @Router /system/menu/{menuId} [get]
 // @Security Bearer
-func (m *MenuApi) GetMenu(rc *ginx.ReqCtx) {
-	menuId := ginx.PathParamInt(rc.GinCtx, "menuId")
+func (m *MenuApi) GetMenu(rc *restfulx.ReqCtx) {
+	menuId := restfulx.PathParamInt(rc.GinCtx, "menuId")
 
 	rc.ResData = m.MenuApp.FindOne(int64(menuId))
 }
@@ -120,9 +120,9 @@ func (m *MenuApi) GetMenu(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
 // @Router /system/menu [post]
 // @Security X-TOKEN
-func (m *MenuApi) InsertMenu(rc *ginx.ReqCtx) {
+func (m *MenuApi) InsertMenu(rc *restfulx.ReqCtx) {
 	var menu entity.SysMenu
-	ginx.BindJsonAndValid(rc.GinCtx, &menu)
+	restfulx.BindJsonAndValid(rc.GinCtx, &menu)
 	menu.CreateBy = rc.LoginAccount.UserName
 	m.MenuApp.Insert(menu)
 	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
@@ -141,9 +141,9 @@ func (m *MenuApi) InsertMenu(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": -1, "message": "修改失败"}"
 // @Router /system/menu [put]
 // @Security X-TOKEN
-func (m *MenuApi) UpdateMenu(rc *ginx.ReqCtx) {
+func (m *MenuApi) UpdateMenu(rc *restfulx.ReqCtx) {
 	var menu entity.SysMenu
-	ginx.BindJsonAndValid(rc.GinCtx, &menu)
+	restfulx.BindJsonAndValid(rc.GinCtx, &menu)
 	menu.UpdateBy = rc.LoginAccount.UserName
 	m.MenuApp.Update(menu)
 	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
@@ -161,7 +161,7 @@ func (m *MenuApi) UpdateMenu(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/menu/{menuId} [delete]
-func (m *MenuApi) DeleteMenu(rc *ginx.ReqCtx) {
-	menuId := ginx.PathParamInt(rc.GinCtx, "menuId")
+func (m *MenuApi) DeleteMenu(rc *restfulx.ReqCtx) {
+	menuId := restfulx.PathParamInt(rc.GinCtx, "menuId")
 	m.MenuApp.Delete([]int64{int64(menuId)})
 }

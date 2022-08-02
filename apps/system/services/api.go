@@ -2,10 +2,10 @@ package services
 
 import (
 	"errors"
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/casbin"
 	"gorm.io/gorm"
 	"pandax/apps/system/entity"
-	"pandax/base/biz"
-	"pandax/base/casbin"
 	"pandax/pkg/global"
 )
 

@@ -1,10 +1,10 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/gin-gonic/gin"
 	"pandax/apps/system/api"
 	"pandax/apps/system/services"
-	"pandax/base/ginx"
 )
 
 func InitPostRouter(router *gin.RouterGroup) {
@@ -16,22 +16,22 @@ func InitPostRouter(router *gin.RouterGroup) {
 	post := router.Group("post")
 
 	post.GET("list", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取岗位分页列表").Handle(s.GetPostList)
+		restfulx.NewReqCtx(c).WithLog("获取岗位分页列表").Handle(s.GetPostList)
 	})
 
 	post.GET(":postId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取岗位信息").Handle(s.GetPost)
+		restfulx.NewReqCtx(c).WithLog("获取岗位信息").Handle(s.GetPost)
 	})
 
 	post.POST("", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("添加岗位信息").Handle(s.InsertPost)
+		restfulx.NewReqCtx(c).WithLog("添加岗位信息").Handle(s.InsertPost)
 	})
 
 	post.PUT("", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("修改岗位信息").Handle(s.UpdatePost)
+		restfulx.NewReqCtx(c).WithLog("修改岗位信息").Handle(s.UpdatePost)
 	})
 
 	post.DELETE(":postId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("删除岗位信息").Handle(s.DeletePost)
+		restfulx.NewReqCtx(c).WithLog("删除岗位信息").Handle(s.DeletePost)
 	})
 }

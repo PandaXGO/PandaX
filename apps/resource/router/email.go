@@ -1,10 +1,10 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/gin-gonic/gin"
 	"pandax/apps/resource/api"
 	"pandax/apps/resource/services"
-	"pandax/base/ginx"
 )
 
 /**
@@ -20,30 +20,30 @@ func InitResEmailsRouter(router *gin.RouterGroup) {
 	routerGroup := router.Group("email")
 
 	routerGroup.GET("list", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取ResEmails分页列表").Handle(s.GetResEmailsList)
+		restfulx.NewReqCtx(c).WithLog("获取ResEmails分页列表").Handle(s.GetResEmailsList)
 	})
 
 	routerGroup.GET(":mailId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取ResEmails信息").Handle(s.GetResEmails)
+		restfulx.NewReqCtx(c).WithLog("获取ResEmails信息").Handle(s.GetResEmails)
 	})
 
 	routerGroup.POST("", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("添加ResEmails信息").Handle(s.InsertResEmails)
+		restfulx.NewReqCtx(c).WithLog("添加ResEmails信息").Handle(s.InsertResEmails)
 	})
 
 	routerGroup.PUT("", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("修改ResEmails信息").Handle(s.UpdateResEmails)
+		restfulx.NewReqCtx(c).WithLog("修改ResEmails信息").Handle(s.UpdateResEmails)
 	})
 
 	routerGroup.DELETE(":mailId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("删除ResEmails信息").Handle(s.DeleteResEmails)
+		restfulx.NewReqCtx(c).WithLog("删除ResEmails信息").Handle(s.DeleteResEmails)
 	})
 
 	routerGroup.PUT("changeStatus", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("修改状态").Handle(s.UpdateMailStatus)
+		restfulx.NewReqCtx(c).WithLog("修改状态").Handle(s.UpdateMailStatus)
 	})
 
 	routerGroup.POST("debugMail", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("修改状态").Handle(s.DebugMail)
+		restfulx.NewReqCtx(c).WithLog("修改状态").Handle(s.DebugMail)
 	})
 }

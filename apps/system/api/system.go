@@ -2,13 +2,13 @@ package api
 
 import (
 	"fmt"
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/ws"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/kakuilan/kgo"
 	"net/http"
-	"pandax/base/biz"
-	"pandax/base/ginx"
-	"pandax/base/ws"
 	"runtime"
 )
 
@@ -71,8 +71,8 @@ func (s *System) ConnectWs(g *gin.Context) {
 		panic(any(biz.NewBizErr("升级websocket失败")))
 	}
 	// 权限校验
-	rc := ginx.NewReqCtx(g)
-	if err = ginx.PermissionHandler(rc); err != nil {
+	rc := restfulx.NewReqCtx(g)
+	if err = restfulx.PermissionHandler(rc); err != nil {
 		panic(any(biz.NewBizErr("没有权限")))
 	}
 

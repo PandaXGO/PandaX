@@ -1,6 +1,6 @@
 package entity
 
-import "pandax/base/model"
+import "github.com/XM-GO/PandaKit/model"
 
 /**
  * @Description 添加qq群467890197 交流学习

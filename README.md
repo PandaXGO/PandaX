@@ -7,7 +7,7 @@
 
 ## 🌈平台简介
 
-* 采用前后端分离的模式，后端采用GO语言，通过对GIn自封装框架ginx，代码更简洁，逻辑更清晰
+* 采用前后端分离的模式，后端采用GO语言，通过对GIn自封装框架restfulx，代码更简洁，逻辑更清晰
 * 前端采用VUE3.0+ TypeScript + vite2 + Element-plus：[PandaUI](https://github.com/PandaGoAdmin/PandaUi)，适配手机、平板、pc 内置多种ui功能减少开发量
 * 高效率的开发，使用代码生成器可以一键生成前后端代码，可在线预览代码，减少代码开发量。。
 * 完善的权限认证系统：完善的权限认证系统，包含，菜单按钮权限，api权限，部门权限。
@@ -101,7 +101,7 @@
 
 | 项目 | 说明 |
 | --- | --- |
-| `base` | 自封装ginx和工具类 |
+| `base` | 自封装restfulx和工具类 |
 | `docs` | api接口文档 |
 | `initialize` | 初始化 |
 | `resource` | 文件导出目录 |

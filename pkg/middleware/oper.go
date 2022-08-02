@@ -1,14 +1,14 @@
 package middleware
 
 import (
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	"net/http"
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 )
 
-func OperationHandler(rc *ginx.ReqCtx) error {
+func OperationHandler(rc *restfulx.ReqCtx) error {
 	c := rc.GinCtx
 	// 请求操作不做记录
 	if c.Request.Method == http.MethodGet || rc.LoginAccount == nil {

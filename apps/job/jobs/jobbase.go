@@ -8,7 +8,7 @@ import (
 	logEntity "pandax/apps/log/entity"
 	logServices "pandax/apps/log/services"
 
-	"pandax/base/httpclient"
+	"github.com/XM-GO/PandaKit/httpclient"
 	"pandax/pkg/global"
 	"sync"
 	"time"

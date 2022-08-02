@@ -5,8 +5,8 @@ import (
 	"pandax/apps/system/api"
 	"pandax/apps/system/services"
 
+	"github.com/XM-GO/PandaKit/restfulx"
 	logServices "pandax/apps/log/services"
-	"pandax/base/ginx"
 )
 
 func InitUserRouter(router *gin.RouterGroup) {
@@ -24,56 +24,56 @@ func InitUserRouter(router *gin.RouterGroup) {
 	user.GET("getCaptcha", s.GenerateCaptcha)
 
 	user.POST("login", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("登录").WithNeedToken(false).WithNeedCasbin(false).Handle(s.Login)
+		restfulx.NewReqCtx(c).WithLog("登录").WithNeedToken(false).WithNeedCasbin(false).Handle(s.Login)
 	})
 	user.GET("auth", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("认证信息").WithNeedCasbin(false).Handle(s.Auth)
+		restfulx.NewReqCtx(c).WithLog("认证信息").WithNeedCasbin(false).Handle(s.Auth)
 	})
 	user.POST("logout", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("退出登录").WithNeedToken(false).WithNeedCasbin(false).Handle(s.LogOut)
+		restfulx.NewReqCtx(c).WithLog("退出登录").WithNeedToken(false).WithNeedCasbin(false).Handle(s.LogOut)
 	})
 
 	user.GET("list", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("得到用户分页列表").Handle(s.GetSysUserList)
+		restfulx.NewReqCtx(c).WithLog("得到用户分页列表").Handle(s.GetSysUserList)
 	})
 
 	user.POST("avatar", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("修改用户头像").Handle(s.InsetSysUserAvatar)
+		restfulx.NewReqCtx(c).WithLog("修改用户头像").Handle(s.InsetSysUserAvatar)
 	})
 
 	user.PUT("pwd", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("修改用户密码").Handle(s.SysUserUpdatePwd)
+		restfulx.NewReqCtx(c).WithLog("修改用户密码").Handle(s.SysUserUpdatePwd)
 	})
 
 	user.GET("getById/:userId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取用户信息").Handle(s.GetSysUser)
+		restfulx.NewReqCtx(c).WithLog("获取用户信息").Handle(s.GetSysUser)
 	})
 
 	user.GET("getInit", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取初始化角色岗位信息(添加用户初始化)").Handle(s.GetSysUserInit)
+		restfulx.NewReqCtx(c).WithLog("获取初始化角色岗位信息(添加用户初始化)").Handle(s.GetSysUserInit)
 	})
 
 	user.GET("getRoPo", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取用户角色岗位信息(添加用户初始化)").Handle(s.GetUserRolePost)
+		restfulx.NewReqCtx(c).WithLog("获取用户角色岗位信息(添加用户初始化)").Handle(s.GetUserRolePost)
 	})
 
 	user.POST("", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("添加用户信息").Handle(s.InsertSysUser)
+		restfulx.NewReqCtx(c).WithLog("添加用户信息").Handle(s.InsertSysUser)
 	})
 
 	user.PUT("", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("修改用户信息").Handle(s.UpdateSysUser)
+		restfulx.NewReqCtx(c).WithLog("修改用户信息").Handle(s.UpdateSysUser)
 	})
 
 	user.PUT("changeStatus", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("修改用户状态").Handle(s.UpdateSysUserStu)
+		restfulx.NewReqCtx(c).WithLog("修改用户状态").Handle(s.UpdateSysUserStu)
 	})
 
 	user.DELETE(":userId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("删除用户信息").Handle(s.DeleteSysUser)
+		restfulx.NewReqCtx(c).WithLog("删除用户信息").Handle(s.DeleteSysUser)
 	})
 
 	user.GET("export", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("导出用户信息").Handle(s.ExportUser)
+		restfulx.NewReqCtx(c).WithLog("导出用户信息").Handle(s.ExportUser)
 	})
 }

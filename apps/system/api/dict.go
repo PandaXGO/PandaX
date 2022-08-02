@@ -2,11 +2,11 @@ package api
 
 import (
 	"fmt"
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
-	"pandax/base/biz"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 	"pandax/pkg/global"
 )
 
@@ -26,9 +26,9 @@ type DictApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/dict/type/list [get]
 // @Security
-func (p *DictApi) GetDictTypeList(rc *ginx.ReqCtx) {
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+func (p *DictApi) GetDictTypeList(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 	status := rc.GinCtx.Query("status")
 	dictName := rc.GinCtx.Query("dictName")
 	dictType := rc.GinCtx.Query("dictType")
@@ -49,8 +49,8 @@ func (p *DictApi) GetDictTypeList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/dict/type/{dictId} [get]
 // @Security
-func (p *DictApi) GetDictType(rc *ginx.ReqCtx) {
-	dictId := ginx.PathParamInt(rc.GinCtx, "dictId")
+func (p *DictApi) GetDictType(rc *restfulx.ReqCtx) {
+	dictId := restfulx.PathParamInt(rc.GinCtx, "dictId")
 	p.DictType.FindOne(int64(dictId))
 }
 
@@ -64,9 +64,9 @@ func (p *DictApi) GetDictType(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/dict/type [post]
 // @Security X-TOKEN
-func (p *DictApi) InsertDictType(rc *ginx.ReqCtx) {
+func (p *DictApi) InsertDictType(rc *restfulx.ReqCtx) {
 	var dict entity.SysDictType
-	ginx.BindJsonAndValid(rc.GinCtx, &dict)
+	restfulx.BindJsonAndValid(rc.GinCtx, &dict)
 
 	dict.CreateBy = rc.LoginAccount.UserName
 	p.DictType.Insert(dict)
@@ -82,9 +82,9 @@ func (p *DictApi) InsertDictType(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/dict/type [put]
 // @Security X-TOKEN
-func (p *DictApi) UpdateDictType(rc *ginx.ReqCtx) {
+func (p *DictApi) UpdateDictType(rc *restfulx.ReqCtx) {
 	var dict entity.SysDictType
-	ginx.BindJsonAndValid(rc.GinCtx, &dict)
+	restfulx.BindJsonAndValid(rc.GinCtx, &dict)
 
 	dict.CreateBy = rc.LoginAccount.UserName
 	p.DictType.Update(dict)
@@ -97,7 +97,7 @@ func (p *DictApi) UpdateDictType(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dict/type/{dictId} [delete]
-func (p *DictApi) DeleteDictType(rc *ginx.ReqCtx) {
+func (p *DictApi) DeleteDictType(rc *restfulx.ReqCtx) {
 	dictId := rc.GinCtx.Param("dictId")
 	dictIds := utils.IdsStrToIdsIntGroup(dictId)
 
@@ -123,7 +123,7 @@ func (p *DictApi) DeleteDictType(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dict/type/export [get]
-func (p *DictApi) ExportDictType(rc *ginx.ReqCtx) {
+func (p *DictApi) ExportDictType(rc *restfulx.ReqCtx) {
 	filename := rc.GinCtx.Query("filename")
 	status := rc.GinCtx.Query("status")
 	dictName := rc.GinCtx.Query("dictName")
@@ -144,7 +144,7 @@ func (p *DictApi) ExportDictType(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/dict/data/list [get]
 // @Security
-func (p *DictApi) GetDictDataList(rc *ginx.ReqCtx) {
+func (p *DictApi) GetDictDataList(rc *restfulx.ReqCtx) {
 	dictLabel := rc.GinCtx.Query("dictLabel")
 	dictType := rc.GinCtx.Query("dictType")
 	status := rc.GinCtx.Query("status")
@@ -158,7 +158,7 @@ func (p *DictApi) GetDictDataList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/dict/data/type [get]
 // @Security
-func (p *DictApi) GetDictDataListByDictType(rc *ginx.ReqCtx) {
+func (p *DictApi) GetDictDataListByDictType(rc *restfulx.ReqCtx) {
 	dictType := rc.GinCtx.Query("dictType")
 	biz.IsTrue(dictType != "", "请传入字典类型")
 	rc.ResData = p.DictData.FindList(entity.SysDictData{DictType: dictType})
@@ -171,8 +171,8 @@ func (p *DictApi) GetDictDataListByDictType(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/dict/data/{dictCode} [get]
 // @Security
-func (p *DictApi) GetDictData(rc *ginx.ReqCtx) {
-	dictCode := ginx.PathParamInt(rc.GinCtx, "dictCode")
+func (p *DictApi) GetDictData(rc *restfulx.ReqCtx) {
+	dictCode := restfulx.PathParamInt(rc.GinCtx, "dictCode")
 	p.DictData.FindOne(int64(dictCode))
 }
 
@@ -186,9 +186,9 @@ func (p *DictApi) GetDictData(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/dict/data [post]
 // @Security X-TOKEN
-func (p *DictApi) InsertDictData(rc *ginx.ReqCtx) {
+func (p *DictApi) InsertDictData(rc *restfulx.ReqCtx) {
 	var data entity.SysDictData
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 
 	data.CreateBy = rc.LoginAccount.UserName
 	p.DictData.Insert(data)
@@ -204,9 +204,9 @@ func (p *DictApi) InsertDictData(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/dict/data [put]
 // @Security X-TOKEN
-func (p *DictApi) UpdateDictData(rc *ginx.ReqCtx) {
+func (p *DictApi) UpdateDictData(rc *restfulx.ReqCtx) {
 	var data entity.SysDictData
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 
 	data.CreateBy = rc.LoginAccount.UserName
 	p.DictData.Update(data)
@@ -219,7 +219,7 @@ func (p *DictApi) UpdateDictData(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dict/data/{dictCode} [delete]
-func (p *DictApi) DeleteDictData(rc *ginx.ReqCtx) {
+func (p *DictApi) DeleteDictData(rc *restfulx.ReqCtx) {
 	param := rc.GinCtx.Param("dictCode")
 	p.DictData.Delete(utils.IdsStrToIdsIntGroup(param))
 }

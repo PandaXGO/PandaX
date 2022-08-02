@@ -1,9 +1,9 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/restfulx"
 	"pandax/apps/develop/gen"
 	"pandax/apps/develop/services"
-	"pandax/base/ginx"
 )
 
 type GenApi struct {
@@ -17,8 +17,8 @@ type GenApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/gen/preview/{tableId} [get]
 // @Security X-TOKEN
-func (e *GenApi) Preview(rc *ginx.ReqCtx) {
-	tableId := ginx.PathParamInt(rc.GinCtx, "tableId")
+func (e *GenApi) Preview(rc *restfulx.ReqCtx) {
+	tableId := restfulx.PathParamInt(rc.GinCtx, "tableId")
 	rc.ResData = gen.Preview(int64(tableId))
 }
 
@@ -29,8 +29,8 @@ func (e *GenApi) Preview(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/gen/code/{tableId} [get]
 // @Security X-TOKEN
-func (e *GenApi) GenCode(rc *ginx.ReqCtx) {
-	tableId := ginx.PathParamInt(rc.GinCtx, "tableId")
+func (e *GenApi) GenCode(rc *restfulx.ReqCtx) {
+	tableId := restfulx.PathParamInt(rc.GinCtx, "tableId")
 	gen.GenCode(int64(tableId))
 }
 
@@ -41,8 +41,8 @@ func (e *GenApi) GenCode(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/gen/configure/{tableId} [get]
 // @Security X-TOKEN
-func (e *GenApi) GenConfigure(rc *ginx.ReqCtx) {
-	tableId := ginx.PathParamInt(rc.GinCtx, "tableId")
-	menuId := ginx.QueryInt(rc.GinCtx, "menuId", 0)
+func (e *GenApi) GenConfigure(rc *restfulx.ReqCtx) {
+	tableId := restfulx.PathParamInt(rc.GinCtx, "tableId")
+	menuId := restfulx.QueryInt(rc.GinCtx, "menuId", 0)
 	gen.GenConfigure(tableId, menuId)
 }

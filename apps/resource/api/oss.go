@@ -2,12 +2,12 @@ package api
 
 import (
 	"fmt"
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/oss"
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/resource/entity"
 	"pandax/apps/resource/services"
-	"pandax/base/biz"
-	"pandax/base/ginx"
-	"pandax/base/oss"
-	"pandax/base/utils"
 	"time"
 )
 
@@ -31,10 +31,10 @@ type ResOssesApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /resource/oss/list [get]
 // @Security
-func (p *ResOssesApi) GetResOssesList(rc *ginx.ReqCtx) {
+func (p *ResOssesApi) GetResOssesList(rc *restfulx.ReqCtx) {
 
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 	status := rc.GinCtx.Query("status")
 	category := rc.GinCtx.Query("category")
 	ossCode := rc.GinCtx.Query("ossCode")
@@ -62,8 +62,8 @@ func (p *ResOssesApi) GetResOssesList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /resource/oss/{ossId} [get]
 // @Security
-func (p *ResOssesApi) GetResOsses(rc *ginx.ReqCtx) {
-	ossId := ginx.PathParamInt(rc.GinCtx, "ossId")
+func (p *ResOssesApi) GetResOsses(rc *restfulx.ReqCtx) {
+	ossId := restfulx.PathParamInt(rc.GinCtx, "ossId")
 	p.ResOssesApp.FindOne(int64(ossId))
 }
 
@@ -77,9 +77,9 @@ func (p *ResOssesApi) GetResOsses(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /resource/oss [post]
 // @Security X-TOKEN
-func (p *ResOssesApi) InsertResOsses(rc *ginx.ReqCtx) {
+func (p *ResOssesApi) InsertResOsses(rc *restfulx.ReqCtx) {
 	var data entity.ResOss
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 
 	p.ResOssesApp.Insert(data)
 }
@@ -94,9 +94,9 @@ func (p *ResOssesApi) InsertResOsses(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /resource/oss [put]
 // @Security X-TOKEN
-func (p *ResOssesApi) UpdateResOsses(rc *ginx.ReqCtx) {
+func (p *ResOssesApi) UpdateResOsses(rc *restfulx.ReqCtx) {
 	var data entity.ResOss
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 	if utils.IsDdmKey(data.AccessKey) {
 		data.AccessKey = ""
 	}
@@ -113,7 +113,7 @@ func (p *ResOssesApi) UpdateResOsses(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /resource/oss/{ossId} [delete]
-func (p *ResOssesApi) DeleteResOsses(rc *ginx.ReqCtx) {
+func (p *ResOssesApi) DeleteResOsses(rc *restfulx.ReqCtx) {
 
 	ossId := rc.GinCtx.Param("ossId")
 	ossIds := utils.IdsStrToIdsIntGroup(ossId)
@@ -126,7 +126,7 @@ func (p *ResOssesApi) DeleteResOsses(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /resource/oss/uploadFile [post]
-func (p *ResOssesApi) UplaodResOsses(rc *ginx.ReqCtx) {
+func (p *ResOssesApi) UplaodResOsses(rc *restfulx.ReqCtx) {
 	file, _ := rc.GinCtx.FormFile("file")
 	ossCode, _ := rc.GinCtx.GetQuery("ossCode")
 	list := p.ResOssesApp.FindList(entity.ResOss{OssCode: ossCode})
@@ -150,9 +150,9 @@ func (p *ResOssesApi) UplaodResOsses(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /resource/oss [put]
 // @Security X-TOKEN
-func (p *ResOssesApi) UpdateOssStatus(rc *ginx.ReqCtx) {
+func (p *ResOssesApi) UpdateOssStatus(rc *restfulx.ReqCtx) {
 	var data entity.ResOss
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 
 	p.ResOssesApp.Update(entity.ResOss{OssId: data.OssId, Status: data.Status})
 }

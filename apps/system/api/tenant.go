@@ -6,10 +6,10 @@ package api
  * @Date 2022/7/14 17:55
  **/
 import (
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 )
 
 type SysTenantsApi struct {
@@ -23,10 +23,10 @@ type SysTenantsApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/tenant/list [get]
 // @Security
-func (p *SysTenantsApi) GetSysTenantsList(rc *ginx.ReqCtx) {
+func (p *SysTenantsApi) GetSysTenantsList(rc *restfulx.ReqCtx) {
 	data := entity.SysTenants{}
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 
 	list, total := p.SysTenantsApp.FindListPage(pageNum, pageSize, data)
 
@@ -43,7 +43,7 @@ func (p *SysTenantsApi) GetSysTenantsList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/tenant/lists [get]
 // @Security
-func (p *SysTenantsApi) GetSysTenantsAll(rc *ginx.ReqCtx) {
+func (p *SysTenantsApi) GetSysTenantsAll(rc *restfulx.ReqCtx) {
 	list := make([]entity.SysTenants, 0)
 	if rc.LoginAccount.RoleKey == "admin" {
 		data := entity.SysTenants{}
@@ -61,8 +61,8 @@ func (p *SysTenantsApi) GetSysTenantsAll(rc *ginx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/tenant/{tenantId} [get]
 // @Security
-func (p *SysTenantsApi) GetSysTenants(rc *ginx.ReqCtx) {
-	tenantId := ginx.PathParamInt(rc.GinCtx, "tenantId")
+func (p *SysTenantsApi) GetSysTenants(rc *restfulx.ReqCtx) {
+	tenantId := restfulx.PathParamInt(rc.GinCtx, "tenantId")
 	p.SysTenantsApp.FindOne(int64(tenantId))
 }
 
@@ -76,9 +76,9 @@ func (p *SysTenantsApi) GetSysTenants(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/tenant [post]
 // @Security X-TOKEN
-func (p *SysTenantsApi) InsertSysTenants(rc *ginx.ReqCtx) {
+func (p *SysTenantsApi) InsertSysTenants(rc *restfulx.ReqCtx) {
 	var data entity.SysTenants
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 
 	p.SysTenantsApp.Insert(data)
 }
@@ -93,9 +93,9 @@ func (p *SysTenantsApi) InsertSysTenants(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/tenant [put]
 // @Security X-TOKEN
-func (p *SysTenantsApi) UpdateSysTenants(rc *ginx.ReqCtx) {
+func (p *SysTenantsApi) UpdateSysTenants(rc *restfulx.ReqCtx) {
 	var data entity.SysTenants
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindJsonAndValid(rc.GinCtx, &data)
 
 	p.SysTenantsApp.Update(data)
 }
@@ -107,7 +107,7 @@ func (p *SysTenantsApi) UpdateSysTenants(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/tenant/{tenantId} [delete]
-func (p *SysTenantsApi) DeleteSysTenants(rc *ginx.ReqCtx) {
+func (p *SysTenantsApi) DeleteSysTenants(rc *restfulx.ReqCtx) {
 	tenantId := rc.GinCtx.Param("tenantId")
 	tenantIds := utils.IdsStrToIdsIntGroup(tenantId)
 	p.SysTenantsApp.Delete(tenantIds)

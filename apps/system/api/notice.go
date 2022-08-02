@@ -1,10 +1,10 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 	"strings"
 )
 
@@ -23,9 +23,9 @@ type NoticeApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/post [get]
 // @Security
-func (p *NoticeApi) GetNoticeList(rc *ginx.ReqCtx) {
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+func (p *NoticeApi) GetNoticeList(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
 	noticeType := rc.GinCtx.Query("noticeType")
 	title := rc.GinCtx.Query("title")
 
@@ -55,9 +55,9 @@ func (p *NoticeApi) GetNoticeList(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/notice [post]
 // @Security X-TOKEN
-func (p *NoticeApi) InsertNotice(rc *ginx.ReqCtx) {
+func (p *NoticeApi) InsertNotice(rc *restfulx.ReqCtx) {
 	var notice entity.SysNotice
-	ginx.BindJsonAndValid(rc.GinCtx, &notice)
+	restfulx.BindJsonAndValid(rc.GinCtx, &notice)
 	notice.UserName = rc.LoginAccount.UserName
 	p.NoticeApp.Insert(notice)
 }
@@ -72,9 +72,9 @@ func (p *NoticeApi) InsertNotice(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/notice [put]
 // @Security X-TOKEN
-func (p *NoticeApi) UpdateNotice(rc *ginx.ReqCtx) {
+func (p *NoticeApi) UpdateNotice(rc *restfulx.ReqCtx) {
 	var notice entity.SysNotice
-	ginx.BindJsonAndValid(rc.GinCtx, &notice)
+	restfulx.BindJsonAndValid(rc.GinCtx, &notice)
 
 	p.NoticeApp.Update(notice)
 }
@@ -86,7 +86,7 @@ func (p *NoticeApi) UpdateNotice(rc *ginx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/notice/{noticeId} [delete]
-func (p *NoticeApi) DeleteNotice(rc *ginx.ReqCtx) {
+func (p *NoticeApi) DeleteNotice(rc *restfulx.ReqCtx) {
 	noticeId := rc.GinCtx.Param("noticeId")
 	noticeIds := utils.IdsStrToIdsIntGroup(noticeId)
 	p.NoticeApp.Delete(noticeIds)
