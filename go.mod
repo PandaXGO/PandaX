@@ -5,7 +5,6 @@ go 1.18
 require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/gorilla/websocket v1.4.2
-	// ssh
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
 	gorm.io/gorm v1.22.3
 )
