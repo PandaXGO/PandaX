@@ -4,7 +4,6 @@ import (
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 	"pandax/base/biz"
-	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
 )
@@ -24,7 +23,7 @@ type ConfigApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/config [get]
 // @Security
-func (p *ConfigApi) GetConfigList(rc *ctx.ReqCtx) {
+func (p *ConfigApi) GetConfigList(rc *ginx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 	configName := rc.GinCtx.Query("configName")
@@ -48,7 +47,7 @@ func (p *ConfigApi) GetConfigList(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/config/configKey [get]
 // @Security
-func (p *ConfigApi) GetConfigListByKey(rc *ctx.ReqCtx) {
+func (p *ConfigApi) GetConfigListByKey(rc *ginx.ReqCtx) {
 	configKey := rc.GinCtx.Query("configKey")
 	biz.IsTrue(configKey != "", "请传入配置Key")
 	rc.ResData = p.ConfigApp.FindList(entity.SysConfig{ConfigKey: configKey})
@@ -61,7 +60,7 @@ func (p *ConfigApi) GetConfigListByKey(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/config/{configId} [get]
 // @Security
-func (p *ConfigApi) GetConfig(rc *ctx.ReqCtx) {
+func (p *ConfigApi) GetConfig(rc *ginx.ReqCtx) {
 	id := ginx.PathParamInt(rc.GinCtx, "configId")
 	p.ConfigApp.FindOne(int64(id))
 }
@@ -76,7 +75,7 @@ func (p *ConfigApi) GetConfig(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/config [post]
 // @Security X-TOKEN
-func (p *ConfigApi) InsertConfig(rc *ctx.ReqCtx) {
+func (p *ConfigApi) InsertConfig(rc *ginx.ReqCtx) {
 	var config entity.SysConfig
 	ginx.BindJsonAndValid(rc.GinCtx, &config)
 
@@ -93,7 +92,7 @@ func (p *ConfigApi) InsertConfig(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/config [put]
 // @Security X-TOKEN
-func (p *ConfigApi) UpdateConfig(rc *ctx.ReqCtx) {
+func (p *ConfigApi) UpdateConfig(rc *ginx.ReqCtx) {
 	var post entity.SysConfig
 	ginx.BindJsonAndValid(rc.GinCtx, &post)
 	p.ConfigApp.Update(post)
@@ -106,7 +105,7 @@ func (p *ConfigApi) UpdateConfig(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/config/{configId} [delete]
-func (p *ConfigApi) DeleteConfig(rc *ctx.ReqCtx) {
+func (p *ConfigApi) DeleteConfig(rc *ginx.ReqCtx) {
 	configId := rc.GinCtx.Param("configId")
 	p.ConfigApp.Delete(utils.IdsStrToIdsIntGroup(configId))
 }

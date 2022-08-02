@@ -5,7 +5,7 @@ import (
 	"os"
 	"pandax/apps/job/jobs"
 	"pandax/base/config"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 	"pandax/base/logger"
 	"pandax/base/starter"
 	"pandax/pkg/global"
@@ -31,11 +31,11 @@ var rootCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		ctx.UseAfterHandlerInterceptor(middleware.OperationHandler)
+		ginx.UseAfterHandlerInterceptor(middleware.OperationHandler)
 		// gin前置 函数
-		ctx.UseBeforeHandlerInterceptor(ctx.PermissionHandler)
+		ginx.UseBeforeHandlerInterceptor(ginx.PermissionHandler)
 		// gin后置 函数
-		ctx.UseAfterHandlerInterceptor(ctx.LogHandler)
+		ginx.UseAfterHandlerInterceptor(ginx.LogHandler)
 		go func() {
 			// 启动系统调度任务
 			jobs.InitJob()

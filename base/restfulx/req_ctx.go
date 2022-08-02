@@ -1,8 +1,9 @@
-package ctx
+package restfulx
 
 import (
 	"pandax/base/biz"
 	"pandax/base/ginx"
+	"pandax/base/token"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -15,8 +16,8 @@ type ReqCtx struct {
 	GinCtx *gin.Context // gin context
 
 	// NeedToken          bool                // 是否需要token
-	RequiredPermission *Permission // 需要的权限信息，默认为nil，需要校验token
-	LoginAccount       *Claims     // 登录账号信息，只有校验token后才会有值
+	RequiredPermission *Permission   // 需要的权限信息，默认为nil，需要校验token
+	LoginAccount       *token.Claims // 登录账号信息，只有校验token后才会有值
 
 	LogInfo  *LogInfo // 日志相关信息
 	ReqParam any      // 请求参数，主要用于记录日志
@@ -65,12 +66,7 @@ func (rc *ReqCtx) Download(filename string) {
 	ginx.Download(rc.GinCtx, filename)
 }
 
-// 新建请求上下文，默认需要校验token
-func NewReqCtx() *ReqCtx {
-	return &ReqCtx{}
-}
-
-func NewReqCtxWithGin(g *gin.Context) *ReqCtx {
+func NewReqCtx(g *gin.Context) *ReqCtx {
 	return &ReqCtx{GinCtx: g, RequiredPermission: &Permission{NeedToken: true, NeedCasbin: true}}
 }
 

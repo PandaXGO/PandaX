@@ -7,7 +7,7 @@ import (
 	"github.com/kakuilan/kgo"
 	"net/http"
 	"pandax/base/biz"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 	"pandax/base/ws"
 	"runtime"
 )
@@ -71,8 +71,8 @@ func (s *System) ConnectWs(g *gin.Context) {
 		panic(any(biz.NewBizErr("升级websocket失败")))
 	}
 	// 权限校验
-	rc := ctx.NewReqCtxWithGin(g)
-	if err = ctx.PermissionHandler(rc); err != nil {
+	rc := ginx.NewReqCtx(g)
+	if err = ginx.PermissionHandler(rc); err != nil {
 		panic(any(biz.NewBizErr("没有权限")))
 	}
 

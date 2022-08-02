@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pandax/apps/develop/api"
 	"pandax/apps/develop/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 )
 
 func InitGenTableRouter(router *gin.RouterGroup) {
@@ -14,43 +14,35 @@ func InitGenTableRouter(router *gin.RouterGroup) {
 	}
 	gen := router.Group("table")
 
-	genDbListLog := ctx.NewLogInfo("获取数据库列表")
 	gen.GET("/db/list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(genDbListLog).Handle(genApi.GetDBTableList)
+		ginx.NewReqCtx(c).WithLog("获取数据库列表").Handle(genApi.GetDBTableList)
 	})
 
-	genListLog := ctx.NewLogInfo("获取表列表")
 	gen.GET("list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(genListLog).Handle(genApi.GetTablePage)
+		ginx.NewReqCtx(c).WithLog("获取表列表").Handle(genApi.GetTablePage)
 	})
 
-	genInfoNameLog := ctx.NewLogInfo("获取表信息By tableName")
 	gen.GET("/info/tableName", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(genInfoNameLog).Handle(genApi.GetTableInfoByName)
+		ginx.NewReqCtx(c).WithLog("获取表信息By tableName").Handle(genApi.GetTableInfoByName)
 	})
 
-	genInfoLog := ctx.NewLogInfo("获取表信息")
 	gen.GET("info/:tableId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(genInfoLog).Handle(genApi.GetTableInfo)
+		ginx.NewReqCtx(c).WithLog("获取表信息").Handle(genApi.GetTableInfo)
 	})
 
-	genTreeLog := ctx.NewLogInfo("获取表树")
 	gen.GET("tableTree", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(genTreeLog).Handle(genApi.GetTableTree)
+		ginx.NewReqCtx(c).WithLog("获取表树").Handle(genApi.GetTableTree)
 	})
 
-	genInsterLog := ctx.NewLogInfo("新增表")
 	gen.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(genInsterLog).Handle(genApi.Insert)
+		ginx.NewReqCtx(c).WithLog("新增表").Handle(genApi.Insert)
 	})
 
-	genUpdateLog := ctx.NewLogInfo("修改表")
 	gen.PUT("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(genUpdateLog).Handle(genApi.Update)
+		ginx.NewReqCtx(c).WithLog("修改表").Handle(genApi.Update)
 	})
 
-	genDeleteLog := ctx.NewLogInfo("删除表")
 	gen.DELETE(":tableId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(genDeleteLog).Handle(genApi.Delete)
+		ginx.NewReqCtx(c).WithLog("删除表").Handle(genApi.Delete)
 	})
 }

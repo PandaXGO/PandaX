@@ -7,7 +7,7 @@ package api
 import (
 	"pandax/apps/{{.PackageName}}/entity"
 	"pandax/apps/{{.PackageName}}/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
 )
@@ -23,7 +23,7 @@ type {{.ClassName}}Api struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /{{.PackageName}}/{{.BusinessName}}/list [get]
 // @Security
-func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *ctx.ReqCtx) {
+func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *ginx.ReqCtx) {
     data := entity.{{.ClassName}}{}
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
@@ -54,7 +54,7 @@ func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /{{.PackageName}}/{{.BusinessName}}/{{"{"}}{{.PkJsonField}}{{"}"}} [get]
 // @Security
-func (p *{{.ClassName}}Api) Get{{.ClassName}}(rc *ctx.ReqCtx) {
+func (p *{{.ClassName}}Api) Get{{.ClassName}}(rc *ginx.ReqCtx) {
 	{{.PkJsonField}} := ginx.PathParamInt(rc.GinCtx, "{{.PkJsonField}}")
 	p.{{.ClassName}}App.FindOne(int64({{.PkJsonField}}))
 }
@@ -69,7 +69,7 @@ func (p *{{.ClassName}}Api) Get{{.ClassName}}(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /{{.PackageName}}/{{.BusinessName}} [post]
 // @Security X-TOKEN
-func (p *{{.ClassName}}Api) Insert{{.ClassName}}(rc *ctx.ReqCtx) {
+func (p *{{.ClassName}}Api) Insert{{.ClassName}}(rc *ginx.ReqCtx) {
 	var data entity.{{.ClassName}}
 	ginx.BindJsonAndValid(rc.GinCtx, &data)
 
@@ -86,7 +86,7 @@ func (p *{{.ClassName}}Api) Insert{{.ClassName}}(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /{{.PackageName}}/{{.BusinessName}} [put]
 // @Security X-TOKEN
-func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *ctx.ReqCtx) {
+func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *ginx.ReqCtx) {
 	var data entity.{{.ClassName}}
 	ginx.BindJsonAndValid(rc.GinCtx, &data)
 
@@ -100,7 +100,7 @@ func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /{{.PackageName}}/{{.BusinessName}}/{{"{"}}{{.PkJsonField}}{{"}"}} [delete]
-func (p *{{.ClassName}}Api) Delete{{.ClassName}}(rc *ctx.ReqCtx) {
+func (p *{{.ClassName}}Api) Delete{{.ClassName}}(rc *ginx.ReqCtx) {
 
 	{{.PkJsonField}} := rc.GinCtx.Param("{{.PkJsonField}}")
 	{{.PkJsonField}}s := utils.IdsStrToIdsIntGroup({{.PkJsonField}})

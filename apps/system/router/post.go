@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pandax/apps/system/api"
 	"pandax/apps/system/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 )
 
 func InitPostRouter(router *gin.RouterGroup) {
@@ -15,28 +15,23 @@ func InitPostRouter(router *gin.RouterGroup) {
 	}
 	post := router.Group("post")
 
-	postList := ctx.NewLogInfo("获取岗位分页列表")
 	post.GET("list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(postList).Handle(s.GetPostList)
+		ginx.NewReqCtx(c).WithLog("获取岗位分页列表").Handle(s.GetPostList)
 	})
 
-	postLog := ctx.NewLogInfo("获取岗位信息")
 	post.GET(":postId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(postLog).Handle(s.GetPost)
+		ginx.NewReqCtx(c).WithLog("获取岗位信息").Handle(s.GetPost)
 	})
 
-	insertPostLog := ctx.NewLogInfo("添加岗位信息")
 	post.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(insertPostLog).Handle(s.InsertPost)
+		ginx.NewReqCtx(c).WithLog("添加岗位信息").Handle(s.InsertPost)
 	})
 
-	updatePostLog := ctx.NewLogInfo("修改岗位信息")
 	post.PUT("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updatePostLog).Handle(s.UpdatePost)
+		ginx.NewReqCtx(c).WithLog("修改岗位信息").Handle(s.UpdatePost)
 	})
 
-	deletePostLog := ctx.NewLogInfo("删除岗位信息")
 	post.DELETE(":postId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(deletePostLog).Handle(s.DeletePost)
+		ginx.NewReqCtx(c).WithLog("删除岗位信息").Handle(s.DeletePost)
 	})
 }

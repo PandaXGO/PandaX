@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pandax/apps/{{.PackageName}}/api"
 	"pandax/apps/{{.PackageName}}/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 )
 
 func Init{{.ClassName}}Router(router *gin.RouterGroup) {
@@ -18,29 +18,29 @@ func Init{{.ClassName}}Router(router *gin.RouterGroup) {
 	}
 	routerGroup := router.Group("{{.BusinessName}}")
 
-	{{.ClassName}}ListLog := ctx.NewLogInfo("获取{{.FunctionName}}分页列表")
+	{{.ClassName}}ListLog := ginx.NewLogInfo("获取{{.FunctionName}}分页列表")
 	routerGroup.GET("list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog({{.ClassName}}ListLog).Handle(s.Get{{.ClassName}}List)
+		ginx.NewReqCtx(c).WithLog({{.ClassName}}ListLog).Handle(s.Get{{.ClassName}}List)
 	})
 
-	{{.ClassName}}Log := ctx.NewLogInfo("获取{{.FunctionName}}信息")
+	{{.ClassName}}Log := ginx.NewLogInfo("获取{{.FunctionName}}信息")
 	routerGroup.GET(":{{.PkJsonField}}", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog({{.ClassName}}Log).Handle(s.Get{{.ClassName}})
+		ginx.NewReqCtx(c).WithLog({{.ClassName}}Log).Handle(s.Get{{.ClassName}})
 	})
 
-	insert{{.ClassName}}Log := ctx.NewLogInfo("添加{{.FunctionName}}信息")
+	insert{{.ClassName}}Log := ginx.NewLogInfo("添加{{.FunctionName}}信息")
 	routerGroup.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(insert{{.ClassName}}Log).Handle(s.Insert{{.ClassName}})
+		ginx.NewReqCtx(c).WithLog(insert{{.ClassName}}Log).Handle(s.Insert{{.ClassName}})
 	})
 
-	update{{.ClassName}}Log := ctx.NewLogInfo("修改{{.FunctionName}}信息")
+	update{{.ClassName}}Log := ginx.NewLogInfo("修改{{.FunctionName}}信息")
 	routerGroup.PUT("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(update{{.ClassName}}Log).Handle(s.Update{{.ClassName}})
+		ginx.NewReqCtx(c).WithLog(update{{.ClassName}}Log).Handle(s.Update{{.ClassName}})
 	})
 
-	delete{{.ClassName}}Log := ctx.NewLogInfo("删除{{.FunctionName}}信息")
+	delete{{.ClassName}}Log := ginx.NewLogInfo("删除{{.FunctionName}}信息")
 	routerGroup.DELETE(":{{.PkJsonField}}", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(delete{{.ClassName}}Log).Handle(s.Delete{{.ClassName}})
+		ginx.NewReqCtx(c).WithLog(delete{{.ClassName}}Log).Handle(s.Delete{{.ClassName}})
 	})
 }
 

@@ -9,6 +9,7 @@ import (
 	"pandax/apps/system/api/form"
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
+	"pandax/base/token"
 
 	logEntity "pandax/apps/log/entity"
 	logServices "pandax/apps/log/services"
@@ -16,7 +17,6 @@ import (
 	"pandax/apps/system/services"
 	"pandax/base/biz"
 	"pandax/base/captcha"
-	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
 	"pandax/pkg/global"
@@ -49,9 +49,9 @@ func (u *UserApi) GenerateCaptcha(c *gin.Context) {
 // @Produce  application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
 // @Router /system/user/refreshToken [get]
-func (u *UserApi) RefreshToken(rc *ctx.ReqCtx) {
+func (u *UserApi) RefreshToken(rc *ginx.ReqCtx) {
 	tokenStr := rc.GinCtx.Request.Header.Get("X-TOKEN")
-	j := ctx.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
+	j := token.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
 	token, err := j.RefreshToken(tokenStr)
 	biz.ErrIsNil(err, "刷新token失败")
 	rc.ResData = map[string]any{"token": token, "expire": time.Now().Unix() + global.Conf.Jwt.ExpireTime}
@@ -63,15 +63,15 @@ func (u *UserApi) RefreshToken(rc *ctx.ReqCtx) {
 // @Param data body form.Login true "用户名, 密码, 验证码"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
 // @Router /system/user/login [post]
-func (u *UserApi) Login(rc *ctx.ReqCtx) {
+func (u *UserApi) Login(rc *ginx.ReqCtx) {
 	var l form.Login
 	ginx.BindJsonAndValid(rc.GinCtx, &l)
 	biz.IsTrue(captcha.Verify(l.CaptchaId, l.Captcha), "验证码认证失败")
 
 	login := u.UserApp.Login(entity.Login{Username: l.Username, Password: l.Password})
 	role := u.RoleApp.FindOne(login.RoleId)
-	j := ctx.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
-	token, err := j.CreateToken(ctx.Claims{
+	j := token.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
+	token, err := j.CreateToken(token.Claims{
 		UserId:   login.UserId,
 		TenantId: login.TenantId,
 		UserName: login.Username,
@@ -115,7 +115,7 @@ func (u *UserApi) Login(rc *ctx.ReqCtx) {
 // @Produce  application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"成功"}"
 // @Router /system/user/auth [get]
-func (u *UserApi) Auth(rc *ctx.ReqCtx) {
+func (u *UserApi) Auth(rc *ginx.ReqCtx) {
 	userName := rc.GinCtx.Query("username")
 	biz.NotEmpty(userName, "用户名必传")
 	var user entity.SysUser
@@ -139,7 +139,7 @@ func (u *UserApi) Auth(rc *ctx.ReqCtx) {
 // @Produce  application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
 // @Router /system/user/logout [post]
-func (u *UserApi) LogOut(rc *ctx.ReqCtx) {
+func (u *UserApi) LogOut(rc *ginx.ReqCtx) {
 	var loginLog logEntity.LogLogin
 	ua := user_agent.New(rc.GinCtx.Request.UserAgent())
 	loginLog.Ipaddr = rc.GinCtx.ClientIP()
@@ -167,7 +167,7 @@ func (u *UserApi) LogOut(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": -1, "message": "抱歉未找到相关信息"}"
 // @Router /system/user/sysUserList [get]
 // @Security X-TOKEN
-func (u *UserApi) GetSysUserList(rc *ctx.ReqCtx) {
+func (u *UserApi) GetSysUserList(rc *ginx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 	status := rc.GinCtx.Query("status")
@@ -199,7 +199,7 @@ func (u *UserApi) GetSysUserList(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/user/profile [get]
 // @Security
-func (u *UserApi) GetSysUserProfile(rc *ctx.ReqCtx) {
+func (u *UserApi) GetSysUserProfile(rc *ginx.ReqCtx) {
 
 	sysUser := entity.SysUser{}
 	sysUser.UserId = rc.LoginAccount.UserId
@@ -235,7 +235,7 @@ func (u *UserApi) GetSysUserProfile(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
 // @Router /system/user/profileAvatar [post]
-func (u *UserApi) InsetSysUserAvatar(rc *ctx.ReqCtx) {
+func (u *UserApi) InsetSysUserAvatar(rc *ginx.ReqCtx) {
 	form, err := rc.GinCtx.MultipartForm()
 	biz.ErrIsNil(err, "头像上传失败")
 
@@ -262,7 +262,7 @@ func (u *UserApi) InsetSysUserAvatar(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
 // @Router /system/user/updatePwd [post]
-func (u *UserApi) SysUserUpdatePwd(rc *ctx.ReqCtx) {
+func (u *UserApi) SysUserUpdatePwd(rc *ginx.ReqCtx) {
 	var pws entity.SysUserPwd
 	ginx.BindJsonAndValid(rc.GinCtx, &pws)
 
@@ -278,7 +278,7 @@ func (u *UserApi) SysUserUpdatePwd(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/user/sysUser/{userId} [get]
 // @Security
-func (u *UserApi) GetSysUser(rc *ctx.ReqCtx) {
+func (u *UserApi) GetSysUser(rc *ginx.ReqCtx) {
 	userId := ginx.PathParamInt(rc.GinCtx, "userId")
 
 	user := entity.SysUser{}
@@ -312,7 +312,7 @@ func (u *UserApi) GetSysUser(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/user/getInit [get]
 // @Security
-func (u *UserApi) GetSysUserInit(rc *ctx.ReqCtx) {
+func (u *UserApi) GetSysUserInit(rc *ginx.ReqCtx) {
 
 	var role entity.SysRole
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
@@ -336,7 +336,7 @@ func (u *UserApi) GetSysUserInit(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/user/getInit [get]
 // @Security
-func (u *UserApi) GetUserRolePost(rc *ctx.ReqCtx) {
+func (u *UserApi) GetUserRolePost(rc *ginx.ReqCtx) {
 	var user entity.SysUser
 	user.UserId = rc.LoginAccount.UserId
 
@@ -367,7 +367,7 @@ func (u *UserApi) GetUserRolePost(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/user/sysUser [post]
-func (u *UserApi) InsertSysUser(rc *ctx.ReqCtx) {
+func (u *UserApi) InsertSysUser(rc *ginx.ReqCtx) {
 	var sysUser entity.SysUser
 	ginx.BindJsonAndValid(rc.GinCtx, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
@@ -383,7 +383,7 @@ func (u *UserApi) InsertSysUser(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/user/sysUser [put]
-func (u *UserApi) UpdateSysUser(rc *ctx.ReqCtx) {
+func (u *UserApi) UpdateSysUser(rc *ginx.ReqCtx) {
 	var sysUser entity.SysUser
 	ginx.BindJsonAndValid(rc.GinCtx, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
@@ -399,7 +399,7 @@ func (u *UserApi) UpdateSysUser(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/user/sysUser [put]
-func (u *UserApi) UpdateSysUserStu(rc *ctx.ReqCtx) {
+func (u *UserApi) UpdateSysUserStu(rc *ginx.ReqCtx) {
 	var sysUser entity.SysUser
 	ginx.BindJsonAndValid(rc.GinCtx, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
@@ -413,7 +413,7 @@ func (u *UserApi) UpdateSysUserStu(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/user/sysuser/{userId} [delete]
-func (u *UserApi) DeleteSysUser(rc *ctx.ReqCtx) {
+func (u *UserApi) DeleteSysUser(rc *ginx.ReqCtx) {
 	userIds := rc.GinCtx.Param("userId")
 	us := utils.IdsStrToIdsIntGroup(userIds)
 	u.UserApp.Delete(us)
@@ -428,7 +428,7 @@ func (u *UserApi) DeleteSysUser(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dict/type/export [get]
-func (u *UserApi) ExportUser(rc *ctx.ReqCtx) {
+func (u *UserApi) ExportUser(rc *ginx.ReqCtx) {
 	filename := rc.GinCtx.Query("filename")
 	status := rc.GinCtx.Query("status")
 	userName := rc.GinCtx.Query("username")

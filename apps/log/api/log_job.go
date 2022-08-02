@@ -3,7 +3,6 @@ package api
 import (
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
-	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
 )
@@ -23,7 +22,7 @@ type LogJobApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /log/logJob/list [get]
 // @Security
-func (l *LogJobApi) GetJobLogList(rc *ctx.ReqCtx) {
+func (l *LogJobApi) GetJobLogList(rc *ginx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 	name := rc.GinCtx.Query("name")
@@ -46,7 +45,7 @@ func (l *LogJobApi) GetJobLogList(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logJob/{logId} [delete]
-func (l *LogJobApi) DeleteJobLog(rc *ctx.ReqCtx) {
+func (l *LogJobApi) DeleteJobLog(rc *ginx.ReqCtx) {
 	logIds := rc.GinCtx.Param("logId")
 	group := utils.IdsStrToIdsIntGroup(logIds)
 	l.LogJobApp.Delete(group)
@@ -58,6 +57,6 @@ func (l *LogJobApi) DeleteJobLog(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logJob/all [delete]
-func (l *LogJobApi) DeleteAll(rc *ctx.ReqCtx) {
+func (l *LogJobApi) DeleteAll(rc *ginx.ReqCtx) {
 	l.LogJobApp.DeleteAll()
 }

@@ -6,7 +6,7 @@ import (
 	"pandax/apps/system/services"
 
 	logServices "pandax/apps/log/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 )
 
 func InitUserRouter(router *gin.RouterGroup) {
@@ -23,71 +23,57 @@ func InitUserRouter(router *gin.RouterGroup) {
 	// 获取验证码
 	user.GET("getCaptcha", s.GenerateCaptcha)
 
-	loginLog := ctx.NewLogInfo("登录")
 	user.POST("login", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(loginLog).WithNeedToken(false).WithNeedCasbin(false).Handle(s.Login)
+		ginx.NewReqCtx(c).WithLog("登录").WithNeedToken(false).WithNeedCasbin(false).Handle(s.Login)
 	})
-	authLog := ctx.NewLogInfo("认证信息")
 	user.GET("auth", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(authLog).WithNeedCasbin(false).Handle(s.Auth)
+		ginx.NewReqCtx(c).WithLog("认证信息").WithNeedCasbin(false).Handle(s.Auth)
 	})
-	logoutLog := ctx.NewLogInfo("退出登录")
 	user.POST("logout", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(logoutLog).WithNeedToken(false).WithNeedCasbin(false).Handle(s.LogOut)
+		ginx.NewReqCtx(c).WithLog("退出登录").WithNeedToken(false).WithNeedCasbin(false).Handle(s.LogOut)
 	})
 
-	sysUserListLog := ctx.NewLogInfo("得到用户分页列表")
 	user.GET("list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(sysUserListLog).Handle(s.GetSysUserList)
+		ginx.NewReqCtx(c).WithLog("得到用户分页列表").Handle(s.GetSysUserList)
 	})
 
-	avatarLog := ctx.NewLogInfo("修改用户头像")
 	user.POST("avatar", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(avatarLog).Handle(s.InsetSysUserAvatar)
+		ginx.NewReqCtx(c).WithLog("修改用户头像").Handle(s.InsetSysUserAvatar)
 	})
 
-	pwdLog := ctx.NewLogInfo("修改用户密码")
 	user.PUT("pwd", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(pwdLog).Handle(s.SysUserUpdatePwd)
+		ginx.NewReqCtx(c).WithLog("修改用户密码").Handle(s.SysUserUpdatePwd)
 	})
 
-	userLog := ctx.NewLogInfo("获取用户信息")
 	user.GET("getById/:userId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(userLog).Handle(s.GetSysUser)
+		ginx.NewReqCtx(c).WithLog("获取用户信息").Handle(s.GetSysUser)
 	})
 
-	getSysUserInitLog := ctx.NewLogInfo("获取初始化角色岗位信息(添加用户初始化)")
 	user.GET("getInit", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(getSysUserInitLog).Handle(s.GetSysUserInit)
+		ginx.NewReqCtx(c).WithLog("获取初始化角色岗位信息(添加用户初始化)").Handle(s.GetSysUserInit)
 	})
 
-	getSysUserRoPoLog := ctx.NewLogInfo("获取用户角色岗位信息(添加用户初始化)")
 	user.GET("getRoPo", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(getSysUserRoPoLog).Handle(s.GetUserRolePost)
+		ginx.NewReqCtx(c).WithLog("获取用户角色岗位信息(添加用户初始化)").Handle(s.GetUserRolePost)
 	})
 
-	insertUserLog := ctx.NewLogInfo("添加用户信息")
 	user.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(insertUserLog).Handle(s.InsertSysUser)
+		ginx.NewReqCtx(c).WithLog("添加用户信息").Handle(s.InsertSysUser)
 	})
 
-	updateUserLog := ctx.NewLogInfo("修改用户信息")
 	user.PUT("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateUserLog).Handle(s.UpdateSysUser)
+		ginx.NewReqCtx(c).WithLog("修改用户信息").Handle(s.UpdateSysUser)
 	})
 
-	updateUserStuLog := ctx.NewLogInfo("修改用户状态")
 	user.PUT("changeStatus", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateUserStuLog).Handle(s.UpdateSysUserStu)
+		ginx.NewReqCtx(c).WithLog("修改用户状态").Handle(s.UpdateSysUserStu)
 	})
 
-	deleteUserLog := ctx.NewLogInfo("删除用户信息")
 	user.DELETE(":userId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(deleteUserLog).Handle(s.DeleteSysUser)
+		ginx.NewReqCtx(c).WithLog("删除用户信息").Handle(s.DeleteSysUser)
 	})
 
-	exportUserLog := ctx.NewLogInfo("导出用户信息")
 	user.GET("export", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(exportUserLog).Handle(s.ExportUser)
+		ginx.NewReqCtx(c).WithLog("导出用户信息").Handle(s.ExportUser)
 	})
 }

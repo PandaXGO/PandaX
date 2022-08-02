@@ -3,7 +3,6 @@ package api
 import (
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
-	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
 )
@@ -22,7 +21,7 @@ type LogLoginApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /log/logLogin/list [get]
 // @Security
-func (l *LogLoginApi) GetLoginLogList(rc *ctx.ReqCtx) {
+func (l *LogLoginApi) GetLoginLogList(rc *ginx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 	loginLocation := rc.GinCtx.Query("loginLocation")
@@ -43,7 +42,7 @@ func (l *LogLoginApi) GetLoginLogList(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /log/logLogin/{infoId} [get]
 // @Security
-func (l *LogLoginApi) GetLoginLog(rc *ctx.ReqCtx) {
+func (l *LogLoginApi) GetLoginLog(rc *ginx.ReqCtx) {
 	infoId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("infoId"))
 	rc.ResData = l.LogLoginApp.FindOne(int64(infoId))
 }
@@ -58,7 +57,7 @@ func (l *LogLoginApi) GetLoginLog(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /log/logLogin [put]
 // @Security X-TOKEN
-func (l *LogLoginApi) UpdateLoginLog(rc *ctx.ReqCtx) {
+func (l *LogLoginApi) UpdateLoginLog(rc *ginx.ReqCtx) {
 	var log entity.LogLogin
 	ginx.BindJsonAndValid(rc.GinCtx, &log)
 	l.LogLoginApp.Update(log)
@@ -71,7 +70,7 @@ func (l *LogLoginApi) UpdateLoginLog(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logLogin/{infoId} [delete]
-func (l *LogLoginApi) DeleteLoginLog(rc *ctx.ReqCtx) {
+func (l *LogLoginApi) DeleteLoginLog(rc *ginx.ReqCtx) {
 	infoIds := rc.GinCtx.Param("infoId")
 	group := utils.IdsStrToIdsIntGroup(infoIds)
 	l.LogLoginApp.Delete(group)
@@ -83,6 +82,6 @@ func (l *LogLoginApi) DeleteLoginLog(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logLogin/all [delete]
-func (l *LogLoginApi) DeleteAll(rc *ctx.ReqCtx) {
+func (l *LogLoginApi) DeleteAll(rc *ginx.ReqCtx) {
 	l.LogLoginApp.DeleteAll()
 }

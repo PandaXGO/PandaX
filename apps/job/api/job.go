@@ -6,7 +6,6 @@ import (
 	"pandax/apps/job/jobs"
 	"pandax/apps/job/services"
 	"pandax/base/biz"
-	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
 )
@@ -25,7 +24,7 @@ type JobApi struct {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /job/job [post]
 // @Security X-TOKEN
-func (j *JobApi) CreateJob(rc *ctx.ReqCtx) {
+func (j *JobApi) CreateJob(rc *ginx.ReqCtx) {
 	var job entity.SysJob
 	ginx.BindJsonAndValid(rc.GinCtx, &job)
 
@@ -44,7 +43,7 @@ func (j *JobApi) CreateJob(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /job/list [get]
 // @Security
-func (j *JobApi) GetJobList(rc *ctx.ReqCtx) {
+func (j *JobApi) GetJobList(rc *ginx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 	jobName := rc.GinCtx.Query("jobName")
@@ -67,7 +66,7 @@ func (j *JobApi) GetJobList(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /job/{jobId} [get]
 // @Security
-func (j *JobApi) GetJob(rc *ctx.ReqCtx) {
+func (j *JobApi) GetJob(rc *ginx.ReqCtx) {
 	jobId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("jobId"))
 	rc.ResData = j.JobApp.FindOne(int64(jobId))
 }
@@ -82,7 +81,7 @@ func (j *JobApi) GetJob(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /job [put]
 // @Security X-TOKEN
-func (l *JobApi) UpdateJob(rc *ctx.ReqCtx) {
+func (l *JobApi) UpdateJob(rc *ginx.ReqCtx) {
 	var job entity.SysJob
 	ginx.BindJsonAndValid(rc.GinCtx, &job)
 	l.JobApp.Update(job)
@@ -95,7 +94,7 @@ func (l *JobApi) UpdateJob(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /job/{jobId} [delete]
-func (l *JobApi) DeleteJob(rc *ctx.ReqCtx) {
+func (l *JobApi) DeleteJob(rc *ginx.ReqCtx) {
 	jobIds := rc.GinCtx.Param("jobId")
 	group := utils.IdsStrToIdsIntGroup(jobIds)
 	l.JobApp.Delete(group)
@@ -108,7 +107,7 @@ func (l *JobApi) DeleteJob(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /job/stop/{jobId} [get]
-func (l *JobApi) StopJobForService(rc *ctx.ReqCtx) {
+func (l *JobApi) StopJobForService(rc *ginx.ReqCtx) {
 	jobId := ginx.PathParamInt(rc.GinCtx, "jobId")
 	job := l.JobApp.FindOne(int64(jobId))
 	jobs.Remove(jobs.Crontab, job.EntryId)
@@ -120,7 +119,7 @@ func (l *JobApi) StopJobForService(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /job/stop/{jobId} [get]
-func (l *JobApi) StartJobForService(rc *ctx.ReqCtx) {
+func (l *JobApi) StartJobForService(rc *ginx.ReqCtx) {
 	jobId := ginx.PathParamInt(rc.GinCtx, "jobId")
 	job := l.JobApp.FindOne(int64(jobId))
 
@@ -163,7 +162,7 @@ func (l *JobApi) StartJobForService(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /job/changeStatus [put]
 // @Security X-TOKEN
-func (l *JobApi) UpdateStatusJob(rc *ctx.ReqCtx) {
+func (l *JobApi) UpdateStatusJob(rc *ginx.ReqCtx) {
 	var job from.JobStatus
 	ginx.BindJsonAndValid(rc.GinCtx, &job)
 

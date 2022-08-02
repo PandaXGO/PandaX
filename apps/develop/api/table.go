@@ -4,7 +4,6 @@ import (
 	"pandax/apps/develop/entity"
 	"pandax/apps/develop/gen"
 	"pandax/apps/develop/services"
-	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
 	"strings"
@@ -23,7 +22,7 @@ type GenTableApi struct {
 // @Param pageNum query int false "pageNum / 页码"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/db/list [get]
-func (g *GenTableApi) GetDBTableList(rc *ctx.ReqCtx) {
+func (g *GenTableApi) GetDBTableList(rc *ginx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 	tableName := rc.GinCtx.Query("tableName")
@@ -45,7 +44,7 @@ func (g *GenTableApi) GetDBTableList(rc *ctx.ReqCtx) {
 // @Param pageIndex query int false "pageIndex / 页码"
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/list [get]
-func (g *GenTableApi) GetTablePage(rc *ctx.ReqCtx) {
+func (g *GenTableApi) GetTablePage(rc *ginx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 	tableName := rc.GinCtx.Query("tableName")
@@ -66,7 +65,7 @@ func (g *GenTableApi) GetTablePage(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/info/{tableId} [get]
 // @Security Bearer
-func (g *GenTableApi) GetTableInfo(rc *ctx.ReqCtx) {
+func (g *GenTableApi) GetTableInfo(rc *ginx.ReqCtx) {
 	tableId := ginx.PathParamInt(rc.GinCtx, "tableId")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableId: int64(tableId)}, true)
 	mp := make(map[string]any)
@@ -82,7 +81,7 @@ func (g *GenTableApi) GetTableInfo(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/info/tableName [get]
 // @Security X-TOKEN
-func (g *GenTableApi) GetTableInfoByName(rc *ctx.ReqCtx) {
+func (g *GenTableApi) GetTableInfoByName(rc *ginx.ReqCtx) {
 	tableName := rc.GinCtx.Query("tableName")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableName: tableName}, true)
 	mp := make(map[string]any)
@@ -97,7 +96,7 @@ func (g *GenTableApi) GetTableInfoByName(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/tableTree [get]
 // @Security X-TOKEN
-func (g *GenTableApi) GetTableTree(rc *ctx.ReqCtx) {
+func (g *GenTableApi) GetTableTree(rc *ginx.ReqCtx) {
 	rc.ResData = g.GenTableApp.FindTree(entity.DevGenTable{})
 }
 
@@ -111,7 +110,7 @@ func (g *GenTableApi) GetTableTree(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
 // @Router /develop/code/table [post]
 // @Security Bearer
-func (g *GenTableApi) Insert(rc *ctx.ReqCtx) {
+func (g *GenTableApi) Insert(rc *ginx.ReqCtx) {
 	tablesList := strings.Split(rc.GinCtx.Query("tables"), ",")
 
 	wg := sync.WaitGroup{}
@@ -137,7 +136,7 @@ func (g *GenTableApi) Insert(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
 // @Router /develop/code/table [put]
 // @Security Bearer
-func (g *GenTableApi) Update(rc *ctx.ReqCtx) {
+func (g *GenTableApi) Update(rc *ginx.ReqCtx) {
 	var data entity.DevGenTable
 	ginx.BindJsonAndValid(rc.GinCtx, &data)
 	g.GenTableApp.Update(data)
@@ -151,7 +150,7 @@ func (g *GenTableApi) Update(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": -1, "message": "删除失败"}"
 // @Router /develop/code/table/{tableId} [delete]
-func (g *GenTableApi) Delete(rc *ctx.ReqCtx) {
+func (g *GenTableApi) Delete(rc *ginx.ReqCtx) {
 	tableIds := rc.GinCtx.Param("tableId")
 	group := utils.IdsStrToIdsIntGroup(tableIds)
 	g.GenTableApp.Delete(group)

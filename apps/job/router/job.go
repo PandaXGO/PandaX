@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pandax/apps/job/api"
 	"pandax/apps/job/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 )
 
 func InitJobRouter(router *gin.RouterGroup) {
@@ -14,43 +14,35 @@ func InitJobRouter(router *gin.RouterGroup) {
 	}
 	job := router.Group("")
 
-	jobListLog := ctx.NewLogInfo("获取Job列表")
 	job.GET("list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(jobListLog).Handle(jobApi.GetJobList)
+		ginx.NewReqCtx(c).WithLog("获取Job列表").Handle(jobApi.GetJobList)
 	})
 
-	getJobLog := ctx.NewLogInfo("获取Job信息")
 	job.GET(":jobId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(getJobLog).Handle(jobApi.GetJob)
+		ginx.NewReqCtx(c).WithLog("获取Job信息").Handle(jobApi.GetJob)
 	})
 
-	insertJobLog := ctx.NewLogInfo("添加Job信息")
 	job.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(insertJobLog).Handle(jobApi.CreateJob)
+		ginx.NewReqCtx(c).WithLog("添加Job信息").Handle(jobApi.CreateJob)
 	})
 
-	updateJobLog := ctx.NewLogInfo("修改Job信息")
 	job.PUT("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateJobLog).Handle(jobApi.UpdateJob)
+		ginx.NewReqCtx(c).WithLog("修改Job信息").Handle(jobApi.UpdateJob)
 	})
 
-	deleteJobLog := ctx.NewLogInfo("删除Job信息")
 	job.DELETE(":jobId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(deleteJobLog).Handle(jobApi.DeleteJob)
+		ginx.NewReqCtx(c).WithLog("删除Job信息").Handle(jobApi.DeleteJob)
 	})
 
-	stopJobLog := ctx.NewLogInfo("停止一个job")
 	job.GET("/stop/:jobId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(stopJobLog).Handle(jobApi.StopJobForService)
+		ginx.NewReqCtx(c).WithLog("停止一个job").Handle(jobApi.StopJobForService)
 	})
 
-	starteJobLog := ctx.NewLogInfo("开启一个job")
 	job.GET("/start/:jobId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(starteJobLog).Handle(jobApi.StartJobForService)
+		ginx.NewReqCtx(c).WithLog("开启一个job").Handle(jobApi.StartJobForService)
 	})
 
-	updateStatusJobLog := ctx.NewLogInfo("修改状态")
 	job.PUT("/changeStatus", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateStatusJobLog).Handle(jobApi.UpdateStatusJob)
+		ginx.NewReqCtx(c).WithLog("修改状态").Handle(jobApi.UpdateStatusJob)
 	})
 }

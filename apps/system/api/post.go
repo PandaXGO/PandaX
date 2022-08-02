@@ -6,7 +6,6 @@ import (
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
 	"pandax/base/biz"
-	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
 	"pandax/pkg/global"
@@ -29,7 +28,7 @@ type PostApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/post [get]
 // @Security
-func (p *PostApi) GetPostList(rc *ctx.ReqCtx) {
+func (p *PostApi) GetPostList(rc *ginx.ReqCtx) {
 
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
@@ -59,7 +58,7 @@ func (p *PostApi) GetPostList(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/post/{postId} [get]
 // @Security
-func (p *PostApi) GetPost(rc *ctx.ReqCtx) {
+func (p *PostApi) GetPost(rc *ginx.ReqCtx) {
 	postId := ginx.PathParamInt(rc.GinCtx, "postId")
 	p.PostApp.FindOne(int64(postId))
 }
@@ -74,7 +73,7 @@ func (p *PostApi) GetPost(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/post [post]
 // @Security X-TOKEN
-func (p *PostApi) InsertPost(rc *ctx.ReqCtx) {
+func (p *PostApi) InsertPost(rc *ginx.ReqCtx) {
 	var post entity.SysPost
 	ginx.BindJsonAndValid(rc.GinCtx, &post)
 	post.TenantId = rc.LoginAccount.TenantId
@@ -92,7 +91,7 @@ func (p *PostApi) InsertPost(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/post [put]
 // @Security X-TOKEN
-func (p *PostApi) UpdatePost(rc *ctx.ReqCtx) {
+func (p *PostApi) UpdatePost(rc *ginx.ReqCtx) {
 	var post entity.SysPost
 	ginx.BindJsonAndValid(rc.GinCtx, &post)
 
@@ -107,7 +106,7 @@ func (p *PostApi) UpdatePost(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/post/{postId} [delete]
-func (p *PostApi) DeletePost(rc *ctx.ReqCtx) {
+func (p *PostApi) DeletePost(rc *ginx.ReqCtx) {
 
 	postId := rc.GinCtx.Param("postId")
 	postIds := utils.IdsStrToIdsIntGroup(postId)

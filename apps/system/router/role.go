@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pandax/apps/system/api"
 	"pandax/apps/system/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 )
 
 func InitRoleRouter(router *gin.RouterGroup) {
@@ -16,42 +16,35 @@ func InitRoleRouter(router *gin.RouterGroup) {
 	}
 	role := router.Group("role")
 
-	roleListLog := ctx.NewLogInfo("获取角色分页列表")
 	role.GET("list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(roleListLog).Handle(s.GetRoleList)
+		ginx.NewReqCtx(c).WithLog("获取角色分页列表").Handle(s.GetRoleList)
 	})
 
-	roleLog := ctx.NewLogInfo("获取角色信息")
 	role.GET(":roleId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(roleLog).Handle(s.GetRole)
+		ginx.NewReqCtx(c).WithLog("获取角色信息").Handle(s.GetRole)
 	})
 
-	insertRoleLog := ctx.NewLogInfo("添加角色信息")
 	role.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(insertRoleLog).Handle(s.InsertRole)
+		ginx.NewReqCtx(c).WithLog("添加角色信息").Handle(s.InsertRole)
 	})
 
-	updateRoleLog := ctx.NewLogInfo("修改角色信息")
 	role.PUT("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateRoleLog).Handle(s.UpdateRole)
+		ginx.NewReqCtx(c).WithLog("修改角色信息").Handle(s.UpdateRole)
 	})
-	updateStaRoleLog := ctx.NewLogInfo("修改角色状态")
+
 	role.PUT("changeStatus", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateStaRoleLog).Handle(s.UpdateRoleStatus)
+		ginx.NewReqCtx(c).WithLog("修改角色状态").Handle(s.UpdateRoleStatus)
 	})
 
-	updateDaSRoleLog := ctx.NewLogInfo("修改角色部门权限")
 	role.PUT("dataScope", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateDaSRoleLog).Handle(s.UpdateRoleDataScope)
+		ginx.NewReqCtx(c).WithLog("修改角色部门权限").Handle(s.UpdateRoleDataScope)
 	})
 
-	deleteRoleLog := ctx.NewLogInfo("删除角色信息")
 	role.DELETE(":roleId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(deleteRoleLog).Handle(s.DeleteRole)
+		ginx.NewReqCtx(c).WithLog("删除角色信息").Handle(s.DeleteRole)
 	})
 
-	exportRoleLog := ctx.NewLogInfo("导出角色信息")
 	role.GET("export", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(exportRoleLog).Handle(s.ExportRole)
+		ginx.NewReqCtx(c).WithLog("导出角色信息").Handle(s.ExportRole)
 	})
 }

@@ -1,4 +1,4 @@
-package ginx
+package restfulx
 
 import (
 	"encoding/json"
@@ -24,7 +24,6 @@ func BindQuery(g *gin.Context, data any) {
 		panic(any(biz.NewBizErr(err.Error())))
 	}
 }
-
 func ParamsToAny(g *gin.Context, in any) {
 	vars := make(map[string]any)
 	for _, v := range g.Params {

@@ -1,9 +1,10 @@
-package ctx
+package ginx
 
 import (
 	"github.com/dgrijalva/jwt-go"
 	"pandax/base/biz"
 	"pandax/base/casbin"
+	"pandax/base/token"
 	"pandax/pkg/global"
 	"strconv"
 )
@@ -37,7 +38,7 @@ func PermissionHandler(rc *ReqCtx) error {
 	if tokenStr == "" {
 		return biz.PermissionErr
 	}
-	j := NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
+	j := token.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
 	loginAccount, err := j.ParseToken(tokenStr)
 	if err != nil || loginAccount == nil {
 		return biz.PermissionErr

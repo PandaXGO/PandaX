@@ -6,7 +6,6 @@ import (
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 	"pandax/base/biz"
-	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
 	"pandax/pkg/global"
@@ -26,13 +25,12 @@ type DeptApi struct {
 // @Success 200 {string} string "{"code": 400, "message": "抱歉未找到相关信息"}"
 // @Router /system/menu/menuTreRoleSelect/{roleId} [get]
 // @Security X-TOKEN
-func (m *DeptApi) GetDeptTreeRoleSelect(rc *ctx.ReqCtx) {
+func (m *DeptApi) GetDeptTreeRoleSelect(rc *ginx.ReqCtx) {
 	roleId := ginx.PathParamInt(rc.GinCtx, "roleId")
 	var dept entity.SysDept
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
 		dept.TenantId = rc.LoginAccount.TenantId
 	}
-
 	result := m.DeptApp.SelectDeptLable(dept)
 
 	deptIds := make([]int64, 0)
@@ -54,7 +52,7 @@ func (m *DeptApi) GetDeptTreeRoleSelect(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/dept/deptList [get]
 // @Security
-func (a *DeptApi) GetDeptList(rc *ctx.ReqCtx) {
+func (a *DeptApi) GetDeptList(rc *ginx.ReqCtx) {
 	//pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	//pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 	deptName := rc.GinCtx.Query("deptName")
@@ -77,7 +75,7 @@ func (a *DeptApi) GetDeptList(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/dept/ordinaryDeptLis [get]
 // @Security
-func (a *DeptApi) GetOrdinaryDeptList(rc *ctx.ReqCtx) {
+func (a *DeptApi) GetOrdinaryDeptList(rc *ginx.ReqCtx) {
 	var dept entity.SysDept
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
 		dept.TenantId = rc.LoginAccount.TenantId
@@ -95,7 +93,7 @@ func (a *DeptApi) GetOrdinaryDeptList(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/dept/deptTree [get]
 // @Security
-func (a *DeptApi) GetDeptTree(rc *ctx.ReqCtx) {
+func (a *DeptApi) GetDeptTree(rc *ginx.ReqCtx) {
 	deptName := rc.GinCtx.Query("deptName")
 	status := rc.GinCtx.Query("status")
 	deptId := ginx.QueryInt(rc.GinCtx, "deptId", 0)
@@ -113,7 +111,7 @@ func (a *DeptApi) GetDeptTree(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /system/dept/{deptId} [get]
 // @Security
-func (a *DeptApi) GetDept(rc *ctx.ReqCtx) {
+func (a *DeptApi) GetDept(rc *ginx.ReqCtx) {
 	deptId := ginx.PathParamInt(rc.GinCtx, "deptId")
 	rc.ResData = a.DeptApp.FindOne(int64(deptId))
 }
@@ -128,7 +126,7 @@ func (a *DeptApi) GetDept(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
 // @Router /system/dept [post]
 // @Security Bearer
-func (a *DeptApi) InsertDept(rc *ctx.ReqCtx) {
+func (a *DeptApi) InsertDept(rc *ginx.ReqCtx) {
 	var dept entity.SysDept
 	g := rc.GinCtx
 	ginx.BindJsonAndValid(g, &dept)
@@ -147,7 +145,7 @@ func (a *DeptApi) InsertDept(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
 // @Router /system/dept [put]
 // @Security Bearer
-func (a *DeptApi) UpdateDept(rc *ctx.ReqCtx) {
+func (a *DeptApi) UpdateDept(rc *ginx.ReqCtx) {
 	var dept entity.SysDept
 	g := rc.GinCtx
 	ginx.BindJsonAndValid(g, &dept)
@@ -163,7 +161,7 @@ func (a *DeptApi) UpdateDept(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dept/{deptId} [delete]
-func (a *DeptApi) DeleteDept(rc *ctx.ReqCtx) {
+func (a *DeptApi) DeleteDept(rc *ginx.ReqCtx) {
 	deptId := rc.GinCtx.Param("deptId")
 	deptIds := utils.IdsStrToIdsIntGroup(deptId)
 

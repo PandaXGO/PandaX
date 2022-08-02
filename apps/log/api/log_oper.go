@@ -4,7 +4,6 @@ import (
 	"log"
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
-	"pandax/base/ctx"
 	"pandax/base/ginx"
 	"pandax/base/utils"
 )
@@ -23,7 +22,7 @@ type LogOperApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /log/logOper/list [get]
 // @Security
-func (l *LogOperApi) GetOperLogList(rc *ctx.ReqCtx) {
+func (l *LogOperApi) GetOperLogList(rc *ginx.ReqCtx) {
 	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
 	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
 
@@ -46,7 +45,7 @@ func (l *LogOperApi) GetOperLogList(rc *ctx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /log/logOper/{operId} [get]
 // @Security
-func (l *LogOperApi) GetOperLog(rc *ctx.ReqCtx) {
+func (l *LogOperApi) GetOperLog(rc *ginx.ReqCtx) {
 	operId := ginx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("operId"))
 	rc.ResData = l.LogOperApp.FindOne(int64(operId))
 }
@@ -58,7 +57,7 @@ func (l *LogOperApi) GetOperLog(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logOper/{operId} [delete]
-func (l *LogOperApi) DeleteOperLog(rc *ctx.ReqCtx) {
+func (l *LogOperApi) DeleteOperLog(rc *ginx.ReqCtx) {
 	operIds := rc.GinCtx.Param("operId")
 	group := utils.IdsStrToIdsIntGroup(operIds)
 	log.Println("group", group)
@@ -71,6 +70,6 @@ func (l *LogOperApi) DeleteOperLog(rc *ctx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logOper/all [delete]
-func (l *LogOperApi) DeleteAll(rc *ctx.ReqCtx) {
+func (l *LogOperApi) DeleteAll(rc *ginx.ReqCtx) {
 	l.LogOperApp.DeleteAll()
 }

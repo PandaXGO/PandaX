@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pandax/apps/system/api"
 	"pandax/apps/system/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 )
 
 func InitNoticeRouter(router *gin.RouterGroup) {
@@ -14,23 +14,19 @@ func InitNoticeRouter(router *gin.RouterGroup) {
 	}
 	notice := router.Group("notice")
 
-	noticetList := ctx.NewLogInfo("获取通知分页列表")
 	notice.GET("list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(noticetList).Handle(s.GetNoticeList)
+		ginx.NewReqCtx(c).WithLog("获取通知分页列表").Handle(s.GetNoticeList)
 	})
 
-	insertNoticeLog := ctx.NewLogInfo("添加通知信息")
 	notice.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(insertNoticeLog).Handle(s.InsertNotice)
+		ginx.NewReqCtx(c).WithLog("添加通知信息").Handle(s.InsertNotice)
 	})
 
-	updateNoticeLog := ctx.NewLogInfo("修改通知信息")
 	notice.PUT("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateNoticeLog).Handle(s.UpdateNotice)
+		ginx.NewReqCtx(c).WithLog("修改通知信息").Handle(s.UpdateNotice)
 	})
 
-	deleteNoticeLog := ctx.NewLogInfo("删除通知信息")
 	notice.DELETE(":noticeId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(deleteNoticeLog).Handle(s.DeleteNotice)
+		ginx.NewReqCtx(c).WithLog("删除通知信息").Handle(s.DeleteNotice)
 	})
 }

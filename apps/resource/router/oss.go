@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pandax/apps/resource/api"
 	"pandax/apps/resource/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 )
 
 /**
@@ -19,38 +19,31 @@ func InitResOssRouter(router *gin.RouterGroup) {
 	}
 	routerGroup := router.Group("oss")
 
-	ResOssesListLog := ctx.NewLogInfo("获取ResOsses分页列表")
 	routerGroup.GET("list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(ResOssesListLog).Handle(s.GetResOssesList)
+		ginx.NewReqCtx(c).WithLog("获取ResOsses分页列表").Handle(s.GetResOssesList)
 	})
 
-	ResOssesLog := ctx.NewLogInfo("获取ResOsses信息")
 	routerGroup.GET(":ossId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(ResOssesLog).Handle(s.GetResOsses)
+		ginx.NewReqCtx(c).WithLog("获取ResOsses信息").Handle(s.GetResOsses)
 	})
 
-	insertResOssesLog := ctx.NewLogInfo("添加ResOsses信息")
 	routerGroup.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(insertResOssesLog).Handle(s.InsertResOsses)
+		ginx.NewReqCtx(c).WithLog("添加ResOsses信息").Handle(s.InsertResOsses)
 	})
 
-	updateResOssesLog := ctx.NewLogInfo("修改ResOsses信息")
 	routerGroup.PUT("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateResOssesLog).Handle(s.UpdateResOsses)
+		ginx.NewReqCtx(c).WithLog("修改ResOsses信息").Handle(s.UpdateResOsses)
 	})
 
-	deleteResOssesLog := ctx.NewLogInfo("删除ResOsses信息")
 	routerGroup.DELETE(":ossId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(deleteResOssesLog).Handle(s.DeleteResOsses)
+		ginx.NewReqCtx(c).WithLog("删除ResOsses信息").Handle(s.DeleteResOsses)
 	})
 
-	uplaodResOssesLog := ctx.NewLogInfo("测试文件上传")
 	routerGroup.POST("uploadFile", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(uplaodResOssesLog).Handle(s.UplaodResOsses)
+		ginx.NewReqCtx(c).WithLog("测试文件上传").Handle(s.UplaodResOsses)
 	})
 
-	updateStatusOssLog := ctx.NewLogInfo("修改状态")
 	routerGroup.PUT("/changeStatus", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateStatusOssLog).Handle(s.UpdateOssStatus)
+		ginx.NewReqCtx(c).WithLog("修改状态").Handle(s.UpdateOssStatus)
 	})
 }

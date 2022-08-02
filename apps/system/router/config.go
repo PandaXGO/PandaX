@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pandax/apps/system/api"
 	"pandax/apps/system/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 )
 
 func InitConfigRouter(router *gin.RouterGroup) {
@@ -13,33 +13,27 @@ func InitConfigRouter(router *gin.RouterGroup) {
 	}
 	config := router.Group("config")
 
-	configListLog := ctx.NewLogInfo("获取配置分页列表")
 	config.GET("list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(configListLog).Handle(s.GetConfigList)
+		ginx.NewReqCtx(c).WithLog("获取配置分页列表").Handle(s.GetConfigList)
 	})
 
-	configListByKeyLog := ctx.NewLogInfo("获取配置列表通过ConfigKey")
 	config.GET("configKey", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(configListByKeyLog).Handle(s.GetConfigListByKey)
+		ginx.NewReqCtx(c).WithLog("获取配置列表通过ConfigKey").Handle(s.GetConfigListByKey)
 	})
 
-	configLog := ctx.NewLogInfo("获取配置信息")
 	config.GET(":configId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(configLog).Handle(s.GetConfig)
+		ginx.NewReqCtx(c).WithLog("获取配置信息").Handle(s.GetConfig)
 	})
 
-	insertConfigLog := ctx.NewLogInfo("添加配置信息")
 	config.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(insertConfigLog).Handle(s.InsertConfig)
+		ginx.NewReqCtx(c).WithLog("添加配置信息").Handle(s.InsertConfig)
 	})
 
-	updateConfigLog := ctx.NewLogInfo("修改配置信息")
 	config.PUT("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateConfigLog).Handle(s.UpdateConfig)
+		ginx.NewReqCtx(c).WithLog("修改配置信息").Handle(s.UpdateConfig)
 	})
 
-	deleteConfigLog := ctx.NewLogInfo("删除配置信息")
 	config.DELETE(":configId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(deleteConfigLog).Handle(s.DeleteConfig)
+		ginx.NewReqCtx(c).WithLog("删除配置信息").Handle(s.DeleteConfig)
 	})
 }

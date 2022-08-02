@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pandax/apps/system/api"
 	"pandax/apps/system/services"
-	"pandax/base/ctx"
+	"pandax/base/ginx"
 )
 
 func InitApiRouter(router *gin.RouterGroup) {
@@ -13,38 +13,31 @@ func InitApiRouter(router *gin.RouterGroup) {
 	}
 	api := router.Group("api")
 
-	apiListLog := ctx.NewLogInfo("获取api分页列表")
 	api.GET("list", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(apiListLog).Handle(s.GetApiList)
+		ginx.NewReqCtx(c).WithLog("获取api分页列表").Handle(s.GetApiList)
 	})
 
-	apiListAllLog := ctx.NewLogInfo("获取所有api")
 	api.GET("all", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(apiListAllLog).Handle(s.GetAllApis)
+		ginx.NewReqCtx(c).WithLog("获取所有api").Handle(s.GetAllApis)
 	})
 
-	apiListByRoleLog := ctx.NewLogInfo("获取角色拥有的api权限")
 	api.GET("getPolicyPathByRoleId", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(apiListByRoleLog).Handle(s.GetPolicyPathByRoleId)
+		ginx.NewReqCtx(c).WithLog("获取角色拥有的api权限").Handle(s.GetPolicyPathByRoleId)
 	})
 
-	apiLog := ctx.NewLogInfo("获取api信息")
 	api.GET(":id", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(apiLog).Handle(s.GetApiById)
+		ginx.NewReqCtx(c).WithLog("获取api信息").Handle(s.GetApiById)
 	})
 
-	insertApiLog := ctx.NewLogInfo("添加api信息")
 	api.POST("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(insertApiLog).Handle(s.CreateApi)
+		ginx.NewReqCtx(c).WithLog("添加api信息").Handle(s.CreateApi)
 	})
 
-	updateApiLog := ctx.NewLogInfo("修改api信息")
 	api.PUT("", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(updateApiLog).Handle(s.UpdateApi)
+		ginx.NewReqCtx(c).WithLog("修改api信息").Handle(s.UpdateApi)
 	})
 
-	deleteApiLog := ctx.NewLogInfo("删除api信息")
 	api.DELETE(":id", func(c *gin.Context) {
-		ctx.NewReqCtxWithGin(c).WithLog(deleteApiLog).Handle(s.DeleteApi)
+		ginx.NewReqCtx(c).WithLog("删除api信息").Handle(s.DeleteApi)
 	})
 }
