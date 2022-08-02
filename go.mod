@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/XM-GO/PandaKit v0.0.0-20220802093028-195951cd859d
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didip/tollbooth v4.0.2+incompatible
 	github.com/kakuilan/kgo v0.1.8
@@ -28,7 +29,6 @@ require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
-	github.com/XM-GO/PandaKit v0.0.0-20220802091721-f205177f1243 // indirect
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible // indirect
 	github.com/brianvoe/gofakeit/v6 v6.0.2 // indirect
 	github.com/casbin/casbin/v2 v2.37.4 // indirect

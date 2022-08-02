@@ -12,8 +12,8 @@ github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdko
 github.com/QcloudApi/qcloud_sign_golang v0.0.0-20141224014652-e4130a326409/go.mod h1:1pk82RBxDY/JZnPQrtqHlUFfCctgdorsd9M06fMynOM=
 github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 h1:5sXbqlSomvdjlRbWyNqkPsJ3Fg+tQZCbgeX1VGljbQY=
 github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
-github.com/XM-GO/PandaKit v0.0.0-20220802091721-f205177f1243 h1:iu3uNXkhklVKXSPokyuqICunQoh7f+y4zoxbD1xaa2c=
-github.com/XM-GO/PandaKit v0.0.0-20220802091721-f205177f1243/go.mod h1:st1syDrEJDdK/p3c3p72VLndebNFOVPKyC3AGYNBWng=
+github.com/XM-GO/PandaKit v0.0.0-20220802093028-195951cd859d h1:fsnlIH5+QO4RzlfWDSzEdpqw7OisKtR4YHEWASAx7Fw=
+github.com/XM-GO/PandaKit v0.0.0-20220802093028-195951cd859d/go.mod h1:st1syDrEJDdK/p3c3p72VLndebNFOVPKyC3AGYNBWng=
 github.com/agiledragon/gomonkey/v2 v2.3.1 h1:k+UnUY0EMNYUFUAQVETGY9uUTxjMdnUkP0ARyJS1zzs=
 github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible h1:ht2+VfbXtNLGhCsnTMc6/N26nSTBK6qdhktjYyjJQkk=
 github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible/go.mod h1:T/Aws4fEfogEE9v+HPhhw+CntffsBHJ8nXQCwKr0/g8=
