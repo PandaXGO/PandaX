@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pandax/apps/{{.PackageName}}/api"
 	"pandax/apps/{{.PackageName}}/services"
-	"pandax/base/ginx"
+	"github.com/XM-GO/PandaKit/ginx"
 )
 
 func Init{{.ClassName}}Router(router *gin.RouterGroup) {

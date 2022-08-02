@@ -1,10 +1,10 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/ginx"
 	"github.com/gin-gonic/gin"
 	"pandax/apps/log/api"
 	"pandax/apps/log/services"
-	"pandax/base/ginx"
 )
 
 func InitLogRouter(router *gin.RouterGroup) {

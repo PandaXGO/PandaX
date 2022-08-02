@@ -8,8 +8,8 @@ package services
 
 import (
     "pandax/apps/{{.PackageName}}/entity"
-    "pandax/base/biz"
-    "pandax/base/global"
+    "github.com/XM-GO/PandaKit/biz"
+    "github.com/XM-GO/PandaKit/global"
 )
 
 type (

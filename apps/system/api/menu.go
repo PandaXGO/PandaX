@@ -1,10 +1,10 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/ginx"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
-	"pandax/base/biz"
-	"pandax/base/ginx"
 )
 
 type MenuApi struct {

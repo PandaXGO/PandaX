@@ -1,12 +1,12 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/casbin"
+	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/utils"
 	"log"
-	entity "pandax/apps/system/entity"
-	services "pandax/apps/system/services"
-	"pandax/base/casbin"
-	"pandax/base/ginx"
-	"pandax/base/utils"
+	"pandax/apps/system/entity"
+	"pandax/apps/system/services"
 	"strconv"
 )
 

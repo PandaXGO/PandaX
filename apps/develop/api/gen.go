@@ -1,9 +1,9 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/ginx"
 	"pandax/apps/develop/gen"
 	"pandax/apps/develop/services"
-	"pandax/base/ginx"
 )
 
 type GenApi struct {

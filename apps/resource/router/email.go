@@ -1,10 +1,10 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/ginx"
 	"github.com/gin-gonic/gin"
 	"pandax/apps/resource/api"
 	"pandax/apps/resource/services"
-	"pandax/base/ginx"
 )
 
 /**

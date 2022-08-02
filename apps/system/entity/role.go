@@ -1,8 +1,8 @@
 package entity
 
 import (
-	"pandax/base/casbin"
-	"pandax/base/model"
+	"github.com/XM-GO/PandaKit/casbin"
+	"github.com/XM-GO/PandaKit/model"
 )
 
 type SysRole struct {

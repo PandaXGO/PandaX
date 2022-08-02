@@ -1,13 +1,13 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/ginx"
+	email "github.com/XM-GO/PandaKit/mail"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/resource/api/from"
 	"pandax/apps/resource/entity"
 	"pandax/apps/resource/services"
-	"pandax/base/biz"
-	"pandax/base/ginx"
-	email "pandax/base/mail"
-	"pandax/base/utils"
 )
 
 /**

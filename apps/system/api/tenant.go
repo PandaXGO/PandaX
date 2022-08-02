@@ -6,10 +6,10 @@ package api
  * @Date 2022/7/14 17:55
  **/
 import (
+	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 )
 
 type SysTenantsApi struct {

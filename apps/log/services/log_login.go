@@ -1,8 +1,8 @@
 package services
 
 import (
+	"github.com/XM-GO/PandaKit/biz"
 	"pandax/apps/log/entity"
-	"pandax/base/biz"
 	"pandax/pkg/global"
 )
 

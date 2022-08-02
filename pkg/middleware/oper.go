@@ -1,11 +1,11 @@
 package middleware
 
 import (
+	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/utils"
 	"net/http"
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 )
 
 func OperationHandler(rc *ginx.ReqCtx) error {

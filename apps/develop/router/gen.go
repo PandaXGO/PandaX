@@ -1,10 +1,10 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/ginx"
 	"github.com/gin-gonic/gin"
 	"pandax/apps/develop/api"
 	"pandax/apps/develop/services"
-	"pandax/base/ginx"
 )
 
 func InitGenRouter(router *gin.RouterGroup) {

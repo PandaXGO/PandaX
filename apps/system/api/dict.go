@@ -2,11 +2,11 @@ package api
 
 import (
 	"fmt"
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
-	"pandax/base/biz"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 	"pandax/pkg/global"
 )
 

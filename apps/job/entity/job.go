@@ -1,6 +1,6 @@
 package entity
 
-import "pandax/base/model"
+import "github.com/XM-GO/PandaKit/model"
 
 type SysJob struct {
 	JobId          int64  `json:"jobId" gorm:"primaryKey;autoIncrement"`    // 编码

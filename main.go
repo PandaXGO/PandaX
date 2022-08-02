@@ -1,13 +1,13 @@
 package main
 
 import (
+	"github.com/XM-GO/PandaKit/config"
+	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/logger"
+	"github.com/XM-GO/PandaKit/starter"
 	"github.com/spf13/cobra"
 	"os"
 	"pandax/apps/job/jobs"
-	"pandax/base/config"
-	"pandax/base/ginx"
-	"pandax/base/logger"
-	"pandax/base/starter"
 	"pandax/pkg/global"
 	"pandax/pkg/initialize"
 	"pandax/pkg/middleware"

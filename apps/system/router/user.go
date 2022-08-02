@@ -5,8 +5,8 @@ import (
 	"pandax/apps/system/api"
 	"pandax/apps/system/services"
 
+	"github.com/XM-GO/PandaKit/ginx"
 	logServices "pandax/apps/log/services"
-	"pandax/base/ginx"
 )
 
 func InitUserRouter(router *gin.RouterGroup) {

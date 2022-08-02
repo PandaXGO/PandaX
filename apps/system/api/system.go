@@ -2,13 +2,13 @@ package api
 
 import (
 	"fmt"
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/ws"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/kakuilan/kgo"
 	"net/http"
-	"pandax/base/biz"
-	"pandax/base/ginx"
-	"pandax/base/ws"
 	"runtime"
 )
 

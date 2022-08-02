@@ -1,10 +1,10 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/ginx"
 	"github.com/gin-gonic/gin"
 	"pandax/apps/job/api"
 	"pandax/apps/job/services"
-	"pandax/base/ginx"
 )
 
 func InitJobRouter(router *gin.RouterGroup) {

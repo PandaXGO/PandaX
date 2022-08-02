@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/token"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/kakuilan/kgo"
@@ -9,16 +10,15 @@ import (
 	"pandax/apps/system/api/form"
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
-	"pandax/base/token"
 
 	logEntity "pandax/apps/log/entity"
 	logServices "pandax/apps/log/services"
 
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/captcha"
+	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/services"
-	"pandax/base/biz"
-	"pandax/base/captcha"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 	"pandax/pkg/global"
 	"strings"
 	"time"

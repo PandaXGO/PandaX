@@ -7,9 +7,9 @@ package api
 import (
 	"pandax/apps/{{.PackageName}}/entity"
 	"pandax/apps/{{.PackageName}}/services"
-	"pandax/base/ginx"
-	"pandax/base/ginx"
-	"pandax/base/utils"
+	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/utils"
 )
 
 type {{.ClassName}}Api struct {

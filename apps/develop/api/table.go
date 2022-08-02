@@ -1,11 +1,11 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/develop/entity"
 	"pandax/apps/develop/gen"
 	"pandax/apps/develop/services"
-	"pandax/base/ginx"
-	"pandax/base/utils"
 	"strings"
 	"sync"
 )

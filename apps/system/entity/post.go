@@ -1,6 +1,6 @@
 package entity
 
-import "pandax/base/model"
+import "github.com/XM-GO/PandaKit/model"
 
 type SysPost struct {
 	PostId   int64  `gorm:"primary_key;AUTO_INCREMENT" json:"postId"`

@@ -3,6 +3,8 @@ package gen
 import (
 	"bytes"
 	"fmt"
+	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/utils"
 	"github.com/kakuilan/kgo"
 	"log"
 	"os"
@@ -10,8 +12,6 @@ import (
 	"pandax/apps/develop/services"
 	sysEntity "pandax/apps/system/entity"
 	sysServices "pandax/apps/system/services"
-	"pandax/base/biz"
-	"pandax/base/utils"
 	"pandax/pkg/global"
 	"strconv"
 	"strings"
