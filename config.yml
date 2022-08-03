@@ -29,9 +29,9 @@ redis:
   port: 6379
 
 mysql:
-  host: 47.104.252.2:3306
-  username: pandax
-  password: pandax
+  host: 127.0.0.1:3306
+  username: root
+  password: 123456
   db-name: pandax
   config: charset=utf8&loc=Local&parseTime=true
 

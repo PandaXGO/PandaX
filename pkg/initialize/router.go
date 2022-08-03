@@ -62,6 +62,5 @@ func InitRouter() *transport.HttpServer {
 	}*/
 	// api接口
 	middleware.SwaggerConfig(container)
-	//http.Handle("/apidocs/", http.StripPrefix("/apidocs/", http.FileServer(http.Dir("/Users/emicklei/Projects/swagger-ui/dist"))))
 	return server
 }
