@@ -10,37 +10,19 @@ type GenApi struct {
 	GenTableApp services.SysGenTableModel
 }
 
-// @Summary 代码视图
-// @Description 获取JSON
-// @Tags 工具 / 生成工具
-// @Param tableId path int true "tableId"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /develop/code/gen/preview/{tableId} [get]
-// @Security X-TOKEN
+// Preview 代码视图
 func (e *GenApi) Preview(rc *restfulx.ReqCtx) {
 	tableId := restfulx.PathParamInt(rc, "tableId")
 	rc.ResData = gen.Preview(int64(tableId))
 }
 
-// @Summary 代码生成
-// @Description 获取JSON
-// @Tags 工具 / 生成工具
-// @Param tableId path int true "tableId"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /develop/code/gen/code/{tableId} [get]
-// @Security X-TOKEN
+// GenCode 代码生成
 func (e *GenApi) GenCode(rc *restfulx.ReqCtx) {
 	tableId := restfulx.PathParamInt(rc, "tableId")
 	gen.GenCode(int64(tableId))
 }
 
-// @Summary 配置生成
-// @Description 生成API和菜单
-// @Tags 工具 / 生成工具
-// @Param tableId path int true "tableId"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /develop/code/gen/configure/{tableId} [get]
-// @Security X-TOKEN
+// GenConfigure 配置生成
 func (e *GenApi) GenConfigure(rc *restfulx.ReqCtx) {
 	tableId := restfulx.PathParamInt(rc, "tableId")
 	menuId := restfulx.QueryInt(rc, "menuId", 0)

@@ -56,7 +56,7 @@ func (s *System) ServerInfo(request *restful.Request, response *restful.Response
 	})
 }
 
-// 连接websocket
+// ConnectWs 连接websocket
 func (s *System) ConnectWs(request *restful.Request, response *restful.Response) {
 	wsConn, err := ws.Upgrader.Upgrade(response, request.Request, nil)
 	defer func() {

@@ -54,7 +54,7 @@ var rootCmd = &cobra.Command{
 		<-stop
 
 		if err := app.Stop(context.TODO()); err != nil {
-			log.Fatal("fatal rudder app stop: %s", err)
+			log.Fatal("fatal app stop: %s", err)
 			os.Exit(-3)
 		}
 	},

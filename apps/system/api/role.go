@@ -20,17 +20,7 @@ type RoleApi struct {
 	RoleDeptApp services.SysRoleDeptModel
 }
 
-// @Summary 角色列表数据
-// @Description Get JSON
-// @Tags 角色
-// @Param roleName query string false "roleName"
-// @Param status query string false "status"
-// @Param roleKey query string false "roleKey"
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/role/rolelist [get]
-// @Security
+// GetRoleList角色列表数据
 func (r *RoleApi) GetRoleList(rc *restfulx.ReqCtx) {
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
@@ -53,14 +43,7 @@ func (r *RoleApi) GetRoleList(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Summary 获取Role数据
-// @Description 获取JSON
-// @Tags 角色/Role
-// @Param roleId path string true "roleId"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Success 200 {string} string "{"code": 400, "message": "抱歉未找到相关信息"}"
-// @Router /system/role [get]
-// @Security X-TOKEN
+// GetRole 获取Role数据
 func (r *RoleApi) GetRole(rc *restfulx.ReqCtx) {
 	roleId := restfulx.PathParamInt(rc, "roleId")
 	role := r.RoleApp.FindOne(int64(roleId))
@@ -69,15 +52,7 @@ func (r *RoleApi) GetRole(rc *restfulx.ReqCtx) {
 	rc.ResData = role
 }
 
-// @Summary 创建角色
-// @Description 获取JSON
-// @Tags 角色/Role
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysRole true "data"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/role [post]
+// InsertRole 创建角色
 func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
 	restfulx.BindQuery(rc, &role)
@@ -91,15 +66,7 @@ func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 	casbin.UpdateCasbin(tenantId, role.RoleKey, role.ApiIds)
 }
 
-// @Summary 修改用户角色
-// @Description 获取JSON
-// @Tags 角色/Role
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysRole true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
-// @Router /system/role [put]
+// UpdateRole 修改用户角色
 func (r *RoleApi) UpdateRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
 	restfulx.BindQuery(rc, &role)
@@ -115,15 +82,7 @@ func (r *RoleApi) UpdateRole(rc *restfulx.ReqCtx) {
 	casbin.UpdateCasbin(tenantId, role.RoleKey, role.ApiIds)
 }
 
-// @Summary 修改用户角色状态
-// @Description 获取JSON
-// @Tags 角色/Role
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysRole true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
-// @Router /system/role/changeStatus [put]
+// UpdateRoleStatus 修改用户角色状态
 func (r *RoleApi) UpdateRoleStatus(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
 	restfulx.BindQuery(rc, &role)
@@ -132,15 +91,7 @@ func (r *RoleApi) UpdateRoleStatus(rc *restfulx.ReqCtx) {
 	r.RoleApp.Update(role)
 }
 
-// @Summary 修改用户角色部门
-// @Description 获取JSON
-// @Tags 角色/Role
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysRole true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
-// @Router /system/role/dataScope [put]
+// UpdateRoleDataScope 修改用户角色部门
 func (r *RoleApi) UpdateRoleDataScope(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
 	restfulx.BindQuery(rc, &role)
@@ -155,13 +106,7 @@ func (r *RoleApi) UpdateRoleDataScope(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Summary 删除用户角色
-// @Description 删除数据
-// @Tags 角色/Role
-// @Param roleId path string true "roleId 多个用，分割"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/role/{roleId} [delete]
+// DeleteRole 删除用户角色
 func (r *RoleApi) DeleteRole(rc *restfulx.ReqCtx) {
 	roleId := restfulx.PathParam(rc, "roleId")
 	roleIds := utils.IdsStrToIdsIntGroup(roleId)
@@ -188,15 +133,7 @@ func (r *RoleApi) DeleteRole(rc *restfulx.ReqCtx) {
 	r.RoleMenuApp.DeleteRoleMenus(delList)
 }
 
-// @Summary 导出角色
-// @Description 导出数据
-// @Tags 角色
-// @Param roleName query string false "roleName"
-// @Param status query string false "status"
-// @Param roleKey query string false "roleKey"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/dict/type/export [get]
+// ExportRole 导出角色
 func (p *RoleApi) ExportRole(rc *restfulx.ReqCtx) {
 	filename := restfulx.QueryParam(rc, "filename")
 	status := restfulx.QueryParam(rc, "status")

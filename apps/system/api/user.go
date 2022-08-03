@@ -36,21 +36,13 @@ type UserApi struct {
 	LogLogin    logServices.LogLoginModel
 }
 
-// @Tags Base
-// @Summary 获取验证码
-// @Produce  application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
-// @Router /system/user/getCaptcha [get]
+// GenerateCaptcha 获取验证码
 func (u *UserApi) GenerateCaptcha(request *restful.Request, response *restful.Response) {
 	id, image := captcha.Generate()
 	response.WriteEntity(map[string]any{"base64Captcha": image, "captchaId": id})
 }
 
-// @Tags Base
-// @Summary 刷新token
-// @Produce  application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
-// @Router /system/user/refreshToken [get]
+// RefreshToken 刷新token
 func (u *UserApi) RefreshToken(rc *restfulx.ReqCtx) {
 	tokenStr := rc.Request.Request.Header.Get("X-TOKEN")
 	j := token.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
@@ -59,12 +51,7 @@ func (u *UserApi) RefreshToken(rc *restfulx.ReqCtx) {
 	rc.ResData = map[string]any{"token": token, "expire": time.Now().Unix() + global.Conf.Jwt.ExpireTime}
 }
 
-// @Tags Base
-// @Summary 用户登录
-// @Produce  application/json
-// @Param data body form.Login true "用户名, 密码, 验证码"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
-// @Router /system/user/login [post]
+// Login 用户登录
 func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 	var l form.Login
 	restfulx.BindQuery(rc, &l)
@@ -112,12 +99,7 @@ func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 	u.LogLogin.Insert(loginLog)
 }
 
-// @Tags Base
-// @Summary 用户权限信息
-// @Param userName query string false "userName"
-// @Produce  application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"成功"}"
-// @Router /system/user/auth [get]
+// Auth 用户权限信息
 func (u *UserApi) Auth(rc *restfulx.ReqCtx) {
 	userName := restfulx.QueryParam(rc, "username")
 	biz.NotEmpty(userName, "用户名必传")
@@ -137,11 +119,7 @@ func (u *UserApi) Auth(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Tags Base
-// @Summary 退出登录
-// @Produce  application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
-// @Router /system/user/logout [post]
+// LogOut 退出登录
 func (u *UserApi) LogOut(rc *restfulx.ReqCtx) {
 	var loginLog logEntity.LogLogin
 	ua := user_agent.New(rc.Request.Request.UserAgent())
@@ -158,18 +136,7 @@ func (u *UserApi) LogOut(rc *restfulx.ReqCtx) {
 	u.LogLogin.Insert(loginLog)
 }
 
-// @Summary 列表数据
-// @Description 获取JSON
-// @Tags 用户
-// @Param userName query string false "userName"
-// @Param phone query string false "phone"
-// @Param status query string false "status"
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Success 200 {string} string "{"code": -1, "message": "抱歉未找到相关信息"}"
-// @Router /system/user/sysUserList [get]
-// @Security X-TOKEN
+// GetSysUserList 列表数据
 func (u *UserApi) GetSysUserList(rc *restfulx.ReqCtx) {
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
@@ -197,12 +164,7 @@ func (u *UserApi) GetSysUserList(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Summary 获取当前登录用户
-// @Description 获取JSON
-// @Tags 个人中心
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/user/profile [get]
-// @Security
+// GetSysUserProfile 获取当前登录用户
 func (u *UserApi) GetSysUserProfile(rc *restfulx.ReqCtx) {
 
 	sysUser := entity.SysUser{}
@@ -232,13 +194,7 @@ func (u *UserApi) GetSysUserProfile(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Summary 修改头像
-// @Description 修改头像
-// @Tags 用户
-// @Param file formData file true "file"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
-// @Router /system/user/profileAvatar [post]
+// InsetSysUserAvatar 修改头像
 func (u *UserApi) InsetSysUserAvatar(rc *restfulx.ReqCtx) {
 	form := rc.Request.Request.MultipartForm
 
@@ -258,13 +214,7 @@ func (u *UserApi) InsetSysUserAvatar(rc *restfulx.ReqCtx) {
 	u.UserApp.Update(sysuser)
 }
 
-// @Summary 修改密码
-// @Description 修改密码
-// @Tags 用户
-// @Param pwd body entity.SysUserPwd true "pwd"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
-// @Router /system/user/updatePwd [post]
+// SysUserUpdatePwd 修改密码
 func (u *UserApi) SysUserUpdatePwd(rc *restfulx.ReqCtx) {
 	var pws entity.SysUserPwd
 	restfulx.BindQuery(rc, &pws)
@@ -274,13 +224,7 @@ func (u *UserApi) SysUserUpdatePwd(rc *restfulx.ReqCtx) {
 	u.UserApp.SetPwd(user, pws)
 }
 
-// @Summary 获取用户
-// @Description 获取JSON
-// @Tags 用户
-// @Param userId path int true "用户编码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/user/sysUser/{userId} [get]
-// @Security
+// GetSysUser 获取用户
 func (u *UserApi) GetSysUser(rc *restfulx.ReqCtx) {
 	userId := restfulx.PathParamInt(rc, "userId")
 
@@ -309,12 +253,7 @@ func (u *UserApi) GetSysUser(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Summary 获取添加用户角色和职位
-// @Description 获取JSON
-// @Tags 用户
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/user/getInit [get]
-// @Security
+// GetSysUserInit 获取添加用户角色和职位
 func (u *UserApi) GetSysUserInit(rc *restfulx.ReqCtx) {
 
 	var role entity.SysRole
@@ -333,12 +272,7 @@ func (u *UserApi) GetSysUserInit(rc *restfulx.ReqCtx) {
 	rc.ResData = mp
 }
 
-// @Summary 获取添加用户角色和职位
-// @Description 获取JSON
-// @Tags 用户
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/user/getInit [get]
-// @Security
+// GetUserRolePost 获取添加用户角色和职位
 func (u *UserApi) GetUserRolePost(rc *restfulx.ReqCtx) {
 	var user entity.SysUser
 	user.UserId = rc.LoginAccount.UserId
@@ -361,15 +295,7 @@ func (u *UserApi) GetUserRolePost(rc *restfulx.ReqCtx) {
 	rc.ResData = mp
 }
 
-// @Summary 创建用户
-// @Description 获取JSON
-// @Tags 用户
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysUser true "用户数据"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/user/sysUser [post]
+// InsertSysUser 创建用户
 func (u *UserApi) InsertSysUser(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
 	restfulx.BindQuery(rc, &sysUser)
@@ -377,15 +303,7 @@ func (u *UserApi) InsertSysUser(rc *restfulx.ReqCtx) {
 	u.UserApp.Insert(sysUser)
 }
 
-// @Summary 修改用户数据
-// @Description 获取JSON
-// @Tags 用户
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysUser true "用户数据"g
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/user/sysUser [put]
+// UpdateSysUser 修改用户数据
 func (u *UserApi) UpdateSysUser(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
 	restfulx.BindQuery(rc, &sysUser)
@@ -393,15 +311,7 @@ func (u *UserApi) UpdateSysUser(rc *restfulx.ReqCtx) {
 	u.UserApp.Update(sysUser)
 }
 
-// @Summary 修改用户状态
-// @Description 获取JSON
-// @Tags 用户
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysUser true "用户数据"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/user/sysUser [put]
+// UpdateSysUserStu 修改用户状态
 func (u *UserApi) UpdateSysUserStu(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
 	restfulx.BindQuery(rc, &sysUser)
@@ -409,27 +319,13 @@ func (u *UserApi) UpdateSysUserStu(rc *restfulx.ReqCtx) {
 	u.UserApp.Update(sysUser)
 }
 
-// @Summary 删除用户数据
-// @Description 删除数据
-// @Tags 用户
-// @Param userId path int true "多个id 使用逗号隔开"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/user/sysuser/{userId} [delete]
+// DeleteSysUser 删除用户数据
 func (u *UserApi) DeleteSysUser(rc *restfulx.ReqCtx) {
 	userIds := restfulx.PathParam(rc, "userId")
 	u.UserApp.Delete(utils.IdsStrToIdsIntGroup(userIds))
 }
 
-// @Summary 导出用户
-// @Description 导出数据
-// @Tags 用户
-// @Param userName query string false "userName"
-// @Param phone query string false "phone"
-// @Param status query string false "status"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/dict/type/export [get]
+// ExportUser 导出用户
 func (u *UserApi) ExportUser(rc *restfulx.ReqCtx) {
 	filename := restfulx.QueryParam(rc, "filename")
 	status := restfulx.QueryParam(rc, "status")

@@ -20,15 +20,7 @@ type ResEmailsApi struct {
 	ResEmailsApp services.ResEmailsModel
 }
 
-// @Summary ResEmails列表数据
-// @Tags ResEmails
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Param status query string false "状态"
-// @Param category query string false "分类"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /resource/email/list [get]
-// @Security
+// GetResEmailsList ResEmails列表数据
 func (p *ResEmailsApi) GetResEmailsList(rc *restfulx.ReqCtx) {
 
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
@@ -52,28 +44,13 @@ func (p *ResEmailsApi) GetResEmailsList(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Summary 获取ResEmails
-// @Description 获取JSON
-// @Tags ResEmails
-// @Param mailId path int true "mailId"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /resource/email/{mailId} [get]
-// @Security
+// GetResEmails 获取ResEmails
 func (p *ResEmailsApi) GetResEmails(rc *restfulx.ReqCtx) {
 	mailId := restfulx.PathParamInt(rc, "mailId")
 	p.ResEmailsApp.FindOne(int64(mailId))
 }
 
-// @Summary 添加ResEmails
-// @Description 获取JSON
-// @Tags ResEmails
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.ResEmail true "data"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /resource/email [post]
-// @Security X-TOKEN
+// InsertResEmails 添加ResEmails
 func (p *ResEmailsApi) InsertResEmails(rc *restfulx.ReqCtx) {
 	var data entity.ResEmail
 	restfulx.BindQuery(rc, &data)
@@ -81,16 +58,7 @@ func (p *ResEmailsApi) InsertResEmails(rc *restfulx.ReqCtx) {
 	p.ResEmailsApp.Insert(data)
 }
 
-// @Summary 修改ResEmails
-// @Description 获取JSON
-// @Tags ResEmails
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.ResEmail true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /resource/email [put]
-// @Security X-TOKEN
+// UpdateResEmails 修改ResEmails
 func (p *ResEmailsApi) UpdateResEmails(rc *restfulx.ReqCtx) {
 	var data entity.ResEmail
 	restfulx.BindQuery(rc, &data)
@@ -103,29 +71,14 @@ func (p *ResEmailsApi) UpdateResEmails(rc *restfulx.ReqCtx) {
 	p.ResEmailsApp.Update(data)
 }
 
-// @Summary 删除ResEmails
-// @Description 删除数据
-// @Tags ResEmails
-// @Param mailId path string true "mailId"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /resource/email/{mailId} [delete]
+// DeleteResEmails 删除ResEmails
 func (p *ResEmailsApi) DeleteResEmails(rc *restfulx.ReqCtx) {
 	mailId := restfulx.PathParam(rc, "mailId")
 	mailIds := utils.IdsStrToIdsIntGroup(mailId)
 	p.ResEmailsApp.Delete(mailIds)
 }
 
-// @Summary 删除ResEmails
-// @Description 获取JSON
-// @Tags ResOsses
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.ResEmail true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /resource/oss [put]
-// @Security X-TOKEN
+// UpdateMailStatus 删除ResEmails
 func (p *ResEmailsApi) UpdateMailStatus(rc *restfulx.ReqCtx) {
 	var data entity.ResEmail
 	restfulx.BindQuery(rc, &data)
@@ -133,16 +86,7 @@ func (p *ResEmailsApi) UpdateMailStatus(rc *restfulx.ReqCtx) {
 	p.ResEmailsApp.Update(entity.ResEmail{MailId: data.MailId, Status: data.Status})
 }
 
-// @Summary 测试发邮件
-// @Description 获取JSON
-// @Tags ResEmails
-// @Accept  application/json
-// @Product application/json
-// @Param data body from.SendMail true "data"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /resource/email/debugMail [post]
-// @Security X-TOKEN
+// DebugMail 测试发邮件
 func (p *ResEmailsApi) DebugMail(rc *restfulx.ReqCtx) {
 	var data from.SendMail
 	restfulx.BindQuery(rc, &data)

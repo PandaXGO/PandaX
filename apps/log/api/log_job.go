@@ -11,17 +11,7 @@ type LogJobApi struct {
 	LogJobApp services.LogJobModel
 }
 
-// @Summary Job日志列表
-// @Description 获取JSON
-// @Tags  任务日志
-// @Param status query string false "status"
-// @Param jobGroup query string false "jobGroup"
-// @Param name query string false "name"
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /log/logJob/list [get]
-// @Security
+// GetJobLogList Job日志列表
 func (l *LogJobApi) GetJobLogList(rc *restfulx.ReqCtx) {
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
@@ -38,25 +28,14 @@ func (l *LogJobApi) GetJobLogList(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Summary 批量删除登录日志
-// @Description 删除数据
-// @Tags 任务日志
-// @Param logId path string true "以逗号（,）分割的logId"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /log/logJob/{logId} [delete]
+// DeleteJobLog 批量删除登录日志
 func (l *LogJobApi) DeleteJobLog(rc *restfulx.ReqCtx) {
 	logIds := restfulx.QueryParam(rc, "logId")
 	group := utils.IdsStrToIdsIntGroup(logIds)
 	l.LogJobApp.Delete(group)
 }
 
-// @Summary 清空登录日志
-// @Description 删除数据
-// @Tags 任务日志
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /log/logJob/all [delete]
+// DeleteAll 清空登录日志
 func (l *LogJobApi) DeleteAll(rc *restfulx.ReqCtx) {
 	l.LogJobApp.DeleteAll()
 }

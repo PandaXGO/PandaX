@@ -23,12 +23,12 @@ func SwaggerConfig(wsContainer *restful.Container) {
 func enrichSwaggerObject(swo *spec.Swagger) {
 	swo.Info = &spec.Info{
 		InfoProps: spec.InfoProps{
-			Title:       "Pandax API",
-			Description: "Restful Api",
+			Title:       "PandaX 框架的API文档",
+			Description: "这是PandaX框架文档，根据文档调用API",
 			Contact: &spec.ContactInfo{
 				ContactInfoProps: spec.ContactInfoProps{
-					Name:  "PandaX",
-					Email: "PandaX@doe.rp",
+					Name:  "PandaX 熊猫",
+					Email: "2417920382@qq.com",
 					URL:   "https://github.com/XM-GO/PandaX",
 				},
 			},

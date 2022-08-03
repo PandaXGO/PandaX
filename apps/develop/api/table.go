@@ -14,14 +14,7 @@ type GenTableApi struct {
 	GenTableApp services.SysGenTableModel
 }
 
-// @Summary 分页列表数据 / page list data
-// @Description 数据库表列分页列表 / database table column page list
-// @Tags 工具 / 生成工具
-// @Param tableName query string false "tableName / 数据表名称"
-// @Param pageSize query int false "pageSize / 页条数"
-// @Param pageNum query int false "pageNum / 页码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /develop/code/table/db/list [get]
+// GetDBTableList 分页列表数据 / page list data
 func (g *GenTableApi) GetDBTableList(rc *restfulx.ReqCtx) {
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
@@ -36,15 +29,7 @@ func (g *GenTableApi) GetDBTableList(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Summary 分页列表数据
-// @Description 生成表分页列表
-// @Tags 工具 / 生成工具
-// @Param tableName query string false "tableName / 数据表名称"
-// @Param tableComment query string false "tableComment / 数据表描述"
-// @Param pageSize query int false "pageSize / 页条数"
-// @Param pageIndex query int false "pageIndex / 页码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /develop/code/table/list [get]
+// GetTablePage 分页列表数据
 func (g *GenTableApi) GetTablePage(rc *restfulx.ReqCtx) {
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
@@ -60,13 +45,7 @@ func (g *GenTableApi) GetTablePage(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Summary 获取表信息
-// @Description 获取JSON
-// @Tags 工具 / 生成工具
-// @Param tableId path int true "tableId"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /develop/code/table/info/{tableId} [get]
-// @Security Bearer
+// GetTableInfo 获取表信息
 func (g *GenTableApi) GetTableInfo(rc *restfulx.ReqCtx) {
 	tableId := restfulx.PathParamInt(rc, "tableId")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableId: int64(tableId)}, true)
@@ -76,13 +55,7 @@ func (g *GenTableApi) GetTableInfo(rc *restfulx.ReqCtx) {
 	rc.ResData = mp
 }
 
-// @Summary 获取表信息
-// @Description 获取JSON
-// @Tags 工具 / 生成工具
-// @Param tableName query string false "tableName / 数据表名称"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /develop/code/table/info/tableName [get]
-// @Security X-TOKEN
+// GetTableInfoByName 获取表信息
 func (g *GenTableApi) GetTableInfoByName(rc *restfulx.ReqCtx) {
 	tableName := restfulx.QueryParam(rc, "tableName")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableName: tableName}, true)
@@ -92,26 +65,12 @@ func (g *GenTableApi) GetTableInfoByName(rc *restfulx.ReqCtx) {
 	rc.ResData = mp
 }
 
-// @Summary 获取树表信息
-// @Description 获取JSON
-// @Tags 工具 / 生成工具
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /develop/code/table/tableTree [get]
-// @Security X-TOKEN
+// GetTableTree 获取树表信息
 func (g *GenTableApi) GetTableTree(rc *restfulx.ReqCtx) {
 	rc.ResData = g.GenTableApp.FindTree(entity.DevGenTable{})
 }
 
-// @Summary 添加表结构
-// @Description 添加表结构
-// @Tags 工具 / 生成工具
-// @Accept  application/json
-// @Product application/json
-// @Param tableName query string false "tableName / 数据表名称"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
-// @Router /develop/code/table [post]
-// @Security Bearer
+// Insert 添加表结构
 func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
 	tablesList := strings.Split(restfulx.QueryParam(rc, "tables"), ",")
 
@@ -128,30 +87,14 @@ func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
 	wg.Wait()
 }
 
-// @Summary 修改表结构
-// @Description 修改表结构
-// @Tags 工具 / 生成工具
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.DevGenTable true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
-// @Router /develop/code/table [put]
-// @Security Bearer
+// Update 修改表结构
 func (g *GenTableApi) Update(rc *restfulx.ReqCtx) {
 	var data entity.DevGenTable
 	restfulx.BindQuery(rc, &data)
 	g.GenTableApp.Update(data)
 }
 
-// Delete
-// @Summary 删除表结构
-// @Description 删除表结构
-// @Tags 工具 / 生成工具
-// @Param tableId path int true "tableId"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": -1, "message": "删除失败"}"
-// @Router /develop/code/table/{tableId} [delete]
+// Delete 删除表结构
 func (g *GenTableApi) Delete(rc *restfulx.ReqCtx) {
 	tableIds := restfulx.PathParam(rc, "tableId")
 	group := utils.IdsStrToIdsIntGroup(tableIds)

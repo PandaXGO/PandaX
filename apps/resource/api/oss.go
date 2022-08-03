@@ -21,16 +21,7 @@ type ResOssesApi struct {
 	ResOssesApp services.ResOssesModel
 }
 
-// @Summary ResOsses列表数据
-// @Tags ResOsses
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Param status query string false "状态"
-// @Param category query string false "分类"
-// @Param ossCode query string false "编号"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /resource/oss/list [get]
-// @Security
+// GetResOssesList ResOsses列表数据
 func (p *ResOssesApi) GetResOssesList(rc *restfulx.ReqCtx) {
 
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
@@ -55,28 +46,13 @@ func (p *ResOssesApi) GetResOssesList(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Summary 获取ResOsses
-// @Description 获取JSON
-// @Tags ResOsses
-// @Param ossId path int true "ossId"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /resource/oss/{ossId} [get]
-// @Security
+// GetResOsses 获取ResOsses
 func (p *ResOssesApi) GetResOsses(rc *restfulx.ReqCtx) {
 	ossId := restfulx.PathParamInt(rc, "ossId")
 	p.ResOssesApp.FindOne(int64(ossId))
 }
 
-// @Summary 添加ResOsses
-// @Description 获取JSON
-// @Tags ResOsses
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.ResOss true "data"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /resource/oss [post]
-// @Security X-TOKEN
+// InsertResOsses 添加ResOsses
 func (p *ResOssesApi) InsertResOsses(rc *restfulx.ReqCtx) {
 	var data entity.ResOss
 	restfulx.BindQuery(rc, &data)
@@ -84,16 +60,7 @@ func (p *ResOssesApi) InsertResOsses(rc *restfulx.ReqCtx) {
 	p.ResOssesApp.Insert(data)
 }
 
-// @Summary 修改ResOsses
-// @Description 获取JSON
-// @Tags ResOsses
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.ResOss true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /resource/oss [put]
-// @Security X-TOKEN
+// UpdateResOsses 修改ResOsses
 func (p *ResOssesApi) UpdateResOsses(rc *restfulx.ReqCtx) {
 	var data entity.ResOss
 	restfulx.BindQuery(rc, &data)
@@ -106,25 +73,14 @@ func (p *ResOssesApi) UpdateResOsses(rc *restfulx.ReqCtx) {
 	p.ResOssesApp.Update(data)
 }
 
-// @Summary 删除ResOsses
-// @Description 删除数据
-// @Tags ResOsses
-// @Param ossId path string true "ossId"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /resource/oss/{ossId} [delete]
+// DeleteResOsses 删除ResOsses
 func (p *ResOssesApi) DeleteResOsses(rc *restfulx.ReqCtx) {
 	ossId := restfulx.PathParam(rc, "ossId")
 	ossIds := utils.IdsStrToIdsIntGroup(ossId)
 	p.ResOssesApp.Delete(ossIds)
 }
 
-// @Summary 上传文件ResOsses
-// @Description 上传文件
-// @Tags ResOsses
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /resource/oss/uploadFile [post]
+// UplaodResOsses 上传文件ResOsses
 func (p *ResOssesApi) UplaodResOsses(rc *restfulx.ReqCtx) {
 	_, handler, _ := rc.Request.Request.FormFile("file")
 	ossCode := restfulx.QueryParam(rc, "ossCode")
@@ -139,16 +95,7 @@ func (p *ResOssesApi) UplaodResOsses(rc *restfulx.ReqCtx) {
 	rc.ResData = fmt.Sprintf("https://%s.%s/%s", li[0].BucketName, li[0].Endpoint, yunFileTmpPath)
 }
 
-// @Summary 修改ResOsses状态
-// @Description 获取JSON
-// @Tags ResOsses
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.ResOss true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /resource/oss [put]
-// @Security X-TOKEN
+// UpdateOssStatus 修改ResOsses状态
 func (p *ResOssesApi) UpdateOssStatus(rc *restfulx.ReqCtx) {
 	var data entity.ResOss
 	restfulx.BindQuery(rc, &data)
