@@ -3,11 +3,11 @@ module pandax
 go 1.18
 
 require (
+	github.com/XM-GO/PandaKit v0.0.0-20220803022710-dde3115ce2f9
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didip/tollbooth v4.0.2+incompatible
 	github.com/emicklei/go-restful-openapi/v2 v2.9.0
 	github.com/emicklei/go-restful/v3 v3.9.0
-	github.com/gin-gonic/gin v1.7.4
 	github.com/go-openapi/spec v0.20.6
 	github.com/gorilla/websocket v1.4.2
 	github.com/kakuilan/kgo v0.1.8
@@ -25,15 +25,13 @@ require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
-	github.com/XM-GO/PandaKit v0.0.0-20220803022710-dde3115ce2f9 // indirect
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible // indirect
 	github.com/brianvoe/gofakeit/v6 v6.0.2 // indirect
 	github.com/casbin/casbin/v2 v2.37.4 // indirect
 	github.com/casbin/gorm-adapter/v3 v3.4.6 // indirect
 	github.com/denisenkom/go-mssqldb v0.11.0 // indirect
-	github.com/emicklei/go-restful v2.16.0+incompatible // indirect
-	github.com/emicklei/go-restful-swagger12 v0.0.0-20201014110547-68ccff494617 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/gin-gonic/gin v1.7.4 // indirect
 	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
@@ -99,4 +97,4 @@ require (
 	gorm.io/plugin/dbresolver v1.1.0 // indirect
 )
 
-replace github.com/XM-GO/PandaKit => D:\workspace\go\project\PandaX\PandaKit
+replace github.com/XM-GO/PandaKit => D:\GOwork\pro\PnadaX\PandaKit

@@ -12,12 +12,6 @@ github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdko
 github.com/QcloudApi/qcloud_sign_golang v0.0.0-20141224014652-e4130a326409/go.mod h1:1pk82RBxDY/JZnPQrtqHlUFfCctgdorsd9M06fMynOM=
 github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 h1:5sXbqlSomvdjlRbWyNqkPsJ3Fg+tQZCbgeX1VGljbQY=
 github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
-github.com/XM-GO/PandaKit v0.0.0-20220802142840-39f271c60434 h1:XNrFgNQKWuedkyKynY20P834mnmjl0i0TQqpNgqtLT4=
-github.com/XM-GO/PandaKit v0.0.0-20220802142840-39f271c60434/go.mod h1:Z+TJfmc3yB/AbQP6LjqYe/XqLH596917qK0pUp0FEdA=
-github.com/XM-GO/PandaKit v0.0.0-20220803000751-6f77cc922152 h1:6YCJQCEMcRu39INnV22uJhTyLfIOVeAe+ZAZOJ4of7A=
-github.com/XM-GO/PandaKit v0.0.0-20220803000751-6f77cc922152/go.mod h1:A/0dFObLVa7Yzeq6cMmcjNUoajSgcLkEJglLc41BO3w=
-github.com/XM-GO/PandaKit v0.0.0-20220803022710-dde3115ce2f9 h1:RwQ4AMAmkp9jE71iZ5vHEfRzYhkKXKyT9QOhVtTFMLg=
-github.com/XM-GO/PandaKit v0.0.0-20220803022710-dde3115ce2f9/go.mod h1:A/0dFObLVa7Yzeq6cMmcjNUoajSgcLkEJglLc41BO3w=
 github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible h1:ht2+VfbXtNLGhCsnTMc6/N26nSTBK6qdhktjYyjJQkk=
 github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible/go.mod h1:T/Aws4fEfogEE9v+HPhhw+CntffsBHJ8nXQCwKr0/g8=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
@@ -54,12 +48,8 @@ github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumC
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/didip/tollbooth v4.0.2+incompatible h1:fVSa33JzSz0hoh2NxpwZtksAzAgd7zjmGO20HCZtF4M=
 github.com/didip/tollbooth v4.0.2+incompatible/go.mod h1:A9b0665CE6l1KmzpDws2++elm/CsuWBMa5Jv4WY0PEY=
-github.com/emicklei/go-restful v2.16.0+incompatible h1:rgqiKNjTnFQA6kkhFe16D8epTksy9HQ1MyrbDXSdYhM=
-github.com/emicklei/go-restful v2.16.0+incompatible/go.mod h1:otzb+WCGbkyDHkqmQmT5YD2WR4BBwUdeQoFo8l/7tVs=
 github.com/emicklei/go-restful-openapi/v2 v2.9.0 h1:djsWqjhI0EVYfkLCCX6jZxUkLmYUq2q9tt09ZbixfyE=
 github.com/emicklei/go-restful-openapi/v2 v2.9.0/go.mod h1:VKNgZyYviM1hnyrjD9RDzP2RuE94xTXxV+u6MGN4v4k=
-github.com/emicklei/go-restful-swagger12 v0.0.0-20201014110547-68ccff494617 h1:jri9taV4TK9oItoWJCofXJi21Dp/k25u32NnfphqLAY=
-github.com/emicklei/go-restful-swagger12 v0.0.0-20201014110547-68ccff494617/go.mod h1:qr0VowGBT4CS4Q8vFF8BSeKz34PuqKGxs/L0IAQA9DQ=
 github.com/emicklei/go-restful/v3 v3.7.3/go.mod h1:6n3XBCmQQb25CM2LCACGz8ukIrRry+4bhvbpWn3mrbc=
 github.com/emicklei/go-restful/v3 v3.9.0 h1:XwGDlfxEnQZzuopoqxwSEllNcCOM9DhhFyhFIIGKwxE=
 github.com/emicklei/go-restful/v3 v3.9.0/go.mod h1:6n3XBCmQQb25CM2LCACGz8ukIrRry+4bhvbpWn3mrbc=

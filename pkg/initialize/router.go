@@ -4,6 +4,10 @@ import (
 	"pandax/pkg/global"
 	"pandax/pkg/transport"
 
+	devRouter "pandax/apps/develop/router"
+	jobRouter "pandax/apps/job/router"
+	logRouter "pandax/apps/log/router"
+	resRouter "pandax/apps/resource/router"
 	sysRouter "pandax/apps/system/router"
 
 	"pandax/pkg/middleware"
@@ -39,27 +43,26 @@ func InitRouter() *transport.HttpServer {
 		sysRouter.InitUserRouter(container)
 		sysRouter.InitNoticeRouter(container)
 	}
-	/*// 任务
+	// 任务
 	{
-		jobRouter.InitJobRouter()
+		jobRouter.InitJobRouter(container)
 	}
 	//日志系统
-	log := router.Group("log")
 	{
-		logRouter.InitLogRouter(log)
+		logRouter.InitJobLogRouter(container)
+		logRouter.InitOperLogRouter(container)
+		logRouter.InitLoginLogRouter(container)
 	}
 	// 代码生成
-	dev := router.Group("develop/code")
 	{
-		devRouter.InitGenTableRouter(dev)
-		devRouter.InitGenRouter(dev)
+		devRouter.InitGenTableRouter(container)
+		devRouter.InitGenRouter(container)
 	}
 	// 资源管理
-	res := router.Group("resource")
 	{
-		resRouter.InitResOssRouter(res)
-		resRouter.InitResEmailsRouter(res)
-	}*/
+		resRouter.InitResOssRouter(container)
+		resRouter.InitResEmailsRouter(container)
+	}
 	// api接口
 	middleware.SwaggerConfig(container)
 	return server
