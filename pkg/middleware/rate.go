@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/didip/tollbooth"
-	"github.com/gin-gonic/gin"
+	"github.com/emicklei/go-restful/v3"
 	"pandax/pkg/global"
 )
 
@@ -12,17 +12,14 @@ import (
  * @Date 2022/1/19 8:28
  **/
 
-//限流中间件
-func Rate() gin.HandlerFunc {
+//Rate 限流中间件
+func Rate(req *restful.Request, resp *restful.Response, chain *restful.FilterChain) {
 	lmt := tollbooth.NewLimiter(global.Conf.Server.Rate.RateNum, nil)
 	lmt.SetMessage("已经超出接口请求限制，稍后再试.")
-	return func(c *gin.Context) {
-		httpError := tollbooth.LimitByRequest(lmt, c.Writer, c.Request)
-		if httpError != nil {
-			c.Data(httpError.StatusCode, lmt.GetMessageContentType(), []byte(httpError.Message))
-			c.Abort()
-		} else {
-			c.Next()
-		}
+	httpError := tollbooth.LimitByRequest(lmt, resp, req.Request)
+	if httpError != nil {
+		resp.WriteErrorString(httpError.StatusCode, httpError.Message)
+		return
 	}
+	chain.ProcessFilter(req, resp)
 }

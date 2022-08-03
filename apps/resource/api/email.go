@@ -31,10 +31,10 @@ type ResEmailsApi struct {
 // @Security
 func (p *ResEmailsApi) GetResEmailsList(rc *restfulx.ReqCtx) {
 
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	status := rc.GinCtx.Query("status")
-	category := rc.GinCtx.Query("category")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	status := restfulx.QueryParam(rc, "status")
+	category := restfulx.QueryParam(rc, "category")
 
 	data := entity.ResEmail{Status: status, Category: category}
 	list, total := p.ResEmailsApp.FindListPage(pageNum, pageSize, data)
@@ -60,7 +60,7 @@ func (p *ResEmailsApi) GetResEmailsList(rc *restfulx.ReqCtx) {
 // @Router /resource/email/{mailId} [get]
 // @Security
 func (p *ResEmailsApi) GetResEmails(rc *restfulx.ReqCtx) {
-	mailId := restfulx.PathParamInt(rc.GinCtx, "mailId")
+	mailId := restfulx.PathParamInt(rc, "mailId")
 	p.ResEmailsApp.FindOne(int64(mailId))
 }
 
@@ -76,7 +76,7 @@ func (p *ResEmailsApi) GetResEmails(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *ResEmailsApi) InsertResEmails(rc *restfulx.ReqCtx) {
 	var data entity.ResEmail
-	restfulx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 
 	p.ResEmailsApp.Insert(data)
 }
@@ -93,7 +93,7 @@ func (p *ResEmailsApi) InsertResEmails(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *ResEmailsApi) UpdateResEmails(rc *restfulx.ReqCtx) {
 	var data entity.ResEmail
-	restfulx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 	if utils.ISDdmMail(data.From) {
 		data.From = ""
 	}
@@ -111,8 +111,7 @@ func (p *ResEmailsApi) UpdateResEmails(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /resource/email/{mailId} [delete]
 func (p *ResEmailsApi) DeleteResEmails(rc *restfulx.ReqCtx) {
-
-	mailId := rc.GinCtx.Param("mailId")
+	mailId := restfulx.PathParam(rc, "mailId")
 	mailIds := utils.IdsStrToIdsIntGroup(mailId)
 	p.ResEmailsApp.Delete(mailIds)
 }
@@ -129,7 +128,7 @@ func (p *ResEmailsApi) DeleteResEmails(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *ResEmailsApi) UpdateMailStatus(rc *restfulx.ReqCtx) {
 	var data entity.ResEmail
-	restfulx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 
 	p.ResEmailsApp.Update(entity.ResEmail{MailId: data.MailId, Status: data.Status})
 }
@@ -146,7 +145,7 @@ func (p *ResEmailsApi) UpdateMailStatus(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *ResEmailsApi) DebugMail(rc *restfulx.ReqCtx) {
 	var data from.SendMail
-	restfulx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 
 	one := p.ResEmailsApp.FindOne(data.MailId)
 	ml := email.Mail{

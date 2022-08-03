@@ -1,15 +1,12 @@
 package router
 
 import (
-	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/gin-gonic/gin"
-	"pandax/apps/develop/api"
-	"pandax/apps/develop/services"
+	"github.com/emicklei/go-restful/v3"
 )
 
-func InitGenTableRouter(router *gin.RouterGroup) {
+func InitGenTableRouter(container *restful.Container) {
 	// 登录日志
-	genApi := &api.GenTableApi{
+	/*genApi := &api.GenTableApi{
 		GenTableApp: services.DevGenTableModelDao,
 	}
 	gen := router.Group("table")
@@ -44,5 +41,5 @@ func InitGenTableRouter(router *gin.RouterGroup) {
 
 	gen.DELETE(":tableId", func(c *gin.Context) {
 		restfulx.NewReqCtx(c).WithLog("删除表").Handle(genApi.Delete)
-	})
+	})*/
 }

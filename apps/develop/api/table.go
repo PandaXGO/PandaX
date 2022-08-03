@@ -23,9 +23,10 @@ type GenTableApi struct {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/db/list [get]
 func (g *GenTableApi) GetDBTableList(rc *restfulx.ReqCtx) {
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	tableName := rc.GinCtx.Query("tableName")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	tableName := restfulx.QueryParam(rc, "tableName")
+
 	list, total := g.GenTableApp.FindDbTablesListPage(pageNum, pageSize, entity.DBTables{TableName: tableName})
 	rc.ResData = map[string]any{
 		"data":     list,
@@ -45,10 +46,11 @@ func (g *GenTableApi) GetDBTableList(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string "{"code": 200, "data": [...]}"
 // @Router /develop/code/table/list [get]
 func (g *GenTableApi) GetTablePage(rc *restfulx.ReqCtx) {
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	tableName := rc.GinCtx.Query("tableName")
-	tableComment := rc.GinCtx.Query("tableComment")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	tableName := restfulx.QueryParam(rc, "tableName")
+	tableComment := restfulx.QueryParam(rc, "tableComment")
+
 	list, total := g.GenTableApp.FindListPage(pageNum, pageSize, entity.DevGenTable{TableName: tableName, TableComment: tableComment})
 	rc.ResData = map[string]any{
 		"data":     list,
@@ -66,7 +68,7 @@ func (g *GenTableApi) GetTablePage(rc *restfulx.ReqCtx) {
 // @Router /develop/code/table/info/{tableId} [get]
 // @Security Bearer
 func (g *GenTableApi) GetTableInfo(rc *restfulx.ReqCtx) {
-	tableId := restfulx.PathParamInt(rc.GinCtx, "tableId")
+	tableId := restfulx.PathParamInt(rc, "tableId")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableId: int64(tableId)}, true)
 	mp := make(map[string]any)
 	mp["list"] = result.Columns
@@ -82,7 +84,7 @@ func (g *GenTableApi) GetTableInfo(rc *restfulx.ReqCtx) {
 // @Router /develop/code/table/info/tableName [get]
 // @Security X-TOKEN
 func (g *GenTableApi) GetTableInfoByName(rc *restfulx.ReqCtx) {
-	tableName := rc.GinCtx.Query("tableName")
+	tableName := restfulx.QueryParam(rc, "tableName")
 	result := g.GenTableApp.FindOne(entity.DevGenTable{TableName: tableName}, true)
 	mp := make(map[string]any)
 	mp["list"] = result.Columns
@@ -111,7 +113,7 @@ func (g *GenTableApi) GetTableTree(rc *restfulx.ReqCtx) {
 // @Router /develop/code/table [post]
 // @Security Bearer
 func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
-	tablesList := strings.Split(rc.GinCtx.Query("tables"), ",")
+	tablesList := strings.Split(restfulx.QueryParam(rc, "tables"), ",")
 
 	wg := sync.WaitGroup{}
 	for i := 0; i < len(tablesList); i++ {
@@ -138,7 +140,7 @@ func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
 // @Security Bearer
 func (g *GenTableApi) Update(rc *restfulx.ReqCtx) {
 	var data entity.DevGenTable
-	restfulx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 	g.GenTableApp.Update(data)
 }
 
@@ -151,7 +153,7 @@ func (g *GenTableApi) Update(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": -1, "message": "删除失败"}"
 // @Router /develop/code/table/{tableId} [delete]
 func (g *GenTableApi) Delete(rc *restfulx.ReqCtx) {
-	tableIds := rc.GinCtx.Param("tableId")
+	tableIds := restfulx.PathParam(rc, "tableId")
 	group := utils.IdsStrToIdsIntGroup(tableIds)
 	g.GenTableApp.Delete(group)
 }

@@ -1,18 +1,15 @@
 package router
 
 import (
-	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/gin-gonic/gin"
-	"pandax/apps/job/api"
-	"pandax/apps/job/services"
+	"github.com/emicklei/go-restful/v3"
 )
 
-func InitJobRouter(router *gin.RouterGroup) {
+func InitJobRouter(container *restful.Container) {
 	// 登录日志
-	jobApi := &api.JobApi{
+	/*jobApi := &api.JobApi{
 		JobApp: services.JobModelDao,
 	}
-	job := router.Group("")
+	job := router.Group("job")
 
 	job.GET("list", func(c *gin.Context) {
 		restfulx.NewReqCtx(c).WithLog("获取Job列表").Handle(jobApi.GetJobList)
@@ -44,5 +41,5 @@ func InitJobRouter(router *gin.RouterGroup) {
 
 	job.PUT("/changeStatus", func(c *gin.Context) {
 		restfulx.NewReqCtx(c).WithLog("修改状态").Handle(jobApi.UpdateStatusJob)
-	})
+	})*/
 }

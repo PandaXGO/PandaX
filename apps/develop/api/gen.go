@@ -18,7 +18,7 @@ type GenApi struct {
 // @Router /develop/code/gen/preview/{tableId} [get]
 // @Security X-TOKEN
 func (e *GenApi) Preview(rc *restfulx.ReqCtx) {
-	tableId := restfulx.PathParamInt(rc.GinCtx, "tableId")
+	tableId := restfulx.PathParamInt(rc, "tableId")
 	rc.ResData = gen.Preview(int64(tableId))
 }
 
@@ -30,7 +30,7 @@ func (e *GenApi) Preview(rc *restfulx.ReqCtx) {
 // @Router /develop/code/gen/code/{tableId} [get]
 // @Security X-TOKEN
 func (e *GenApi) GenCode(rc *restfulx.ReqCtx) {
-	tableId := restfulx.PathParamInt(rc.GinCtx, "tableId")
+	tableId := restfulx.PathParamInt(rc, "tableId")
 	gen.GenCode(int64(tableId))
 }
 
@@ -42,7 +42,7 @@ func (e *GenApi) GenCode(rc *restfulx.ReqCtx) {
 // @Router /develop/code/gen/configure/{tableId} [get]
 // @Security X-TOKEN
 func (e *GenApi) GenConfigure(rc *restfulx.ReqCtx) {
-	tableId := restfulx.PathParamInt(rc.GinCtx, "tableId")
-	menuId := restfulx.QueryInt(rc.GinCtx, "menuId", 0)
+	tableId := restfulx.PathParamInt(rc, "tableId")
+	menuId := restfulx.QueryInt(rc, "menuId", 0)
 	gen.GenConfigure(tableId, menuId)
 }

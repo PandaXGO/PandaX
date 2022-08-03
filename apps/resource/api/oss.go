@@ -33,11 +33,11 @@ type ResOssesApi struct {
 // @Security
 func (p *ResOssesApi) GetResOssesList(rc *restfulx.ReqCtx) {
 
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	status := rc.GinCtx.Query("status")
-	category := rc.GinCtx.Query("category")
-	ossCode := rc.GinCtx.Query("ossCode")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	status := restfulx.QueryParam(rc, "status")
+	category := restfulx.QueryParam(rc, "category")
+	ossCode := restfulx.QueryParam(rc, "ossCode")
 
 	data := entity.ResOss{Status: status, Category: category, OssCode: ossCode}
 	list, total := p.ResOssesApp.FindListPage(pageNum, pageSize, data)
@@ -63,7 +63,7 @@ func (p *ResOssesApi) GetResOssesList(rc *restfulx.ReqCtx) {
 // @Router /resource/oss/{ossId} [get]
 // @Security
 func (p *ResOssesApi) GetResOsses(rc *restfulx.ReqCtx) {
-	ossId := restfulx.PathParamInt(rc.GinCtx, "ossId")
+	ossId := restfulx.PathParamInt(rc, "ossId")
 	p.ResOssesApp.FindOne(int64(ossId))
 }
 
@@ -79,7 +79,7 @@ func (p *ResOssesApi) GetResOsses(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *ResOssesApi) InsertResOsses(rc *restfulx.ReqCtx) {
 	var data entity.ResOss
-	restfulx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 
 	p.ResOssesApp.Insert(data)
 }
@@ -96,7 +96,7 @@ func (p *ResOssesApi) InsertResOsses(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *ResOssesApi) UpdateResOsses(rc *restfulx.ReqCtx) {
 	var data entity.ResOss
-	restfulx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 	if utils.IsDdmKey(data.AccessKey) {
 		data.AccessKey = ""
 	}
@@ -114,8 +114,7 @@ func (p *ResOssesApi) UpdateResOsses(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /resource/oss/{ossId} [delete]
 func (p *ResOssesApi) DeleteResOsses(rc *restfulx.ReqCtx) {
-
-	ossId := rc.GinCtx.Param("ossId")
+	ossId := restfulx.PathParam(rc, "ossId")
 	ossIds := utils.IdsStrToIdsIntGroup(ossId)
 	p.ResOssesApp.Delete(ossIds)
 }
@@ -127,13 +126,13 @@ func (p *ResOssesApi) DeleteResOsses(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /resource/oss/uploadFile [post]
 func (p *ResOssesApi) UplaodResOsses(rc *restfulx.ReqCtx) {
-	file, _ := rc.GinCtx.FormFile("file")
-	ossCode, _ := rc.GinCtx.GetQuery("ossCode")
+	_, handler, _ := rc.Request.Request.FormFile("file")
+	ossCode := restfulx.QueryParam(rc, "ossCode")
 	list := p.ResOssesApp.FindList(entity.ResOss{OssCode: ossCode})
 	li := *list
-	yunFileTmpPath := "uploads/" + time.Now().Format("2006-01-02") + "/" + file.Filename
+	yunFileTmpPath := "uploads/" + time.Now().Format("2006-01-02") + "/" + handler.Filename
 	// 读取本地文件。
-	f, openError := file.Open()
+	f, openError := handler.Open()
 	biz.ErrIsNil(openError, "function file.Open() Failed")
 	biz.ErrIsNil(NewOss(li[0]).PutObj(yunFileTmpPath, f), "上传OSS失败")
 
@@ -152,7 +151,7 @@ func (p *ResOssesApi) UplaodResOsses(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *ResOssesApi) UpdateOssStatus(rc *restfulx.ReqCtx) {
 	var data entity.ResOss
-	restfulx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 
 	p.ResOssesApp.Update(entity.ResOss{OssId: data.OssId, Status: data.Status})
 }

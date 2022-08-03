@@ -2,53 +2,96 @@ package router
 
 import (
 	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/gin-gonic/gin"
+	restfulspec "github.com/emicklei/go-restful-openapi/v2"
+	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/system/api"
+	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
 )
 
-func InitMenuRouter(router *gin.RouterGroup) {
+func InitMenuRouter(container *restful.Container) {
 	s := &api.MenuApi{
 		MenuApp:     services.SysMenuModelDao,
 		RoleApp:     services.SysRoleModelDao,
 		RoleMenuApp: services.SysRoleMenuModelDao,
 		DeptApp:     services.SysDeptModelDao,
 	}
-	menu := router.Group("menu")
+	ws := new(restful.WebService)
+	ws.Path("/system/menu").Produces(restful.MIME_JSON)
+	tags := []string{"menu"}
 
-	menu.GET("menuTreeSelect", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("获取菜单树").WithNeedToken(false).WithNeedCasbin(false).Handle(s.GetMenuTreeSelect)
-	})
+	ws.Route(ws.GET("/menuTreeSelect").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取菜单树").WithNeedToken(false).WithNeedCasbin(false).Handle(s.GetMenuTreeSelect)
+	}).
+		Doc("获取菜单树").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes([]entity.SysMenu{}).
+		Returns(200, "OK", []entity.SysMenu{}))
 
-	menu.GET("menuRole", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("获取角色菜单").Handle(s.GetMenuRole)
-	})
+	ws.Route(ws.GET("/menuRole").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取角色菜单").Handle(s.GetMenuRole)
+	}).
+		Doc("获取角色菜单").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes([]entity.MenuRole{}).
+		Returns(200, "OK", []entity.MenuRole{}))
 
-	menu.GET("roleMenuTreeSelect/:roleId", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("获取角色菜单树").Handle(s.GetMenuTreeRoleSelect)
-	})
+	ws.Route(ws.GET("/roleMenuTreeSelect/{roleId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取角色菜单树").Handle(s.GetMenuTreeRoleSelect)
+	}).
+		Doc("获取角色菜单树").
+		Param(ws.PathParameter("roleId", "Id").DataType("int").DefaultValue("1")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes(entity.SysMenu{}). // on the response
+		Returns(200, "OK", entity.SysMenu{}).
+		Returns(404, "Not Found", nil))
 
-	menu.GET("menuPaths", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("获取角色菜单路径列表").Handle(s.GetMenuPaths)
-	})
+	ws.Route(ws.GET("/menuPaths").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取角色菜单路径列表").Handle(s.GetMenuPaths)
+	}).
+		Doc("获取角色菜单").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes([]entity.MenuPath{}).
+		Returns(200, "OK", []entity.MenuPath{}))
 
-	menu.GET("list", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("获取菜单列表").Handle(s.GetMenuList)
-	})
+	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取菜单列表").Handle(s.GetMenuList)
+	}).
+		Doc("获取菜单列表").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes([]entity.SysMenu{}).
+		Returns(200, "OK", []entity.SysMenu{}))
 
-	menu.GET(":menuId", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("获取菜单信息").Handle(s.GetMenu)
-	})
+	ws.Route(ws.GET("/{menuId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取菜单信息").Handle(s.GetMenu)
+	}).
+		Doc("获取菜单信息").
+		Param(ws.PathParameter("menuId", "Id").DataType("int").DefaultValue("1")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes(entity.SysMenu{}). // on the response
+		Returns(200, "OK", entity.SysMenu{}).
+		Returns(404, "Not Found", nil))
 
-	menu.POST("", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("添加菜单信息").Handle(s.InsertMenu)
-	})
+	ws.Route(ws.POST("").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("添加菜单信息").Handle(s.InsertMenu)
+	}).
+		Doc("添加菜单信息").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Reads(entity.SysMenu{})) // from the request
 
-	menu.PUT("", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("修改菜单信息").Handle(s.UpdateMenu)
-	})
+	ws.Route(ws.PUT("").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("修改菜单信息").Handle(s.UpdateMenu)
+	}).
+		Doc("修改菜单信息").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Reads(entity.SysMenu{})) // from the request
 
-	menu.DELETE(":menuId", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("删除菜单信息").Handle(s.DeleteMenu)
-	})
+	ws.Route(ws.DELETE("/{menuId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("删除菜单信息").Handle(s.DeleteMenu)
+	}).
+		Doc("删除SysTenant信息").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Param(ws.PathParameter("menuId", "多id 1,2,3").DataType("string")))
+
+	container.Add(ws)
 }

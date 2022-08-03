@@ -1,16 +1,20 @@
 package main
 
 import (
+	"context"
 	"github.com/XM-GO/PandaKit/config"
 	"github.com/XM-GO/PandaKit/logger"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/starter"
 	"github.com/spf13/cobra"
+	"log"
 	"os"
+	"os/signal"
 	"pandax/apps/job/jobs"
 	"pandax/pkg/global"
 	"pandax/pkg/initialize"
 	"pandax/pkg/middleware"
+	"syscall"
 )
 
 var (
@@ -41,7 +45,18 @@ var rootCmd = &cobra.Command{
 			jobs.InitJob()
 			jobs.Setup()
 		}()
-		starter.RunWebServer(initialize.InitRouter())
+
+		app := initialize.InitRouter()
+
+		app.Start(context.TODO())
+		stop := make(chan os.Signal, 1)
+		signal.Notify(stop, syscall.SIGTERM, os.Interrupt)
+		<-stop
+
+		if err := app.Stop(context.TODO()); err != nil {
+			log.Fatal("fatal rudder app stop: %s", err)
+			os.Exit(-3)
+		}
 	},
 }
 

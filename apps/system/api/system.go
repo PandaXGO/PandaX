@@ -5,10 +5,9 @@ import (
 	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/ws"
-	"github.com/gin-gonic/gin"
+	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
 	"github.com/kakuilan/kgo"
-	"net/http"
 	"runtime"
 )
 
@@ -21,7 +20,7 @@ const (
 	GB = 1024 * MB
 )
 
-func (s *System) ServerInfo(g *gin.Context) {
+func (s *System) ServerInfo(request *restful.Request, response *restful.Response) {
 	osDic := make(map[string]any, 0)
 	osDic["goOs"] = runtime.GOOS
 	osDic["arch"] = runtime.GOARCH
@@ -48,7 +47,7 @@ func (s *System) ServerInfo(g *gin.Context) {
 	cpuDic["used"] = fmt.Sprintf("%.2f", info.CpuUser*100)
 	cpuDic["free"] = fmt.Sprintf("%.2f", info.CpuFree*100)
 
-	g.JSON(http.StatusOK, gin.H{
+	response.WriteEntity(map[string]any{
 		"code": 200,
 		"os":   osDic,
 		"mem":  memDic,
@@ -58,8 +57,8 @@ func (s *System) ServerInfo(g *gin.Context) {
 }
 
 // 连接websocket
-func (s *System) ConnectWs(g *gin.Context) {
-	wsConn, err := ws.Upgrader.Upgrade(g.Writer, g.Request, nil)
+func (s *System) ConnectWs(request *restful.Request, response *restful.Response) {
+	wsConn, err := ws.Upgrader.Upgrade(response, request.Request, nil)
 	defer func() {
 		if err := recover(); &err != nil {
 			wsConn.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("websocket 失败： %v", err)))
@@ -71,7 +70,7 @@ func (s *System) ConnectWs(g *gin.Context) {
 		panic(any(biz.NewBizErr("升级websocket失败")))
 	}
 	// 权限校验
-	rc := restfulx.NewReqCtx(g)
+	rc := restfulx.NewReqCtx(request, response)
 	if err = restfulx.PermissionHandler(rc); err != nil {
 		panic(any(biz.NewBizErr("没有权限")))
 	}

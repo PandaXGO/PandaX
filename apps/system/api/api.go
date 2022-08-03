@@ -14,53 +14,25 @@ type SystemApiApi struct {
 	ApiApp services.SysApiModel
 }
 
-// @Tags SysApi
-// @Summary 创建基础api
-// @Security X-TOKEN
-// @accept application/json
-// @Produce application/json
-// @Param data body entity.SysApi true "api路径, api中文描述, api组, 方法"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
-// @Router /system/api [post]
 func (s *SystemApiApi) CreateApi(rc *restfulx.ReqCtx) {
 	var api entity.SysApi
-	restfulx.BindJsonAndValid(rc.GinCtx, &api)
+	restfulx.BindQuery(rc, &api)
 	log.Println(api)
 	s.ApiApp.Insert(api)
 }
 
-// @Tags SysApi
-// @Summary 删除api
-// @Security X-TOKEN
-// @accept application/json
-// @Produce application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /system/api/{id} [delete]
 func (s *SystemApiApi) DeleteApi(rc *restfulx.ReqCtx) {
-	ids := rc.GinCtx.Param("id")
+	ids := rc.Request.PathParameter("id")
 	s.ApiApp.Delete(utils.IdsStrToIdsIntGroup(ids))
 }
 
-// @Tags SysApi
-// @Summary 分页获取API列表
-// @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
-// @Param path query string false "path"
-// @Param description query string false "description"
-// @Param method query string false "method"
-// @Param apiGroup query string false "apiGroup"
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /system/api/list [get]
 func (s *SystemApiApi) GetApiList(rc *restfulx.ReqCtx) {
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	path := rc.GinCtx.Query("path")
-	description := rc.GinCtx.Query("description")
-	method := rc.GinCtx.Query("method")
-	apiGroup := rc.GinCtx.Query("apiGroup")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	path := rc.Request.QueryParameter("path")
+	description := rc.Request.QueryParameter("description")
+	method := rc.Request.QueryParameter("method")
+	apiGroup := rc.Request.QueryParameter("apiGroup")
 	api := entity.SysApi{Path: path, Description: description, Method: method, ApiGroup: apiGroup}
 	list, total := s.ApiApp.FindListPage(pageNum, pageSize, api)
 	rc.ResData = map[string]any{
@@ -71,55 +43,24 @@ func (s *SystemApiApi) GetApiList(rc *restfulx.ReqCtx) {
 	}
 }
 
-// @Tags SysApi
-// @Summary 根据id获取api
-// @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
-// @Param id path int true "根据id获取api"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /system/api/{id} [get]
 func (s *SystemApiApi) GetApiById(rc *restfulx.ReqCtx) {
-	id := restfulx.QueryInt(rc.GinCtx, "id", 0)
+	id := restfulx.QueryInt(rc, "id", 0)
 	rc.ResData = s.ApiApp.FindOne(int64(id))
 
 }
 
-// @Tags SysApi
-// @Summary 创建基础api
-// @Security X-TOKEN
-// @accept application/json
-// @Produce application/json
-// @Param data body entity.SysApi true "api路径, api中文描述, api组, 方法"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
-// @Router /api/api [put]
 func (s *SystemApiApi) UpdateApi(rc *restfulx.ReqCtx) {
 	var api entity.SysApi
-	restfulx.BindJsonAndValid(rc.GinCtx, &api)
+	restfulx.BindQuery(rc, &api)
 	s.ApiApp.Update(api)
 }
 
-// @Tags SysApi
-// @Summary 获取所有的Api 不分页
-// @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /system/api/all [get]
 func (s *SystemApiApi) GetAllApis(rc *restfulx.ReqCtx) {
 	rc.ResData = s.ApiApp.FindList(entity.SysApi{})
 }
 
-// @Tags SysApi
-// @Summary 获取Api权限列表
-// @Security X-TOKEN
-// @accept application/json
-// @Produce application/json
-// @Param roleKey query string true "权限id, 权限模型列表"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /casbin/getPolicyPathByRoleId [get]
 func (s *SystemApiApi) GetPolicyPathByRoleId(rc *restfulx.ReqCtx) {
-	roleKey := rc.GinCtx.Query("roleKey")
+	roleKey := rc.Request.QueryParameter("roleKey")
 	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
 	rc.ResData = casbin.GetPolicyPathByRoleId(tenantId, roleKey)
 }

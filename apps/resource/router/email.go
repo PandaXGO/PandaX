@@ -1,10 +1,7 @@
 package router
 
 import (
-	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/gin-gonic/gin"
-	"pandax/apps/resource/api"
-	"pandax/apps/resource/services"
+	"github.com/emicklei/go-restful/v3"
 )
 
 /**
@@ -13,8 +10,8 @@ import (
  * @Date 2022/1/14 15:24
  **/
 
-func InitResEmailsRouter(router *gin.RouterGroup) {
-	s := &api.ResEmailsApi{
+func InitResEmailsRouter(container *restful.Container) {
+	/*s := &api.ResEmailsApi{
 		ResEmailsApp: services.ResEmailsModelDao,
 	}
 	routerGroup := router.Group("email")
@@ -45,5 +42,5 @@ func InitResEmailsRouter(router *gin.RouterGroup) {
 
 	routerGroup.POST("debugMail", func(c *gin.Context) {
 		restfulx.NewReqCtx(c).WithLog("修改状态").Handle(s.DebugMail)
-	})
+	})*/
 }

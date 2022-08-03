@@ -1,16 +1,15 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/system/api"
 )
 
-func InitSystemRouter(router *gin.RouterGroup) {
+func InitSystemRouter(container *restful.Container) {
 	s := &api.System{}
-	sys := router.Group("")
-
-	{
-		sys.GET("", s.ConnectWs)
-		sys.GET("server", s.ServerInfo)
-	}
+	ws := new(restful.WebService)
+	ws.Path("/system").Produces(restful.MIME_JSON)
+	ws.Route(ws.GET("/").To(s.ConnectWs))
+	ws.Route(ws.GET("/server").To(s.ServerInfo))
+	container.Add(ws)
 }

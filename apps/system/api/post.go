@@ -30,11 +30,11 @@ type PostApi struct {
 // @Security
 func (p *PostApi) GetPostList(rc *restfulx.ReqCtx) {
 
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	status := rc.GinCtx.Query("status")
-	postName := rc.GinCtx.Query("postName")
-	postCode := rc.GinCtx.Query("postCode")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	status := restfulx.QueryParam(rc, "status")
+	postName := restfulx.QueryParam(rc, "postName")
+	postCode := restfulx.QueryParam(rc, "postCode")
 	post := entity.SysPost{Status: status, PostName: postName, PostCode: postCode}
 
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
@@ -59,7 +59,7 @@ func (p *PostApi) GetPostList(rc *restfulx.ReqCtx) {
 // @Router /system/post/{postId} [get]
 // @Security
 func (p *PostApi) GetPost(rc *restfulx.ReqCtx) {
-	postId := restfulx.PathParamInt(rc.GinCtx, "postId")
+	postId := restfulx.PathParamInt(rc, "postId")
 	p.PostApp.FindOne(int64(postId))
 }
 
@@ -75,7 +75,7 @@ func (p *PostApi) GetPost(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *PostApi) InsertPost(rc *restfulx.ReqCtx) {
 	var post entity.SysPost
-	restfulx.BindJsonAndValid(rc.GinCtx, &post)
+	restfulx.BindQuery(rc, &post)
 	post.TenantId = rc.LoginAccount.TenantId
 	post.CreateBy = rc.LoginAccount.UserName
 	p.PostApp.Insert(post)
@@ -93,7 +93,7 @@ func (p *PostApi) InsertPost(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *PostApi) UpdatePost(rc *restfulx.ReqCtx) {
 	var post entity.SysPost
-	restfulx.BindJsonAndValid(rc.GinCtx, &post)
+	restfulx.BindQuery(rc, &post)
 
 	post.CreateBy = rc.LoginAccount.UserName
 	p.PostApp.Update(post)
@@ -107,8 +107,7 @@ func (p *PostApi) UpdatePost(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/post/{postId} [delete]
 func (p *PostApi) DeletePost(rc *restfulx.ReqCtx) {
-
-	postId := rc.GinCtx.Param("postId")
+	postId := restfulx.PathParam(rc, "postId")
 	postIds := utils.IdsStrToIdsIntGroup(postId)
 
 	deList := make([]int64, 0)

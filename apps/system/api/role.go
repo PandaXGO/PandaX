@@ -32,11 +32,11 @@ type RoleApi struct {
 // @Router /system/role/rolelist [get]
 // @Security
 func (r *RoleApi) GetRoleList(rc *restfulx.ReqCtx) {
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	status := rc.GinCtx.Query("status")
-	roleName := rc.GinCtx.Query("roleName")
-	roleKey := rc.GinCtx.Query("roleKey")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	status := restfulx.QueryParam(rc, "status")
+	roleName := restfulx.QueryParam(rc, "roleName")
+	roleKey := restfulx.QueryParam(rc, "roleKey")
 	role := entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
 
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
@@ -62,7 +62,7 @@ func (r *RoleApi) GetRoleList(rc *restfulx.ReqCtx) {
 // @Router /system/role [get]
 // @Security X-TOKEN
 func (r *RoleApi) GetRole(rc *restfulx.ReqCtx) {
-	roleId := restfulx.PathParamInt(rc.GinCtx, "roleId")
+	roleId := restfulx.PathParamInt(rc, "roleId")
 	role := r.RoleApp.FindOne(int64(roleId))
 	role.MenuIds = r.RoleApp.GetRoleMeunId(entity.SysRole{RoleId: int64(roleId)})
 
@@ -80,7 +80,7 @@ func (r *RoleApi) GetRole(rc *restfulx.ReqCtx) {
 // @Router /system/role [post]
 func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	restfulx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindQuery(rc, &role)
 	role.CreateBy = rc.LoginAccount.UserName
 	role.TenantId = rc.LoginAccount.TenantId
 	insert := r.RoleApp.Insert(role)
@@ -102,7 +102,7 @@ func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 // @Router /system/role [put]
 func (r *RoleApi) UpdateRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	restfulx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindQuery(rc, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	r.RoleApp.Update(role)
@@ -126,7 +126,7 @@ func (r *RoleApi) UpdateRole(rc *restfulx.ReqCtx) {
 // @Router /system/role/changeStatus [put]
 func (r *RoleApi) UpdateRoleStatus(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	restfulx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindQuery(rc, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	r.RoleApp.Update(role)
@@ -143,7 +143,7 @@ func (r *RoleApi) UpdateRoleStatus(rc *restfulx.ReqCtx) {
 // @Router /system/role/dataScope [put]
 func (r *RoleApi) UpdateRoleDataScope(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	restfulx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindQuery(rc, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	update := r.RoleApp.Update(role)
@@ -163,7 +163,7 @@ func (r *RoleApi) UpdateRoleDataScope(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/role/{roleId} [delete]
 func (r *RoleApi) DeleteRole(rc *restfulx.ReqCtx) {
-	roleId := rc.GinCtx.Param("roleId")
+	roleId := restfulx.PathParam(rc, "roleId")
 	roleIds := utils.IdsStrToIdsIntGroup(roleId)
 
 	user := entity.SysUser{}
@@ -198,10 +198,10 @@ func (r *RoleApi) DeleteRole(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dict/type/export [get]
 func (p *RoleApi) ExportRole(rc *restfulx.ReqCtx) {
-	filename := rc.GinCtx.Query("filename")
-	status := rc.GinCtx.Query("status")
-	roleName := rc.GinCtx.Query("roleName")
-	roleKey := rc.GinCtx.Query("roleKey")
+	filename := restfulx.QueryParam(rc, "filename")
+	status := restfulx.QueryParam(rc, "status")
+	roleName := restfulx.QueryParam(rc, "roleName")
+	roleKey := restfulx.QueryParam(rc, "roleKey")
 	role := entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
 		role.TenantId = rc.LoginAccount.TenantId

@@ -1,14 +1,11 @@
 package router
 
 import (
-	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/gin-gonic/gin"
-	"pandax/apps/log/api"
-	"pandax/apps/log/services"
+	"github.com/emicklei/go-restful/v3"
 )
 
-func InitLogRouter(router *gin.RouterGroup) {
-	// 登录日志
+func InitLogRouter(container *restful.Container) {
+	/*// 登录日志
 	login := &api.LogLoginApi{
 		LogLoginApp: services.LogLoginModelDao,
 	}
@@ -72,5 +69,5 @@ func InitLogRouter(router *gin.RouterGroup) {
 
 	logJob.DELETE(":logId", func(c *gin.Context) {
 		restfulx.NewReqCtx(c).WithLog("删除操作日志信息").Handle(job.DeleteJobLog)
-	})
+	})*/
 }

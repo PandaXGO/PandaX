@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/XM-GO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 )
@@ -35,7 +36,7 @@ func (m *MenuApi) GetMenuTreeSelect(rc *restfulx.ReqCtx) {
 // @Router /system/menu/menuRole [get]
 // @Security X-TOKEN
 func (m *MenuApi) GetMenuRole(rc *restfulx.ReqCtx) {
-	roleKey := rc.GinCtx.Query("roleKey")
+	roleKey := restfulx.QueryParam(rc, "roleKey")
 	biz.IsTrue(roleKey != "", "请传入角色Key")
 	rc.ResData = Build(*m.MenuApp.SelectMenuRole(roleKey))
 }
@@ -49,7 +50,7 @@ func (m *MenuApi) GetMenuRole(rc *restfulx.ReqCtx) {
 // @Router /system/menu/menuTreRoleSelect/{roleId} [get]
 // @Security X-TOKEN
 func (m *MenuApi) GetMenuTreeRoleSelect(rc *restfulx.ReqCtx) {
-	roleId := restfulx.PathParamInt(rc.GinCtx, "roleId")
+	roleId := restfulx.PathParamInt(rc, "roleId")
 
 	result := m.MenuApp.SelectMenuLable(entity.SysMenu{})
 	menuIds := make([]int64, 0)
@@ -71,7 +72,7 @@ func (m *MenuApi) GetMenuTreeRoleSelect(rc *restfulx.ReqCtx) {
 // @Router /system/menu/menuPaths [get]
 // @Security X-TOKEN
 func (m *MenuApi) GetMenuPaths(rc *restfulx.ReqCtx) {
-	roleKey := rc.GinCtx.Query("roleKey")
+	roleKey := restfulx.QueryParam(rc, "roleKey")
 	biz.IsTrue(roleKey != "", "请传入角色Key")
 	rc.ResData = m.RoleMenuApp.GetMenuPaths(entity.SysRoleMenu{RoleName: roleKey})
 }
@@ -87,8 +88,8 @@ func (m *MenuApi) GetMenuPaths(rc *restfulx.ReqCtx) {
 // @Router /system/menu/menuList [get]
 // @Security Bearer
 func (m *MenuApi) GetMenuList(rc *restfulx.ReqCtx) {
-	menuName := rc.GinCtx.Query("menuName")
-	status := rc.GinCtx.Query("status")
+	menuName := restfulx.QueryParam(rc, "menuName")
+	status := restfulx.QueryParam(rc, "status")
 
 	menu := entity.SysMenu{MenuName: menuName, Status: status}
 	if menu.MenuName == "" {
@@ -107,7 +108,7 @@ func (m *MenuApi) GetMenuList(rc *restfulx.ReqCtx) {
 // @Router /system/menu/{menuId} [get]
 // @Security Bearer
 func (m *MenuApi) GetMenu(rc *restfulx.ReqCtx) {
-	menuId := restfulx.PathParamInt(rc.GinCtx, "menuId")
+	menuId := restfulx.PathParamInt(rc, "menuId")
 
 	rc.ResData = m.MenuApp.FindOne(int64(menuId))
 }
@@ -122,7 +123,7 @@ func (m *MenuApi) GetMenu(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (m *MenuApi) InsertMenu(rc *restfulx.ReqCtx) {
 	var menu entity.SysMenu
-	restfulx.BindJsonAndValid(rc.GinCtx, &menu)
+	restfulx.BindQuery(rc, &menu)
 	menu.CreateBy = rc.LoginAccount.UserName
 	m.MenuApp.Insert(menu)
 	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
@@ -143,7 +144,7 @@ func (m *MenuApi) InsertMenu(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (m *MenuApi) UpdateMenu(rc *restfulx.ReqCtx) {
 	var menu entity.SysMenu
-	restfulx.BindJsonAndValid(rc.GinCtx, &menu)
+	restfulx.BindQuery(rc, &menu)
 	menu.UpdateBy = rc.LoginAccount.UserName
 	m.MenuApp.Update(menu)
 	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
@@ -162,6 +163,6 @@ func (m *MenuApi) UpdateMenu(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/menu/{menuId} [delete]
 func (m *MenuApi) DeleteMenu(rc *restfulx.ReqCtx) {
-	menuId := restfulx.PathParamInt(rc.GinCtx, "menuId")
-	m.MenuApp.Delete([]int64{int64(menuId)})
+	menuId := restfulx.PathParam(rc, "menuId")
+	m.MenuApp.Delete(utils.IdsStrToIdsIntGroup(menuId))
 }

@@ -22,10 +22,10 @@ type LogLoginApi struct {
 // @Router /log/logLogin/list [get]
 // @Security
 func (l *LogLoginApi) GetLoginLogList(rc *restfulx.ReqCtx) {
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	loginLocation := rc.GinCtx.Query("loginLocation")
-	username := rc.GinCtx.Query("username")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	loginLocation := restfulx.QueryParam(rc, "loginLocation")
+	username := restfulx.QueryParam(rc, "username")
 	list, total := l.LogLoginApp.FindListPage(pageNum, pageSize, entity.LogLogin{LoginLocation: loginLocation, Username: username})
 	rc.ResData = map[string]any{
 		"data":     list,
@@ -43,7 +43,7 @@ func (l *LogLoginApi) GetLoginLogList(rc *restfulx.ReqCtx) {
 // @Router /log/logLogin/{infoId} [get]
 // @Security
 func (l *LogLoginApi) GetLoginLog(rc *restfulx.ReqCtx) {
-	infoId := restfulx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("infoId"))
+	infoId := restfulx.PathParamInt(rc, "infoId")
 	rc.ResData = l.LogLoginApp.FindOne(int64(infoId))
 }
 
@@ -59,7 +59,7 @@ func (l *LogLoginApi) GetLoginLog(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (l *LogLoginApi) UpdateLoginLog(rc *restfulx.ReqCtx) {
 	var log entity.LogLogin
-	restfulx.BindJsonAndValid(rc.GinCtx, &log)
+	restfulx.BindQuery(rc, &log)
 	l.LogLoginApp.Update(log)
 }
 
@@ -71,7 +71,7 @@ func (l *LogLoginApi) UpdateLoginLog(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logLogin/{infoId} [delete]
 func (l *LogLoginApi) DeleteLoginLog(rc *restfulx.ReqCtx) {
-	infoIds := rc.GinCtx.Param("infoId")
+	infoIds := restfulx.PathParam(rc, "infoId")
 	group := utils.IdsStrToIdsIntGroup(infoIds)
 	l.LogLoginApp.Delete(group)
 }

@@ -19,17 +19,6 @@ server:
     enable: false
     key-file: ./resource/default.key
     cert-file: ./resource/default.pem
-  # 静态资源
-  static:
-    - relative-path: /assets
-      root: ./static/assets
-  # 静态文件
-  static-file:
-    - relative-path: /
-      filepath: ./static/index.html
-    - relative-path: /favicon.ico
-      filepath: ./static/favicon.ico
-
 jwt:
   key: mykey
   # 过期时间单位秒 7天
@@ -40,9 +29,9 @@ redis:
   port: 6379
 
 mysql:
-  host: 127.0.0.1:3306
-  username: root
-  password: 123456
+  host: 47.104.252.2:3306
+  username: pandax
+  password: pandax
   db-name: pandax
   config: charset=utf8&loc=Local&parseTime=true
 

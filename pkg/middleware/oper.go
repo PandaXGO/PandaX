@@ -9,7 +9,7 @@ import (
 )
 
 func OperationHandler(rc *restfulx.ReqCtx) error {
-	c := rc.GinCtx
+	c := rc.Request
 	// 请求操作不做记录
 	if c.Request.Method == http.MethodGet || rc.LoginAccount == nil {
 		return nil
@@ -23,8 +23,8 @@ func OperationHandler(rc *restfulx.ReqCtx) error {
 		Method:       c.Request.Method,
 		OperName:     rc.LoginAccount.UserName,
 		OperUrl:      c.Request.URL.Path,
-		OperIp:       c.ClientIP(),
-		OperLocation: utils.GetRealAddressByIP(c.ClientIP()),
+		OperIp:       c.Request.RemoteAddr,
+		OperLocation: utils.GetRealAddressByIP(c.Request.RemoteAddr),
 		OperParam:    "",
 		Status:       "0",
 	}

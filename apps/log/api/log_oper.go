@@ -23,12 +23,11 @@ type LogOperApi struct {
 // @Router /log/logOper/list [get]
 // @Security
 func (l *LogOperApi) GetOperLogList(rc *restfulx.ReqCtx) {
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-
-	businessType := rc.GinCtx.Query("businessType")
-	operName := rc.GinCtx.Query("operName")
-	title := rc.GinCtx.Query("title")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	businessType := restfulx.QueryParam(rc, "businessType")
+	operName := restfulx.QueryParam(rc, "operName")
+	title := restfulx.QueryParam(rc, "title")
 	list, total := l.LogOperApp.FindListPage(pageNum, pageSize, entity.LogOper{BusinessType: businessType, OperName: operName, Title: title})
 	rc.ResData = map[string]any{
 		"data":     list,
@@ -46,7 +45,7 @@ func (l *LogOperApi) GetOperLogList(rc *restfulx.ReqCtx) {
 // @Router /log/logOper/{operId} [get]
 // @Security
 func (l *LogOperApi) GetOperLog(rc *restfulx.ReqCtx) {
-	operId := restfulx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("operId"))
+	operId := restfulx.PathParamInt(rc, "operId")
 	rc.ResData = l.LogOperApp.FindOne(int64(operId))
 }
 
@@ -58,7 +57,7 @@ func (l *LogOperApi) GetOperLog(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logOper/{operId} [delete]
 func (l *LogOperApi) DeleteOperLog(rc *restfulx.ReqCtx) {
-	operIds := rc.GinCtx.Param("operId")
+	operIds := restfulx.PathParam(rc, "operId")
 	group := utils.IdsStrToIdsIntGroup(operIds)
 	log.Println("group", group)
 	l.LogOperApp.Delete(group)

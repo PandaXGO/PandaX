@@ -23,11 +23,11 @@ type LogJobApi struct {
 // @Router /log/logJob/list [get]
 // @Security
 func (l *LogJobApi) GetJobLogList(rc *restfulx.ReqCtx) {
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	name := rc.GinCtx.Query("name")
-	jobGroup := rc.GinCtx.Query("jobGroup")
-	status := rc.GinCtx.Query("status")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	name := restfulx.QueryParam(rc, "name")
+	jobGroup := restfulx.QueryParam(rc, "jobGroup")
+	status := restfulx.QueryParam(rc, "status")
 
 	list, total := l.LogJobApp.FindListPage(pageNum, pageSize, entity.LogJob{Name: name, JobGroup: jobGroup, Status: status})
 	rc.ResData = map[string]any{
@@ -46,7 +46,7 @@ func (l *LogJobApi) GetJobLogList(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /log/logJob/{logId} [delete]
 func (l *LogJobApi) DeleteJobLog(rc *restfulx.ReqCtx) {
-	logIds := rc.GinCtx.Param("logId")
+	logIds := restfulx.QueryParam(rc, "logId")
 	group := utils.IdsStrToIdsIntGroup(logIds)
 	l.LogJobApp.Delete(group)
 }

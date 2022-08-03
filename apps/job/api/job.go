@@ -26,7 +26,7 @@ type JobApi struct {
 // @Security X-TOKEN
 func (j *JobApi) CreateJob(rc *restfulx.ReqCtx) {
 	var job entity.SysJob
-	restfulx.BindJsonAndValid(rc.GinCtx, &job)
+	restfulx.BindQuery(rc, &job)
 
 	job.CreateBy = rc.LoginAccount.UserName
 	j.JobApp.Insert(job)
@@ -44,11 +44,11 @@ func (j *JobApi) CreateJob(rc *restfulx.ReqCtx) {
 // @Router /job/list [get]
 // @Security
 func (j *JobApi) GetJobList(rc *restfulx.ReqCtx) {
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	jobName := rc.GinCtx.Query("jobName")
-	jobGroup := rc.GinCtx.Query("jobGroup")
-	status := rc.GinCtx.Query("status")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	jobName := restfulx.QueryParam(rc, "jobName")
+	jobGroup := restfulx.QueryParam(rc, "jobGroup")
+	status := restfulx.QueryParam(rc, "status")
 
 	list, total := j.JobApp.FindListPage(pageNum, pageSize, entity.SysJob{JobName: jobName, JobGroup: jobGroup, Status: status})
 	rc.ResData = map[string]any{
@@ -67,7 +67,7 @@ func (j *JobApi) GetJobList(rc *restfulx.ReqCtx) {
 // @Router /job/{jobId} [get]
 // @Security
 func (j *JobApi) GetJob(rc *restfulx.ReqCtx) {
-	jobId := restfulx.PathParamInt(rc.GinCtx, rc.GinCtx.Param("jobId"))
+	jobId := restfulx.PathParamInt(rc, "jobId")
 	rc.ResData = j.JobApp.FindOne(int64(jobId))
 }
 
@@ -83,7 +83,7 @@ func (j *JobApi) GetJob(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (l *JobApi) UpdateJob(rc *restfulx.ReqCtx) {
 	var job entity.SysJob
-	restfulx.BindJsonAndValid(rc.GinCtx, &job)
+	restfulx.BindQuery(rc, &job)
 	l.JobApp.Update(job)
 }
 
@@ -95,7 +95,7 @@ func (l *JobApi) UpdateJob(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /job/{jobId} [delete]
 func (l *JobApi) DeleteJob(rc *restfulx.ReqCtx) {
-	jobIds := rc.GinCtx.Param("jobId")
+	jobIds := restfulx.PathParam(rc, "jobId")
 	group := utils.IdsStrToIdsIntGroup(jobIds)
 	l.JobApp.Delete(group)
 }
@@ -108,7 +108,7 @@ func (l *JobApi) DeleteJob(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /job/stop/{jobId} [get]
 func (l *JobApi) StopJobForService(rc *restfulx.ReqCtx) {
-	jobId := restfulx.PathParamInt(rc.GinCtx, "jobId")
+	jobId := restfulx.PathParamInt(rc, "jobId")
 	job := l.JobApp.FindOne(int64(jobId))
 	jobs.Remove(jobs.Crontab, job.EntryId)
 }
@@ -120,7 +120,7 @@ func (l *JobApi) StopJobForService(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /job/stop/{jobId} [get]
 func (l *JobApi) StartJobForService(rc *restfulx.ReqCtx) {
-	jobId := restfulx.PathParamInt(rc.GinCtx, "jobId")
+	jobId := restfulx.PathParamInt(rc, "jobId")
 	job := l.JobApp.FindOne(int64(jobId))
 
 	biz.IsTrue(job.Status == "0", "以关闭的任务不能开启")
@@ -164,7 +164,7 @@ func (l *JobApi) StartJobForService(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (l *JobApi) UpdateStatusJob(rc *restfulx.ReqCtx) {
 	var job from.JobStatus
-	restfulx.BindJsonAndValid(rc.GinCtx, &job)
+	restfulx.BindQuery(rc, &job)
 
 	l.JobApp.Update(entity.SysJob{JobId: job.JobId, Status: job.Status})
 }

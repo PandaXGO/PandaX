@@ -2,31 +2,51 @@ package router
 
 import (
 	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/gin-gonic/gin"
+	restfulspec "github.com/emicklei/go-restful-openapi/v2"
+	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/system/api"
+	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
 )
 
-func InitNoticeRouter(router *gin.RouterGroup) {
+func InitNoticeRouter(container *restful.Container) {
 	s := &api.NoticeApi{
 		DeptApp:   services.SysDeptModelDao,
 		NoticeApp: services.SysNoticeModelDao,
 	}
-	notice := router.Group("notice")
+	ws := new(restful.WebService)
+	ws.Path("/system/notice").Produces(restful.MIME_JSON)
+	tags := []string{"notice"}
 
-	notice.GET("list", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("获取通知分页列表").Handle(s.GetNoticeList)
-	})
+	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取通知分页列表").Handle(s.GetNoticeList)
+	}).
+		Doc("获取通知分页列表").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes([]entity.SysNotice{}).
+		Returns(200, "OK", []entity.SysNotice{}))
 
-	notice.POST("", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("添加通知信息").Handle(s.InsertNotice)
-	})
+	ws.Route(ws.POST("").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("添加通知信息").Handle(s.InsertNotice)
+	}).
+		Doc("添加通知信息").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Reads(entity.SysNotice{})) // from the request
 
-	notice.PUT("", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("修改通知信息").Handle(s.UpdateNotice)
-	})
+	ws.Route(ws.PUT("").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("修改通知信息").Handle(s.UpdateNotice)
+	}).
+		Doc("修改通知信息").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Reads(entity.SysNotice{})) // from the request
 
-	notice.DELETE(":noticeId", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog("删除通知信息").Handle(s.DeleteNotice)
-	})
+	ws.Route(ws.DELETE("/{noticeId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("删除通知信息").Handle(s.DeleteNotice)
+	}).
+		Doc("删除通知信息").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Param(ws.PathParameter("noticeId", "多id 1,2,3").DataType("string")))
+
+	container.Add(ws)
+
 }

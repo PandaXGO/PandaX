@@ -26,7 +26,7 @@ type DeptApi struct {
 // @Router /system/menu/menuTreRoleSelect/{roleId} [get]
 // @Security X-TOKEN
 func (m *DeptApi) GetDeptTreeRoleSelect(rc *restfulx.ReqCtx) {
-	roleId := restfulx.PathParamInt(rc.GinCtx, "roleId")
+	roleId := restfulx.PathParamInt(rc, "roleId")
 	var dept entity.SysDept
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
 		dept.TenantId = rc.LoginAccount.TenantId
@@ -55,9 +55,9 @@ func (m *DeptApi) GetDeptTreeRoleSelect(rc *restfulx.ReqCtx) {
 func (a *DeptApi) GetDeptList(rc *restfulx.ReqCtx) {
 	//pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
 	//pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	deptName := rc.GinCtx.Query("deptName")
-	status := rc.GinCtx.Query("status")
-	deptId := restfulx.QueryInt(rc.GinCtx, "deptId", 0)
+	deptName := restfulx.QueryParam(rc, "deptName")
+	status := restfulx.QueryParam(rc, "status")
+	deptId := restfulx.QueryInt(rc, "deptId", 0)
 	dept := entity.SysDept{DeptName: deptName, Status: status, DeptId: int64(deptId)}
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
 		dept.TenantId = rc.LoginAccount.TenantId
@@ -94,9 +94,9 @@ func (a *DeptApi) GetOrdinaryDeptList(rc *restfulx.ReqCtx) {
 // @Router /system/dept/deptTree [get]
 // @Security
 func (a *DeptApi) GetDeptTree(rc *restfulx.ReqCtx) {
-	deptName := rc.GinCtx.Query("deptName")
-	status := rc.GinCtx.Query("status")
-	deptId := restfulx.QueryInt(rc.GinCtx, "deptId", 0)
+	deptName := restfulx.QueryParam(rc, "deptName")
+	status := restfulx.QueryParam(rc, "status")
+	deptId := restfulx.QueryInt(rc, "deptId", 0)
 	dept := entity.SysDept{DeptName: deptName, Status: status, DeptId: int64(deptId)}
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
 		dept.TenantId = rc.LoginAccount.TenantId
@@ -112,7 +112,7 @@ func (a *DeptApi) GetDeptTree(rc *restfulx.ReqCtx) {
 // @Router /system/dept/{deptId} [get]
 // @Security
 func (a *DeptApi) GetDept(rc *restfulx.ReqCtx) {
-	deptId := restfulx.PathParamInt(rc.GinCtx, "deptId")
+	deptId := restfulx.PathParamInt(rc, "deptId")
 	rc.ResData = a.DeptApp.FindOne(int64(deptId))
 }
 
@@ -128,8 +128,7 @@ func (a *DeptApi) GetDept(rc *restfulx.ReqCtx) {
 // @Security Bearer
 func (a *DeptApi) InsertDept(rc *restfulx.ReqCtx) {
 	var dept entity.SysDept
-	g := rc.GinCtx
-	restfulx.BindJsonAndValid(g, &dept)
+	restfulx.BindQuery(rc, &dept)
 	dept.TenantId = rc.LoginAccount.TenantId
 	dept.CreateBy = rc.LoginAccount.UserName
 	a.DeptApp.Insert(dept)
@@ -147,8 +146,7 @@ func (a *DeptApi) InsertDept(rc *restfulx.ReqCtx) {
 // @Security Bearer
 func (a *DeptApi) UpdateDept(rc *restfulx.ReqCtx) {
 	var dept entity.SysDept
-	g := rc.GinCtx
-	restfulx.BindJsonAndValid(g, &dept)
+	restfulx.BindQuery(rc, &dept)
 
 	dept.UpdateBy = rc.LoginAccount.UserName
 	a.DeptApp.Update(dept)
@@ -162,7 +160,7 @@ func (a *DeptApi) UpdateDept(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/dept/{deptId} [delete]
 func (a *DeptApi) DeleteDept(rc *restfulx.ReqCtx) {
-	deptId := rc.GinCtx.Param("deptId")
+	deptId := restfulx.PathParam(rc, "deptId")
 	deptIds := utils.IdsStrToIdsIntGroup(deptId)
 
 	deList := make([]int64, 0)

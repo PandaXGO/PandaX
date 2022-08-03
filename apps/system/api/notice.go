@@ -24,10 +24,10 @@ type NoticeApi struct {
 // @Router /system/post [get]
 // @Security
 func (p *NoticeApi) GetNoticeList(rc *restfulx.ReqCtx) {
-	pageNum := restfulx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc.GinCtx, "pageSize", 10)
-	noticeType := rc.GinCtx.Query("noticeType")
-	title := rc.GinCtx.Query("title")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	noticeType := restfulx.QueryParam(rc, "noticeType")
+	title := restfulx.QueryParam(rc, "title")
 
 	// 获取部门的子部门id
 	one := p.DeptApp.FindOne(rc.LoginAccount.DeptId)
@@ -57,7 +57,7 @@ func (p *NoticeApi) GetNoticeList(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *NoticeApi) InsertNotice(rc *restfulx.ReqCtx) {
 	var notice entity.SysNotice
-	restfulx.BindJsonAndValid(rc.GinCtx, &notice)
+	restfulx.BindQuery(rc, &notice)
 	notice.UserName = rc.LoginAccount.UserName
 	p.NoticeApp.Insert(notice)
 }
@@ -74,7 +74,7 @@ func (p *NoticeApi) InsertNotice(rc *restfulx.ReqCtx) {
 // @Security X-TOKEN
 func (p *NoticeApi) UpdateNotice(rc *restfulx.ReqCtx) {
 	var notice entity.SysNotice
-	restfulx.BindJsonAndValid(rc.GinCtx, &notice)
+	restfulx.BindQuery(rc, &notice)
 
 	p.NoticeApp.Update(notice)
 }
@@ -87,7 +87,7 @@ func (p *NoticeApi) UpdateNotice(rc *restfulx.ReqCtx) {
 // @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
 // @Router /system/notice/{noticeId} [delete]
 func (p *NoticeApi) DeleteNotice(rc *restfulx.ReqCtx) {
-	noticeId := rc.GinCtx.Param("noticeId")
+	noticeId := restfulx.PathParam(rc, "noticeId")
 	noticeIds := utils.IdsStrToIdsIntGroup(noticeId)
 	p.NoticeApp.Delete(noticeIds)
 }

@@ -1,10 +1,7 @@
 package router
 
 import (
-	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/gin-gonic/gin"
-	"pandax/apps/resource/api"
-	"pandax/apps/resource/services"
+	"github.com/emicklei/go-restful/v3"
 )
 
 /**
@@ -13,8 +10,8 @@ import (
  * @Date 2022/1/13 15:21
  **/
 
-func InitResOssRouter(router *gin.RouterGroup) {
-	s := &api.ResOssesApi{
+func InitResOssRouter(container *restful.Container) {
+	/*s := &api.ResOssesApi{
 		ResOssesApp: services.ResOssesModelDao,
 	}
 	routerGroup := router.Group("oss")
@@ -45,5 +42,5 @@ func InitResOssRouter(router *gin.RouterGroup) {
 
 	routerGroup.PUT("/changeStatus", func(c *gin.Context) {
 		restfulx.NewReqCtx(c).WithLog("修改状态").Handle(s.UpdateOssStatus)
-	})
+	})*/
 }
