@@ -6,41 +6,63 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"pandax/apps/{{.PackageName}}/api"
 	"pandax/apps/{{.PackageName}}/services"
 	"github.com/XM-GO/PandaKit/restfulx"
+
+	restfulspec "github.com/emicklei/go-restful-openapi/v2"
+    "github.com/emicklei/go-restful/v3"
 )
 
-func Init{{.ClassName}}Router(router *gin.RouterGroup) {
+func Init{{.ClassName}}Router(container *restful.Container) {
 	s := &api.{{.ClassName}}Api{
 		{{.ClassName}}App: services.{{.ClassName}}ModelDao,
 	}
-	routerGroup := router.Group("{{.BusinessName}}")
 
-	{{.ClassName}}ListLog := restfulx.NewLogInfo("获取{{.FunctionName}}分页列表")
-	routerGroup.GET("list", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog({{.ClassName}}ListLog).Handle(s.Get{{.ClassName}}List)
-	})
+	ws := new(restful.WebService)
+    	ws.Path("/{{.PackageName}}/{{.BusinessName}}").Produces(restful.MIME_JSON)
+    	tags := []string{"{{.BusinessName}}"}
 
-	{{.ClassName}}Log := restfulx.NewLogInfo("获取{{.FunctionName}}信息")
-	routerGroup.GET(":{{.PkJsonField}}", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog({{.ClassName}}Log).Handle(s.Get{{.ClassName}})
-	})
 
-	insert{{.ClassName}}Log := restfulx.NewLogInfo("添加{{.FunctionName}}信息")
-	routerGroup.POST("", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog(insert{{.ClassName}}Log).Handle(s.Insert{{.ClassName}})
-	})
+    ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
+    		restfulx.NewReqCtx(request, response).WithLog("获取{{.FunctionName}}分页列表").Handle(s.Get{{.ClassName}}List)
+    }).
+    	Doc("获取{{.FunctionName}}分页列表").
+    	Metadata(restfulspec.KeyOpenAPITags, tags).
+    	Writes([]entity.{{.ClassName}}{}).
+    	Returns(200, "OK", []entity.{{.ClassName}}{}))
 
-	update{{.ClassName}}Log := restfulx.NewLogInfo("修改{{.FunctionName}}信息")
-	routerGroup.PUT("", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog(update{{.ClassName}}Log).Handle(s.Update{{.ClassName}})
-	})
+    ws.Route(ws.GET("/{{"{"}}{{.PkJsonField}}{{"}"}}").To(func(request *restful.Request, response *restful.Response) {
+    	restfulx.NewReqCtx(request, response).WithLog("获取{{.FunctionName}}信息").Handle(s.Get{{.ClassName}})
+    }).
+    	Doc("获取{{.FunctionName}}信息").
+    	Param(ws.PathParameter("{{.PkJsonField}}", "Id").DataType("int")).
+    	Metadata(restfulspec.KeyOpenAPITags, tags).
+    	Writes(entity.{{.ClassName}}{}). // on the response
+    	Returns(200, "OK", entity.{{.ClassName}}{}).
+    	Returns(404, "Not Found", nil))
 
-	delete{{.ClassName}}Log := restfulx.NewLogInfo("删除{{.FunctionName}}信息")
-	routerGroup.DELETE(":{{.PkJsonField}}", func(c *gin.Context) {
-		restfulx.NewReqCtx(c).WithLog(delete{{.ClassName}}Log).Handle(s.Delete{{.ClassName}})
-	})
+    ws.Route(ws.POST("").To(func(request *restful.Request, response *restful.Response) {
+    	restfulx.NewReqCtx(request, response).WithLog("添加{{.FunctionName}}信息").Handle(s.Insert{{.ClassName}})
+    }).
+    	Doc("添加{{.FunctionName}}信息").
+    	Metadata(restfulspec.KeyOpenAPITags, tags).
+    	Reads(entity.{{.ClassName}}{}))
+
+    ws.Route(ws.PUT("").To(func(request *restful.Request, response *restful.Response) {
+    	restfulx.NewReqCtx(request, response).WithLog("修改{{.FunctionName}}信息").Handle(s.Update{{.ClassName}})
+    }).
+    	Doc("修改{{.FunctionName}}信息").
+    	Metadata(restfulspec.KeyOpenAPITags, tags).
+    	Reads(entity.{{.ClassName}}{}))
+
+    ws.Route(ws.DELETE("/{{"{"}}{{.PkJsonField}}{{"}"}}").To(func(request *restful.Request, response *restful.Response) {
+    	restfulx.NewReqCtx(request, response).WithLog("删除{{.FunctionName}}信息").Handle(s.Delete{{.ClassName}})
+    }).
+    	Doc("删除{{.FunctionName}}信息").
+    	Metadata(restfulspec.KeyOpenAPITags, tags).
+    	Param(ws.PathParameter("{{.PkJsonField}}", "多id 1,2,3").DataType("string")))
+
+    container.Add(ws)
 }
 

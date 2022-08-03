@@ -78,4 +78,6 @@ func InitRoleRouter(container *restful.Container) {
 	}).
 		Doc("导出角色信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags))
+
+	container.Add(ws)
 }
