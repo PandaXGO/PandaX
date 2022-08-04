@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
@@ -21,11 +22,11 @@ func (p *ConfigApi) GetConfigList(rc *restfulx.ReqCtx) {
 	config := entity.SysConfig{ConfigName: configName, ConfigKey: configKey, ConfigType: configType}
 	list, total := p.ConfigApp.FindListPage(pageNum, pageSize, config)
 
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

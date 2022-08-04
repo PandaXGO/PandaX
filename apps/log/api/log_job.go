@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/log/entity"
@@ -20,11 +21,11 @@ func (l *LogJobApi) GetJobLogList(rc *restfulx.ReqCtx) {
 	status := restfulx.QueryParam(rc, "status")
 
 	list, total := l.LogJobApp.FindListPage(pageNum, pageSize, entity.LogJob{Name: name, JobGroup: jobGroup, Status: status})
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

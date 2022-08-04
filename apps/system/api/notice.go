@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/entity"
@@ -28,11 +29,11 @@ func (p *NoticeApi) GetNoticeList(rc *restfulx.ReqCtx) {
 	notice := entity.SysNotice{NoticeType: noticeType, Title: title, DeptIds: ids}
 	list, total := p.NoticeApp.FindListPage(pageNum, pageSize, notice)
 
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

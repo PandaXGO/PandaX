@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
@@ -24,9 +25,14 @@ func InitRoleRouter(container *restful.Container) {
 		restfulx.NewReqCtx(request, response).WithLog("获取角色分页列表").Handle(s.GetRoleList)
 	}).
 		Doc("获取角色分页列表").
+		Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("pageSize", "每页条数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("status", "status").DataType("string")).
+		Param(ws.QueryParameter("roleName", "roleName").DataType("string")).
+		Param(ws.QueryParameter("roleKey", "roleKey").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Writes([]entity.SysRole{}).
-		Returns(200, "OK", []entity.SysRole{}))
+		Writes(model.ResultPage{}).
+		Returns(200, "OK", model.ResultPage{}))
 
 	ws.Route(ws.GET("/{roleId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取角色信息").Handle(s.GetRole)
@@ -34,7 +40,7 @@ func InitRoleRouter(container *restful.Container) {
 		Doc("获取角色信息").
 		Param(ws.PathParameter("roleId", "Id").DataType("int").DefaultValue("1")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Writes(entity.SysRole{}). // on the response
+		Writes(entity.SysRole{}).
 		Returns(200, "OK", entity.SysRole{}).
 		Returns(404, "Not Found", nil))
 
@@ -43,7 +49,7 @@ func InitRoleRouter(container *restful.Container) {
 	}).
 		Doc("添加角色信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Reads(entity.SysRole{})) // from the request
+		Reads(entity.SysRole{}))
 
 	ws.Route(ws.PUT("").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("修改角色信息").Handle(s.UpdateRole)
@@ -77,6 +83,10 @@ func InitRoleRouter(container *restful.Container) {
 		restfulx.NewReqCtx(request, response).WithLog("导出角色信息").Handle(s.ExportRole)
 	}).
 		Doc("导出角色信息").
+		Param(ws.QueryParameter("filename", "filename").DataType("string")).
+		Param(ws.QueryParameter("status", "status").DataType("string")).
+		Param(ws.QueryParameter("roleName", "roleName").DataType("string")).
+		Param(ws.QueryParameter("roleKey", "roleKey").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags))
 
 	container.Add(ws)

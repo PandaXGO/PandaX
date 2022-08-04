@@ -2,9 +2,9 @@ package api
 
 import (
 	"github.com/XM-GO/PandaKit/casbin"
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
-	"log"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 	"strconv"
@@ -17,7 +17,6 @@ type SystemApiApi struct {
 func (s *SystemApiApi) CreateApi(rc *restfulx.ReqCtx) {
 	var api entity.SysApi
 	restfulx.BindQuery(rc, &api)
-	log.Println(api)
 	s.ApiApp.Insert(api)
 }
 
@@ -35,11 +34,11 @@ func (s *SystemApiApi) GetApiList(rc *restfulx.ReqCtx) {
 	apiGroup := rc.Request.QueryParameter("apiGroup")
 	api := entity.SysApi{Path: path, Description: description, Method: method, ApiGroup: apiGroup}
 	list, total := s.ApiApp.FindListPage(pageNum, pageSize, api)
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

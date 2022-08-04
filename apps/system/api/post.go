@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/entity"
@@ -33,11 +34,11 @@ func (p *PostApi) GetPostList(rc *restfulx.ReqCtx) {
 
 	list, total := p.PostApp.FindListPage(pageNum, pageSize, post)
 
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/casbin"
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
@@ -35,11 +36,11 @@ func (r *RoleApi) GetRoleList(rc *restfulx.ReqCtx) {
 
 	list, total := r.RoleApp.FindListPage(pageNum, pageSize, role)
 
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

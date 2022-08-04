@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"log"
@@ -19,11 +20,11 @@ func (l *LogOperApi) GetOperLogList(rc *restfulx.ReqCtx) {
 	operName := restfulx.QueryParam(rc, "operName")
 	title := restfulx.QueryParam(rc, "title")
 	list, total := l.LogOperApp.FindListPage(pageNum, pageSize, entity.LogOper{BusinessType: businessType, OperName: operName, Title: title})
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

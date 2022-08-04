@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/token"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/emicklei/go-restful/v3"
@@ -39,7 +40,7 @@ type UserApi struct {
 // GenerateCaptcha 获取验证码
 func (u *UserApi) GenerateCaptcha(request *restful.Request, response *restful.Response) {
 	id, image := captcha.Generate()
-	response.WriteEntity(map[string]any{"base64Captcha": image, "captchaId": id})
+	response.WriteEntity(vo.CaptchaVo{Base64Captcha: image, CaptchaId: id})
 }
 
 // RefreshToken 刷新token
@@ -48,7 +49,10 @@ func (u *UserApi) RefreshToken(rc *restfulx.ReqCtx) {
 	j := token.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
 	token, err := j.RefreshToken(tokenStr)
 	biz.ErrIsNil(err, "刷新token失败")
-	rc.ResData = map[string]any{"token": token, "expire": time.Now().Unix() + global.Conf.Jwt.ExpireTime}
+	rc.ResData = vo.TokenVo{
+		Token:  token,
+		Expire: time.Now().Unix() + global.Conf.Jwt.ExpireTime,
+	}
 }
 
 // Login 用户登录
@@ -77,9 +81,9 @@ func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 	})
 	biz.ErrIsNil(err, "生成Token失败")
 
-	rc.ResData = map[string]any{
-		"token":  token,
-		"expire": time.Now().Unix() + global.Conf.Jwt.ExpireTime,
+	rc.ResData = vo.TokenVo{
+		Token:  token,
+		Expire: time.Now().Unix() + global.Conf.Jwt.ExpireTime,
 	}
 
 	var loginLog logEntity.LogLogin
@@ -111,11 +115,11 @@ func (u *UserApi) Auth(rc *restfulx.ReqCtx) {
 	permis := u.RoleMenuApp.GetPermis(role.RoleId)
 	menus := u.MenuApp.SelectMenuRole(role.RoleKey)
 
-	rc.ResData = map[string]any{
-		"user":        userData,
-		"role":        role,
-		"permissions": permis,
-		"menus":       Build(*menus),
+	rc.ResData = vo.AuthVo{
+		User:        *userData,
+		Role:        *role,
+		Permissions: permis,
+		Menus:       Build(*menus),
 	}
 }
 
@@ -156,11 +160,11 @@ func (u *UserApi) GetSysUserList(rc *restfulx.ReqCtx) {
 	}
 	list, total := u.UserApp.FindListPage(pageNum, pageSize, user)
 
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 
@@ -184,13 +188,13 @@ func (u *UserApi) GetSysUserProfile(rc *restfulx.ReqCtx) {
 	roleIds := make([]int64, 0)
 	roleIds = append(roleIds, rc.LoginAccount.RoleId)
 
-	rc.ResData = map[string]any{
-		"data":    user,
-		"postIds": postIds,
-		"roleIds": roleIds,
-		"roles":   roleList,
-		"posts":   postList,
-		"dept":    deptList,
+	rc.ResData = vo.UserProfileVo{
+		Data:    user,
+		PostIds: postIds,
+		RoleIds: roleIds,
+		Roles:   *roleList,
+		Posts:   *postList,
+		Dept:    *deptList,
 	}
 }
 
@@ -244,12 +248,12 @@ func (u *UserApi) GetSysUser(rc *restfulx.ReqCtx) {
 	}
 	posts := u.PostApp.FindList(post)
 
-	rc.ResData = map[string]any{
-		"data":    result,
-		"postIds": result.PostIds,
-		"roleIds": result.RoleIds,
-		"roles":   roles,
-		"posts":   posts,
+	rc.ResData = vo.UserVo{
+		Data:    result,
+		PostIds: result.PostIds,
+		RoleIds: result.RoleIds,
+		Roles:   *roles,
+		Posts:   *posts,
 	}
 }
 
@@ -266,10 +270,10 @@ func (u *UserApi) GetSysUserInit(rc *restfulx.ReqCtx) {
 		post.TenantId = rc.LoginAccount.TenantId
 	}
 	posts := u.PostApp.FindList(post)
-	mp := make(map[string]any, 2)
-	mp["roles"] = roles
-	mp["posts"] = posts
-	rc.ResData = mp
+	rc.ResData = vo.UserRolePost{
+		Roles: *roles,
+		Posts: *posts,
+	}
 }
 
 // GetUserRolePost 获取添加用户角色和职位
@@ -289,10 +293,10 @@ func (u *UserApi) GetUserRolePost(rc *restfulx.ReqCtx) {
 		po := u.PostApp.FindOne(kgo.KConv.Str2Int64(postId))
 		posts = append(posts, *po)
 	}
-	mp := make(map[string]any, 2)
-	mp["roles"] = roles
-	mp["posts"] = posts
-	rc.ResData = mp
+	rc.ResData = vo.UserRolePost{
+		Roles: roles,
+		Posts: posts,
+	}
 }
 
 // InsertSysUser 创建用户

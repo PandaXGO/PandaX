@@ -1,10 +1,12 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/resource/api"
+	"pandax/apps/resource/api/from"
 	"pandax/apps/resource/entity"
 	"pandax/apps/resource/services"
 )
@@ -27,9 +29,13 @@ func InitResEmailsRouter(container *restful.Container) {
 		restfulx.NewReqCtx(request, response).WithLog("获取ResEmails分页列表").Handle(s.GetResEmailsList)
 	}).
 		Doc("获取ResEmails分页列表").
+		Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("pageSize", "每页条数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("status", "status").DataType("string")).
+		Param(ws.QueryParameter("category", "category").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Writes([]entity.ResEmail{}).
-		Returns(200, "OK", []entity.ResEmail{}))
+		Writes(model.ResultPage{}).
+		Returns(200, "OK", model.ResultPage{}))
 
 	ws.Route(ws.GET("/{mailId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取ResEmails信息").Handle(s.GetResEmails)
@@ -37,7 +43,7 @@ func InitResEmailsRouter(container *restful.Container) {
 		Doc("获取ResEmails信息").
 		Param(ws.PathParameter("mailId", "Id").DataType("int")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Writes(entity.ResEmail{}). // on the response
+		Writes(entity.ResEmail{}).
 		Returns(200, "OK", entity.ResEmail{}).
 		Returns(404, "Not Found", nil))
 
@@ -46,7 +52,7 @@ func InitResEmailsRouter(container *restful.Container) {
 	}).
 		Doc("添加ResEmails信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Reads(entity.ResEmail{})) // from the request
+		Reads(entity.ResEmail{}))
 
 	ws.Route(ws.PUT("").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("修改ResEmails信息").Handle(s.UpdateResEmails)
@@ -66,6 +72,7 @@ func InitResEmailsRouter(container *restful.Container) {
 		restfulx.NewReqCtx(request, response).WithLog("调试").Handle(s.DebugMail)
 	}).
 		Doc("调试").
+		Reads(from.SendMail{}).
 		Metadata(restfulspec.KeyOpenAPITags, tags))
 
 	ws.Route(ws.PUT("/changeStatus").To(func(request *restful.Request, response *restful.Response) {

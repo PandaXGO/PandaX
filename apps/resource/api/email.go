@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/XM-GO/PandaKit/biz"
 	email "github.com/XM-GO/PandaKit/mail"
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/resource/api/from"
@@ -36,11 +37,11 @@ func (p *ResEmailsApi) GetResEmailsList(rc *restfulx.ReqCtx) {
 		data.Secret = utils.DdmPassword(data.Secret)
 		li[i] = data
 	}
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

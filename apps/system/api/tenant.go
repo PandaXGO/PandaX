@@ -6,6 +6,7 @@ package api
  * @Date 2022/7/14 17:55
  **/
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/entity"
@@ -23,11 +24,11 @@ func (p *SysTenantsApi) GetSysTenantsList(rc *restfulx.ReqCtx) {
 
 	list, total := p.SysTenantsApp.FindListPage(pageNum, pageSize, data)
 
-	rc.ResData = map[string]interface{}{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/log/entity"
@@ -17,11 +18,11 @@ func (l *LogLoginApi) GetLoginLogList(rc *restfulx.ReqCtx) {
 	loginLocation := restfulx.QueryParam(rc, "loginLocation")
 	username := restfulx.QueryParam(rc, "username")
 	list, total := l.LogLoginApp.FindListPage(pageNum, pageSize, entity.LogLogin{LoginLocation: loginLocation, Username: username})
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

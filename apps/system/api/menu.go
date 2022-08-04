@@ -4,6 +4,7 @@ import (
 	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
+	"pandax/apps/system/api/vo"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 )
@@ -35,9 +36,9 @@ func (m *MenuApi) GetMenuTreeRoleSelect(rc *restfulx.ReqCtx) {
 	if roleId != 0 {
 		menuIds = m.RoleApp.GetRoleMeunId(entity.SysRole{RoleId: int64(roleId)})
 	}
-	rc.ResData = map[string]any{
-		"menus":       result,
-		"checkedKeys": menuIds,
+	rc.ResData = vo.MenuTreeVo{
+		Menus:       *result,
+		CheckedKeys: menuIds,
 	}
 }
 
@@ -72,9 +73,9 @@ func (m *MenuApi) InsertMenu(rc *restfulx.ReqCtx) {
 	m.MenuApp.Insert(menu)
 	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
 	menus := m.MenuApp.SelectMenuRole(rc.LoginAccount.RoleKey)
-	rc.ResData = map[string]any{
-		"permissions": permis,
-		"menus":       Build(*menus),
+	rc.ResData = vo.MenuPermisVo{
+		Menus:       Build(*menus),
+		Permissions: permis,
 	}
 }
 
@@ -85,9 +86,9 @@ func (m *MenuApi) UpdateMenu(rc *restfulx.ReqCtx) {
 	m.MenuApp.Update(menu)
 	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
 	menus := m.MenuApp.SelectMenuRole(rc.LoginAccount.RoleKey)
-	rc.ResData = map[string]any{
-		"permissions": permis,
-		"menus":       Build(*menus),
+	rc.ResData = vo.MenuPermisVo{
+		Menus:       Build(*menus),
+		Permissions: permis,
 	}
 }
 

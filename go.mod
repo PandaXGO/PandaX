@@ -96,3 +96,5 @@ require (
 	gorm.io/driver/sqlserver v1.2.1 // indirect
 	gorm.io/plugin/dbresolver v1.1.0 // indirect
 )
+
+replace github.com/XM-GO/PandaKit => D:\workspace\go\project\PandaX\PandaKit

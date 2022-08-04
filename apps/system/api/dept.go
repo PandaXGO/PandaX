@@ -6,6 +6,7 @@ import (
 	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
+	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
 	"pandax/pkg/global"
@@ -29,9 +30,9 @@ func (m *DeptApi) GetDeptTreeRoleSelect(rc *restfulx.ReqCtx) {
 	if roleId != 0 {
 		deptIds = m.RoleApp.GetRoleDeptId(entity.SysRole{RoleId: int64(roleId)})
 	}
-	rc.ResData = map[string]any{
-		"depts":       result,
-		"checkedKeys": deptIds,
+	rc.ResData = vo.DeptTreeVo{
+		Depts:       result,
+		CheckedKeys: deptIds,
 	}
 }
 

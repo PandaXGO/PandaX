@@ -28,9 +28,11 @@ func Init{{.ClassName}}Router(container *restful.Container) {
     		restfulx.NewReqCtx(request, response).WithLog("获取{{.FunctionName}}分页列表").Handle(s.Get{{.ClassName}}List)
     }).
     	Doc("获取{{.FunctionName}}分页列表").
+    	Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
+        Param(ws.QueryParameter("pageSize", "每页条数").Required(true).DataType("int")).
     	Metadata(restfulspec.KeyOpenAPITags, tags).
-    	Writes([]entity.{{.ClassName}}{}).
-    	Returns(200, "OK", []entity.{{.ClassName}}{}))
+    	Writes(model.ResultPage{}).
+    	Returns(200, "OK", model.ResultPage{}))
 
     ws.Route(ws.GET("/{{"{"}}{{.PkJsonField}}{{"}"}}").To(func(request *restful.Request, response *restful.Response) {
     	restfulx.NewReqCtx(request, response).WithLog("获取{{.FunctionName}}信息").Handle(s.Get{{.ClassName}})

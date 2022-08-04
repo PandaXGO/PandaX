@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/job/api/from"
@@ -30,11 +31,11 @@ func (j *JobApi) GetJobList(rc *restfulx.ReqCtx) {
 	status := restfulx.QueryParam(rc, "status")
 
 	list, total := j.JobApp.FindListPage(pageNum, pageSize, entity.SysJob{JobName: jobName, JobGroup: jobGroup, Status: status})
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

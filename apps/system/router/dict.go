@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
@@ -22,8 +23,14 @@ func InitDictRouter(container *restful.Container) {
 		restfulx.NewReqCtx(request, response).WithLog("获取字典类型分页列表").Handle(s.GetDictTypeList)
 	}).
 		Doc("获取字典类型分页列表").
+		Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("pageSize", "每页条数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("status", "status").DataType("string")).
+		Param(ws.QueryParameter("dictName", "dictName").DataType("string")).
+		Param(ws.QueryParameter("dictType", "dictType").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Returns(200, "OK", []entity.SysDictType{}))
+		Writes(model.ResultPage{}).
+		Returns(200, "OK", model.ResultPage{}))
 
 	ws.Route(ws.GET("/type/{dictId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取字典类型信息").Handle(s.GetDictType)
@@ -31,7 +38,7 @@ func InitDictRouter(container *restful.Container) {
 		Doc("获取字典类型信息").
 		Param(ws.PathParameter("dictId", "Id").DataType("int").DefaultValue("1")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Returns(200, "OK", []entity.SysDictType{}))
+		Returns(200, "OK", entity.SysDictType{}))
 
 	ws.Route(ws.POST("/type").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("添加字典类型信息").Handle(s.InsertDictType)
@@ -58,12 +65,19 @@ func InitDictRouter(container *restful.Container) {
 		restfulx.NewReqCtx(request, response).WithLog("导出字典类型信息").Handle(s.ExportDictType)
 	}).
 		Doc("导出字典类型信息").
+		Param(ws.QueryParameter("filename", "filename").DataType("string")).
+		Param(ws.QueryParameter("status", "status").DataType("string")).
+		Param(ws.QueryParameter("dictName", "dictName").DataType("string")).
+		Param(ws.QueryParameter("dictType", "dictType").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags))
 
 	ws.Route(ws.GET("/data/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取字典数据分页列表").Handle(s.GetDictDataList)
 	}).
 		Doc("获取字典数据分页列表").
+		Param(ws.QueryParameter("dictLabel", "dictLabel").DataType("string")).
+		Param(ws.QueryParameter("dictType", "dictType").DataType("string")).
+		Param(ws.QueryParameter("status", "status").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Returns(200, "OK", []entity.SysDictData{}))
 
@@ -71,8 +85,9 @@ func InitDictRouter(container *restful.Container) {
 		restfulx.NewReqCtx(request, response).WithLog("获取字典数据列表通过字典类型").Handle(s.GetDictDataListByDictType)
 	}).
 		Doc("获取字典数据列表通过字典类型").
+		Param(ws.QueryParameter("dictType", "dictType").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Returns(200, "OK", []entity.SysDictType{}))
+		Returns(200, "OK", []entity.SysDictData{}))
 
 	ws.Route(ws.GET("/data/{dictCode}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取字典数据信息").Handle(s.GetDictData)
@@ -80,7 +95,7 @@ func InitDictRouter(container *restful.Container) {
 		Doc("获取字典数据信息").
 		Param(ws.PathParameter("dictCode", "dictCode").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Returns(200, "OK", []entity.SysDictType{}))
+		Returns(200, "OK", entity.SysDictData{}))
 
 	ws.Route(ws.POST("/data").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("添加字典数据信息").Handle(s.InsertDictData)

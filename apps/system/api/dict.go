@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/XM-GO/PandaKit/biz"
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
@@ -23,11 +24,11 @@ func (p *DictApi) GetDictTypeList(rc *restfulx.ReqCtx) {
 	dictType := restfulx.QueryParam(rc, "dictType")
 
 	list, total := p.DictType.FindListPage(pageNum, pageSize, entity.SysDictType{Status: status, DictName: dictName, DictType: dictType})
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 

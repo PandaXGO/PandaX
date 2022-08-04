@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
@@ -23,9 +24,13 @@ func InitLoginLogRouter(container *restful.Container) {
 		restfulx.NewReqCtx(request, response).WithLog("获取登录日志列表").Handle(s.GetLoginLogList)
 	}).
 		Doc("获取登录日志列表").
+		Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("pageSize", "每页条数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("loginLocation", "loginLocation").DataType("string")).
+		Param(ws.QueryParameter("username", "username").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Writes([]entity.LogLogin{}).
-		Returns(200, "OK", []entity.LogLogin{}))
+		Writes(model.ResultPage{}).
+		Returns(200, "OK", model.ResultPage{}))
 
 	ws.Route(ws.GET("/{infoId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取登录日志信息").Handle(s.GetLoginLog)

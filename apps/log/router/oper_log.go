@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
@@ -23,9 +24,14 @@ func InitOperLogRouter(container *restful.Container) {
 		restfulx.NewReqCtx(request, response).WithLog("获取操作日志列表").Handle(s.GetOperLogList)
 	}).
 		Doc("获取操作日志列表").
+		Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("pageSize", "每页条数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("businessType", "businessType").DataType("string")).
+		Param(ws.QueryParameter("operName", "operName").DataType("string")).
+		Param(ws.QueryParameter("title", "title").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Writes([]entity.LogOper{}).
-		Returns(200, "OK", []entity.LogOper{}))
+		Writes(model.ResultPage{}).
+		Returns(200, "OK", model.ResultPage{}))
 
 	ws.Route(ws.GET("/{operId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取操作日志信息").Handle(s.GetOperLog)

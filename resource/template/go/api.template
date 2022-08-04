@@ -33,12 +33,12 @@ func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *restfulx.ReqCtx) {
 
 	list, total := p.{{.ClassName}}App.FindListPage(pageNum, pageSize, data)
 
-	rc.ResData = map[string]interface{}{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
-	}
+	rc.ResData = model.ResultPage{
+    	Total: total,
+    	PageNum: int64(pageNum),
+    	PageSize: int64(pageNum),
+    	Data: list,
+    }
 }
 
 // Get{{.ClassName}} 获取{{.FunctionName}}
