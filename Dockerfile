@@ -4,7 +4,6 @@ LABEL MAINTAINER="PandaX"
 WORKDIR /go/src/panda
 COPY ./pandax ./
 COPY ./config.yml ./
-COPY ./static ./static
 COPY ./resource ./resource
 
 RUN chmod 755 ./pandax
