@@ -7,7 +7,8 @@
 
 ## 🌈平台简介
 
-* 采用前后端分离的模式，后端采用GO语言，通过对GIn自封装框架restfulx，代码更简洁，逻辑更清晰
+* 采用前后端分离的模式，后端采用GO语言，后端集成框架gin和go-restful（k8s使用的api框架）通过对GIn和go-restful自封装框架ginx,restfulx，代码更简洁，逻辑更清晰。另外拥抱云原生后期更新会采用go-restful框架做主要开发
+* 根据不同分支选择使用的框架[gin分支](https://github.com/XM-GO/PandaX/tree/ginx) [go-restful分支](https://github.com/XM-GO/PandaX/tree/go-restful)
 * 前端采用VUE3.0+ TypeScript + vite2 + Element-plus：[PandaUI](https://github.com/PandaGoAdmin/PandaUi)，适配手机、平板、pc 内置多种ui功能减少开发量
 * 高效率的开发，使用代码生成器可以一键生成前后端代码，可在线预览代码，减少代码开发量。。
 * 完善的权限认证系统：完善的权限认证系统，包含，菜单按钮权限，api权限，部门权限。
