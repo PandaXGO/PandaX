@@ -36,9 +36,9 @@ var rootCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		restfulx.UseAfterHandlerInterceptor(middleware.OperationHandler)
-		// gin前置 函数
+		// 前置 函数
 		restfulx.UseBeforeHandlerInterceptor(restfulx.PermissionHandler)
-		// gin后置 函数
+		// 后置 函数
 		restfulx.UseAfterHandlerInterceptor(restfulx.LogHandler)
 		go func() {
 			// 启动系统调度任务
