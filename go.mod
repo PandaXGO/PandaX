@@ -24,7 +24,7 @@ require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
-	github.com/XM-GO/PandaKit v0.0.0-20220803085722-1901d4b8f6e5 // indirect
+	github.com/XM-GO/PandaKit v0.0.0-20220814121200-1838edb60142 // indirect
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible // indirect
 	github.com/brianvoe/gofakeit/v6 v6.0.2 // indirect
 	github.com/casbin/casbin/v2 v2.37.4 // indirect
@@ -96,5 +96,3 @@ require (
 	gorm.io/driver/sqlserver v1.2.1 // indirect
 	gorm.io/plugin/dbresolver v1.1.0 // indirect
 )
-
-replace github.com/XM-GO/PandaKit => D:\workspace\go\project\PandaX\PandaKit

@@ -12,10 +12,10 @@ github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdko
 github.com/QcloudApi/qcloud_sign_golang v0.0.0-20141224014652-e4130a326409/go.mod h1:1pk82RBxDY/JZnPQrtqHlUFfCctgdorsd9M06fMynOM=
 github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 h1:5sXbqlSomvdjlRbWyNqkPsJ3Fg+tQZCbgeX1VGljbQY=
 github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
-github.com/XM-GO/PandaKit v0.0.0-20220803022710-dde3115ce2f9 h1:RwQ4AMAmkp9jE71iZ5vHEfRzYhkKXKyT9QOhVtTFMLg=
-github.com/XM-GO/PandaKit v0.0.0-20220803022710-dde3115ce2f9/go.mod h1:A/0dFObLVa7Yzeq6cMmcjNUoajSgcLkEJglLc41BO3w=
-github.com/XM-GO/PandaKit v0.0.0-20220803085722-1901d4b8f6e5 h1:LHBMHiY6D+M6qo9nh+AvnA8CWus+diFw6cuL6mDoN/Q=
-github.com/XM-GO/PandaKit v0.0.0-20220803085722-1901d4b8f6e5/go.mod h1:A/0dFObLVa7Yzeq6cMmcjNUoajSgcLkEJglLc41BO3w=
+github.com/XM-GO/PandaKit v0.0.0-20220812095429-a73ebfdc5ca3 h1:uiED9/Vf9k1yzOdCEoyI86vJ4FieryAGVUSy1LhKN9A=
+github.com/XM-GO/PandaKit v0.0.0-20220812095429-a73ebfdc5ca3/go.mod h1:A/0dFObLVa7Yzeq6cMmcjNUoajSgcLkEJglLc41BO3w=
+github.com/XM-GO/PandaKit v0.0.0-20220814121200-1838edb60142 h1:G7V4eFIeR7rHWkK9LCW5TAH5fUmFb9+M1s74Q/nP9JA=
+github.com/XM-GO/PandaKit v0.0.0-20220814121200-1838edb60142/go.mod h1:A/0dFObLVa7Yzeq6cMmcjNUoajSgcLkEJglLc41BO3w=
 github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible h1:ht2+VfbXtNLGhCsnTMc6/N26nSTBK6qdhktjYyjJQkk=
 github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible/go.mod h1:T/Aws4fEfogEE9v+HPhhw+CntffsBHJ8nXQCwKr0/g8=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
