@@ -16,10 +16,13 @@
 */
 
 
+CREATE SEQUENCE IF NOT EXISTS "casbin_rule_id_seq";
+
 -- ----------------------------
 -- Table structure for casbin_rule
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."casbin_rule";
+CREATE SEQUENCE IF NOT EXISTS "casbin_rule_id_seq";
 CREATE TABLE "public"."casbin_rule" (
   "ptype" varchar(100) COLLATE "pg_catalog"."default",
   "v0" varchar(100) COLLATE "pg_catalog"."default",
@@ -35,135 +38,251 @@ CREATE TABLE "public"."casbin_rule" (
 -- ----------------------------
 -- Records of casbin_rule
 -- ----------------------------
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/job', 'POST', '', '', '', 34);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/job', 'PUT', '', '', '', 35);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/job/:jobId', 'DELETE', '', '', '', 37);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/job/:jobId', 'GET', '', '', '', 36);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/job/changeStatus', 'PUT', '', '', '', 40);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/job/list', 'GET', '', '', '', 33);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/job/start/:jobId', 'GET', '', '', '', 39);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/job/stop/:jobId', 'GET', '', '', '', 38);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/log/logJob/:logId', 'DELETE', '', '', '', 49);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/log/logJob/all', 'DELETE', '', '', '', 48);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/log/logJob/list', 'GET', '', '', '', 47);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/log/logLogin/:infoId', 'DELETE', '', '', '', 42);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/log/logLogin/all', 'DELETE', '', '', '', 43);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/log/logLogin/list', 'GET', '', '', '', 41);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/log/logOper/:operId', 'DELETE', '', '', '', 45);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/log/logOper/all', 'DELETE', '', '', '', 46);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/log/logOper/list', 'GET', '', '', '', 44);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/api', 'POST', '', '', '', 5);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/api', 'PUT', '', '', '', 6);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/api/:id', 'DELETE', '', '', '', 7);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/api/:id', 'GET', '', '', '', 4);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/api/all', 'GET', '', '', '', 2);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/api/getPolicyPathByRoleId', 'GET', '', '', '', 3);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/api/list', 'GET', '', '', '', 1);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/config', 'POST', '', '', '', 11);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/config', 'PUT', '', '', '', 12);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/config/:configId', 'DELETE', '', '', '', 13);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/config/:configId', 'GET', '', '', '', 10);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/config/configKey', 'GET', '', '', '', 9);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/config/list', 'GET', '', '', '', 8);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dept', 'POST', '', '', '', 18);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dept', 'PUT', '', '', '', 19);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dept/:deptId', 'DELETE', '', '', '', 20);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dept/:deptId', 'GET', '', '', '', 15);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dept/deptTree', 'GET', '', '', '', 17);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dept/list', 'GET', '', '', '', 14);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dept/roleDeptTreeSelect/:roleId', 'GET', '', '', '', 16);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/data', 'POST', '', '', '', 30);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/data', 'PUT', '', '', '', 31);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/data/:dictCode', 'DELETE', '', '', '', 32);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/data/:dictCode', 'GET', '', '', '', 29);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/data/list', 'GET', '', '', '', 27);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/data/type', 'GET', '', '', '', 28);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/type', 'POST', '', '', '', 23);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/type', 'PUT', '', '', '', 24);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/type/:dictId', 'DELETE', '', '', '', 25);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/type/:dictId', 'GET', '', '', '', 22);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/type/export', 'GET', '', '', '', 26);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/dict/type/list', 'GET', '', '', '', 21);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/menu', 'POST', '', '', '', 56);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/menu', 'PUT', '', '', '', 57);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/menu/:menuId', 'DELETE', '', '', '', 58);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/menu/:menuId', 'GET', '', '', '', 55);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/menu/list', 'GET', '', '', '', 54);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/menu/menuPaths', 'GET', '', '', '', 53);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/menu/menuRole', 'GET', '', '', '', 51);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/menu/menuTreeSelect', 'GET', '', '', '', 50);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/menu/roleMenuTreeSelect/:roleId', 'GET', '', '', '', 52);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/notice', 'POST', '', '', '', 60);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/notice', 'PUT', '', '', '', 61);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/notice/:noticeId', 'DELETE', '', '', '', 62);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/notice/list', 'GET', '', '', '', 59);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/post', 'POST', '', '', '', 65);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/post', 'PUT', '', '', '', 66);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/post/:postId', 'DELETE', '', '', '', 67);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/post/:postId', 'GET', '', '', '', 64);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/post/list', 'GET', '', '', '', 63);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/role', 'POST', '', '', '', 70);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/role', 'PUT', '', '', '', 71);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/role/:roleId', 'DELETE', '', '', '', 72);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/role/:roleId', 'GET', '', '', '', 69);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/role/changeStatus', 'PUT', '', '', '', 73);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/role/dataScope', 'PUT', '', '', '', 74);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/role/export', 'GET', '', '', '', 75);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/role/list', 'GET', '', '', '', 68);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user', 'POST', '', '', '', 84);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user', 'PUT', '', '', '', 85);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user/:userId', 'DELETE', '', '', '', 78);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user/avatar', 'POST', '', '', '', 79);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user/changeStatus', 'PUT', '', '', '', 77);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user/export', 'GET', '', '', '', 86);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user/getById/:userId', 'GET', '', '', '', 81);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user/getInit', 'GET', '', '', '', 82);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user/getRoPo', 'GET', '', '', '', 83);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user/list', 'GET', '', '', '', 76);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'admin', '/system/user/pwd', 'PUT', '', '', '', 80);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/job/:jobId', 'GET', '', '', '', 104);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/job/changeStatus', 'PUT', '', '', '', 105);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/job/list', 'GET', '', '', '', 103);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/log/logJob/list', 'GET', '', '', '', 108);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/log/logLogin/list', 'GET', '', '', '', 106);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/log/logOper/list', 'GET', '', '', '', 107);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/api/:id', 'GET', '', '', '', 90);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/api/all', 'GET', '', '', '', 88);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/api/getPolicyPathByRoleId', 'GET', '', '', '', 89);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/api/list', 'GET', '', '', '', 87);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/config/:configId', 'GET', '', '', '', 93);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/config/configKey', 'GET', '', '', '', 92);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/config/list', 'GET', '', '', '', 91);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/dept/:deptId', 'GET', '', '', '', 95);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/dept/deptTree', 'GET', '', '', '', 97);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/dept/list', 'GET', '', '', '', 94);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/dept/roleDeptTreeSelect/:roleId', 'GET', '', '', '', 96);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/dict/data/:dictCode', 'GET', '', '', '', 102);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/dict/data/list', 'GET', '', '', '', 100);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/dict/data/type', 'GET', '', '', '', 101);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/dict/type/:dictId', 'GET', '', '', '', 99);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/dict/type/list', 'GET', '', '', '', 98);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/menu/:menuId', 'GET', '', '', '', 114);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/menu/list', 'GET', '', '', '', 113);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/menu/menuPaths', 'GET', '', '', '', 112);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/menu/menuRole', 'GET', '', '', '', 110);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/menu/menuTreeSelect', 'GET', '', '', '', 109);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/menu/roleMenuTreeSelect/:roleId', 'GET', '', '', '', 111);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/notice/list', 'GET', '', '', '', 115);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/post/:postId', 'GET', '', '', '', 117);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/post/list', 'GET', '', '', '', 116);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/role/:roleId', 'GET', '', '', '', 119);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/role/list', 'GET', '', '', '', 118);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/user/avatar', 'POST', '', '', '', 121);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/user/getById/:userId', 'GET', '', '', '', 122);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/user/getInit', 'GET', '', '', '', 123);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/user/getRoPo', 'GET', '', '', '', 124);
-INSERT INTO "public"."casbin_rule" VALUES ('p', 'manage', '/system/user/list', 'GET', '', '', '', 120);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/gen/code/:tableId', 'GET', '', '', 2190);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/gen/configure/:tableId', 'GET', '', '', 2191);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/gen/preview/:tableId', 'GET', '', '', 2189);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/table', 'POST', '', '', 2186);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/table', 'PUT', '', '', 2187);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/table/:tableId', 'DELETE', '', '', 2188);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/table/db/list', 'GET', '', '', 2181);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/table/info/:tableId', 'GET', '', '', 2183);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/table/info/tableName', 'GET', '', '', 2184);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/table/list', 'GET', '', '', 2182);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/develop/code/table/tableTree', 'GET', '', '', 2185);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/job', 'POST', '', '', 2193);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/job', 'PUT', '', '', 2194);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/job/:jobId', 'DELETE', '', '', 2196);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/job/:jobId', 'GET', '', '', 2195);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/job/changeStatus', 'PUT', '', '', 2199);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/job/list', 'GET', '', '', 2192);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/job/start/:jobId', 'GET', '', '', 2198);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/job/stop/:jobId', 'GET', '', '', 2197);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/log/logJob/:logId', 'DELETE', '', '', 2208);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/log/logJob/all', 'DELETE', '', '', 2207);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/log/logJob/list', 'GET', '', '', 2206);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/log/logLogin/:infoId', 'DELETE', '', '', 2201);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/log/logLogin/all', 'DELETE', '', '', 2202);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/log/logLogin/list', 'GET', '', '', 2200);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/log/logOper/:operId', 'DELETE', '', '', 2204);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/log/logOper/all', 'DELETE', '', '', 2205);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/log/logOper/list', 'GET', '', '', 2203);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/email', 'POST', '', '', 2211);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/email', 'PUT', '', '', 2212);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/email/:mailId', 'DELETE', '', '', 2213);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/email/:mailId', 'GET', '', '', 2210);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/email/changeStatus', 'PUT', '', '', 2214);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/email/debugMail', 'POST', '', '', 2215);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/email/list', 'GET', '', '', 2209);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/oss', 'POST', '', '', 2231);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/oss', 'PUT', '', '', 2232);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/oss/:ossId', 'DELETE', '', '', 2233);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/oss/:ossId', 'GET', '', '', 2230);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/oss/changeStatus', 'PUT', '', '', 2234);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/oss/list', 'GET', '', '', 2229);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/resource/oss/uploadFile', 'POST', '', '', 2235);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/api', 'POST', '', '', 2153);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/api', 'PUT', '', '', 2154);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/api/:id', 'DELETE', '', '', 2155);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/api/:id', 'GET', '', '', 2152);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/api/all', 'GET', '', '', 2150);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/api/getPolicyPathByRoleId', 'GET', '', '', 2151);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/api/list', 'GET', '', '', 2149);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/config', 'POST', '', '', 2159);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/config', 'PUT', '', '', 2160);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/config/:configId', 'DELETE', '', '', 2161);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/config/:configId', 'GET', '', '', 2158);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/config/configKey', 'GET', '', '', 2157);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/config/list', 'GET', '', '', 2156);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dept', 'POST', '', '', 2166);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dept', 'PUT', '', '', 2167);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dept/:deptId', 'DELETE', '', '', 2168);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dept/:deptId', 'GET', '', '', 2163);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dept/deptTree', 'GET', '', '', 2165);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dept/list', 'GET', '', '', 2162);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dept/roleDeptTreeSelect/:roleId', 'GET', '', '', 2164);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/data', 'POST', '', '', 2178);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/data', 'PUT', '', '', 2179);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/data/:dictCode', 'DELETE', '', '', 2180);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/data/:dictCode', 'GET', '', '', 2177);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/data/list', 'GET', '', '', 2175);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/data/type', 'GET', '', '', 2176);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/type', 'POST', '', '', 2171);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/type', 'PUT', '', '', 2172);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/type/:dictId', 'DELETE', '', '', 2173);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/type/:dictId', 'GET', '', '', 2170);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/type/export', 'GET', '', '', 2174);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/dict/type/list', 'GET', '', '', 2169);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/menu', 'POST', '', '', 2222);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/menu', 'PUT', '', '', 2223);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/menu/:menuId', 'DELETE', '', '', 2224);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/menu/:menuId', 'GET', '', '', 2221);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/menu/list', 'GET', '', '', 2220);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/menu/menuPaths', 'GET', '', '', 2219);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/menu/menuRole', 'GET', '', '', 2217);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/menu/menuTreeSelect', 'GET', '', '', 2216);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/menu/roleMenuTreeSelect/:roleId', 'GET', '', '', 2218);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/notice', 'POST', '', '', 2226);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/notice', 'PUT', '', '', 2227);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/notice/:noticeId', 'DELETE', '', '', 2228);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/notice/list', 'GET', '', '', 2225);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/post', 'POST', '', '', 2238);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/post', 'PUT', '', '', 2239);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/post/:postId', 'DELETE', '', '', 2240);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/post/:postId', 'GET', '', '', 2237);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/post/list', 'GET', '', '', 2236);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/role', 'POST', '', '', 2243);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/role', 'PUT', '', '', 2244);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/role/:roleId', 'DELETE', '', '', 2245);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/role/:roleId', 'GET', '', '', 2242);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/role/changeStatus', 'PUT', '', '', 2246);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/role/dataScope', 'PUT', '', '', 2247);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/role/export', 'GET', '', '', 2248);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/role/list', 'GET', '', '', 2241);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/tenant', 'POST', '', '', 2251);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/tenant', 'PUT', '', '', 2252);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/tenant/:tenantId', 'DELETE', '', '', 2253);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/tenant/:tenantId', 'GET', '', '', 2250);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/tenant/list', 'GET', '', '', 2249);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/tenant/lists', 'GET', '', '', 2254);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user', 'POST', '', '', 2263);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user', 'PUT', '', '', 2264);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user/:userId', 'DELETE', '', '', 2257);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user/avatar', 'POST', '', '', 2258);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user/changeStatus', 'PUT', '', '', 2256);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user/export', 'GET', '', '', 2265);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user/getById/:userId', 'GET', '', '', 2260);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user/getInit', 'GET', '', '', 2261);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user/getRoPo', 'GET', '', '', 2262);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user/list', 'GET', '', '', 2255);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'admin', '/system/user/pwd', 'PUT', '', '', 2259);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/develop/code/gen/preview/:tableId', 'GET', '', '', 2287);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/develop/code/table/db/list', 'GET', '', '', 2282);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/develop/code/table/info/:tableId', 'GET', '', '', 2284);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/develop/code/table/info/tableName', 'GET', '', '', 2285);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/develop/code/table/list', 'GET', '', '', 2283);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/develop/code/table/tableTree', 'GET', '', '', 2286);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/job/:jobId', 'GET', '', '', 2289);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/job/list', 'GET', '', '', 2288);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/log/logJob/list', 'GET', '', '', 2292);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/log/logLogin/list', 'GET', '', '', 2290);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/log/logOper/list', 'GET', '', '', 2291);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/resource/email/:mailId', 'GET', '', '', 2294);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/resource/email/list', 'GET', '', '', 2293);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/resource/oss/:ossId', 'GET', '', '', 2303);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/resource/oss/list', 'GET', '', '', 2302);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/api/:id', 'GET', '', '', 2269);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/api/all', 'GET', '', '', 2267);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/api/getPolicyPathByRoleId', 'GET', '', '', 2268);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/api/list', 'GET', '', '', 2266);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/config/:configId', 'GET', '', '', 2272);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/config/configKey', 'GET', '', '', 2271);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/config/list', 'GET', '', '', 2270);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/dept/:deptId', 'GET', '', '', 2274);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/dept/deptTree', 'GET', '', '', 2276);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/dept/list', 'GET', '', '', 2273);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/dept/roleDeptTreeSelect/:roleId', 'GET', '', '', 2275);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/dict/data/:dictCode', 'GET', '', '', 2281);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/dict/data/list', 'GET', '', '', 2279);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/dict/data/type', 'GET', '', '', 2280);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/dict/type/:dictId', 'GET', '', '', 2278);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/dict/type/list', 'GET', '', '', 2277);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/menu/:menuId', 'GET', '', '', 2300);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/menu/list', 'GET', '', '', 2299);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/menu/menuPaths', 'GET', '', '', 2298);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/menu/menuRole', 'GET', '', '', 2296);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/menu/menuTreeSelect', 'GET', '', '', 2295);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/menu/roleMenuTreeSelect/:roleId', 'GET', '', '', 2297);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/notice/list', 'GET', '', '', 2301);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/post/:postId', 'GET', '', '', 2305);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/post/list', 'GET', '', '', 2304);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/role/:roleId', 'GET', '', '', 2307);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/role/list', 'GET', '', '', 2306);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/tenant/:tenantId', 'GET', '', '', 2309);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/tenant/list', 'GET', '', '', 2308);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/tenant/lists', 'GET', '', '', 2310);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/user/getById/:userId', 'GET', '', '', 2312);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/user/getInit', 'GET', '', '', 2313);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/user/getRoPo', 'GET', '', '', 2314);
+INSERT INTO "public"."casbin_rule" VALUES ('p', '1', 'manage', '/system/user/list', 'GET', '', '', 2311);
+
+
+-- ----------------------------
+-- Table structure for dev_gen_table_columns
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."dev_gen_table_columns";
+CREATE SEQUENCE IF NOT EXISTS "dev_gen_table_columns_column_id_seq";
+CREATE TABLE "public"."dev_gen_table_columns" (
+   "column_id" int8 NOT NULL DEFAULT nextval('dev_gen_table_columns_column_id_seq'::regclass),
+   "table_id" int8,
+   "table_name" text COLLATE "pg_catalog"."default",
+   "column_name" text COLLATE "pg_catalog"."default",
+   "column_comment" text COLLATE "pg_catalog"."default",
+   "column_type" text COLLATE "pg_catalog"."default",
+   "column_key" text COLLATE "pg_catalog"."default",
+   "go_type" text COLLATE "pg_catalog"."default",
+   "go_field" text COLLATE "pg_catalog"."default",
+   "json_field" text COLLATE "pg_catalog"."default",
+   "html_field" text COLLATE "pg_catalog"."default",
+   "is_pk" text COLLATE "pg_catalog"."default",
+   "is_increment" text COLLATE "pg_catalog"."default",
+   "is_required" text COLLATE "pg_catalog"."default",
+   "is_insert" text COLLATE "pg_catalog"."default",
+   "is_edit" text COLLATE "pg_catalog"."default",
+   "is_list" text COLLATE "pg_catalog"."default",
+   "is_query" text COLLATE "pg_catalog"."default",
+   "query_type" text COLLATE "pg_catalog"."default",
+   "html_type" text COLLATE "pg_catalog"."default",
+   "dict_type" text COLLATE "pg_catalog"."default",
+   "sort" int8,
+   "link_table_name" text COLLATE "pg_catalog"."default",
+   "link_table_class" text COLLATE "pg_catalog"."default",
+   "link_table_package" text COLLATE "pg_catalog"."default",
+   "link_label_id" text COLLATE "pg_catalog"."default",
+   "link_label_name" text COLLATE "pg_catalog"."default"
+)
+;
+
+-- ----------------------------
+-- Records of dev_gen_table_columns
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for dev_gen_tables
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."dev_gen_tables";
+CREATE SEQUENCE IF NOT EXISTS "dev_gen_tables_table_id_seq";
+CREATE TABLE "public"."dev_gen_tables" (
+  "table_id" int8 NOT NULL DEFAULT nextval('dev_gen_tables_table_id_seq'::regclass),
+  "table_name" text COLLATE "pg_catalog"."default",
+  "table_comment" text COLLATE "pg_catalog"."default",
+  "class_name" text COLLATE "pg_catalog"."default",
+  "tpl_category" text COLLATE "pg_catalog"."default",
+  "package_name" text COLLATE "pg_catalog"."default",
+  "module_name" text COLLATE "pg_catalog"."default",
+  "business_name" text COLLATE "pg_catalog"."default",
+  "function_name" text COLLATE "pg_catalog"."default",
+  "function_author" text COLLATE "pg_catalog"."default",
+  "options" text COLLATE "pg_catalog"."default",
+  "remark" text COLLATE "pg_catalog"."default",
+  "pk_column" text COLLATE "pg_catalog"."default",
+  "pk_go_field" text COLLATE "pg_catalog"."default",
+  "pk_json_field" text COLLATE "pg_catalog"."default",
+  "create_time" timestamptz(6),
+  "update_time" timestamptz(6),
+  "delete_time" timestamptz(6)
+)
+;
+
+-- ----------------------------
+-- Records of dev_gen_tables
+-- ----------------------------
+
 
 -- ----------------------------
 -- Table structure for log_jobs
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."log_jobs";
+CREATE SEQUENCE IF NOT EXISTS "log_jobs_log_id_seq";
 CREATE TABLE "public"."log_jobs" (
   "log_id" int8 NOT NULL DEFAULT nextval('log_jobs_log_id_seq'::regclass),
   "name" varchar(128) COLLATE "pg_catalog"."default",
@@ -192,6 +311,7 @@ COMMENT ON COLUMN "public"."log_jobs"."status" IS '状态';
 -- Table structure for log_logins
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."log_logins";
+CREATE SEQUENCE IF NOT EXISTS "log_logins_info_id_seq";
 CREATE TABLE "public"."log_logins" (
   "info_id" int8 NOT NULL DEFAULT nextval('log_logins_info_id_seq'::regclass),
   "username" varchar(128) COLLATE "pg_catalog"."default",
@@ -232,6 +352,7 @@ INSERT INTO "public"."log_logins" VALUES (2, 'panda', '0', '127.0.0.1', '内部I
 -- Table structure for log_opers
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."log_opers";
+CREATE SEQUENCE IF NOT EXISTS "log_opers_oper_id_seq";
 CREATE TABLE "public"."log_opers" (
   "oper_id" int8 NOT NULL DEFAULT nextval('log_opers_oper_id_seq'::regclass),
   "title" varchar(128) COLLATE "pg_catalog"."default",
@@ -267,6 +388,7 @@ INSERT INTO "public"."log_opers" VALUES (1, '删除部门信息', '3', 'DELETE',
 -- Table structure for sys_apis
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_apis";
+CREATE SEQUENCE IF NOT EXISTS "sys_apis_id_seq";
 CREATE TABLE "public"."sys_apis" (
   "id" int8 NOT NULL DEFAULT nextval('sys_apis_id_seq'::regclass),
   "create_time" timestamptz(6),
@@ -286,97 +408,128 @@ COMMENT ON COLUMN "public"."sys_apis"."method" IS '方法';
 -- ----------------------------
 -- Records of sys_apis
 -- ----------------------------
-INSERT INTO "public"."sys_apis" VALUES (1, '2021-12-09 09:21:04+00', '2021-12-09 09:21:04+00', NULL, '/system/user/list', '查询用户列表（分页）', 'user', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (2, '2021-12-09 09:29:36+00', '2021-12-09 09:29:36+00', NULL, '/system/user/changeStatus', '修改用户状态', 'user', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (3, '2021-12-09 09:34:37+00', '2021-12-09 09:34:37+00', NULL, '/system/user/:userId', '删除用户信息', 'user', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (4, '2021-12-09 09:36:43+00', '2021-12-09 09:36:43+00', NULL, '/system/dept/list', '获取部门列表', 'dept', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (5, '2021-12-09 09:37:31+00', '2021-12-09 09:37:31+00', NULL, '/system/dept/:deptId', '获取部门信息', 'dept', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (6, '2021-12-09 18:20:32+00', '2021-12-09 18:20:32+00', NULL, '/system/user/avatar', '上传头像', 'user', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (7, '2021-12-09 18:21:10+00', '2021-12-09 18:21:10+00', NULL, '/system/user/pwd', '修改密码', 'user', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (8, '2021-12-09 18:21:54+00', '2021-12-09 18:21:54+00', NULL, '/system/user/getById/:userId', '通过id获取用户信息', 'user', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (9, '2021-12-09 18:58:50+00', '2021-12-09 18:58:50+00', NULL, '/system/user/getInit', '获取初始化角色岗位信息(添加用户初始化)', 'user', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (10, '2021-12-09 18:59:43+00', '2021-12-09 18:59:43+00', NULL, '/system/user/getRoPo', '获取用户角色岗位信息', 'user', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (11, '2021-12-09 19:00:24+00', '2021-12-09 19:00:24+00', NULL, '/system/user', '添加用户信息', 'user', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (12, '2021-12-09 19:00:52+00', '2021-12-09 19:00:52+00', NULL, '/system/user', '修改用户信息', 'user', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (13, '2021-12-09 19:02:30+00', '2021-12-09 19:02:30+00', NULL, '/system/user/export', '导出用户信息', 'user', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (14, '2021-12-09 19:04:04+00', '2021-12-09 19:04:04+00', NULL, '/system/dept/roleDeptTreeSelect/:roleId', '获取角色部门树', 'dept', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (15, '2021-12-09 19:04:48+00', '2021-12-09 19:04:48+00', NULL, '/system/dept/deptTree', '获取所有部门树', 'dept', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (16, '2021-12-09 19:07:37+00', '2021-12-09 19:07:37+00', NULL, '/system/dept', '添加部门信息', 'dept', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (17, '2021-12-09 19:08:14+00', '2021-12-09 19:08:14+00', NULL, '/system/dept', '修改部门信息', 'dept', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (18, '2021-12-09 19:08:40+00', '2021-12-09 19:08:40+00', NULL, '/system/dept/:deptId', '删除部门信息', 'dept', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (19, '2021-12-09 19:09:41+00', '2021-12-09 19:09:41+00', NULL, '/system/config/list', '获取配置分页列表', 'config', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (20, '2021-12-09 19:10:11+00', '2021-12-09 19:10:11+00', NULL, '/system/config/configKey', '获取配置列表通过ConfigKey', 'config', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (21, '2021-12-09 19:10:45+00', '2021-12-09 19:10:45+00', NULL, '/system/config/:configId', '获取配置信息', 'config', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (22, '2021-12-09 19:11:22+00', '2021-12-09 19:11:22+00', NULL, '/system/config', '添加配置信息', 'config', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (23, '2021-12-09 19:11:41+00', '2021-12-09 19:11:41+00', NULL, '/system/config', '修改配置信息', 'config', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (24, '2021-12-09 19:12:28+00', '2021-12-09 19:12:28+00', NULL, '/system/config/:configId', '删除配置信息', 'config', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (25, '2021-12-09 19:13:08+00', '2021-12-09 19:13:08+00', NULL, '/system/dict/type/list', '获取字典类型分页列表', 'dict', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (26, '2021-12-09 19:13:55+00', '2021-12-09 19:13:55+00', NULL, '/system/dict/type/:dictId', '获取字典类型信息', 'dict', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (27, '2021-12-09 19:14:28+00', '2021-12-09 19:14:28+00', NULL, '/system/dict/type', '添加字典类型信息', 'dict', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (28, '2021-12-09 19:14:55+00', '2021-12-09 19:14:55+00', NULL, '/system/dict/type', '修改字典类型信息', 'dict', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (29, '2021-12-09 19:15:17+00', '2021-12-09 19:15:17+00', NULL, '/system/dict/type/:dictId', '删除字典类型信息', 'dict', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (30, '2021-12-09 19:15:50+00', '2021-12-09 19:15:50+00', NULL, '/system/dict/type/export', '导出字典类型信息', 'dict', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (31, '2021-12-09 19:16:26+00', '2021-12-09 19:16:26+00', NULL, '/system/dict/data/list', '获取字典数据分页列表', 'dict', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (32, '2021-12-09 19:17:01+00', '2021-12-09 19:17:01+00', NULL, '/system/dict/data/type', '获取字典数据列表通过字典类型', 'dict', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (33, '2021-12-09 19:17:39+00', '2021-12-09 19:17:39+00', NULL, '/system/dict/data/:dictCode', '获取字典数据信息', 'dict', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (34, '2021-12-09 19:18:20+00', '2021-12-09 19:18:20+00', NULL, '/system/dict/data', '添加字典数据信息', 'dict', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (35, '2021-12-09 19:18:44+00', '2021-12-09 19:18:44+00', NULL, '/system/dict/data', '修改字典数据信息', 'dict', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (36, '2021-12-09 19:19:16+00', '2021-12-09 19:19:16+00', NULL, '/system/dict/data/:dictCode', '删除字典数据信息', 'dict', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (37, '2021-12-09 19:21:18+00', '2021-12-09 19:21:18+00', NULL, '/system/menu/menuTreeSelect', '获取菜单树', 'menu', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (38, '2021-12-09 19:21:47+00', '2021-12-09 19:21:47+00', NULL, '/system/menu/menuRole', '获取角色菜单', 'menu', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (39, '2021-12-09 19:22:42+00', '2021-12-09 19:22:42+00', NULL, '/system/menu/roleMenuTreeSelect/:roleId', '获取角色菜单树', 'menu', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (40, '2021-12-09 19:23:17+00', '2021-12-09 19:23:17+00', NULL, '/system/menu/menuPaths', '获取角色菜单路径列表', 'menu', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (41, '2021-12-09 19:23:40+00', '2021-12-09 19:23:40+00', NULL, '/system/menu/list', '获取菜单列表', 'menu', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (42, '2021-12-09 19:24:09+00', '2021-12-09 19:24:09+00', NULL, '/system/menu/:menuId', '获取菜单信息', 'menu', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (43, '2021-12-09 19:24:29+00', '2021-12-09 19:24:29+00', NULL, '/system/menu', '添加菜单信息', 'menu', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (44, '2021-12-09 19:24:48+00', '2021-12-09 19:24:48+00', NULL, '/system/menu', '修改菜单信息', 'menu', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (45, '2021-12-09 19:25:10+00', '2021-12-09 19:25:10+00', NULL, '/system/menu/:menuId', '删除菜单信息', 'menu', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (46, '2021-12-09 19:25:44+00', '2021-12-09 19:27:06+00', NULL, '/system/post/list', '获取岗位分页列表', 'post', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (47, '2021-12-09 19:26:55+00', '2021-12-09 19:26:55+00', NULL, '/system/post/:postId', '获取岗位信息', 'post', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (48, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/post', '添加岗位信息', 'post', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (49, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/post', '修改岗位信息', 'post', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (50, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/post/:postId', '删除岗位信息', 'post', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (51, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/role/list', '获取角色分页列表', 'role', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (52, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/role/:roleId', '获取角色信息', 'role', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (53, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/role', '添加角色信息', 'role', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (54, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/role', '修改角色信息', 'role', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (55, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/role/:roleId', '删除角色信息', 'role', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (56, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/role/changeStatus', '修改角色状态', 'role', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (57, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/role/dataScope', '修改角色部门权限', 'role', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (58, '2021-12-09 19:25:44+00', '2021-12-09 19:25:44+00', NULL, '/system/role/export', '导出角色信息', 'role', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (59, '2021-12-09 19:50:57+00', '2021-12-09 19:50:57+00', NULL, '/system/api/list', '获取api分页列表', 'api', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (60, '2021-12-09 19:51:26+00', '2021-12-09 19:51:26+00', NULL, '/system/api/all', '获取所有api', 'api', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (61, '2021-12-09 19:51:54+00', '2021-12-09 19:51:54+00', NULL, '/system/api/getPolicyPathByRoleId', '获取角色拥有的api权限', 'api', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (62, '2021-12-09 19:52:14+00', '2021-12-09 19:52:14+00', NULL, '/system/api/:id', '获取api信息', 'api', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (63, '2021-12-09 19:52:35+00', '2021-12-09 19:52:35+00', NULL, '/system/api', '添加api信息', 'api', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (64, '2021-12-09 19:52:50+00', '2021-12-09 19:52:50+00', NULL, '/system/api', '修改api信息', 'api', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (65, '2021-12-09 19:53:07+00', '2021-12-09 19:53:07+00', NULL, '/system/api/:id', '删除api信息', 'api', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (66, '2021-12-17 10:51:05+00', '2021-12-17 10:54:22+00', NULL, '/log/logLogin/list', '获取登录日志', 'log', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (67, '2021-12-17 10:51:43+00', '2021-12-17 10:54:28+00', NULL, '/log/logLogin/:infoId', '删除日志', 'log', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (68, '2021-12-17 10:53:09+00', '2021-12-17 10:54:34+00', NULL, '/log/logLogin/all', '清空所有', 'log', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (69, '2021-12-17 10:54:07+00', '2021-12-17 10:54:07+00', NULL, '/log/logOper/list', '操作日志列表', 'log', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (70, '2021-12-17 10:53:09+00', '2021-12-17 10:53:09+00', NULL, '/log/logOper/:operId', '删除', 'log', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (71, '2021-12-17 10:53:09+00', '2021-12-17 10:53:09+00', NULL, '/log/logOper/all', '清空', 'log', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (72, '2021-12-24 15:41:23+00', '2021-12-24 15:41:23+00', NULL, '/job/list', '任务列表', 'job', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (73, '2021-12-24 15:41:54+00', '2021-12-24 15:41:54+00', NULL, '/job', '添加', 'job', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (74, '2021-12-24 15:42:11+00', '2021-12-24 15:42:11+00', NULL, '/job', '修改任务', 'job', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (75, '2021-12-24 15:42:37+00', '2021-12-24 16:32:21+00', NULL, '/job/:jobId', '获取任务', 'job', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (76, '2021-12-24 15:43:09+00', '2021-12-24 16:32:05+00', NULL, '/job/:jobId', '删除job', 'job', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (77, '2021-12-24 15:43:35+00', '2021-12-24 16:31:11+00', NULL, '/job/stop/:jobId', '停止任务', 'job', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (78, '2021-12-24 15:44:09+00', '2021-12-24 16:30:38+00', NULL, '/job/start/:jobId', '开始任务', 'job', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (79, '2021-12-24 15:45:03+00', '2021-12-24 15:46:36+00', NULL, '/log/logJob/list', '任务日志列表', 'log', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (80, '2021-12-24 15:45:33+00', '2021-12-24 15:46:43+00', NULL, '/log/logJob/all', '清空任务日志', 'log', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (81, '2021-12-24 15:46:08+00', '2021-12-24 16:33:13+00', NULL, '/log/logJob/:logId', '删除任务日志', 'log', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (82, '2021-12-24 15:45:33+00', '2021-12-24 15:45:33+00', NULL, '/system/notice/list', '获取通知分页列表', 'notice', 'GET');
-INSERT INTO "public"."sys_apis" VALUES (83, '2021-12-24 15:45:33+00', '2021-12-24 15:45:33+00', NULL, '/system/notice', '添加通知信息', 'notice', 'POST');
-INSERT INTO "public"."sys_apis" VALUES (84, '2021-12-24 15:45:33+00', '2021-12-24 15:45:33+00', NULL, '/system/notice', '修改通知信息', 'notice', 'PUT');
-INSERT INTO "public"."sys_apis" VALUES (85, '2021-12-24 15:45:33+00', '2021-12-24 16:33:48+00', NULL, '/system/notice/:noticeId', '删除通知信息', 'notice', 'DELETE');
-INSERT INTO "public"."sys_apis" VALUES (86, '2021-12-24 22:40:19+00', '2021-12-24 22:40:19+00', NULL, '/job/changeStatus', '修改状态', 'job', 'PUT');
-
+INSERT INTO "public"."sys_apis" VALUES (1, '2021-12-09 09:21:04', '2021-12-09 09:21:04', NULL, '/system/user/list', '查询用户列表（分页）', 'user', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (2, '2021-12-09 09:29:36', '2021-12-09 09:29:36', NULL, '/system/user/changeStatus', '修改用户状态', 'user', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (3, '2021-12-09 09:34:37', '2021-12-09 09:34:37', NULL, '/system/user/:userId', '删除用户信息', 'user', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (4, '2021-12-09 09:36:43', '2021-12-09 09:36:43', NULL, '/system/dept/list', '获取部门列表', 'dept', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (5, '2021-12-09 09:37:31', '2021-12-09 09:37:31', NULL, '/system/dept/:deptId', '获取部门信息', 'dept', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (6, '2021-12-09 18:20:32', '2021-12-09 18:20:32', NULL, '/system/user/avatar', '上传头像', 'user', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (7, '2021-12-09 18:21:10', '2021-12-09 18:21:10', NULL, '/system/user/pwd', '修改密码', 'user', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (8, '2021-12-09 18:21:54', '2021-12-09 18:21:54', NULL, '/system/user/getById/:userId', '通过id获取用户信息', 'user', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (9, '2021-12-09 18:58:50', '2021-12-09 18:58:50', NULL, '/system/user/getInit', '获取初始化角色岗位信息(添加用户初始化)', 'user', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (10, '2021-12-09 18:59:43', '2021-12-09 18:59:43', NULL, '/system/user/getRoPo', '获取用户角色岗位信息', 'user', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (11, '2021-12-09 19:00:24', '2021-12-09 19:00:24', NULL, '/system/user', '添加用户信息', 'user', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (12, '2021-12-09 19:00:52', '2021-12-09 19:00:52', NULL, '/system/user', '修改用户信息', 'user', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (13, '2021-12-09 19:02:30', '2021-12-09 19:02:30', NULL, '/system/user/export', '导出用户信息', 'user', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (14, '2021-12-09 19:04:04', '2021-12-09 19:04:04', NULL, '/system/dept/roleDeptTreeSelect/:roleId', '获取角色部门树', 'dept', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (15, '2021-12-09 19:04:48', '2021-12-09 19:04:48', NULL, '/system/dept/deptTree', '获取所有部门树', 'dept', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (16, '2021-12-09 19:07:37', '2021-12-09 19:07:37', NULL, '/system/dept', '添加部门信息', 'dept', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (17, '2021-12-09 19:08:14', '2021-12-09 19:08:14', NULL, '/system/dept', '修改部门信息', 'dept', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (18, '2021-12-09 19:08:40', '2021-12-09 19:08:40', NULL, '/system/dept/:deptId', '删除部门信息', 'dept', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (19, '2021-12-09 19:09:41', '2021-12-09 19:09:41', NULL, '/system/config/list', '获取配置分页列表', 'config', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (20, '2021-12-09 19:10:11', '2021-12-09 19:10:11', NULL, '/system/config/configKey', '获取配置列表通过ConfigKey', 'config', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (21, '2021-12-09 19:10:45', '2021-12-09 19:10:45', NULL, '/system/config/:configId', '获取配置信息', 'config', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (22, '2021-12-09 19:11:22', '2021-12-09 19:11:22', NULL, '/system/config', '添加配置信息', 'config', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (23, '2021-12-09 19:11:41', '2021-12-09 19:11:41', NULL, '/system/config', '修改配置信息', 'config', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (24, '2021-12-09 19:12:28', '2021-12-09 19:12:28', NULL, '/system/config/:configId', '删除配置信息', 'config', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (25, '2021-12-09 19:13:08', '2021-12-09 19:13:08', NULL, '/system/dict/type/list', '获取字典类型分页列表', 'dict', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (26, '2021-12-09 19:13:55', '2021-12-09 19:13:55', NULL, '/system/dict/type/:dictId', '获取字典类型信息', 'dict', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (27, '2021-12-09 19:14:28', '2021-12-09 19:14:28', NULL, '/system/dict/type', '添加字典类型信息', 'dict', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (28, '2021-12-09 19:14:55', '2021-12-09 19:14:55', NULL, '/system/dict/type', '修改字典类型信息', 'dict', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (29, '2021-12-09 19:15:17', '2021-12-09 19:15:17', NULL, '/system/dict/type/:dictId', '删除字典类型信息', 'dict', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (30, '2021-12-09 19:15:50', '2021-12-09 19:15:50', NULL, '/system/dict/type/export', '导出字典类型信息', 'dict', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (31, '2021-12-09 19:16:26', '2021-12-09 19:16:26', NULL, '/system/dict/data/list', '获取字典数据分页列表', 'dict', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (32, '2021-12-09 19:17:01', '2021-12-09 19:17:01', NULL, '/system/dict/data/type', '获取字典数据列表通过字典类型', 'dict', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (33, '2021-12-09 19:17:39', '2021-12-09 19:17:39', NULL, '/system/dict/data/:dictCode', '获取字典数据信息', 'dict', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (34, '2021-12-09 19:18:20', '2021-12-09 19:18:20', NULL, '/system/dict/data', '添加字典数据信息', 'dict', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (35, '2021-12-09 19:18:44', '2021-12-09 19:18:44', NULL, '/system/dict/data', '修改字典数据信息', 'dict', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (36, '2021-12-09 19:19:16', '2021-12-09 19:19:16', NULL, '/system/dict/data/:dictCode', '删除字典数据信息', 'dict', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (37, '2021-12-09 19:21:18', '2021-12-09 19:21:18', NULL, '/system/menu/menuTreeSelect', '获取菜单树', 'menu', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (38, '2021-12-09 19:21:47', '2021-12-09 19:21:47', NULL, '/system/menu/menuRole', '获取角色菜单', 'menu', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (39, '2021-12-09 19:22:42', '2021-12-09 19:22:42', NULL, '/system/menu/roleMenuTreeSelect/:roleId', '获取角色菜单树', 'menu', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (40, '2021-12-09 19:23:17', '2021-12-09 19:23:17', NULL, '/system/menu/menuPaths', '获取角色菜单路径列表', 'menu', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (41, '2021-12-09 19:23:40', '2021-12-09 19:23:40', NULL, '/system/menu/list', '获取菜单列表', 'menu', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (42, '2021-12-09 19:24:09', '2021-12-09 19:24:09', NULL, '/system/menu/:menuId', '获取菜单信息', 'menu', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (43, '2021-12-09 19:24:29', '2021-12-09 19:24:29', NULL, '/system/menu', '添加菜单信息', 'menu', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (44, '2021-12-09 19:24:48', '2021-12-09 19:24:48', NULL, '/system/menu', '修改菜单信息', 'menu', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (45, '2021-12-09 19:25:10', '2021-12-09 19:25:10', NULL, '/system/menu/:menuId', '删除菜单信息', 'menu', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (46, '2021-12-09 19:25:44', '2021-12-09 19:27:06', NULL, '/system/post/list', '获取岗位分页列表', 'post', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (47, '2021-12-09 19:26:55', '2021-12-09 19:26:55', NULL, '/system/post/:postId', '获取岗位信息', 'post', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (48, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/post', '添加岗位信息', 'post', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (49, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/post', '修改岗位信息', 'post', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (50, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/post/:postId', '删除岗位信息', 'post', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (51, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/list', '获取角色分页列表', 'role', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (52, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/:roleId', '获取角色信息', 'role', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (53, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role', '添加角色信息', 'role', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (54, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role', '修改角色信息', 'role', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (55, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/:roleId', '删除角色信息', 'role', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (56, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/changeStatus', '修改角色状态', 'role', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (57, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/dataScope', '修改角色部门权限', 'role', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (58, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/export', '导出角色信息', 'role', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (59, '2021-12-09 19:50:57', '2022-01-19 08:58:20', NULL, '/system/api/list', '获取api分页列表1', 'api', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (60, '2021-12-09 19:51:26', '2021-12-09 19:51:26', NULL, '/system/api/all', '获取所有api', 'api', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (61, '2021-12-09 19:51:54', '2021-12-09 19:51:54', NULL, '/system/api/getPolicyPathByRoleId', '获取角色拥有的api权限', 'api', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (62, '2021-12-09 19:52:14', '2021-12-09 19:52:14', NULL, '/system/api/:id', '获取api信息', 'api', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (63, '2021-12-09 19:52:35', '2021-12-09 19:52:35', NULL, '/system/api', '添加api信息', 'api', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (64, '2021-12-09 19:52:50', '2021-12-09 19:52:50', NULL, '/system/api', '修改api信息', 'api', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (65, '2021-12-09 19:53:07', '2021-12-09 19:53:07', NULL, '/system/api/:id', '删除api信息', 'api', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (66, '2021-12-17 10:51:05', '2021-12-17 10:54:22', NULL, '/log/logLogin/list', '获取登录日志', 'log', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (67, '2021-12-17 10:51:43', '2021-12-17 10:54:28', NULL, '/log/logLogin/:infoId', '删除日志', 'log', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (68, '2021-12-17 10:53:09', '2021-12-17 10:54:34', NULL, '/log/logLogin/all', '清空所有', 'log', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (69, '2021-12-17 10:54:07', '2021-12-17 10:54:07', NULL, '/log/logOper/list', '操作日志列表', 'log', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (70, '2021-12-17 10:53:09', '2021-12-17 10:53:09', NULL, '/log/logOper/:operId', '删除', 'log', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (71, '2021-12-17 10:53:09', '2021-12-17 10:53:09', NULL, '/log/logOper/all', '清空', 'log', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (72, '2021-12-24 15:41:23', '2021-12-24 15:41:23', NULL, '/job/list', '任务列表', 'job', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (73, '2021-12-24 15:41:54', '2021-12-24 15:41:54', NULL, '/job', '添加', 'job', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (74, '2021-12-24 15:42:11', '2021-12-24 15:42:11', NULL, '/job', '修改任务', 'job', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (75, '2021-12-24 15:42:37', '2021-12-24 16:32:21', NULL, '/job/:jobId', '获取任务', 'job', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (76, '2021-12-24 15:43:09', '2021-12-24 16:32:05', NULL, '/job/:jobId', '删除job', 'job', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (77, '2021-12-24 15:43:35', '2021-12-24 16:31:11', NULL, '/job/stop/:jobId', '停止任务', 'job', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (78, '2021-12-24 15:44:09', '2021-12-24 16:30:38', NULL, '/job/start/:jobId', '开始任务', 'job', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (79, '2021-12-24 15:45:03', '2021-12-24 15:46:36', NULL, '/log/logJob/list', '任务日志列表', 'log', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (80, '2021-12-24 15:45:33', '2021-12-24 15:46:43', NULL, '/log/logJob/all', '清空任务日志', 'log', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (81, '2021-12-24 15:46:08', '2021-12-24 16:33:13', NULL, '/log/logJob/:logId', '删除任务日志', 'log', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (82, '2021-12-24 15:45:33', '2021-12-24 15:45:33', NULL, '/system/notice/list', '获取通知分页列表', 'notice', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (83, '2021-12-24 15:45:33', '2021-12-24 15:45:33', NULL, '/system/notice', '添加通知信息', 'notice', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (84, '2021-12-24 15:45:33', '2021-12-24 15:45:33', NULL, '/system/notice', '修改通知信息', 'notice', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (85, '2021-12-24 15:45:33', '2021-12-24 16:33:48', NULL, '/system/notice/:noticeId', '删除通知信息', 'notice', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (86, '2021-12-24 22:40:19', '2021-12-24 22:40:19', NULL, '/job/changeStatus', '修改状态', 'job', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (88, '2022-01-02 13:53:06', '2022-07-18 10:57:58', NULL, '/develop/code/table/db/list', '数据库表列表', 'gen', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (89, '2022-01-02 13:53:44', '2022-01-02 13:53:44', NULL, '/develop/code/table/list', '表列表', 'gen', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (90, '2022-01-02 13:54:10', '2022-01-02 13:54:10', NULL, '/develop/code/table/info/:tableId', '表信息', 'gen', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (91, '2022-01-02 13:54:42', '2022-07-18 10:58:35', NULL, '/develop/code/table/info/tableName', '表名获取表信息', 'gen', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (92, '2022-01-02 13:55:13', '2022-01-02 13:55:13', NULL, '/develop/code/table/tableTree', '表树', 'gen', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (93, '2022-01-02 13:56:37', '2022-01-02 13:56:37', NULL, '/develop/code/table', '导入表', 'gen', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (94, '2022-01-02 13:57:36', '2022-01-02 13:57:36', NULL, '/develop/code/table', '修改代码生成信息', 'gen', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (95, '2022-01-02 13:58:25', '2022-01-02 13:58:25', NULL, '/develop/code/table/:tableId', '删除表数据', 'gen', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (96, '2022-01-02 13:59:07', '2022-01-02 13:59:07', NULL, '/develop/code/gen/preview/:tableId', '预览代码', 'gen', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (97, '2022-01-02 13:59:43', '2022-01-02 13:59:43', NULL, '/develop/code/gen/code/:tableId', '生成代码', 'gen', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (98, '2022-01-02 14:00:10', '2022-07-17 01:19:42', NULL, '/develop/code/gen/configure/:tableId', '生成api菜单', 'gen', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (99, '2022-01-13 16:44:44', '2022-01-13 16:45:27', NULL, '/resource/oss/list', '获取oss列表', 'oss', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (100, '2022-01-13 16:44:44', '2022-01-13 16:44:44', NULL, '/resource/oss/:ossId', '获取oss', 'oss', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (101, '2022-01-13 16:44:44', '2022-01-13 16:44:44', NULL, '/resource/oss', '添加oss', 'oss', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (102, '2022-01-13 16:44:44', '2022-01-13 16:44:44', NULL, '/resource/oss', '修改oss', 'oss', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (103, '2022-01-13 16:44:44', '2022-01-13 16:44:44', NULL, '/resource/oss/:ossId', '删除oss', 'oss', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (104, '2022-01-14 13:19:21', '2022-01-14 13:19:21', NULL, '/resource/oss/changeStatus', '修改状态', 'oss', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (105, '2022-01-14 13:20:14', '2022-01-14 13:20:14', NULL, '/resource/oss/uploadFile', '调试上传文件', 'oss', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (106, '2022-01-14 15:30:39', '2022-01-14 15:30:39', NULL, '/resource/email/list', '邮件分页列表', 'mail', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (107, '2022-01-14 15:31:20', '2022-01-14 15:31:20', NULL, '/resource/email/:mailId', '获取邮件', 'mail', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (108, '2022-01-14 15:31:54', '2022-01-14 15:31:54', NULL, '/resource/email', '添加邮件配置', 'mail', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (109, '2022-01-14 15:32:21', '2022-01-14 15:32:21', NULL, '/resource/email', '修改邮件配置', 'mail', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (110, '2022-01-14 15:32:53', '2022-01-14 15:32:53', NULL, '/resource/email/:mailId', '删除邮件', 'mail', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (111, '2022-01-14 17:11:42', '2022-01-14 17:11:42', NULL, '/resource/email/changeStatus', '修改状态', 'mail', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (112, '2022-01-14 17:12:17', '2022-01-14 17:12:17', NULL, '/resource/email/debugMail', '发送邮件调试', 'mail', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (113, '2022-07-15 18:06:27', '2022-07-15 18:06:27', NULL, '/system/tenant/list', '租户列表', 'tenant', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (114, '2022-07-15 18:07:16', '2022-07-15 18:07:16', NULL, '/system/tenant/:tenantId', '获取租户', 'tenant', 'GET');
+INSERT INTO "public"."sys_apis" VALUES (115, '2022-07-15 18:07:43', '2022-07-15 18:07:43', NULL, '/system/tenant', '添加租户', 'tenant', 'POST');
+INSERT INTO "public"."sys_apis" VALUES (116, '2022-07-15 18:08:08', '2022-07-15 18:08:08', NULL, '/system/tenant', '修改租户', 'tenant', 'PUT');
+INSERT INTO "public"."sys_apis" VALUES (117, '2022-07-15 18:08:57', '2022-07-15 18:08:57', NULL, '/system/tenant/:tenantId', '删除租户', 'tenant', 'DELETE');
+INSERT INTO "public"."sys_apis" VALUES (123, '2022-07-18 10:24:03', '2022-07-18 10:24:03', NULL, '/system/tenant/lists', '获取所有租户', 'tenant', 'GET');
 -- ----------------------------
 -- Table structure for sys_configs
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_configs";
+CREATE SEQUENCE IF NOT EXISTS "sys_configs_config_id_seq";
 CREATE TABLE "public"."sys_configs" (
   "config_id" int8 NOT NULL DEFAULT nextval('sys_configs_config_id_seq'::regclass),
   "config_name" varchar(128) COLLATE "pg_catalog"."default",
@@ -407,9 +560,11 @@ INSERT INTO "public"."sys_configs" VALUES (1, '账号初始密码', 'sys.user.in
 -- Table structure for sys_depts
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_depts";
+CREATE SEQUENCE IF NOT EXISTS "sys_depts_dept_id_seq";
 CREATE TABLE "public"."sys_depts" (
   "dept_id" int8 NOT NULL DEFAULT nextval('sys_depts_dept_id_seq'::regclass),
-  "parent_id" int8,
+  "tenant_id" int8 NULL DEFAULT NULL,
+  "parent_id" int8 NULL DEFAULT NULL,
   "dept_path" varchar(255) COLLATE "pg_catalog"."default",
   "dept_name" varchar(128) COLLATE "pg_catalog"."default",
   "sort" int8,
@@ -438,14 +593,15 @@ COMMENT ON COLUMN "public"."sys_depts"."update_by" IS '修改人';
 -- ----------------------------
 -- Records of sys_depts
 -- ----------------------------
-INSERT INTO "public"."sys_depts" VALUES (2, 0, '/0/2', '熊猫科技', 0, 'xm', '18353366836', '342@qq.com', '0', 'admin', 'admin', '2021-12-01 17:31:53+00', '2021-12-02 08:56:19+00', NULL);
-INSERT INTO "public"."sys_depts" VALUES (3, 2, '/0/2/3', '研发部', 1, 'panda', '18353366543', 'ewr@qq.com', '0', 'admin', 'admin', '2021-12-01 17:37:43+00', '2021-12-02 08:55:56+00', NULL);
-INSERT INTO "public"."sys_depts" VALUES (7, 2, '/0/2/7', '营销部', 2, 'panda', '18353333333', '342@qq.com', '0', 'panda', 'panda', '2021-12-24 10:46:24+00', '2021-12-24 10:47:15+00', NULL);
+INSERT INTO "public"."sys_depts" VALUES (2,1, 0, '/0/2', '熊猫科技', 0, 'xm', '18353366836', '342@qq.com', '0', 'admin', 'admin', '2021-12-01 17:31:53+00', '2021-12-02 08:56:19+00', NULL);
+INSERT INTO "public"."sys_depts" VALUES (3,1, 2, '/0/2/3', '研发部', 1, 'panda', '18353366543', 'ewr@qq.com', '0', 'admin', 'admin', '2021-12-01 17:37:43+00', '2021-12-02 08:55:56+00', NULL);
+INSERT INTO "public"."sys_depts" VALUES (7,1, 2, '/0/2/7', '营销部', 2, 'panda', '18353333333', '342@qq.com', '0', 'panda', 'panda', '2021-12-24 10:46:24+00', '2021-12-24 10:47:15+00', NULL);
 
 -- ----------------------------
 -- Table structure for sys_dict_data
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_dict_data";
+CREATE SEQUENCE IF NOT EXISTS "sys_dict_data_dict_code_seq";
 CREATE TABLE "public"."sys_dict_data" (
   "dict_code" int8 NOT NULL DEFAULT nextval('sys_dict_data_dict_code_seq'::regclass),
   "dict_sort" int8,
@@ -512,6 +668,7 @@ INSERT INTO "public"."sys_dict_data" VALUES (30, 0, '审批通知', '4', 'sys_no
 -- Table structure for sys_dict_types
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_dict_types";
+CREATE SEQUENCE IF NOT EXISTS "sys_dict_types_dict_id_seq";
 CREATE TABLE "public"."sys_dict_types" (
   "dict_id" int8 NOT NULL DEFAULT nextval('sys_dict_types_dict_id_seq'::regclass),
   "dict_name" varchar(64) COLLATE "pg_catalog"."default",
@@ -554,6 +711,7 @@ INSERT INTO "public"."sys_dict_types" VALUES (29, '通知类型', 'sys_notice_ty
 -- Table structure for sys_jobs
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_jobs";
+CREATE SEQUENCE IF NOT EXISTS "sys_jobs_job_id_seq";
 CREATE TABLE "public"."sys_jobs" (
   "job_id" int8 NOT NULL DEFAULT nextval('sys_jobs_job_id_seq'::regclass),
   "job_name" varchar(255) COLLATE "pg_catalog"."default",
@@ -585,6 +743,7 @@ INSERT INTO "public"."sys_jobs" VALUES (1, 'testcron', 'SYSTEM', '2', ' 0/10 * *
 -- Table structure for sys_menus
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_menus";
+CREATE SEQUENCE IF NOT EXISTS "sys_menus_menu_id_seq";
 CREATE TABLE "public"."sys_menus" (
   "menu_id" int8 NOT NULL DEFAULT nextval('sys_menus_menu_id_seq'::regclass),
   "menu_name" varchar(128) COLLATE "pg_catalog"."default",
@@ -676,6 +835,7 @@ INSERT INTO "public"."sys_menus" VALUES (58, '短信管理', '', 53, 3, 'element
 -- Table structure for sys_notices
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_notices";
+CREATE SEQUENCE IF NOT EXISTS "sys_notices_notice_id_seq";
 CREATE TABLE "public"."sys_notices" (
   "notice_id" int8 NOT NULL DEFAULT nextval('sys_notices_notice_id_seq'::regclass),
   "title" varchar(128) COLLATE "pg_catalog"."default",
@@ -705,8 +865,10 @@ INSERT INTO "public"."sys_notices" VALUES (3, '版本更新通知：任务功能
 -- Table structure for sys_posts
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_posts";
+CREATE SEQUENCE IF NOT EXISTS "sys_posts_post_id_seq";
 CREATE TABLE "public"."sys_posts" (
   "post_id" int8 NOT NULL DEFAULT nextval('sys_posts_post_id_seq'::regclass),
+  "tenant_id" int8 NULL DEFAULT NULL,
   "post_name" varchar(128) COLLATE "pg_catalog"."default",
   "post_code" varchar(128) COLLATE "pg_catalog"."default",
   "sort" int8,
@@ -728,15 +890,16 @@ COMMENT ON COLUMN "public"."sys_posts"."remark" IS '描述';
 -- ----------------------------
 -- Records of sys_posts
 -- ----------------------------
-INSERT INTO "public"."sys_posts" VALUES (1, '首席执行官', 'CEO', 0, '0', '首席执行官', 'admin', '', '2021-12-02 09:21:44+00', '2021-12-02 09:24:25+00', NULL);
-INSERT INTO "public"."sys_posts" VALUES (3, '首席技术执行官', 'CTO', 1, '0', '', 'admin', '', '2021-12-02 09:21:44+00', '2021-12-02 09:25:59+00', '2021-12-02 09:27:41+00');
-INSERT INTO "public"."sys_posts" VALUES (4, '首席技术执行官', 'CTO', 1, '0', '', 'admin', '', '2021-12-02 09:21:44+00', '2021-12-02 09:25:59+00', NULL);
-INSERT INTO "public"."sys_posts" VALUES (5, '123', '123', 0, '0', '', 'admin', '', '2021-12-18 00:33:28+00', '2021-12-18 00:33:28+00', '2021-12-28 14:11:52+00');
+INSERT INTO "public"."sys_posts" VALUES (1, 1,'首席执行官', 'CEO', 0, '0', '首席执行官', 'admin', '', '2021-12-02 09:21:44+00', '2021-12-02 09:24:25+00', NULL);
+INSERT INTO "public"."sys_posts" VALUES (3, 1,'首席技术执行官', 'CTO', 1, '0', '', 'admin', '', '2021-12-02 09:21:44+00', '2021-12-02 09:25:59+00', '2021-12-02 09:27:41+00');
+INSERT INTO "public"."sys_posts" VALUES (4, 1,'首席技术执行官', 'CTO', 1, '0', '', 'admin', '', '2021-12-02 09:21:44+00', '2021-12-02 09:25:59+00', NULL);
+INSERT INTO "public"."sys_posts" VALUES (5, 1,'123', '123', 0, '0', '', 'admin', '', '2021-12-18 00:33:28+00', '2021-12-18 00:33:28+00', '2021-12-28 14:11:52+00');
 
 -- ----------------------------
 -- Table structure for sys_role_depts
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_role_depts";
+CREATE SEQUENCE IF NOT EXISTS "sys_role_depts_id_seq";
 CREATE TABLE "public"."sys_role_depts" (
   "role_id" int8,
   "dept_id" int8,
@@ -754,6 +917,7 @@ INSERT INTO "public"."sys_role_depts" VALUES (1, 3, 2);
 -- Table structure for sys_role_menus
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_role_menus";
+CREATE SEQUENCE IF NOT EXISTS "sys_role_menus_id_seq";
 CREATE TABLE "public"."sys_role_menus" (
   "role_id" int8,
   "menu_id" int8,
@@ -881,9 +1045,11 @@ INSERT INTO "public"."sys_role_menus" VALUES (2, 58, 'manage', 111);
 -- Table structure for sys_roles
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_roles";
+CREATE SEQUENCE IF NOT EXISTS "sys_roles_role_id_seq";
 CREATE TABLE "public"."sys_roles" (
   "role_id" int8 NOT NULL DEFAULT nextval('sys_roles_role_id_seq'::regclass),
   "role_name" varchar(128) COLLATE "pg_catalog"."default",
+  "tenant_id" int8 NULL DEFAULT NULL,
   "status" varchar(1) COLLATE "pg_catalog"."default",
   "role_key" varchar(128) COLLATE "pg_catalog"."default",
   "role_sort" int8,
@@ -907,17 +1073,43 @@ COMMENT ON COLUMN "public"."sys_roles"."flag" IS '删除标识';
 -- ----------------------------
 -- Records of sys_roles
 -- ----------------------------
-INSERT INTO "public"."sys_roles" VALUES (1, '超管理员', '0', 'admin', 2, '1', '', 'admin', 'panda', '', '2021-12-02 16:03:26+00', '2021-12-28 15:16:11+00', NULL);
-INSERT INTO "public"."sys_roles" VALUES (2, '管理员', '0', 'manage', 2, '', '', 'panda', 'panda', '', '2021-12-19 16:06:20+00', '2021-12-28 15:16:23+00', NULL);
+INSERT INTO "public"."sys_roles" VALUES (1, '超管理员',1, '0', 'admin', 2, '1', '', 'admin', 'panda', '', '2021-12-02 16:03:26+00', '2021-12-28 15:16:11+00', NULL);
+INSERT INTO "public"."sys_roles" VALUES (2, '管理员',1, '0', 'manage', 2, '', '', 'panda', 'panda', '', '2021-12-19 16:06:20+00', '2021-12-28 15:16:23+00', NULL);
+
+
+-- ----------------------------
+-- Table structure for sys_tenants
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."sys_tenants";
+CREATE TABLE "public"."sys_tenants" (
+  "id" int8 NOT NULL DEFAULT nextval('sys_tenants_id_seq'::regclass),
+  "create_time" timestamptz(6),
+  "update_time" timestamptz(6),
+  "delete_time" timestamptz(6),
+  "tenant_name" varchar(255) COLLATE "pg_catalog"."default",
+  "remark" varchar(255) COLLATE "pg_catalog"."default",
+  "expire_time" timestamptz(6)
+)
+;
+COMMENT ON COLUMN "public"."sys_tenants"."tenant_name" IS '租户名';
+COMMENT ON COLUMN "public"."sys_tenants"."remark" IS '备注';
+COMMENT ON COLUMN "public"."sys_tenants"."expire_time" IS '过期时间';
+
+-- ----------------------------
+-- Records of sys_tenants
+-- ----------------------------
+INSERT INTO "public"."sys_tenants" VALUES (1, '2022-07-16 18:28:33+00', '2022-07-16 18:28:33+00', NULL, '熊猫科技', '鹅鹅鹅', '2099-07-16 00:00:00+00');
 
 -- ----------------------------
 -- Table structure for sys_users
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_users";
+CREATE SEQUENCE IF NOT EXISTS "sys_users_user_id_seq";
 CREATE TABLE "public"."sys_users" (
   "user_id" int8 NOT NULL DEFAULT nextval('sys_users_user_id_seq'::regclass),
   "nick_name" varchar(128) COLLATE "pg_catalog"."default",
   "phone" varchar(11) COLLATE "pg_catalog"."default",
+  "tenant_id" int8 NULL DEFAULT NULL,
   "role_id" int8,
   "salt" varchar(255) COLLATE "pg_catalog"."default",
   "avatar" varchar(255) COLLATE "pg_catalog"."default",
@@ -942,8 +1134,8 @@ CREATE TABLE "public"."sys_users" (
 -- ----------------------------
 -- Records of sys_users
 -- ----------------------------
-INSERT INTO "public"."sys_users" VALUES (1, 'pandax', '13818888888', 1, NULL, '', '0', '1@qq.com', 2, 1, '1', '1', 'admin', '1', NULL, '0', '2021-12-03 09:46:55+00', '2021-12-03 10:51:34+00', NULL, 'panda', '$2a$10$EXMJ5huCCTlCmP2ITFkAJ.4Mgmq3JcZGUvtE.KLX8j7FmhiiTEEya');
-INSERT INTO "public"."sys_users" VALUES (4, 'panda', '18353366912', 2, '', '', '0', '2417920382@qq.com', 2, 4, '2', '4,1', 'panda', '', '', '0', '2021-12-19 15:58:09+00', '2021-12-19 16:06:54+00', NULL, 'admin', '$2a$10$cKFFTCzGOvaIHHJY2K45Zuwt8TD6oPzYi4s5MzYIBAWCLL6ZhouP2');
+INSERT INTO "public"."sys_users" VALUES (1, 'pandax', '13818888888',1, 1, NULL, '', '0', '1@qq.com', 2, 1, '1', '1', 'admin', '1', NULL, '0', '2021-12-03 09:46:55+00', '2021-12-03 10:51:34+00', NULL, 'panda', '$2a$10$EXMJ5huCCTlCmP2ITFkAJ.4Mgmq3JcZGUvtE.KLX8j7FmhiiTEEya');
+INSERT INTO "public"."sys_users" VALUES (4, 'panda', '18353366912',1, 2, '', '', '0', '2417920382@qq.com', 2, 4, '2', '4,1', 'panda', '', '', '0', '2021-12-19 15:58:09+00', '2021-12-19 16:06:54+00', NULL, 'admin', '$2a$10$cKFFTCzGOvaIHHJY2K45Zuwt8TD6oPzYi4s5MzYIBAWCLL6ZhouP2');
 
 -- ----------------------------
 -- Indexes structure for table casbin_rule
@@ -1042,3 +1234,18 @@ ALTER TABLE "public"."sys_roles" ADD CONSTRAINT "sys_roles_pkey" PRIMARY KEY ("r
 -- Primary Key structure for table sys_users
 -- ----------------------------
 ALTER TABLE "public"."sys_users" ADD CONSTRAINT "sys_users_pkey" PRIMARY KEY ("user_id");
+
+-- ----------------------------
+-- Primary Key structure for table dev_gen_table_columns
+-- ----------------------------
+ALTER TABLE "public"."dev_gen_table_columns" ADD CONSTRAINT "dev_gen_table_columns_pkey" PRIMARY KEY ("column_id");
+
+-- ----------------------------
+-- Primary Key structure for table dev_gen_tables
+-- ----------------------------
+ALTER TABLE "public"."dev_gen_tables" ADD CONSTRAINT "dev_gen_tables_pkey" PRIMARY KEY ("table_id");
+
+-- ----------------------------
+-- Primary Key structure for table sys_tenants
+-- ----------------------------
+ALTER TABLE "public"."sys_tenants" ADD CONSTRAINT "sys_tenants_pkey" PRIMARY KEY ("id");

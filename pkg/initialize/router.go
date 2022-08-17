@@ -11,8 +11,6 @@ import (
 	sysRouter "pandax/apps/system/router"
 
 	"pandax/pkg/middleware"
-
-	_ "pandax/docs"
 )
 
 func InitRouter() *transport.HttpServer {
