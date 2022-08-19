@@ -40,7 +40,13 @@ func (m *{{.BusinessName}}ModelImpl) Insert(data entity.{{$model}}) *entity.{{$m
 
 func (m *{{.BusinessName}}ModelImpl) FindOne({{.PkJsonField}} int64) *entity.{{$model}} {
 	resData := new(entity.{{$model}})
-	err := global.Db.Table(m.table).Where("{{.PkColumn}} = ?", {{.PkJsonField}}).First(resData).Error
+	db := global.Db.Table(m.table).Where("{{.PkColumn}} = ?", {{.PkJsonField}})
+	{{- range $index, $column := .Columns -}}
+	{{- if ne $column.LinkTableName "" }}
+    db.Preload("{{$column.LinkTableClass}}")
+    {{- end -}}
+    {{- end}}
+	err := db.First(resData).Error
 	biz.ErrIsNil(err, "查询{{.TableComment}}失败")
 	return resData
 }
@@ -178,6 +184,9 @@ func (m *{{.BusinessName}}ModelImpl) FindList(data entity.{{$model}}) *[]entity.
     {{- end -}}
     {{- if eq $column.ColumnName "delete_time" }}
     db.Where("delete_time IS NULL")
+    {{- end -}}
+    {{- if ne $column.LinkTableName "" }}
+    db.Preload("{{$column.LinkTableClass}}")
     {{- end -}}
     {{- end}}
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询{{.TableComment}}列表失败")

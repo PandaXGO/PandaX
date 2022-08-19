@@ -187,7 +187,7 @@ func (m *devGenTableModelImpl) Update(data entity.DevGenTable) *entity.DevGenTab
 			t, ok := tableMap[data.Columns[i].LinkTableName]
 			if ok {
 				data.Columns[i].LinkTableClass = t.ClassName
-				data.Columns[i].LinkTablePackage = t.PackageName
+				data.Columns[i].LinkTablePackage = t.BusinessName
 				data.Columns[i].LinkLabelId = t.PkColumn
 				data.Columns[i].LinkLabelName = t.PkGoField
 			}
