@@ -64,7 +64,8 @@ func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 	r.RoleMenuApp.Insert(insert.RoleId, role.MenuIds)
 	//添加权限
 	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
-	casbin.UpdateCasbin(tenantId, role.RoleKey, role.ApiIds)
+	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+	ca.UpdateCasbin(tenantId, role.RoleKey, role.ApiIds)
 }
 
 // UpdateRole 修改用户角色
@@ -80,7 +81,8 @@ func (r *RoleApi) UpdateRole(rc *restfulx.ReqCtx) {
 	r.RoleMenuApp.Insert(role.RoleId, role.MenuIds)
 	//修改api权限
 	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
-	casbin.UpdateCasbin(tenantId, role.RoleKey, role.ApiIds)
+	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+	ca.UpdateCasbin(tenantId, role.RoleKey, role.ApiIds)
 }
 
 // UpdateRoleStatus 修改用户角色状态
@@ -122,7 +124,8 @@ func (r *RoleApi) DeleteRole(rc *restfulx.ReqCtx) {
 		if len(*list) == 0 {
 			delList = append(delList, rid)
 			//删除角色绑定api
-			casbin.ClearCasbin(0, role.RoleKey)
+			ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+			ca.ClearCasbin(0, role.RoleKey)
 		} else {
 			global.Log.Info(fmt.Sprintf("role:%d 存在用户无法删除", rid))
 		}

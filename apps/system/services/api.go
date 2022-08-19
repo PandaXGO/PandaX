@@ -107,7 +107,8 @@ func (m *sysApiModelImpl) Update(api entity.SysApi) *entity.SysApi {
 		biz.IsTrue(errors.Is(err, gorm.ErrRecordNotFound), "存在相同api路径")
 	}
 	// 异常直接抛错误
-	casbin.UpdateCasbinApi(oldA.Path, api.Path, oldA.Method, api.Method)
+	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+	ca.UpdateCasbinApi(oldA.Path, api.Path, oldA.Method, api.Method)
 	err = global.Db.Table(m.table).Model(&api).Updates(&api).Error
 	biz.ErrIsNil(err, "修改api信息失败")
 	return &api

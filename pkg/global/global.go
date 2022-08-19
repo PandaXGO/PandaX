@@ -1,9 +1,9 @@
 package global
 
 import (
-	"github.com/XM-GO/PandaKit/config"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+	"pandax/pkg/config"
 )
 
 var (

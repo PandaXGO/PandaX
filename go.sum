@@ -14,6 +14,8 @@ github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 h1:5sXbqlSomvdjl
 github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
 github.com/XM-GO/PandaKit v0.0.0-20220814121200-1838edb60142 h1:G7V4eFIeR7rHWkK9LCW5TAH5fUmFb9+M1s74Q/nP9JA=
 github.com/XM-GO/PandaKit v0.0.0-20220814121200-1838edb60142/go.mod h1:A/0dFObLVa7Yzeq6cMmcjNUoajSgcLkEJglLc41BO3w=
+github.com/XM-GO/PandaKit v0.0.0-20220819095140-dd76101b435f h1:Ginj9GfKXfr10uLn+akHDzDclOAEWR+m4qL+8ff80rs=
+github.com/XM-GO/PandaKit v0.0.0-20220819095140-dd76101b435f/go.mod h1:A/0dFObLVa7Yzeq6cMmcjNUoajSgcLkEJglLc41BO3w=
 github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible h1:ht2+VfbXtNLGhCsnTMc6/N26nSTBK6qdhktjYyjJQkk=
 github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible/go.mod h1:T/Aws4fEfogEE9v+HPhhw+CntffsBHJ8nXQCwKr0/g8=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=

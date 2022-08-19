@@ -2,7 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/XM-GO/PandaKit/config"
+	"pandax/pkg/config"
+
 	"github.com/XM-GO/PandaKit/logger"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/starter"
@@ -27,8 +28,18 @@ var rootCmd = &cobra.Command{
 	PreRun: func(cmd *cobra.Command, args []string) {
 		if configFile != "" {
 			global.Conf = config.InitConfig(configFile)
-			global.Log = logger.InitLog(global.Conf.Log)
-			global.Db = starter.GormInit(global.Conf.Server.DbType)
+			global.Log = logger.InitLog(global.Conf.Log.File.GetFilename(), global.Conf.Log.Level)
+			dbGorm := starter.DbGorm{Type: global.Conf.Server.DbType}
+			if global.Conf.Server.DbType == "mysql" {
+				dbGorm.Dsn = global.Conf.Mysql.Dsn()
+				dbGorm.MaxIdleConns = global.Conf.Mysql.MaxIdleConns
+				dbGorm.MaxOpenConns = global.Conf.Mysql.MaxOpenConns
+			} else {
+				dbGorm.Dsn = global.Conf.Postgresql.PgDsn()
+				dbGorm.MaxIdleConns = global.Conf.Postgresql.MaxIdleConns
+				dbGorm.MaxOpenConns = global.Conf.Postgresql.MaxOpenConns
+			}
+			global.Db = dbGorm.GormInit()
 			initialize.InitTable()
 		} else {
 			global.Log.Panic("请配置config")
@@ -37,9 +48,9 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		restfulx.UseAfterHandlerInterceptor(middleware.OperationHandler)
 		// 前置 函数
-		restfulx.UseBeforeHandlerInterceptor(restfulx.PermissionHandler)
+		restfulx.UseBeforeHandlerInterceptor(middleware.PermissionHandler)
 		// 后置 函数
-		restfulx.UseAfterHandlerInterceptor(restfulx.LogHandler)
+		restfulx.UseAfterHandlerInterceptor(middleware.LogHandler)
 		go func() {
 			// 启动系统调度任务
 			jobs.InitJob()
@@ -47,7 +58,7 @@ var rootCmd = &cobra.Command{
 		}()
 
 		app := initialize.InitRouter()
-
+		global.Log.Info("路由初始化完成")
 		app.Start(context.TODO())
 		stop := make(chan os.Signal, 1)
 		signal.Notify(stop, syscall.SIGTERM, os.Interrupt)

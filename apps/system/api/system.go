@@ -8,6 +8,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
 	"github.com/kakuilan/kgo"
+	"pandax/pkg/middleware"
 	"runtime"
 )
 
@@ -71,7 +72,7 @@ func (s *System) ConnectWs(request *restful.Request, response *restful.Response)
 	}
 	// 权限校验
 	rc := restfulx.NewReqCtx(request, response)
-	if err = restfulx.PermissionHandler(rc); err != nil {
+	if err = middleware.PermissionHandler(rc); err != nil {
 		panic(any(biz.NewBizErr("没有权限")))
 	}
 

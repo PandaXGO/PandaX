@@ -20,7 +20,7 @@ server:
     key-file: ./resource/default.key
     cert-file: ./resource/default.pem
 jwt:
-  key: mykey
+  key: PandaX
   # 过期时间单位秒 7天
   expire-time: 604800
 
@@ -56,6 +56,6 @@ gen:
 log:
    # 日志等级, trace, debug, info, warn, error, fatal
   level: info
-  # file:
-  #   path: ./
-  #   name: panda_log.log
+#  file:
+#     path: ./
+#     name: panda_log.log

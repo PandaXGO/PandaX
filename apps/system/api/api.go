@@ -7,6 +7,7 @@ import (
 	"github.com/XM-GO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
+	"pandax/pkg/global"
 	"strconv"
 )
 
@@ -61,5 +62,6 @@ func (s *SystemApiApi) GetAllApis(rc *restfulx.ReqCtx) {
 func (s *SystemApiApi) GetPolicyPathByRoleId(rc *restfulx.ReqCtx) {
 	roleKey := rc.Request.QueryParameter("roleKey")
 	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
-	rc.ResData = casbin.GetPolicyPathByRoleId(tenantId, roleKey)
+	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+	rc.ResData = ca.GetPolicyPathByRoleId(tenantId, roleKey)
 }

@@ -15,6 +15,9 @@ type LogFile struct {
 // 获取完整路径文件名
 func (l *LogFile) GetFilename() string {
 	var filepath, filename string
+	if l == nil {
+		return ""
+	}
 	if fp := l.Path; fp == "" {
 		filepath = "./"
 	} else {

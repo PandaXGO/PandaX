@@ -8,8 +8,6 @@ import (
 	"path/filepath"
 )
 
-var Conf *Config
-
 func InitConfig(configFilePath string) *Config {
 	// 获取启动参数中，配置文件的绝对路径
 	path, _ := filepath.Abs(configFilePath)
@@ -22,7 +20,6 @@ func InitConfig(configFilePath string) *Config {
 	// 校验配置文件内容信息
 	yc.Valid()
 
-	Conf = yc
 	return yc
 
 }
