@@ -22,8 +22,8 @@ import (
 var (
 	ToolsGenTableColumn = &toolsGenTableColumn{
 		ColumnTypeStr:      []string{"char", "varchar", "narchar", "varchar2", "tinytext", "text", "mediumtext", "longtext"},
-		ColumnTypeTime:     []string{"datetime", "time", "date", "timestamp"},
-		ColumnTypeNumber:   []string{"tinyint", "smallint", "mediumint", "int", "number", "integer", "bigint", "float", "float", "double", "decimal"},
+		ColumnTypeTime:     []string{"datetime", "time", "date", "timestamp", "timestamptz"},
+		ColumnTypeNumber:   []string{"tinyint", "smallint", "mediumint", "int", "int2", "int4", "int8", "number", "integer", "numeric", "bigint", "float", "float4", "float8", "double", "decimal"},
 		ColumnNameNotEdit:  []string{"create_by", "update_by", "create_time", "update_time", "delete_time"},
 		ColumnNameNotList:  []string{"create_by", "update_by", "update_time", "delete_time"},
 		ColumnNameNotQuery: []string{"create_by", "update_by", "create_time", "update_time", "delete_time", "remark"},
@@ -182,6 +182,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 		// js函数名和权限标识使用
 		if i >= 1 {
 			data.BusinessName += strings.ToLower(strStart) + strEnd
+			data.FunctionName = strings.ToUpper(strStart) + strEnd
 		}
 	}
 	data.PackageName = "system"
@@ -189,22 +190,17 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 	// 中横线表名称，接口路径、前端文件夹名称和js名称使用
 	data.ModuleName = strings.Replace(tableName, "_", "-", -1)
 
-	dbTable := services.DevGenTableModelDao.FindDbTableOne(tableName)
 	dbColumn := services.DevTableColumnModelDao.FindDbTableColumnList(tableName)
-
-	data.TableComment = dbTable.TableComment //表描述
-	if dbTable.TableComment == "" {
-		data.TableComment = data.ClassName
-	}
-	data.FunctionName = strings.ToUpper(data.BusinessName)
+	data.TableComment = data.ClassName
 	data.FunctionAuthor = "panda"
+
 	wg := sync.WaitGroup{}
 	dcs := *dbColumn
 	for i := 0; i < len(dcs); i++ {
 		index := i
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, i int) {
-			log.Println(dcs[i].ColumnName)
+			defer wg.Done()
 			var column entity.DevGenTableColumn
 			column.ColumnComment = dcs[i].ColumnComment
 			column.ColumnName = dcs[i].ColumnName
@@ -255,25 +251,37 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 			} else if s.IsNumberObject(dataType) {
 				//字段为数字类型
 				column.HtmlType = "input"
-				t, _ := utils.ReplaceString(`\(.+\)`, "", column.ColumnType)
-				t = strings.Split(strings.TrimSpace(t), " ")[0]
-				t = strings.ToLower(t)
+				column.HtmlType = "input"
+				t := ""
+				if global.Conf.Server.DbType == "postgresql" {
+					t = column.ColumnType
+				} else {
+					t, _ := utils.ReplaceString(`\(.+\)`, "", column.ColumnType)
+					t = strings.Split(strings.TrimSpace(t), " ")[0]
+					t = strings.ToLower(t)
+				}
 				// 如果是浮点型
 				switch t {
-				case "float", "double", "decimal":
+				case "float", "float4", "float8", "double", "decimal":
 					column.GoType = "float64"
-				case "bit", "int", "tinyint", "small_int", "smallint", "medium_int", "mediumint":
+				case "bit", "int", "int2", "int4", "tinyint", "small_int", "smallint", "medium_int", "mediumint":
 					if utils.Contains(column.ColumnType, "unsigned") != -1 {
 						column.GoType = "uint"
 					} else {
 						column.GoType = "int"
 					}
-				case "big_int", "bigint":
+				case "big_int", "int8", "bigint", "numeric":
 					if utils.Contains(column.ColumnType, "unsigned") != -1 {
 						column.GoType = "uint64"
 					} else {
 						column.GoType = "int64"
 					}
+				}
+			} else {
+				switch dataType {
+				case "bool":
+					column.GoType = "bool"
+					column.HtmlType = "switch"
 				}
 			}
 			//新增字段
@@ -324,7 +332,6 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 				column.HtmlType = "select"
 			}
 			data.Columns = append(data.Columns, column)
-			wg.Done()
 		}(&wg, index)
 	}
 	wg.Wait()

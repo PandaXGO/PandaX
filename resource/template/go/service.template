@@ -9,7 +9,7 @@ package services
 import (
     "pandax/apps/{{.PackageName}}/entity"
     "github.com/XM-GO/PandaKit/biz"
-    "github.com/XM-GO/PandaKit/global"
+    "pandax/pkg/global"
 )
 
 type (

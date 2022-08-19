@@ -5,6 +5,7 @@ package api
 // 生成人：{{.FunctionAuthor}}
 // ==========================================================================
 import (
+    "github.com/XM-GO/PandaKit/model"
     "github.com/XM-GO/PandaKit/restfulx"
 
 	"pandax/apps/{{.PackageName}}/entity"
@@ -65,7 +66,7 @@ func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *restfulx.ReqCtx) {
 
 // Delete{{.ClassName}} 删除{{.FunctionName}}
 func (p *{{.ClassName}}Api) Delete{{.ClassName}}(rc *restfulx.ReqCtx) {
-	{{.PkJsonField}} := restfulx.PathParam("{{.PkJsonField}}")
+	{{.PkJsonField}} := restfulx.PathParam(rc,"{{.PkJsonField}}")
 	{{.PkJsonField}}s := utils.IdsStrToIdsIntGroup({{.PkJsonField}})
     p.{{.ClassName}}App.Delete({{.PkJsonField}}s)
 }
