@@ -568,7 +568,6 @@ CREATE TABLE `res_osses`  (
 -- ----------------------------
 -- Records of res_osses
 -- ----------------------------
-INSERT INTO `res_osses` VALUES (1, '0', '', 'LTAIdAnE8qDuKnZe', 'F3NYT7IWukPrtF4o4832uQpbfkm6Ye', 'xmzimg', 'oss-cn-qingdao.aliyuncs.com', 'alioss', '', '阿里云对象存储1', '0', '2022-01-13 17:02:14', '2022-01-17 10:12:30', NULL);
 
 -- ----------------------------
 -- Table structure for sys_apis
