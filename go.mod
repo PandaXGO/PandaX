@@ -24,7 +24,7 @@ require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
-	github.com/XM-GO/PandaKit v0.0.0-20220819142346-23e2263623b4 // indirect
+	github.com/XM-GO/PandaKit v0.0.0-20220821142427-3acdfc4785d9 // indirect
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible // indirect
 	github.com/brianvoe/gofakeit/v6 v6.0.2 // indirect
 	github.com/casbin/casbin/v2 v2.37.4 // indirect

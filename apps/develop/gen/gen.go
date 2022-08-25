@@ -442,7 +442,7 @@ func GenCode(tableId int64) {
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/services/"+tab.TableName+".go", b2.Bytes())
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/api/"+tab.TableName+".go", b3.Bytes())
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/router/"+tab.TableName+".go", b4.Bytes())
-	kgo.KFile.WriteFile(global.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/"+tab.BusinessName+".js", b5.Bytes())
+	kgo.KFile.WriteFile(global.Conf.Gen.Frontpath+"/api/"+tab.PackageName+"/"+tab.BusinessName+".ts", b5.Bytes())
 	kgo.KFile.WriteFile(global.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/index.vue", b6.Bytes())
 	kgo.KFile.WriteFile(global.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/"+"component"+"/editModule.vue", b7.Bytes())
 }
