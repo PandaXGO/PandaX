@@ -85,22 +85,23 @@ func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 		Token:  token,
 		Expire: time.Now().Unix() + global.Conf.Jwt.ExpireTime,
 	}
-
-	var loginLog logEntity.LogLogin
-	ua := user_agent.New(rc.Request.Request.UserAgent())
-	loginLog.Ipaddr = rc.Request.Request.RemoteAddr
-	loginLog.LoginLocation = utils.GetRealAddressByIP(rc.Request.Request.RemoteAddr)
-	loginLog.LoginTime = time.Now()
-	loginLog.Status = "0"
-	loginLog.Remark = rc.Request.Request.UserAgent()
-	browserName, browserVersion := ua.Browser()
-	loginLog.Browser = browserName + " " + browserVersion
-	loginLog.Os = ua.OS()
-	loginLog.Platform = ua.Platform()
-	loginLog.Username = login.Username
-	loginLog.Msg = "登录成功"
-	loginLog.CreateBy = login.Username
-	u.LogLogin.Insert(loginLog)
+	go func() {
+		var loginLog logEntity.LogLogin
+		ua := user_agent.New(rc.Request.Request.UserAgent())
+		loginLog.Ipaddr = rc.Request.Request.RemoteAddr
+		loginLog.LoginLocation = utils.GetRealAddressByIP(rc.Request.Request.RemoteAddr)
+		loginLog.LoginTime = time.Now()
+		loginLog.Status = "0"
+		loginLog.Remark = rc.Request.Request.UserAgent()
+		browserName, browserVersion := ua.Browser()
+		loginLog.Browser = browserName + " " + browserVersion
+		loginLog.Os = ua.OS()
+		loginLog.Platform = ua.Platform()
+		loginLog.Username = login.Username
+		loginLog.Msg = "登录成功"
+		loginLog.CreateBy = login.Username
+		u.LogLogin.Insert(loginLog)
+	}()
 }
 
 // Auth 用户权限信息

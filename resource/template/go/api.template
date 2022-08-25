@@ -45,7 +45,7 @@ func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *restfulx.ReqCtx) {
 // Get{{.ClassName}} 获取{{.FunctionName}}
 func (p *{{.ClassName}}Api) Get{{.ClassName}}(rc *restfulx.ReqCtx) {
 	{{.PkJsonField}} := restfulx.PathParamInt(rc, "{{.PkJsonField}}")
-	p.{{.ClassName}}App.FindOne(int64({{.PkJsonField}}))
+	rc.ResData = p.{{.ClassName}}App.FindOne(int64({{.PkJsonField}}))
 }
 
 // Insert{{.ClassName}} 添加{{.FunctionName}}
