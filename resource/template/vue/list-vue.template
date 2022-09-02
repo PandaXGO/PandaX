@@ -12,12 +12,12 @@
     {{- if and (eq $column.IsQuery "1") (ne $column.IsPk "1") (ne $column.JsonField "updateTime") (ne $column.JsonField "deleteTime") -}}
     {{- if eq $column.HtmlType "input" "textarea" }}
     <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
-    <el-input
-       v-model="queryParams.{{$column.JsonField}}"
-       placeholder="请输入{{$column.ColumnComment}}"
-       clearable
-       @keyup.enter.native="handleQuery"
-    />
+        <el-input
+           v-model="queryParams.{{$column.JsonField}}"
+           placeholder="请输入{{$column.ColumnComment}}"
+           clearable
+           @keyup.enter.native="handleQuery"
+        />
      </el-form-item>
      {{- else if and (eq $column.HtmlType "switch" "select" "radio" "checkbox") (ne $column.DictType "") }}
      <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
@@ -54,7 +54,7 @@
     <el-card class="box-card">
         <template #header>
            <div class="card-header">
-             <span class="card-header-text">岗位列表</span>
+             <span class="card-header-text">{{.TableComment}}列表</span>
              <div>
                <el-button
                   type="primary"

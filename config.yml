@@ -5,7 +5,7 @@ app:
 server:
   # debug release test
   model: release
-  port: 8080
+  port: 7788
   cors: true
   # 接口限流
   rate:

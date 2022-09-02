@@ -196,19 +196,19 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 
 	wg := sync.WaitGroup{}
 	dcs := *dbColumn
-	for i := 0; i < len(dcs); i++ {
-		index := i
+	for x := 0; x < len(dcs); x++ {
+		index := x
 		wg.Add(1)
-		go func(wg *sync.WaitGroup, i int) {
+		go func(wg *sync.WaitGroup, y int) {
 			defer wg.Done()
 			var column entity.DevGenTableColumn
-			column.ColumnComment = dcs[i].ColumnComment
-			column.ColumnName = dcs[i].ColumnName
-			column.ColumnType = dcs[i].ColumnType
-			column.Sort = i + 1
+			column.ColumnComment = dcs[y].ColumnComment
+			column.ColumnName = dcs[y].ColumnName
+			column.ColumnType = dcs[y].ColumnType
+			column.Sort = y + 1
 			column.IsPk = "0"
 
-			nameList := strings.Split(dcs[i].ColumnName, "_")
+			nameList := strings.Split(dcs[y].ColumnName, "_")
 			for i := 0; i < len(nameList); i++ {
 				strStart := string([]byte(nameList[i])[:1])
 				strend := string([]byte(nameList[i])[1:])
@@ -219,13 +219,12 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 					column.JsonField += strings.ToUpper(strStart) + strend
 				}
 			}
-			if strings.Contains(dcs[i].ColumnKey, "PR") {
+			if strings.Contains(dcs[y].ColumnKey, "PR") {
 				column.IsPk = "1"
-				data.PkColumn = dcs[i].ColumnName
+				data.PkColumn = dcs[y].ColumnName
 				data.PkGoField = column.GoField
 				data.PkJsonField = column.JsonField
-				global.Log.Info("是否自增主键", dcs[i].Extra)
-				if dcs[i].Extra == "auto_increment" {
+				if dcs[y].Extra == "auto_increment" {
 					column.IsIncrement = "1"
 				}
 			}
@@ -331,6 +330,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 				// 类型&性别字段设置下拉框
 				column.HtmlType = "select"
 			}
+			global.Log.Info(y)
 			data.Columns = append(data.Columns, column)
 		}(&wg, index)
 	}

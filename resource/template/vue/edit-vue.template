@@ -17,33 +17,33 @@
           <el-input v-model="ruleForm.{{$column.JsonField}}" placeholder="请输入{{$column.ColumnComment}}" />
       </el-form-item>
       {{- else if eq $column.HtmlType "switch" }}
-      el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+      <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
           <el-switch v-model="ruleForm.{{$column.HtmlField}}" />
       </el-form-item>
       {{- else if eq $column.HtmlType "select" }}
-          {{if ne $column.DictType ""}}
-          <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
-             <el-select v-model="ruleForm.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}">
-                 <el-option
-                     v-for="dict in {{$column.JsonField}}Options"
-                     :key="dict.dictValue"
-                     :label="dict.dictLabel"
-                 >{{"{{"}} dict.dictLabel {{"}}"}}</el-option>
-             </el-select>
-          </el-form-item>
-          {{- end }}
+      {{if ne $column.DictType ""}}
+       <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+          <el-select v-model="ruleForm.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}">
+              <el-option
+                  v-for="dict in {{$column.JsonField}}Options"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+              >{{"{{"}} dict.dictLabel {{"}}"}}</el-option>
+          </el-select>
+       </el-form-item>
+      {end }}
       {{- else if eq $column.HtmlType "radio" }}
-          {{if ne $column.DictType ""}}
-          <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
-              <el-radio-group v-model="ruleForm.{{$column.JsonField}}">
-                  <el-radio
-                   v-for="dict in {{$column.JsonField}}Options"
-                   :key="dict.dictValue"
-                   :label="dict.dictLabel"
-                  >{{"{{"}} dict.dictLabel {{"}}"}}</el-radio>
-              </el-radio-group>
-          </el-form-item>
-          {{- end }}
+      {{if ne $column.DictType ""}}
+      <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
+          <el-radio-group v-model="ruleForm.{{$column.JsonField}}">
+              <el-radio
+               v-for="dict in {{$column.JsonField}}Options"
+               :key="dict.dictValue"
+               :label="dict.dictLabel"
+              >{{"{{"}} dict.dictLabel {{"}}"}}</el-radio>
+          </el-radio-group>
+      </el-form-item>
+      {{- end }}
       {{- else if eq $column.HtmlType "datetime" }}
       <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
           <el-date-picker clearable style="width: 200px"
