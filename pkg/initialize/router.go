@@ -42,6 +42,8 @@ func InitRouter() *transport.HttpServer {
 		sysRouter.InitPostRouter(container)
 		sysRouter.InitUserRouter(container)
 		sysRouter.InitNoticeRouter(container)
+		//本地图片上传接口
+		sysRouter.InitUploadRouter(container)
 	}
 	// 任务
 	{
