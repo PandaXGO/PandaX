@@ -31,7 +31,7 @@
               >{{"{{"}} dict.dictLabel {{"}}"}}</el-option>
           </el-select>
        </el-form-item>
-      {end }}
+      {{ end }}
       {{- else if eq $column.HtmlType "radio" }}
       {{if ne $column.DictType ""}}
       <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
