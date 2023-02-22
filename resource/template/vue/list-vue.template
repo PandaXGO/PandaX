@@ -3,7 +3,7 @@
     <el-card shadow="always">
     <!-- 查询 -->
     <el-form
-      :model="queryParams"
+      :model="state.queryParams"
       ref="queryForm"
       :inline="true"
       label-width="68px"
@@ -13,7 +13,7 @@
     {{- if eq $column.HtmlType "input" "textarea" }}
     <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
         <el-input
-           v-model="queryParams.{{$column.JsonField}}"
+           v-model="state.queryParams.{{$column.JsonField}}"
            placeholder="请输入{{$column.ColumnComment}}"
            clearable
            @keyup.enter.native="handleQuery"
@@ -21,9 +21,9 @@
      </el-form-item>
      {{- else if and (eq $column.HtmlType "switch" "select" "radio" "checkbox") (ne $column.DictType "") }}
      <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
-       <el-select v-model="queryParams.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}" clearable>
+       <el-select v-model="state.queryParams.{{$column.JsonField}}" placeholder="请选择{{$column.ColumnComment}}" clearable>
            <el-option
-               v-for="dict in {{$column.JsonField}}Options"
+               v-for="dict in state.{{$column.JsonField}}Options"
                :key="dict.dictValue"
                :label="dict.dictLabel"
                :value="dict.dictValue"
@@ -33,7 +33,7 @@
      {{- else if eq $column.HtmlType "datetime" }}
      <el-form-item label="{{$column.ColumnComment}}" prop="{{$column.JsonField}}">
        <el-date-picker clearable style="width: 200px"
-             v-model="queryParams.{{$column.JsonField}}"
+             v-model="state.queryParams.{{$column.JsonField}}"
              type="datetime"
              placeholder="选择{{$column.ColumnComment}}">
        </el-date-picker>
@@ -66,7 +66,7 @@
                  type="danger"
                  plain
                  v-auth="'{{.PackageName}}:{{.BusinessName}}:delete'"
-                 :disabled="multiple"
+                 :disabled="state.multiple"
                  @click="onTabelRowDel"
                  ><SvgIcon name="elementDelete" />删除</el-button>
              </div>
@@ -74,8 +74,8 @@
         </template>
     <!--数据表格-->
     <el-table
-      v-loading="loading"
-      :data="tableData"
+      v-loading="state.loading"
+      :data="state.tableData"
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
@@ -127,13 +127,13 @@
       </el-table-column>
     </el-table>
     <!-- 分页设置-->
-    <div v-show="total > 0">
+    <div v-show="state.total > 0">
         <el-divider></el-divider>
         <el-pagination
             background
-            :total="total"
-            :current-page="queryParams.pageNum"
-            :page-size="queryParams.pageSize"
+            :total="state.total"
+            :current-page="state.queryParams.pageNum"
+            :page-size="state.queryParams.pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -141,11 +141,11 @@
     </div>
     </el-card>
     <!-- 添加或修改岗位对话框 -->
-    <EditModule ref="editModuleRef" :title="title" />
+    <EditModule ref="editModuleRef" :title="state.title" />
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup name="{{.FunctionName}}">
 import {
   ref,
   toRefs,
@@ -158,155 +158,131 @@ import { ElMessageBox, ElMessage } from "element-plus";
 import { list{{.FunctionName}}, del{{.FunctionName}} } from "@/api/{{.PackageName}}/{{.BusinessName}}";
 import EditModule from "./component/editModule.vue";
 
-export default {
-  name: "{{.FunctionName}}",
-  components: { EditModule },
-  setup() {
-    const { proxy } = getCurrentInstance() as any;
-    const editModuleRef = ref();
-    const state = reactive({
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 弹出层标题
-      title: "",
-      // 表格数据
-      tableData: [],
-      // 总条数
-      total: 0,
-      {{- range $index, $column := .Columns -}}
-      {{- if ne $column.DictType "" }}
-      // {{$column.JsonField}}Options字典数据
-      {{$column.JsonField}}Options: [],
-      {{- end -}}
-      {{- end }}
-      // 查询参数
-      queryParams: {
-        // 页码
-        pageNum: 1,
-        // 每页大小
-        pageSize: 10,
-        // 以下为参数
-        {{- range $index, $column := .Columns -}}
-        {{- if eq $column.IsQuery "1" }}
-        {{$column.JsonField}}: undefined,
-        {{- end }}
-        {{- end }}
-      },
-    });
-
-    /** 查询列表 */
-    const handleQuery = () => {
-      state.loading = true;
-      list{{.FunctionName}}(state.queryParams).then((response:any) => {
-        state.tableData = response.data.data;
-        state.total = response.data.total;
-        state.loading = false;
-      });
-    };
-    /** 重置按钮操作 */
-    const resetQuery = () => {
-       {{- range $index, $column := .Columns -}}
-       {{- if eq $column.IsQuery "1" }}
-       state.queryParams.{{$column.JsonField}} = undefined;
-       {{- end }}
-       {{- end }}
-      handleQuery();
-    };
-
-    const handleCurrentChange = (val:number) => {
-      state.queryParams.pageNum = val
-      handleQuery()
-    }
-    const handleSizeChange = (val:number) => {
-      state.queryParams.pageSize = val
-      handleQuery()
-    }
-
+const { proxy } = getCurrentInstance() as any;
+const editModuleRef = ref();
+const state = reactive({
+  // 遮罩层
+  loading: true,
+  // 选中数组
+  ids: [],
+  // 非单个禁用
+  single: true,
+  // 非多个禁用
+  multiple: true,
+  // 弹出层标题
+  title: "",
+  // 表格数据
+  tableData: [],
+  // 总条数
+  total: 0,
+  {{- range $index, $column := .Columns -}}
+  {{- if ne $column.DictType "" }}
+  // {{$column.JsonField}}Options字典数据
+  {{$column.JsonField}}Options: [],
+  {{- end -}}
+  {{- end }}
+  // 查询参数
+  queryParams: {
+    // 页码
+    pageNum: 1,
+    // 每页大小
+    pageSize: 10,
+    // 以下为参数
     {{- range $index, $column := .Columns -}}
-    {{- if ne $column.DictType "" }}
-    const {{$column.JsonField}}Format = (row: any) => {
-       return proxy.selectDictLabel(state.{{$column.JsonField}}Options, row.{{$column.JsonField}});
-    };
-    {{- end -}}
+    {{- if eq $column.IsQuery "1" }}
+    {{$column.JsonField}}: undefined,
     {{- end }}
-
-    // 打开新增弹窗
-    const onOpenAddModule = (row: object) => {
-      row = [];
-      state.title = "添加{{.TableComment}}";
-      editModuleRef.value.openDialog(row);
-    };
-    // 打开编辑弹窗
-    const onOpenEditModule = (row: object) => {
-      state.title = "修改{{.TableComment}}";
-      editModuleRef.value.openDialog(row);
-    };
-    /** 删除按钮操作 */
-    const onTabelRowDel = (row: any) => {
-      const {{.PkJsonField}}s = row.{{.PkJsonField}} || state.ids;
-      ElMessageBox({
-        message: '是否确认删除编号为"' + {{.PkJsonField}}s + '"的数据项?',
-        title: "警告",
-        showCancelButton: true,
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(function () {
-        return del{{.FunctionName}}({{.PkJsonField}}s).then(() => {
-          handleQuery();
-          ElMessage.success("删除成功");
-        });
-      });
-    };
-    // 多选框选中数据
-    const handleSelectionChange = (selection: any) => {
-      state.ids = selection.map((item: any) => item.{{.PkJsonField}});
-      state.single = selection.length != 1;
-      state.multiple = !selection.length;
-    };
-    // 页面加载时
-    onMounted(() => {
-      // 查询岗位信息
-      handleQuery();
-      {{- range $index, $column := .Columns -}}
-      {{- if ne $column.DictType "" }}
-      proxy.getDicts("{{$column.DictType}}").then((response: any) => {
-          state.{{$column.JsonField}}Options = response.data;
-      });
-      {{- end -}}
-      {{- end}}
-
-      proxy.mittBus.on("onEdit{{.FunctionName}}Module", (res: any) => {
-        handleQuery();
-      });
-    });
-    // 页面卸载时
-    onUnmounted(() => {
-      proxy.mittBus.off("onEdit{{.FunctionName}}Module");
-    });
-    return {
-      editModuleRef,
-      handleSelectionChange,
-      handleQuery,
-      handleCurrentChange,
-      handleSizeChange,
-      resetQuery,
-      {{- range $index, $column := .Columns -}}
-      {{- if ne $column.DictType "" }}
-      {{$column.JsonField}}Format,
-      {{- end -}}
-      {{- end }}
-      onOpenAddModule,
-      onOpenEditModule,
-      onTabelRowDel,
-      ...toRefs(state),
-    };
+    {{- end }}
   },
+});
+
+/** 查询列表 */
+const handleQuery = () => {
+  state.loading = true;
+  list{{.FunctionName}}(state.queryParams).then((response:any) => {
+    state.tableData = response.data.data;
+    state.total = response.data.total;
+    state.loading = false;
+  });
 };
+/** 重置按钮操作 */
+const resetQuery = () => {
+   {{- range $index, $column := .Columns -}}
+   {{- if eq $column.IsQuery "1" }}
+   state.queryParams.{{$column.JsonField}} = undefined;
+   {{- end }}
+   {{- end }}
+  handleQuery();
+};
+
+const handleCurrentChange = (val:number) => {
+  state.queryParams.pageNum = val
+  handleQuery()
+}
+const handleSizeChange = (val:number) => {
+  state.queryParams.pageSize = val
+  handleQuery()
+}
+
+{{- range $index, $column := .Columns -}}
+{{- if ne $column.DictType "" }}
+const {{$column.JsonField}}Format = (row: any) => {
+   return proxy.selectDictLabel(state.{{$column.JsonField}}Options, row.{{$column.JsonField}});
+};
+{{- end -}}
+{{- end }}
+
+// 打开新增弹窗
+const onOpenAddModule = () => {
+  state.title = "添加{{.TableComment}}";
+  editModuleRef.value.openDialog({});
+};
+// 打开编辑弹窗
+const onOpenEditModule = (row: object) => {
+  state.title = "修改{{.TableComment}}";
+  editModuleRef.value.openDialog(row);
+};
+/** 删除按钮操作 */
+const onTabelRowDel = (row: any) => {
+  const {{.PkJsonField}}s = row.{{.PkJsonField}} || state.ids;
+  ElMessageBox({
+    message: '是否确认删除编号为"' + {{.PkJsonField}}s + '"的数据项?',
+    title: "警告",
+    showCancelButton: true,
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(function () {
+    return del{{.FunctionName}}({{.PkJsonField}}s).then(() => {
+      handleQuery();
+      ElMessage.success("删除成功");
+    });
+  });
+};
+// 多选框选中数据
+const handleSelectionChange = (selection: any) => {
+  state.ids = selection.map((item: any) => item.{{.PkJsonField}});
+  state.single = selection.length != 1;
+  state.multiple = !selection.length;
+};
+// 页面加载时
+onMounted(() => {
+  // 查询岗位信息
+  handleQuery();
+  {{- range $index, $column := .Columns -}}
+  {{- if ne $column.DictType "" }}
+  proxy.getDicts("{{$column.DictType}}").then((response: any) => {
+      state.{{$column.JsonField}}Options = response.data;
+  });
+  {{- end -}}
+  {{- end}}
+
+  proxy.mittBus.on("onEdit{{.FunctionName}}Module", (res: any) => {
+    handleQuery();
+  });
+});
+// 页面卸载时
+onUnmounted(() => {
+  proxy.mittBus.off("onEdit{{.FunctionName}}Module");
+});
 </script>
