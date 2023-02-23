@@ -7,7 +7,6 @@ import (
 	jobEntity "pandax/apps/job/entity"
 	logEntity "pandax/apps/log/entity"
 	resSourceEntity "pandax/apps/resource/entity"
-	ruleEntity "pandax/apps/rule/entity"
 	"pandax/apps/system/entity"
 	"pandax/pkg/global"
 )
@@ -49,8 +48,6 @@ func InitTable() {
 				flowEntity.FlowWorkStage{},
 				flowEntity.FlowWorkTask{},
 				flowEntity.FlowWorkTaskHistory{},
-
-				ruleEntity.RuleNotice{},
 			),
 			"初始化表失败")
 	}
