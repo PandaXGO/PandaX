@@ -10,8 +10,6 @@ import (
 	resRouter "pandax/apps/resource/router"
 	sysRouter "pandax/apps/system/router"
 
-	ruleRouter "pandax/apps/rule/router"
-
 	"pandax/pkg/middleware"
 )
 
@@ -64,10 +62,6 @@ func InitRouter() *transport.HttpServer {
 	{
 		resRouter.InitResOssRouter(container)
 		resRouter.InitResEmailsRouter(container)
-	}
-	// 规则
-	{
-		ruleRouter.InitRuleNoticeRouter(container)
 	}
 
 	// api接口
