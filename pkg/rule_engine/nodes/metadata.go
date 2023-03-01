@@ -2,7 +2,7 @@ package nodes
 
 import (
 	"fmt"
-	"github.com/XM-GO/PandaKit/utils"
+	"github.com/mitchellh/mapstructure"
 )
 
 const (
@@ -58,5 +58,6 @@ func (c *nodeMetadata) With(key string, val interface{}) Metadata {
 }
 
 func (c *nodeMetadata) DecodePath(rawVal interface{}) error {
-	return utils.Map2Struct(c.keypairs, rawVal)
+	//return utils.Map2Struct(c.keypairs, rawVal)
+	return mapstructure.Decode(c.keypairs, rawVal)
 }

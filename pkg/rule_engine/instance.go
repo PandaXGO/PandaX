@@ -15,8 +15,8 @@ type ruleChainInstance struct {
 	nodes           map[string]nodes.Node
 }
 
-func newRuleChainInstance(data []byte) (*ruleChainInstance, []error) {
-	errors := []error{}
+func NewRuleChainInstance(data []byte) (*ruleChainInstance, []error) {
+	errors := make([]error, 0)
 
 	manifest, err := manifest.New(data)
 	if err != nil {
@@ -29,7 +29,7 @@ func newRuleChainInstance(data []byte) (*ruleChainInstance, []error) {
 
 // newWithManifest create rule chain by user's manifest file
 func newInstanceWithManifest(m *manifest.Manifest) (*ruleChainInstance, []error) {
-	errs := []error{}
+	errs := make([]error, 0)
 	r := &ruleChainInstance{
 		firstRuleNodeId: m.FirstRuleNodeId,
 		nodes:           make(map[string]nodes.Node),
@@ -49,7 +49,6 @@ func newInstanceWithManifest(m *manifest.Manifest) (*ruleChainInstance, []error)
 		}
 		r.nodes[n.Id] = node
 	}
-
 	for _, edge := range m.Edges {
 		originalNode, found := r.nodes[edge.SourceNodeId]
 		if !found {
@@ -63,7 +62,7 @@ func newInstanceWithManifest(m *manifest.Manifest) (*ruleChainInstance, []error)
 			errs = append(errs, err)
 			continue
 		}
-		originalNode.AddLinkedNode(edge.Type, targetNode)
+		originalNode.AddLinkedNode(edge.Properties["type"].(string), targetNode)
 	}
 	for name, node := range r.nodes {
 		targetNodes := node.GetLinkedNodes()

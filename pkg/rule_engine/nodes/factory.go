@@ -11,6 +11,7 @@ const (
 	NODE_CATEGORY_TRANSFORM  = "transform"
 	NODE_CATEGORY_EXTERNAL   = "external"
 	NODE_CATEGORY_OTHERS     = "others"
+	NODE_CATEGORY_FLOWS      = "flows"
 )
 
 // Factory is node's factory to create node based on metadata

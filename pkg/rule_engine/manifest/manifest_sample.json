@@ -7,8 +7,7 @@
       "y": 280,
       "properties": {
         "icon": "/src/assets/icon_module/svg/start.svg",
-        "debugMode": false,
-        "status": false
+        "debugMode": false
       },
       "zIndex": 1002,
       "text": {
@@ -24,8 +23,7 @@
       "y": 160,
       "properties": {
         "icon": "/src/assets/icon_module/svg/function.svg",
-        "debugMode": false,
-        "status": false
+        "debugMode": false
       },
       "zIndex": 1004,
       "text": {
@@ -42,7 +40,7 @@
       "properties": {
         "icon": "/src/assets/icon_module/svg/switch.svg",
         "debugMode": false,
-        "status": false
+        "scripts": "return {\n    msg: msg,\n    metadata: metadata,\n    msgType: msgType\n};"
       },
       "zIndex": 1006,
       "text": {
@@ -66,7 +64,9 @@
         "x": 540,
         "y": 160
       },
-      "properties": {},
+      "properties": {
+        "type": "Success"
+      },
       "zIndex": 1007,
       "pointsList": [
         {
@@ -100,7 +100,9 @@
         "x": 540,
         "y": 460
       },
-      "properties": {},
+      "properties": {
+        "type": "Failure"
+      },
       "zIndex": 1008,
       "pointsList": [
         {
