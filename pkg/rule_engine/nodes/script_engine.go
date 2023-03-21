@@ -1,6 +1,10 @@
 package nodes
 
-import "pandax/pkg/rule_engine/message"
+import (
+	"github.com/dop251/goja"
+	"github.com/sirupsen/logrus"
+	"pandax/pkg/rule_engine/message"
+)
 
 type ScriptEngine interface {
 	ScriptOnMessage(msg message.Message, script string) (message.Message, error)
@@ -24,8 +28,20 @@ func (bse *baseScriptEngine) ScriptOnMessage(msg message.Message, script string)
 }
 
 func (bse *baseScriptEngine) ScriptOnSwitch(msg message.Message, script string) ([]string, error) {
-
-	return nil, nil
+	vm := goja.New()
+	_, err := vm.RunString(script)
+	if err != nil {
+		logrus.Info("JS代码有问题")
+		return nil, err
+	}
+	var fn func(message.Message, message.Metadata, string) []string
+	err = vm.ExportTo(vm.Get("Switch"), &fn)
+	if err != nil {
+		logrus.Info("Js函数映射到 Go 函数失败！")
+		return nil, err
+	}
+	datas := fn(msg, msg.GetMetadata(), msg.GetType())
+	return datas, nil
 }
 
 func (bse *baseScriptEngine) ScriptOnFilter(msg message.Message, script string) (bool, error) {

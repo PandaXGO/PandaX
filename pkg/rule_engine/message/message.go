@@ -43,21 +43,22 @@ func NewMessage() Message {
 type defaultMessage struct {
 	id         string   //uuid
 	ts         int64    //时间戳
-	msgType    string   //消息类型，数据来源
+	msgType    string   //消息类型，   attributes（参数），telemetry（遥测），连接事件
 	originator string   //数据发布者
 	customerId string   //客户Id  UUID
 	entityId   string   //实体Id  UUID
-	data       []byte   //数据
-	dataType   string   //数据类型   JSON
-	metadata   Metadata //数据的元数据
+	entityType string   //实体类型  设备、资产，用户、规则链
+	data       []byte   //数据		数据结构JSON   设备原始数据
+	metadata   Metadata //消息的元数据  包括，设备名称，设备类型，命名空间，时间戳等
 }
 
 // NewMessageWithDetail ...
-func NewMessageWithDetail(originator string, messageType string, msg []byte) Message {
+func NewMessageWithDetail(originator string, messageType string, msg []byte, metadata Metadata) Message {
 	return &defaultMessage{
 		originator: originator,
 		msgType:    messageType,
 		data:       msg,
+		metadata:   metadata,
 	}
 }
 
@@ -73,7 +74,6 @@ func (t *defaultMessage) SetMetadata(metadata Metadata)   { t.metadata = metadat
 func (t *defaultMessage) MarshalBinary() ([]byte, error) { return nil, nil }
 func (t *defaultMessage) UnmarshalBinary(b []byte) error { return nil }
 
-// NewMetadata ...
 func NewMetadata() Metadata {
 	return &defaultMetadata{
 		values: make(map[string]interface{}),
@@ -84,7 +84,7 @@ type defaultMetadata struct {
 	values map[string]interface{}
 }
 
-func newDefaultMetadata(vals map[string]interface{}) Metadata {
+func NewDefaultMetadata(vals map[string]interface{}) Metadata {
 	return &defaultMetadata{
 		values: vals,
 	}

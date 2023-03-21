@@ -6,11 +6,14 @@ require (
 	github.com/XM-GO/PandaKit v0.0.0-20220902065259-efd83b5ba4b2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didip/tollbooth v4.0.2+incompatible
+	github.com/dop251/goja v0.0.0-20230304130813-e2f543bf4b4c
+	github.com/eclipse/paho.mqtt.golang v1.4.2
 	github.com/emicklei/go-restful-openapi/v2 v2.9.0
 	github.com/emicklei/go-restful/v3 v3.9.0
 	github.com/go-openapi/spec v0.20.6
 	github.com/gorilla/websocket v1.4.2
 	github.com/kakuilan/kgo v0.1.8
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mssola/user_agent v0.5.3
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.9.0
@@ -29,8 +32,6 @@ require (
 	github.com/casbin/gorm-adapter/v3 v3.4.6 // indirect
 	github.com/denisenkom/go-mssqldb v0.11.0 // indirect
 	github.com/dlclark/regexp2 v1.7.0 // indirect
-	github.com/dop251/goja v0.0.0-20230226152633-7c93113e17ac // indirect
-	github.com/eclipse/paho.mqtt.golang v1.4.2 // indirect
 	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
@@ -42,6 +43,7 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
+	github.com/google/pprof v0.0.0-20230207041349-798e818bf904 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -59,7 +61,6 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/lib/pq v1.10.4 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
-	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
@@ -76,10 +77,10 @@ require (
 	github.com/xuri/efp v0.0.0-20210322160811-ab561f5b45e3 // indirect
 	github.com/xuri/excelize/v2 v2.4.1 // indirect
 	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb // indirect
-	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e // indirect
-	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
+	golang.org/x/text v0.3.8 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect

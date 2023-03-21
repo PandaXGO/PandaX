@@ -35,11 +35,10 @@ type delayNodeFactory struct{}
 
 func (f delayNodeFactory) Name() string     { return DelayNodeName }
 func (f delayNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
-
+func (f delayNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f delayNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{"Success", "Failure"}
 	node := &delayNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 		lock:     sync.Mutex{},
 	}
 	_, err := decodePath(meta, node)

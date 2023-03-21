@@ -25,11 +25,15 @@ type switchFilterNodeFactory struct{}
 
 func (f switchFilterNodeFactory) Name() string     { return "SwitchNode" }
 func (f switchFilterNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
-
+func (f switchFilterNodeFactory) Labels() []string {
+	return []string{
+		"True", "False", message.MessageTypePostTelemetryRequest,
+		message.MessageTypeConnectEvent,
+	}
+}
 func (f switchFilterNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{}
 	node := &switchFilterNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
 }
@@ -40,7 +44,7 @@ func (n *switchFilterNode) Handle(msg message.Message) error {
 	scriptEngine := NewScriptEngine()
 	SwitchResults, err := scriptEngine.ScriptOnSwitch(msg, n.Scripts)
 	if err != nil {
-		return nil
+		return err
 	}
 	nodes := n.GetLinkedNodes()
 	for label, node := range nodes {

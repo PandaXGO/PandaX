@@ -15,11 +15,10 @@ type inputNodeFactory struct{}
 
 func (f inputNodeFactory) Name() string     { return "InputNode" }
 func (f inputNodeFactory) Category() string { return NODE_CATEGORY_OTHERS }
-
+func (f inputNodeFactory) Labels() []string { return []string{} }
 func (f inputNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{}
 	node := &inputNode{
-		bareNode: newBareNode(InputNodeName, id, meta, labels),
+		bareNode: newBareNode(InputNodeName, id, meta, f.Labels()),
 	}
 	return node, nil
 }

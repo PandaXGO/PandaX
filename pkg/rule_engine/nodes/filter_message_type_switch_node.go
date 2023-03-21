@@ -14,11 +14,10 @@ type messageTypeSwitchNodeFactory struct{}
 
 func (f messageTypeSwitchNodeFactory) Name() string     { return "MessageTypeSwitchNode" }
 func (f messageTypeSwitchNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
-
+func (f messageTypeSwitchNodeFactory) Labels() []string { return []string{"True", "False"} }
 func (f messageTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{"True", "False"}
 	node := &messageTypeSwitchNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
 }

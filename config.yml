@@ -31,7 +31,7 @@ redis:
 mysql:
   host: 127.0.0.1:3306
   username: root
-  password: 123456
+  password: '!MyEMS1'
   db-name: pandax
   config: charset=utf8&loc=Local&parseTime=true
 
