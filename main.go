@@ -65,7 +65,7 @@ var rootCmd = &cobra.Command{
 		<-stop
 
 		if err := app.Stop(context.TODO()); err != nil {
-			log.Fatal("fatal app stop: %s", err)
+			log.Fatalf("fatal app stop: %s", err)
 			os.Exit(-3)
 		}
 	},

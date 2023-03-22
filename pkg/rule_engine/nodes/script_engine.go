@@ -45,8 +45,20 @@ func (bse *baseScriptEngine) ScriptOnSwitch(msg message.Message, script string) 
 }
 
 func (bse *baseScriptEngine) ScriptOnFilter(msg message.Message, script string) (bool, error) {
-
-	return false, nil
+	vm := goja.New()
+	_, err := vm.RunString(script)
+	if err != nil {
+		logrus.Info("JS代码有问题")
+		return false, err
+	}
+	var fn func(message.Message, message.Metadata, string) bool
+	err = vm.ExportTo(vm.Get("Filter"), &fn)
+	if err != nil {
+		logrus.Info("Js函数映射到 Go 函数失败！")
+		return false, err
+	}
+	datas := fn(msg, msg.GetMetadata(), msg.GetType())
+	return datas, nil
 }
 
 func (bse *baseScriptEngine) ScriptToString(msg message.Message, script string) (string, error) {
