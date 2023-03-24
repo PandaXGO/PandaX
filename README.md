@@ -22,7 +22,7 @@
 ---
 系统在线文档
 ---
-* 文档地址 ：https://xm-go.gitee.io/pandax-docs/
+* 文档地址 ：http://www.pandazhuan.cn/
 
  **> 未来会补充文档和视频，方便友友们使用！** 
 

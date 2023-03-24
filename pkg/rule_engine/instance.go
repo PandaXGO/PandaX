@@ -7,6 +7,7 @@ import (
 	"pandax/pkg/rule_engine/manifest"
 	"pandax/pkg/rule_engine/message"
 	"pandax/pkg/rule_engine/nodes"
+	"strings"
 )
 
 // ruleChainInstance is rulechain's runtime instance that manage all nodes in this chain,
@@ -62,7 +63,11 @@ func newInstanceWithManifest(m *manifest.Manifest) (*ruleChainInstance, []error)
 			errs = append(errs, err)
 			continue
 		}
-		originalNode.AddLinkedNode(edge.Properties["type"].(string), targetNode)
+		//可以有多个类型
+		split := strings.Split(edge.Properties["type"].(string), "/")
+		for _, ty := range split {
+			originalNode.AddLinkedNode(ty, targetNode)
+		}
 	}
 	for name, node := range r.nodes {
 		targetNodes := node.GetLinkedNodes()
