@@ -20,12 +20,15 @@ func TestNewRuleChainInstance(t *testing.T) {
 
 func TestScriptEngine(t *testing.T) {
 	metadata := message.NewDefaultMetadata(map[string]interface{}{"device": "aa"})
-	msg := message.NewMessageWithDetail("1", message.MessageTypeConnectEvent, []byte{}, metadata)
+	msg := message.NewMessageWithDetail("1", message.MessageTypeConnectEvent, map[string]interface{}{"aa": 5}, metadata)
 	scriptEngine := nodes.NewScriptEngine()
 	const script = `
     function Switch(msg, metadata, msgType) {
         function nextRelation(metadata, msg) {
 			return ['one','nine'];
+		}
+		if(metadata.device === 'aa') {
+			return ['six'];
 		}
 		if(msgType === 'Post telemetry') {
 			return ['two'];
@@ -39,4 +42,23 @@ func TestScriptEngine(t *testing.T) {
 		t.Error(err)
 	}
 	t.Log(SwitchResults)
+}
+
+func TestScriptOnMessage(t *testing.T) {
+	metadata := message.NewDefaultMetadata(map[string]interface{}{"device": "aa"})
+	msg := message.NewMessageWithDetail("1", message.MessageTypeConnectEvent, map[string]interface{}{"aa": 5}, metadata)
+	scriptEngine := nodes.NewScriptEngine()
+	const script = `
+    function Transform(msg, metadata, msgType) {
+        msg.bb = "33"
+		metadata.event = 55
+		return {msg: msg, metadata: metadata, msgType: msgType};
+	}
+    `
+	ScriptOnMessageResults, err := scriptEngine.ScriptOnMessage(msg, script)
+
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(ScriptOnMessageResults.GetMetadata())
 }

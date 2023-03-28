@@ -1,8 +1,8 @@
 package nodes
 
 import (
+	"dz-iot-server/rule_engine/message"
 	"fmt"
-	"pandax/pkg/rule_engine/message"
 
 	"github.com/sirupsen/logrus"
 )
@@ -14,7 +14,15 @@ type messageTypeSwitchNodeFactory struct{}
 
 func (f messageTypeSwitchNodeFactory) Name() string     { return "MessageTypeSwitchNode" }
 func (f messageTypeSwitchNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
-func (f messageTypeSwitchNodeFactory) Labels() []string { return []string{"True", "False"} }
+func (f messageTypeSwitchNodeFactory) Labels() []string {
+	return []string{
+		message.MessageTypePostAttributesRequest,
+		message.MessageTypePostTelemetryRequest,
+		message.MessageTypeConnectEvent,
+		message.MessageTypeDisconnectEvent,
+		"Other",
+	}
+}
 func (f messageTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, error) {
 	node := &messageTypeSwitchNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
@@ -27,19 +35,16 @@ func (n *messageTypeSwitchNode) Handle(msg message.Message) error {
 
 	nodes := n.GetLinkedNodes()
 	messageType := msg.GetType()
-	messageTypeKey, _ := n.Metadata().Value(NODE_CONFIG_MESSAGE_TYPE_KEY)
-	userMessageType := msg.GetMetadata().GetKeyValue(messageTypeKey.(string))
 
 	for label, node := range nodes {
-		if messageType == label || userMessageType == label {
+		if messageType == label {
 			return node.Handle(msg)
 		}
 	}
-	// if other label exist
+	// 自定义类型 或 未识别类型
 	if node := n.GetLinkedNode("Other"); node != nil {
 		return node.Handle(msg)
 	}
-
 	// not found
 	return fmt.Errorf("%s no label to handle message", n.Name())
 }

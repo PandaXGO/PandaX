@@ -12,8 +12,8 @@
 package nodes
 
 import (
+	"dz-iot-server/rule_engine/message"
 	"github.com/sirupsen/logrus"
-	"pandax/pkg/rule_engine/message"
 )
 
 type switchFilterNode struct {
@@ -27,7 +27,7 @@ func (f switchFilterNodeFactory) Name() string     { return "SwitchNode" }
 func (f switchFilterNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
 func (f switchFilterNodeFactory) Labels() []string {
 	return []string{
-		"True", "False", message.MessageTypePostTelemetryRequest,
+		"Failure", "True", "False", message.MessageTypePostTelemetryRequest,
 		message.MessageTypeConnectEvent,
 	}
 }
@@ -44,7 +44,7 @@ func (n *switchFilterNode) Handle(msg message.Message) error {
 	scriptEngine := NewScriptEngine()
 	SwitchResults, err := scriptEngine.ScriptOnSwitch(msg, n.Scripts)
 	if err != nil {
-		return err
+		return nil
 	}
 	nodes := n.GetLinkedNodes()
 	for label, node := range nodes {

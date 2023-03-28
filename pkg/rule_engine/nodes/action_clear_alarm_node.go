@@ -1,7 +1,7 @@
 package nodes
 
 import (
-	"pandax/pkg/rule_engine/message"
+	"dz-iot-server/rule_engine/message"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -23,10 +23,10 @@ type clearAlarmNode struct {
 
 func (f clearAlarmNodeFactory) Name() string     { return ClearAlarmNodeName }
 func (f clearAlarmNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
+func (f clearAlarmNodeFactory) Labels() []string { return []string{"Created", "Updated", "Failure"} }
 func (f clearAlarmNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{"Created", "Updated", "Failure"}
 	node := &clearAlarmNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
 }

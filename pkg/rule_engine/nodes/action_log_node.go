@@ -1,24 +1,24 @@
 package nodes
 
 import (
+	"dz-iot-server/rule_engine/message"
 	"fmt"
 	"log"
-	"pandax/pkg/rule_engine/message"
 )
 
 type logNode struct {
 	bareNode
-	Script string
+	Script string `json:"script"`
 }
 
 type logNodeFactory struct{}
 
 func (f logNodeFactory) Name() string     { return "LogNode" }
 func (f logNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
+func (f logNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f logNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{"Success", "Failure"}
 	node := &logNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
 }

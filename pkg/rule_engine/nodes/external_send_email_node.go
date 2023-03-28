@@ -1,11 +1,11 @@
 package nodes
 
 import (
+	"dz-iot-server/rule_engine/message"
 	"github.com/sirupsen/logrus"
-	"pandax/pkg/rule_engine/message"
 )
 
-type transformToEmailNode struct {
+type externalSendEmailNode struct {
 	bareNode
 	From    string `json:"from" yaml:"from"`
 	To      string `json:"to" yaml:"to"`
@@ -15,21 +15,21 @@ type transformToEmailNode struct {
 	Body    string `json:"body" yaml:"body"`
 }
 
-type transformToEmailNodeFactory struct{}
+type externalSendEmailNodeFactory struct{}
 
-func (f transformToEmailNodeFactory) Name() string     { return "TransformToEmailNode" }
-func (f transformToEmailNodeFactory) Category() string { return NODE_CATEGORY_TRANSFORM }
-
-func (f transformToEmailNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f externalSendEmailNodeFactory) Name() string     { return "ExternalSendEmailNode" }
+func (f externalSendEmailNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
+func (f externalSendEmailNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
+func (f externalSendEmailNodeFactory) Create(id string, meta Metadata) (Node, error) {
 	labels := []string{"Success", "Failure"}
 
-	node := &transformToEmailNode{
+	node := &externalSendEmailNode{
 		bareNode: newBareNode(f.Name(), id, meta, labels),
 	}
 	return decodePath(meta, node)
 }
 
-func (n *transformToEmailNode) Handle(msg message.Message) error {
+func (n *externalSendEmailNode) Handle(msg message.Message) error {
 	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
 
 	successLabelNode := n.GetLinkedNode("Success")

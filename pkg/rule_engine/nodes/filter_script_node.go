@@ -1,8 +1,8 @@
 package nodes
 
 import (
+	"dz-iot-server/rule_engine/message"
 	"github.com/sirupsen/logrus"
-	"pandax/pkg/rule_engine/message"
 )
 
 const ScriptFilterNodeName = "ScriptFilterNode"
@@ -14,13 +14,12 @@ type scriptFilterNode struct {
 
 type scriptFilterNodeFactory struct{}
 
-func (f scriptFilterNodeFactory) Name() string     { return "ScriptFilterNode" }
+func (f scriptFilterNodeFactory) Name() string     { return ScriptFilterNodeName }
 func (f scriptFilterNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
-
+func (f scriptFilterNodeFactory) Labels() []string { return []string{"True", "False"} }
 func (f scriptFilterNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{"True", "False"}
 	node := &scriptFilterNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
 }

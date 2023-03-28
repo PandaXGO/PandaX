@@ -23,6 +23,23 @@ func NewScriptEngine() ScriptEngine {
 }
 
 func (bse *baseScriptEngine) ScriptOnMessage(msg message.Message, script string) (message.Message, error) {
+	vm := goja.New()
+	_, err := vm.RunString(script)
+	if err != nil {
+		logrus.Info("JS代码有问题")
+		return nil, err
+	}
+	var fn func(map[string]interface{}, map[string]interface{}, string) map[string]interface{}
+	err = vm.ExportTo(vm.Get("Transform"), &fn)
+	if err != nil {
+		logrus.Info("Js函数映射到 Go 函数失败！")
+		return nil, err
+	}
+	datas := fn(msg.GetMsg(), msg.GetMetadata().GetValues(), msg.GetType())
+	msg.SetMsg(datas["msg"].(map[string]interface{}))
+	msg.SetMetadata(message.NewDefaultMetadata(datas["metadata"].(map[string]interface{})))
+	msg.SetType(datas["msgType"].(string))
+	return msg, nil
 
 	return nil, nil
 }
@@ -34,13 +51,13 @@ func (bse *baseScriptEngine) ScriptOnSwitch(msg message.Message, script string) 
 		logrus.Info("JS代码有问题")
 		return nil, err
 	}
-	var fn func(message.Message, message.Metadata, string) []string
+	var fn func(map[string]interface{}, map[string]interface{}, string) []string
 	err = vm.ExportTo(vm.Get("Switch"), &fn)
 	if err != nil {
 		logrus.Info("Js函数映射到 Go 函数失败！")
 		return nil, err
 	}
-	datas := fn(msg, msg.GetMetadata(), msg.GetType())
+	datas := fn(msg.GetMsg(), msg.GetMetadata().GetValues(), msg.GetType())
 	return datas, nil
 }
 
@@ -51,13 +68,13 @@ func (bse *baseScriptEngine) ScriptOnFilter(msg message.Message, script string) 
 		logrus.Info("JS代码有问题")
 		return false, err
 	}
-	var fn func(message.Message, message.Metadata, string) bool
+	var fn func(map[string]interface{}, map[string]interface{}, string) bool
 	err = vm.ExportTo(vm.Get("Filter"), &fn)
 	if err != nil {
 		logrus.Info("Js函数映射到 Go 函数失败！")
 		return false, err
 	}
-	datas := fn(msg, msg.GetMetadata(), msg.GetType())
+	datas := fn(msg.GetMsg(), msg.GetMetadata().GetValues(), msg.GetType())
 	return datas, nil
 }
 

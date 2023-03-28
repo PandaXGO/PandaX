@@ -1,8 +1,9 @@
 package nodes
 
 import (
+	"dz-iot-server/rule_engine/message"
+	"encoding/json"
 	"fmt"
-	"pandax/pkg/rule_engine/message"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -11,13 +12,13 @@ import (
 
 type externalMqttNode struct {
 	bareNode
-	TopicPattern      string
-	Host              string
-	Port              string
-	ConnectTimeoutSec int
-	ClientId          string
-	CleanSession      bool
-	Ssl               bool
+	TopicPattern      string `json:"topicPattern"`
+	Host              string `json:"host"`
+	Port              string `json:"port"`
+	ConnectTimeoutSec int    `json:"connectTimeoutSec"`
+	ClientId          string `json:"clientId"`
+	CleanSession      bool   `json:"cleanSession"`
+	Ssl               bool   `json:"ssl"`
 	MqttCli           mqtt.Client
 }
 
@@ -25,11 +26,11 @@ type externalMqttNodeFactory struct{}
 
 func (f externalMqttNodeFactory) Name() string     { return "ExternalMqttNode" }
 func (f externalMqttNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
+func (f externalMqttNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f externalMqttNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{"Success", "Failure"}
 
 	node := &externalMqttNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	broker := fmt.Sprintf("tcp://%s:%s", node.Host, node.Port)
 	opts := mqtt.NewClientOptions().AddBroker(broker)
@@ -51,7 +52,7 @@ func (n *externalMqttNode) Handle(msg message.Message) error {
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
 	topic := n.TopicPattern //need fix add msg.metadata in it
-	sendmqttmsg, err := msg.MarshalBinary()
+	sendmqttmsg, err := json.Marshal(msg.GetMsg())
 	if err != nil {
 		return nil
 	}

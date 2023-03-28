@@ -1,8 +1,8 @@
 package nodes
 
 import (
+	"dz-iot-server/rule_engine/message"
 	"fmt"
-	"pandax/pkg/rule_engine/message"
 )
 
 type SaveAttributesNode struct {
@@ -13,10 +13,10 @@ type saveAttributesNodeFactory struct{}
 
 func (f saveAttributesNodeFactory) Name() string     { return "SaveAttributesNode" }
 func (f saveAttributesNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
+func (f saveAttributesNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f saveAttributesNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{"Success", "Failure"}
 	node := &SaveAttributesNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
 }

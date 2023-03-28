@@ -6,14 +6,12 @@ import "github.com/sirupsen/logrus"
 type Message interface {
 	GetOriginator() string
 	GetType() string
-	GetData() []byte
+	GetMsg() map[string]interface{}
 	GetMetadata() Metadata
 	SetType(string)
-	SetData([]byte)
+	SetMsg(map[string]interface{})
 	SetOriginator(string)
 	SetMetadata(Metadata)
-	MarshalBinary() ([]byte, error)
-	UnmarshalBinary(b []byte) error
 }
 
 // Metadata ...
@@ -21,6 +19,7 @@ type Metadata interface {
 	Keys() []string
 	GetKeyValue(key string) interface{}
 	SetKeyValue(key string, val interface{})
+	GetValues() map[string]interface{}
 }
 
 // Predefined message types
@@ -36,44 +35,41 @@ const (
 // NewMessage ...
 func NewMessage() Message {
 	return &defaultMessage{
-		data: []byte{},
+		msg: map[string]interface{}{},
 	}
 }
 
 type defaultMessage struct {
-	id         string   //uuid
-	ts         int64    //时间戳
-	msgType    string   //消息类型，   attributes（参数），telemetry（遥测），连接事件
-	originator string   //数据发布者
-	customerId string   //客户Id  UUID
-	entityId   string   //实体Id  UUID
-	entityType string   //实体类型  设备、资产，用户、规则链
-	data       []byte   //数据		数据结构JSON   设备原始数据
-	metadata   Metadata //消息的元数据  包括，设备名称，设备类型，命名空间，时间戳等
+	id         string                 //uuid
+	ts         int64                  //时间戳
+	msgType    string                 //消息类型，   attributes（参数），telemetry（遥测），Connect连接事件
+	originator string                 //数据发布者	 设备 规则链
+	customerId string                 //客户Id  UUID
+	deviceId   string                 //设备Id  UUID
+	msg        map[string]interface{} //数据		数据结构JSON  设备原始数据 msg
+	metadata   Metadata               //消息的元数据		包括，设备名称，设备类型，命名空间，时间戳等
 }
 
 // NewMessageWithDetail ...
-func NewMessageWithDetail(originator string, messageType string, msg []byte, metadata Metadata) Message {
+func NewMessageWithDetail(originator string, messageType string, msg map[string]interface{}, metadata Metadata) Message {
 	return &defaultMessage{
 		originator: originator,
 		msgType:    messageType,
-		data:       msg,
+		msg:        msg,
 		metadata:   metadata,
 	}
 }
 
-func (t *defaultMessage) GetOriginator() string           { return t.originator }
-func (t *defaultMessage) GetType() string                 { return t.msgType }
-func (t *defaultMessage) GetData() []byte                 { return t.data }
-func (t *defaultMessage) GetMetadata() Metadata           { return t.metadata }
-func (t *defaultMessage) SetType(msgType string)          { t.msgType = msgType }
-func (t *defaultMessage) SetData(data []byte)             { t.data = data }
-func (t *defaultMessage) SetOriginator(originator string) { t.originator = originator }
-func (t *defaultMessage) SetMetadata(metadata Metadata)   { t.metadata = metadata }
+func (t *defaultMessage) GetOriginator() string             { return t.originator }
+func (t *defaultMessage) GetType() string                   { return t.msgType }
+func (t *defaultMessage) GetMsg() map[string]interface{}    { return t.msg }
+func (t *defaultMessage) GetMetadata() Metadata             { return t.metadata }
+func (t *defaultMessage) SetType(msgType string)            { t.msgType = msgType }
+func (t *defaultMessage) SetMsg(msg map[string]interface{}) { t.msg = msg }
+func (t *defaultMessage) SetOriginator(originator string)   { t.originator = originator }
+func (t *defaultMessage) SetMetadata(metadata Metadata)     { t.metadata = metadata }
 
-func (t *defaultMessage) MarshalBinary() ([]byte, error) { return nil, nil }
-func (t *defaultMessage) UnmarshalBinary(b []byte) error { return nil }
-
+// NewMetadata ...
 func NewMetadata() Metadata {
 	return &defaultMetadata{
 		values: make(map[string]interface{}),
@@ -107,4 +103,11 @@ func (t *defaultMetadata) GetKeyValue(key string) interface{} {
 
 func (t *defaultMetadata) SetKeyValue(key string, val interface{}) {
 	t.values[key] = val
+}
+
+func (t *defaultMetadata) GetValues() map[string]interface{} {
+	return t.values
+}
+func (t *defaultMetadata) SetValues(values map[string]interface{}) {
+	t.values = values
 }

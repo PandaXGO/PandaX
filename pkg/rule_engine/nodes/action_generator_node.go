@@ -1,9 +1,9 @@
 package nodes
 
 import (
+	"dz-iot-server/rule_engine/message"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"pandax/pkg/rule_engine/message"
 )
 
 type messageGeneratorNode struct {
@@ -16,11 +16,10 @@ type messageGeneratorNodeFactory struct{}
 
 func (f messageGeneratorNodeFactory) Name() string     { return "MessageGeneratorNode" }
 func (f messageGeneratorNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
-
+func (f messageGeneratorNodeFactory) Labels() []string { return []string{"Created", "Updated"} }
 func (f messageGeneratorNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{"Created", "Updated"}
 	node := &messageGeneratorNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
 }
