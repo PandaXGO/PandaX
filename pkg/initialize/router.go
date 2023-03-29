@@ -5,6 +5,7 @@ import (
 	"pandax/pkg/transport"
 
 	devRouter "pandax/apps/develop/router"
+	flowRouter "pandax/apps/flow/router"
 	jobRouter "pandax/apps/job/router"
 	logRouter "pandax/apps/log/router"
 	resRouter "pandax/apps/resource/router"
@@ -42,6 +43,12 @@ func InitRouter() *transport.HttpServer {
 		sysRouter.InitNoticeRouter(container)
 		//本地图片上传接口
 		sysRouter.InitUploadRouter(container)
+	}
+	//流程管理
+	{
+		flowRouter.InitFlowWorkClassifyRouter(container)
+		flowRouter.InitFlowWorkInfoRouter(container)
+		flowRouter.InitFlowWorkTemplatesRouter(container)
 	}
 	// 任务
 	{

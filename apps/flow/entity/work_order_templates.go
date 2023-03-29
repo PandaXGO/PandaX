@@ -8,7 +8,7 @@ import (
 // FlowWorkOrderTemplate 工单绑定模版数据
 type FlowWorkOrderTemplate struct {
 	model.BaseAutoModel
-	WorkOrder     int             `gorm:"column:work_order; type: int(11)" json:"work_order"`      // 工单ID
+	WorkOrder     int             `gorm:"column:work_order; type: int" json:"work_order"`          // 工单ID
 	FormStructure json.RawMessage `gorm:"column:form_structure; type: json" json:"form_structure"` // 表单结构
 	FormData      json.RawMessage `gorm:"column:form_data; type: json" json:"form_data"`           // 表单数据
 }

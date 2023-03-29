@@ -45,7 +45,7 @@ func (p *FlowWorkClassifyApi) GetFlowWorkClassify(rc *restfulx.ReqCtx) {
 func (p *FlowWorkClassifyApi) InsertFlowWorkClassify(rc *restfulx.ReqCtx) {
 	var data entity.FlowWorkClassify
 	restfulx.BindQuery(rc, &data)
-
+	data.Creator = int(rc.LoginAccount.UserId)
 	p.FlowWorkClassifyApp.Insert(data)
 }
 

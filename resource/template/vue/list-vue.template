@@ -148,7 +148,6 @@
 <script lang="ts" setup name="{{.FunctionName}}">
 import {
   ref,
-  toRefs,
   reactive,
   onMounted,
   getCurrentInstance,
