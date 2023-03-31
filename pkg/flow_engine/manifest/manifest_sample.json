@@ -1,0 +1,127 @@
+{
+  "nodes": [
+    {
+      "id": "3b6b8df4-445f-4e70-9674-f7aa486b3d81",
+      "type": "InputNode",
+      "x": 280,
+      "y": 280,
+      "properties": {
+        "icon": "/src/assets/icon_module/svg/start.svg",
+        "debugMode": false
+      },
+      "zIndex": 1002,
+      "text": {
+        "x": 290,
+        "y": 280,
+        "value": "输入"
+      }
+    },
+    {
+      "id": "45afb241-1977-4cbf-8af3-c12844d5666b",
+      "type": "DelayNode",
+      "x": 600,
+      "y": 160,
+      "properties": {
+        "icon": "/src/assets/icon_module/svg/function.svg",
+        "debugMode": false
+      },
+      "zIndex": 1004,
+      "text": {
+        "x": 610,
+        "y": 160,
+        "value": "延迟"
+      }
+    },
+    {
+      "id": "95047b03-e966-4685-b625-3cea27415706",
+      "type": "SwitchNode",
+      "x": 600,
+      "y": 460,
+      "properties": {
+        "icon": "/src/assets/icon_module/svg/switch.svg",
+        "debugMode": false,
+        "scripts": "return {\n    msg: msg,\n    metadata: metadata,\n    msgType: msgType\n};"
+      },
+      "zIndex": 1006,
+      "text": {
+        "x": 610,
+        "y": 460,
+        "value": "分流"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "fde7f2de-cc0f-467d-a614-4505f058dc2a",
+      "type": "bezier-link",
+      "sourceNodeId": "3b6b8df4-445f-4e70-9674-f7aa486b3d81",
+      "targetNodeId": "45afb241-1977-4cbf-8af3-c12844d5666b",
+      "startPoint": {
+        "x": 340,
+        "y": 280
+      },
+      "endPoint": {
+        "x": 540,
+        "y": 160
+      },
+      "properties": {
+        "type": "Success"
+      },
+      "zIndex": 1007,
+      "pointsList": [
+        {
+          "x": 340,
+          "y": 280
+        },
+        {
+          "x": 440,
+          "y": 280
+        },
+        {
+          "x": 440,
+          "y": 160
+        },
+        {
+          "x": 540,
+          "y": 160
+        }
+      ]
+    },
+    {
+      "id": "986878cc-a9be-42b5-afc0-6c0a169c4e4d",
+      "type": "bezier-link",
+      "sourceNodeId": "3b6b8df4-445f-4e70-9674-f7aa486b3d81",
+      "targetNodeId": "95047b03-e966-4685-b625-3cea27415706",
+      "startPoint": {
+        "x": 340,
+        "y": 280
+      },
+      "endPoint": {
+        "x": 540,
+        "y": 460
+      },
+      "properties": {
+        "type": "Failure"
+      },
+      "zIndex": 1008,
+      "pointsList": [
+        {
+          "x": 340,
+          "y": 280
+        },
+        {
+          "x": 440,
+          "y": 280
+        },
+        {
+          "x": 440,
+          "y": 460
+        },
+        {
+          "x": 540,
+          "y": 460
+        }
+      ]
+    }
+  ]
+}
