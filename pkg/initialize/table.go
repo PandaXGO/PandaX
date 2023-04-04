@@ -46,8 +46,6 @@ func InitTable() {
 				flowEntity.FlowWorkOrder{},
 				flowEntity.FlowWorkOrderTemplate{},
 				flowEntity.FlowWorkStage{},
-				flowEntity.FlowWorkTask{},
-				flowEntity.FlowWorkTaskHistory{},
 			),
 			"初始化表失败")
 	}
