@@ -1,8 +1,8 @@
 package nodes
 
 import (
-	"dz-iot-server/rule_engine/message"
 	"github.com/sirupsen/logrus"
+	"pandax/pkg/rule_engine/message"
 )
 
 type messageTypeFilterNode struct {

@@ -1,9 +1,9 @@
 package nodes
 
 import (
-	"dz-iot-server/rule_engine/message"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"pandax/pkg/rule_engine/message"
 )
 
 type messageGeneratorNode struct {

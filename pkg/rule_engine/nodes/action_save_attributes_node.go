@@ -1,8 +1,8 @@
 package nodes
 
 import (
-	"dz-iot-server/rule_engine/message"
 	"fmt"
+	"pandax/pkg/rule_engine/message"
 )
 
 type SaveAttributesNode struct {

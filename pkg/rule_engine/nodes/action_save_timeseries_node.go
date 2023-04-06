@@ -1,7 +1,7 @@
 package nodes
 
 import (
-	"dz-iot-server/rule_engine/message"
+	"pandax/pkg/rule_engine/message"
 )
 
 type SaveTimeSeriesNode struct {
