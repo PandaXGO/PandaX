@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/restfulx"
@@ -9,6 +10,8 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/kakuilan/kgo"
 	"pandax/pkg/middleware"
+	"pandax/pkg/rule_engine"
+	"pandax/pkg/rule_engine/message"
 	"runtime"
 )
 
@@ -79,4 +82,16 @@ func (s *System) ConnectWs(request *restful.Request, response *restful.Response)
 	// 登录账号信息
 	la := rc.LoginAccount
 	ws.Put(uint64(la.UserId), wsConn)
+}
+
+func (s *System) TestRuleChain(request *restful.Request, response *restful.Response) {
+	parameter := request.QueryParameter("code")
+	instance, _ := rule_engine.NewRuleChainInstance([]byte(parameter))
+	newMessage := message.NewMessage()
+	instance.StartRuleChain(context.Background(), newMessage)
+
+	response.WriteEntity(map[string]any{
+		"code": 200,
+		"logs": []map[string]interface{}{},
+	})
 }

@@ -11,5 +11,6 @@ func InitSystemRouter(container *restful.Container) {
 	ws.Path("/system").Produces(restful.MIME_JSON)
 	ws.Route(ws.GET("/").To(s.ConnectWs))
 	ws.Route(ws.GET("/server").To(s.ServerInfo))
+	ws.Route(ws.GET("/test/rulechain").To(s.ServerInfo))
 	container.Add(ws)
 }
