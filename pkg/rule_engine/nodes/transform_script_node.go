@@ -12,7 +12,7 @@ type transformScriptNode struct {
 
 type transformScriptNodeFactory struct{}
 
-func (f transformScriptNodeFactory) Name() string     { return "TransformScriptNode" }
+func (f transformScriptNodeFactory) Name() string     { return "ScriptNode" }
 func (f transformScriptNodeFactory) Category() string { return NODE_CATEGORY_TRANSFORM }
 func (f transformScriptNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f transformScriptNodeFactory) Create(id string, meta Metadata) (Node, error) {

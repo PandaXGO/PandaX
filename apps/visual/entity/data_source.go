@@ -2,7 +2,7 @@ package entity
 
 import "github.com/XM-GO/PandaKit/model"
 
-type DataSource struct {
+type VisualDataSource struct {
 	model.BaseModel
 	SourceId      string `gorm:"source_id;comment:数据源Id"   json:"sourceId"`                                       // 数据源Id
 	SourceType    string `gorm:"source_type;type:varchar(50);comment:数据源类型"         json:"sourceType"`            // 数据源类型
@@ -14,7 +14,7 @@ type DataSource struct {
 
 }
 
-type Db struct {
+type VisualDb struct {
 	DbIp         string `gorm:"db_ip" json:"dbIp"`
 	DbPort       string `gorm:"db_port" json:"dbPort"`
 	DbName       string `gorm:"db_name" json:"dbName"`
@@ -23,7 +23,7 @@ type Db struct {
 	DbJointParam string `gorm:"db_joint_param" json:"dbJointParam"` //额外的链接参数
 }
 
-type Api struct {
+type VisualApi struct {
 	Method      string                 `gorm:"method" json:"method"`
 	url         string                 `gorm:"url" json:"url"`
 	Headers     map[string]interface{} `gorm:"headers" json:"headers"`
@@ -31,6 +31,6 @@ type Api struct {
 	Auth        string                 `gorm:"db_password" json:"dbPassword"`
 }
 
-func (DataSource) TableName() string {
-	return "bi_data_source"
+func (VisualDataSource) TableName() string {
+	return "visual_data_source"
 }

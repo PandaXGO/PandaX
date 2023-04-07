@@ -11,7 +11,7 @@ type externalSendSmsNode struct {
 
 type externalSendSmsNodeFactory struct{}
 
-func (f externalSendSmsNodeFactory) Name() string     { return "ExternalSendSmslNode" }
+func (f externalSendSmsNodeFactory) Name() string     { return "SendSmsNode" }
 func (f externalSendSmsNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalSendSmsNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f externalSendSmsNodeFactory) Create(id string, meta Metadata) (Node, error) {

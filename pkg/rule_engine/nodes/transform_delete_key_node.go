@@ -12,7 +12,7 @@ type transformDeleteKeyNode struct {
 }
 type transformDeleteKeyNodeFactory struct{}
 
-func (f transformDeleteKeyNodeFactory) Name() string     { return "TransformDeleteKeyNode" }
+func (f transformDeleteKeyNodeFactory) Name() string     { return "DeleteKeyNode" }
 func (f transformDeleteKeyNodeFactory) Category() string { return NODE_CATEGORY_TRANSFORM }
 func (f transformDeleteKeyNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f transformDeleteKeyNodeFactory) Create(id string, meta Metadata) (Node, error) {

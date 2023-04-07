@@ -14,7 +14,7 @@ type messageGeneratorNode struct {
 
 type messageGeneratorNodeFactory struct{}
 
-func (f messageGeneratorNodeFactory) Name() string     { return "MessageGeneratorNode" }
+func (f messageGeneratorNodeFactory) Name() string     { return "GeneratorNode" }
 func (f messageGeneratorNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
 func (f messageGeneratorNodeFactory) Labels() []string { return []string{"Created", "Updated"} }
 func (f messageGeneratorNodeFactory) Create(id string, meta Metadata) (Node, error) {

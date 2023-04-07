@@ -16,7 +16,7 @@ type externalWechatNode struct {
 
 type externalWechatNodeFactory struct{}
 
-func (f externalWechatNodeFactory) Name() string     { return "ExternalWechatNode" }
+func (f externalWechatNodeFactory) Name() string     { return "WechatNode" }
 func (f externalWechatNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalWechatNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f externalWechatNodeFactory) Create(id string, meta Metadata) (Node, error) {

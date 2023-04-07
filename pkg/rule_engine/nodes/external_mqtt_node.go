@@ -24,7 +24,7 @@ type externalMqttNode struct {
 
 type externalMqttNodeFactory struct{}
 
-func (f externalMqttNodeFactory) Name() string     { return "ExternalMqttNode" }
+func (f externalMqttNodeFactory) Name() string     { return "MqttNode" }
 func (f externalMqttNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalMqttNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f externalMqttNodeFactory) Create(id string, meta Metadata) (Node, error) {

@@ -10,6 +10,7 @@ import (
 	logRouter "pandax/apps/log/router"
 	resRouter "pandax/apps/resource/router"
 	sysRouter "pandax/apps/system/router"
+	visualRouter "pandax/apps/visual/router"
 
 	"pandax/pkg/middleware"
 )
@@ -49,6 +50,10 @@ func InitRouter() *transport.HttpServer {
 		flowRouter.InitFlowWorkClassifyRouter(container)
 		flowRouter.InitFlowWorkInfoRouter(container)
 		flowRouter.InitFlowWorkTemplatesRouter(container)
+	}
+	// 可视化
+	{
+		visualRouter.InitRuleChainRouter(container)
 	}
 	// 任务
 	{

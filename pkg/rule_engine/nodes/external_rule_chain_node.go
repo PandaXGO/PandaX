@@ -12,7 +12,7 @@ type externalRuleChainNode struct {
 
 type externalRuleChainNodeFactory struct{}
 
-func (f externalRuleChainNodeFactory) Name() string     { return "ExternalRuleChainNode" }
+func (f externalRuleChainNodeFactory) Name() string     { return "RuleChainNode" }
 func (f externalRuleChainNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalRuleChainNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f externalRuleChainNodeFactory) Create(id string, meta Metadata) (Node, error) {

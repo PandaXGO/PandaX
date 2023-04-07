@@ -19,7 +19,7 @@ type deviceTypeSwitchNode struct {
 
 type deviceTypeSwitchNodeFactory struct{}
 
-func (f deviceTypeSwitchNodeFactory) Name() string     { return "DeviceTypeSwitch" }
+func (f deviceTypeSwitchNodeFactory) Name() string     { return "DeviceTypeSwitchNode" }
 func (f deviceTypeSwitchNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
 func (f deviceTypeSwitchNodeFactory) Labels() []string { return []string{DEVICE, GATEWAY} }
 func (f deviceTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, error) {

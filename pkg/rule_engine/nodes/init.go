@@ -24,7 +24,7 @@ func init() {
 	RegisterFactory(externalDingNodeFactory{})
 	RegisterFactory(externalWechatNodeFactory{})
 	RegisterFactory(externalKafkaNodeFactory{})
-	RegisterFactory(externalMqNodeFactory{})
+	RegisterFactory(externalNatsNodeFactory{})
 	RegisterFactory(externalMqttNodeFactory{})
 	RegisterFactory(externalRestapiNodeFactory{})
 	RegisterFactory(externalSendEmailNodeFactory{})

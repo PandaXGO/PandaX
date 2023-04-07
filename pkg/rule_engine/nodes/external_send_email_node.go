@@ -17,7 +17,7 @@ type externalSendEmailNode struct {
 
 type externalSendEmailNodeFactory struct{}
 
-func (f externalSendEmailNodeFactory) Name() string     { return "ExternalSendEmailNode" }
+func (f externalSendEmailNodeFactory) Name() string     { return "SendEmailNode" }
 func (f externalSendEmailNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalSendEmailNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f externalSendEmailNodeFactory) Create(id string, meta Metadata) (Node, error) {

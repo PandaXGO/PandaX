@@ -1,6 +1,11 @@
 package message
 
-import "github.com/sirupsen/logrus"
+import (
+	"encoding/json"
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
+	"time"
+)
 
 // Message ...
 type Message interface {
@@ -12,6 +17,7 @@ type Message interface {
 	SetMsg(map[string]interface{})
 	SetOriginator(string)
 	SetMetadata(Metadata)
+	MarshalBinary() ([]byte, error)
 }
 
 // Metadata ...
@@ -35,16 +41,18 @@ const (
 // NewMessage ...
 func NewMessage() Message {
 	return &defaultMessage{
+		id:  uuid.New().String(),
+		ts:  time.Now(),
 		msg: map[string]interface{}{},
 	}
 }
 
 type defaultMessage struct {
 	id         string                 //uuid
-	ts         int64                  //时间戳
+	ts         time.Time              //时间戳
 	msgType    string                 //消息类型，   attributes（参数），telemetry（遥测），Connect连接事件
 	originator string                 //数据发布者	 设备 规则链
-	customerId string                 //客户Id  UUID
+	userId     string                 //客户Id  UUID
 	deviceId   string                 //设备Id  UUID
 	msg        map[string]interface{} //数据		数据结构JSON  设备原始数据 msg
 	metadata   Metadata               //消息的元数据		包括，设备名称，设备类型，命名空间，时间戳等
@@ -68,6 +76,9 @@ func (t *defaultMessage) SetType(msgType string)            { t.msgType = msgTyp
 func (t *defaultMessage) SetMsg(msg map[string]interface{}) { t.msg = msg }
 func (t *defaultMessage) SetOriginator(originator string)   { t.originator = originator }
 func (t *defaultMessage) SetMetadata(metadata Metadata)     { t.metadata = metadata }
+func (t *defaultMessage) MarshalBinary() ([]byte, error) {
+	return json.Marshal(t)
+}
 
 // NewMetadata ...
 func NewMetadata() Metadata {

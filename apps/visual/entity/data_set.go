@@ -2,14 +2,14 @@ package entity
 
 import "github.com/XM-GO/PandaKit/model"
 
-type DataSetGroup struct {
+type VisualDataSetGroup struct {
 	model.BaseModelD
 	Name  string `gorm:"name;type:varchar(64);comment:数据源类型" json:"name"`
 	Pid   string `json:"pid"`
 	Level int64  `json:"level"`
 }
 
-/*type DataSetTable struct {
+/*type VisualDataSetTable struct {
 	model.BaseModelD
 	TableId      string              `gorm:"name;type:TEXT;comment:表id" json:"tableId"`
 	DataSourceId string              `gorm:"name;type:TEXT;comment:数据圆ID" json:"data_source_Id"`

@@ -16,7 +16,7 @@ type KeyName struct {
 }
 type transformRenameKeyNodeFactory struct{}
 
-func (f transformRenameKeyNodeFactory) Name() string     { return "TransformRenameKeyNode" }
+func (f transformRenameKeyNodeFactory) Name() string     { return "RenameKeyNode" }
 func (f transformRenameKeyNodeFactory) Category() string { return NODE_CATEGORY_TRANSFORM }
 func (f transformRenameKeyNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f transformRenameKeyNodeFactory) Create(id string, meta Metadata) (Node, error) {

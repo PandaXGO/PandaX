@@ -30,6 +30,7 @@ var (
 
 	// allNodeCategories hold node's metadata by category
 	allNodeCategories map[string][]map[string]interface{} = make(map[string][]map[string]interface{})
+	allCategories     []map[string]interface{}            = make([]map[string]interface{}, 0)
 )
 
 // RegisterFactory add a new node factory and classify its category for
@@ -41,6 +42,7 @@ func RegisterFactory(f Factory) {
 		allNodeCategories[f.Category()] = []map[string]interface{}{}
 	}
 	allNodeCategories[f.Category()] = append(allNodeCategories[f.Category()], map[string]interface{}{"name": f.Name(), "labels": f.Labels()})
+	allCategories = append(allCategories, map[string]interface{}{"name": f.Name(), "labels": f.Labels()})
 }
 
 // NewNode is the only way to create a new node
@@ -53,3 +55,5 @@ func NewNode(nodeType string, id string, meta Metadata) (Node, error) {
 
 // GetCategoryNodes return specified category's all nodes
 func GetCategoryNodes() map[string][]map[string]interface{} { return allNodeCategories }
+
+func GetCategory() []map[string]interface{} { return allCategories }

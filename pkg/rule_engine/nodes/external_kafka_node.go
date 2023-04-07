@@ -14,7 +14,7 @@ type externalKafkaNode struct {
 
 type externalKafkaNodeFactory struct{}
 
-func (f externalKafkaNodeFactory) Name() string     { return "ExternalKafkaNode" }
+func (f externalKafkaNodeFactory) Name() string     { return "KafkaNode" }
 func (f externalKafkaNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalKafkaNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f externalKafkaNodeFactory) Create(id string, meta Metadata) (Node, error) {

@@ -16,7 +16,7 @@ type externalDingNode struct {
 
 type externalDingNodeFactory struct{}
 
-func (f externalDingNodeFactory) Name() string     { return "ExternalDingNode" }
+func (f externalDingNodeFactory) Name() string     { return "DingNode" }
 func (f externalDingNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalDingNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f externalDingNodeFactory) Create(id string, meta Metadata) (Node, error) {
