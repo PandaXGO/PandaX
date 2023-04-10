@@ -12,6 +12,7 @@ type Message interface {
 	GetOriginator() string
 	GetType() string
 	GetMsg() map[string]interface{}
+	GetMsgLogs() []MesLog
 	GetMetadata() Metadata
 	SetType(string)
 	SetMsg(map[string]interface{})
@@ -41,9 +42,10 @@ const (
 // NewMessage ...
 func NewMessage() Message {
 	return &defaultMessage{
-		id:  uuid.New().String(),
-		ts:  time.Now(),
-		msg: map[string]interface{}{},
+		id:     uuid.New().String(),
+		ts:     time.Now(),
+		msg:    map[string]interface{}{},
+		mesLog: make([]MesLog, 0),
 	}
 }
 
@@ -56,6 +58,7 @@ type defaultMessage struct {
 	deviceId   string                 //设备Id  UUID
 	msg        map[string]interface{} //数据		数据结构JSON  设备原始数据 msg
 	metadata   Metadata               //消息的元数据		包括，设备名称，设备类型，命名空间，时间戳等
+	mesLog     []MesLog
 }
 
 // NewMessageWithDetail ...
@@ -65,12 +68,14 @@ func NewMessageWithDetail(originator string, messageType string, msg map[string]
 		msgType:    messageType,
 		msg:        msg,
 		metadata:   metadata,
+		mesLog:     make([]MesLog, 0),
 	}
 }
 
 func (t *defaultMessage) GetOriginator() string             { return t.originator }
 func (t *defaultMessage) GetType() string                   { return t.msgType }
 func (t *defaultMessage) GetMsg() map[string]interface{}    { return t.msg }
+func (t *defaultMessage) GetMsgLogs() []MesLog              { return t.mesLog }
 func (t *defaultMessage) GetMetadata() Metadata             { return t.metadata }
 func (t *defaultMessage) SetType(msgType string)            { t.msgType = msgType }
 func (t *defaultMessage) SetMsg(msg map[string]interface{}) { t.msg = msg }
@@ -121,4 +126,12 @@ func (t *defaultMetadata) GetValues() map[string]interface{} {
 }
 func (t *defaultMetadata) SetValues(values map[string]interface{}) {
 	t.values = values
+}
+
+type MesLog struct {
+	NodeName  string    `json:"nodeName"`
+	startTime time.Time `json:"startTime"`
+	endTime   time.Time `json:"endTime"`
+	result    string    `json:"result"`
+	Remark    string    `json:"remark"`
 }

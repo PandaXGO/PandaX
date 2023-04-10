@@ -7,7 +7,8 @@ import (
 	jobEntity "pandax/apps/job/entity"
 	logEntity "pandax/apps/log/entity"
 	resSourceEntity "pandax/apps/resource/entity"
-	"pandax/apps/system/entity"
+	systemEntity "pandax/apps/system/entity"
+	visualEntity "pandax/apps/visual/entity"
 	"pandax/pkg/global"
 )
 
@@ -18,22 +19,23 @@ func InitTable() {
 		biz.ErrIsNil(
 			global.Db.AutoMigrate(
 				//casbin.CasbinRule{},
-				entity.SysDept{},
-				entity.SysApi{},
-				entity.SysConfig{},
-				entity.SysDictType{},
-				entity.SysDictData{},
+				systemEntity.SysDept{},
+				systemEntity.SysApi{},
+				systemEntity.SysConfig{},
+				systemEntity.SysDictType{},
+				systemEntity.SysDictData{},
+				systemEntity.SysUser{},
+				systemEntity.SysTenants{},
+				systemEntity.SysRole{},
+				systemEntity.SysMenu{},
+				systemEntity.SysPost{},
+				systemEntity.SysRoleMenu{},
+				systemEntity.SysRoleDept{},
+				systemEntity.SysNotice{},
+
 				logEntity.LogLogin{},
 				logEntity.LogOper{},
 				logEntity.LogJob{},
-				entity.SysUser{},
-				entity.SysTenants{},
-				entity.SysRole{},
-				entity.SysMenu{},
-				entity.SysPost{},
-				entity.SysRoleMenu{},
-				entity.SysRoleDept{},
-				entity.SysNotice{},
 				jobEntity.SysJob{},
 				devEntity.DevGenTable{},
 				devEntity.DevGenTableColumn{},
@@ -46,6 +48,13 @@ func InitTable() {
 				flowEntity.FlowWorkOrder{},
 				flowEntity.FlowWorkOrderTemplate{},
 				flowEntity.FlowWorkStage{},
+
+				visualEntity.VisualDataSetGroup{},
+				visualEntity.VisualDataSource{},
+				visualEntity.VisualDataSetTable{},
+				visualEntity.VisualDataSetField{},
+				visualEntity.VisualScreen{},
+				visualEntity.VisualRuleChain{},
 			),
 			"初始化表失败")
 	}

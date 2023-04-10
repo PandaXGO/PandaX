@@ -63,7 +63,6 @@ var rootCmd = &cobra.Command{
 		stop := make(chan os.Signal, 1)
 		signal.Notify(stop, syscall.SIGTERM, os.Interrupt)
 		<-stop
-
 		if err := app.Stop(context.TODO()); err != nil {
 			log.Fatalf("fatal app stop: %s", err)
 			os.Exit(-3)

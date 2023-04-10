@@ -56,7 +56,7 @@ func (m *ruleChainModelImpl) FindListPage(page, pageSize int, data entity.Visual
 		db = db.Where("user_id = ?", data.UserId)
 	}
 	if data.RuleName != "" {
-		db = db.Where("rule_name = ?", data.RuleName)
+		db = db.Where("rule_name like ?", "%"+data.RuleName+"%")
 	}
 	if data.RuleRemark != "" {
 		db = db.Where("rule_remark like ?", "%"+data.RuleRemark+"%")
@@ -79,7 +79,7 @@ func (m *ruleChainModelImpl) FindList(data entity.VisualRuleChain) *[]entity.Vis
 		db = db.Where("user_id = ?", data.UserId)
 	}
 	if data.RuleName != "" {
-		db = db.Where("rule_name = ?", data.RuleName)
+		db = db.Where("rule_name like ?", "%"+data.RuleName+"%")
 	}
 	if data.RuleRemark != "" {
 		db = db.Where("rule_remark like ?", "%"+data.RuleRemark+"%")

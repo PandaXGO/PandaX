@@ -1,4 +1,4 @@
-package api
+package router
 
 import (
 	"github.com/XM-GO/PandaKit/model"

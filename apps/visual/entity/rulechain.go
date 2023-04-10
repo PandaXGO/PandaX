@@ -5,14 +5,17 @@ import (
 )
 
 type VisualRuleChain struct {
-	UserId       string `json:"userId"`
-	RuleId       string `json:"ruleId"`
-	RuleName     string `json:"ruleName"`
-	RuleDataJson string `json:"ruleDataJson"`
-	RuleBase64   string `json:"ruleBase64"` //缩略图 base64
-	RuleRemark   string `json:"ruleRemark"`
-	Status       string `json:"status"`
-	DeviceId     string `json:"deviceId"`
+	UserId       string `gorm:"userId;type:varchar(64);comment:用户Id" json:"userId"`
+	RuleId       string `gorm:"primary_key;" json:"ruleId"`
+	RuleName     string `gorm:"ruleName;type:varchar(50);comment:名称" json:"ruleName"`
+	RuleDataJson string `gorm:"ruleDataJson;type:varchar(50);comment:Json数据" json:"ruleDataJson"`
+	RuleBase64   string `gorm:"ruleBase64;type:varchar(50);comment:Base64缩略图" json:"ruleBase64"` //缩略图 base64
+	RuleRemark   string `gorm:"ruleRemark;type:varchar(50);comment:说明" json:"ruleRemark"`
+	Status       string `gorm:"status;type:varchar(50);comment:状态" json:"status"`
 	Creator      string `json:"creator"` //创建者
 	model.BaseModel
+}
+
+func (VisualRuleChain) TableName() string {
+	return "visual_rule_chain"
 }
