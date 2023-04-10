@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/kakuilan/kgo"
 	"pandax/apps/visual/entity"
 	"pandax/apps/visual/services"
 	"pandax/pkg/rule_engine"
@@ -56,6 +57,7 @@ func (p *RuleChainApi) GetVisualRuleChain(rc *restfulx.ReqCtx) {
 func (p *RuleChainApi) InsertVisualRuleChain(rc *restfulx.ReqCtx) {
 	var data entity.VisualRuleChain
 	restfulx.BindQuery(rc, &data)
+	data.RuleId = kgo.KStr.Uniqid("px")
 	data.Creator = rc.LoginAccount.UserName
 	p.VisualRuleChainApp.Insert(data)
 }
