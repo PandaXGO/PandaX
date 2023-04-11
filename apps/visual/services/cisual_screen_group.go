@@ -13,40 +13,40 @@ import (
 )
 
 type (
-	VisualDataSetGroupModel interface {
-		Insert(data entity.VisualDataSetGroup) *entity.VisualDataSetGroup
-		FindOne(id string) *entity.VisualDataSetGroup
-		FindListPage(page, pageSize int, data entity.VisualDataSetGroup) (*[]entity.VisualDataSetGroup, int64)
-		FindList(data entity.VisualDataSetGroup) *[]entity.VisualDataSetGroup
-		Update(data entity.VisualDataSetGroup) *entity.VisualDataSetGroup
+	VisualScreenGroupModel interface {
+		Insert(data entity.VisualScreenGroup) *entity.VisualScreenGroup
+		FindOne(id string) *entity.VisualScreenGroup
+		FindListPage(page, pageSize int, data entity.VisualScreenGroup) (*[]entity.VisualScreenGroup, int64)
+		FindList(data entity.VisualScreenGroup) *[]entity.VisualScreenGroup
+		Update(data entity.VisualScreenGroup) *entity.VisualScreenGroup
 		Delete(ids []string)
 	}
 
-	datasetgroupModelImpl struct {
+	screenGroupModelImpl struct {
 		table string
 	}
 )
 
-var VisualDataSetGroupModelDao VisualDataSetGroupModel = &datasetgroupModelImpl{
-	table: `visual_data_set_group`,
+var VisualScreenGroupModelDao VisualScreenGroupModel = &screenGroupModelImpl{
+	table: `visual_screen_group`,
 }
 
-func (m *datasetgroupModelImpl) Insert(data entity.VisualDataSetGroup) *entity.VisualDataSetGroup {
+func (m *screenGroupModelImpl) Insert(data entity.VisualScreenGroup) *entity.VisualScreenGroup {
 	err := global.Db.Table(m.table).Create(&data).Error
 	biz.ErrIsNil(err, "添加数据集分组失败")
 	return &data
 }
 
-func (m *datasetgroupModelImpl) FindOne(id string) *entity.VisualDataSetGroup {
-	resData := new(entity.VisualDataSetGroup)
+func (m *screenGroupModelImpl) FindOne(id string) *entity.VisualScreenGroup {
+	resData := new(entity.VisualScreenGroup)
 	db := global.Db.Table(m.table).Where("id = ?", id)
 	err := db.First(resData).Error
 	biz.ErrIsNil(err, "查询数据集分组失败")
 	return resData
 }
 
-func (m *datasetgroupModelImpl) FindListPage(page, pageSize int, data entity.VisualDataSetGroup) (*[]entity.VisualDataSetGroup, int64) {
-	list := make([]entity.VisualDataSetGroup, 0)
+func (m *screenGroupModelImpl) FindListPage(page, pageSize int, data entity.VisualScreenGroup) (*[]entity.VisualScreenGroup, int64) {
+	list := make([]entity.VisualScreenGroup, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
 	db := global.Db.Table(m.table)
@@ -63,8 +63,8 @@ func (m *datasetgroupModelImpl) FindListPage(page, pageSize int, data entity.Vis
 	return &list, total
 }
 
-func (m *datasetgroupModelImpl) FindList(data entity.VisualDataSetGroup) *[]entity.VisualDataSetGroup {
-	list := make([]entity.VisualDataSetGroup, 0)
+func (m *screenGroupModelImpl) FindList(data entity.VisualScreenGroup) *[]entity.VisualScreenGroup {
+	list := make([]entity.VisualScreenGroup, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
 	if data.Name != "" {
@@ -77,11 +77,11 @@ func (m *datasetgroupModelImpl) FindList(data entity.VisualDataSetGroup) *[]enti
 	return &list
 }
 
-func (m *datasetgroupModelImpl) Update(data entity.VisualDataSetGroup) *entity.VisualDataSetGroup {
+func (m *screenGroupModelImpl) Update(data entity.VisualScreenGroup) *entity.VisualScreenGroup {
 	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改数据集分组失败")
 	return &data
 }
 
-func (m *datasetgroupModelImpl) Delete(ids []string) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.VisualDataSetGroup{}, "id in (?)", ids).Error, "删除数据集分组失败")
+func (m *screenGroupModelImpl) Delete(s []string) {
+	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.VisualScreenGroup{}, "id in (?)", s).Error, "删除数据集分组失败")
 }

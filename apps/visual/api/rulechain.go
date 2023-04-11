@@ -31,12 +31,11 @@ func (r *RuleChainApi) RuleChainTest(rc *restfulx.ReqCtx) {
 
 // GetVisualRuleChainList WorkInfo列表数据
 func (p *RuleChainApi) GetVisualRuleChainList(rc *restfulx.ReqCtx) {
-	data := entity.VisualRuleChain{}
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
-	data.RuleName = restfulx.QueryParam(rc, "ruleName")
-	data.Status = restfulx.QueryParam(rc, "status")
-
+	ruleName := restfulx.QueryParam(rc, "ruleName")
+	status := restfulx.QueryParam(rc, "status")
+	data := entity.VisualRuleChain{RuleName: ruleName, Status: status}
 	list, total := p.VisualRuleChainApp.FindListPage(pageNum, pageSize, data)
 
 	rc.ResData = model.ResultPage{

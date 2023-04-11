@@ -7,10 +7,13 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/visual/api"
 	"pandax/apps/visual/entity"
+	"pandax/apps/visual/services"
 )
 
 func InitRuleChainRouter(container *restful.Container) {
-	s := &api.RuleChainApi{}
+	s := &api.RuleChainApi{
+		VisualRuleChainApp: services.VisualRuleChainModelDao,
+	}
 
 	ws := new(restful.WebService)
 	ws.Path("/visual/rulechain").Produces(restful.MIME_JSON)

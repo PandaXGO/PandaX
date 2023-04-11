@@ -54,6 +54,7 @@ func InitTable() {
 				visualEntity.VisualDataSetTable{},
 				visualEntity.VisualDataSetField{},
 				visualEntity.VisualScreen{},
+				visualEntity.VisualScreenGroup{},
 				visualEntity.VisualRuleChain{},
 			),
 			"初始化表失败")
