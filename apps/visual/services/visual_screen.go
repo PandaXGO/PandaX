@@ -51,7 +51,7 @@ func (m *screenModelImpl) FindListPage(page, pageSize int, data entity.VisualScr
 	offset := pageSize * (page - 1)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	if data.UserId != "" {
+	if data.UserId != 0 {
 		db = db.Where("user_id = ?", data.UserId)
 	}
 	db.Where("delete_time IS NULL")
@@ -61,12 +61,16 @@ func (m *screenModelImpl) FindListPage(page, pageSize int, data entity.VisualScr
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
 	}
+	if data.GroupId != 0 {
+		db = db.Where("group_id = ?", data.GroupId)
+	}
 	if data.ScreenRemark != "" {
 		db = db.Where("screen_remark like ?", "%"+data.ScreenRemark+"%")
 	}
 	if data.Creator != "" {
 		db = db.Where("creator = ?", data.Creator)
 	}
+
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
 	biz.ErrIsNil(err, "查询bi大屏分页列表失败")
@@ -77,7 +81,7 @@ func (m *screenModelImpl) FindList(data entity.VisualScreen) *[]entity.VisualScr
 	list := make([]entity.VisualScreen, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	if data.UserId != "" {
+	if data.UserId != 0 {
 		db = db.Where("user_id = ?", data.UserId)
 	}
 	db.Where("delete_time IS NULL")

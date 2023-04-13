@@ -75,3 +75,10 @@ func (p *RuleChainApi) DeleteVisualRuleChain(rc *restfulx.ReqCtx) {
 	ids := strings.Split(id, ",")
 	p.VisualRuleChainApp.Delete(ids)
 }
+
+// UpdateRuleStatus 修改状态
+func (p *RuleChainApi) UpdateRuleStatus(rc *restfulx.ReqCtx) {
+	var rule entity.VisualRuleChain
+	restfulx.BindQuery(rc, &rule)
+	p.VisualRuleChainApp.Update(rule)
+}

@@ -8,6 +8,7 @@ package api
 import (
 	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/kakuilan/kgo"
 	"strings"
 
 	"pandax/apps/visual/entity"
@@ -25,6 +26,8 @@ func (p *VisualScreenApi) GetVisualScreenList(rc *restfulx.ReqCtx) {
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 	data.ScreenName = restfulx.QueryParam(rc, "screenName")
 	data.Status = restfulx.QueryParam(rc, "status")
+
+	data.GroupId = int64(restfulx.QueryInt(rc, "groupId", 0))
 
 	list, total := p.VisualScreenApp.FindListPage(pageNum, pageSize, data)
 
@@ -46,7 +49,9 @@ func (p *VisualScreenApi) GetVisualScreen(rc *restfulx.ReqCtx) {
 func (p *VisualScreenApi) InsertVisualScreen(rc *restfulx.ReqCtx) {
 	var data entity.VisualScreen
 	restfulx.BindQuery(rc, &data)
-
+	data.UserId = rc.LoginAccount.UserId
+	data.ScreenId = kgo.KStr.Uniqid("px")
+	data.Creator = rc.LoginAccount.UserName
 	p.VisualScreenApp.Insert(data)
 }
 
@@ -63,4 +68,11 @@ func (p *VisualScreenApi) DeleteVisualScreen(rc *restfulx.ReqCtx) {
 	screenId := restfulx.PathParam(rc, "screenId")
 	screenIds := strings.Split(screenId, ",")
 	p.VisualScreenApp.Delete(screenIds)
+}
+
+// UpdateScreenStatus 修改状态
+func (p *VisualScreenApi) UpdateScreenStatus(rc *restfulx.ReqCtx) {
+	var screen entity.VisualScreen
+	restfulx.BindQuery(rc, &screen)
+	p.VisualScreenApp.Update(screen)
 }

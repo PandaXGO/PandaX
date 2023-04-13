@@ -66,5 +66,12 @@ func InitVisualScreenRouter(container *restful.Container) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Param(ws.PathParameter("screenId", "多id 1,2,3").DataType("string")))
 
+	ws.Route(ws.PUT("/changeStatus").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("修改状态").Handle(s.UpdateScreenStatus)
+	}).
+		Doc("修改状态").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Reads(entity.VisualScreen{}))
+
 	container.Add(ws)
 }

@@ -6,10 +6,8 @@ package api
 // 生成人：panda
 // ==========================================================================
 import (
-	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
-	"strings"
-
+	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/visual/entity"
 	"pandax/apps/visual/services"
 )
@@ -18,30 +16,41 @@ type VisualScreenGroupApi struct {
 	VisualScreenGroupApp services.VisualScreenGroupModel
 }
 
-// GetVisualScreenGroupList DataSetGroup列表数据
-func (p *VisualScreenGroupApi) GetVisualScreenGroupList(rc *restfulx.ReqCtx) {
-	data := entity.VisualScreenGroup{}
-	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
-	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
-	data.Name = restfulx.QueryParam(rc, "name")
+// GetScreenGroupTree ScreenGroup 树
+func (p *VisualScreenGroupApi) GetScreenGroupTree(rc *restfulx.ReqCtx) {
+	name := restfulx.QueryParam(rc, "name")
+	status := restfulx.QueryParam(rc, "status")
+	id := restfulx.QueryInt(rc, "id", 0)
+	sg := entity.VisualScreenGroup{Name: name, Status: status, Id: int64(id)}
+	rc.ResData = p.VisualScreenGroupApp.SelectScreenGroup(sg)
+}
 
-	list, total := p.VisualScreenGroupApp.FindListPage(pageNum, pageSize, data)
+func (p *VisualScreenGroupApi) GetScreenGroupList(rc *restfulx.ReqCtx) {
+	name := restfulx.QueryParam(rc, "name")
+	status := restfulx.QueryParam(rc, "status")
+	id := restfulx.QueryInt(rc, "id", 0)
+	sg := entity.VisualScreenGroup{Name: name, Status: status, Id: int64(id)}
 
-	rc.ResData = model.ResultPage{
-		Total:    total,
-		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
-		Data:     list,
+	if sg.Name == "" {
+		rc.ResData = p.VisualScreenGroupApp.SelectScreenGroup(sg)
+	} else {
+		rc.ResData = p.VisualScreenGroupApp.FindList(sg)
 	}
 }
 
-// GetVisualScreenGroup 获取DataSetGroup
-func (p *VisualScreenGroupApi) GetVisualScreenGroup(rc *restfulx.ReqCtx) {
-	id := restfulx.PathParam(rc, "id")
-	rc.ResData = p.VisualScreenGroupApp.FindOne(id)
+// GetScreenGroupAllList 查询所有
+func (p *VisualScreenGroupApi) GetScreenGroupAllList(rc *restfulx.ReqCtx) {
+	var vsg entity.VisualScreenGroup
+	rc.ResData = p.VisualScreenGroupApp.FindList(vsg)
 }
 
-// InsertVisualScreenGroup 添加DataSetGroup
+// GetVisualScreenGroup 获取ScreenGroup
+func (p *VisualScreenGroupApi) GetVisualScreenGroup(rc *restfulx.ReqCtx) {
+	id := restfulx.PathParamInt(rc, "id")
+	rc.ResData = p.VisualScreenGroupApp.FindOne(int64(id))
+}
+
+// InsertVisualScreenGroup 添加ScreenGroup
 func (p *VisualScreenGroupApi) InsertVisualScreenGroup(rc *restfulx.ReqCtx) {
 	var data entity.VisualScreenGroup
 	restfulx.BindQuery(rc, &data)
@@ -49,7 +58,7 @@ func (p *VisualScreenGroupApi) InsertVisualScreenGroup(rc *restfulx.ReqCtx) {
 	p.VisualScreenGroupApp.Insert(data)
 }
 
-// UpdateVisualScreenGroup 修改DataSetGroup
+// UpdateVisualScreenGroup 修改ScreenGroup
 func (p *VisualScreenGroupApi) UpdateVisualScreenGroup(rc *restfulx.ReqCtx) {
 	var data entity.VisualScreenGroup
 	restfulx.BindQuery(rc, &data)
@@ -57,9 +66,9 @@ func (p *VisualScreenGroupApi) UpdateVisualScreenGroup(rc *restfulx.ReqCtx) {
 	p.VisualScreenGroupApp.Update(data)
 }
 
-// DeleteVisualScreenGroup 删除DataSetGroup
+// DeleteVisualScreenGroup 删除ScreenGroup
 func (p *VisualScreenGroupApi) DeleteVisualScreenGroup(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	ids := strings.Split(id, ",")
+	ids := utils.IdsStrToIdsIntGroup(id)
 	p.VisualScreenGroupApp.Delete(ids)
 }
