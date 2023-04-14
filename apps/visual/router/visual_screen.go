@@ -25,6 +25,8 @@ func InitVisualScreenRouter(container *restful.Container) {
 	ws.Path("/visual/screen").Produces(restful.MIME_JSON)
 	tags := []string{"screen"}
 
+	ws.Route(ws.GET("/twin").To(s.ScreenTwin)).Doc("Websocket孪生")
+
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取Screen分页列表").Handle(s.GetVisualScreenList)
 	}).

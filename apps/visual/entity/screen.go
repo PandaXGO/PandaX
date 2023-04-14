@@ -27,8 +27,8 @@ type VisualScreen struct {
 	ScreenId       string `gorm:"primary_key;" json:"screenId"`
 	GroupId        int64  `gorm:"screenGroup;type:int;comment:分组Id" json:"groupId"`
 	ScreenName     string `gorm:"screenName;type:varchar(50);comment:名称" json:"screenName"`
-	ScreenDataJson string `gorm:"screenDataJson;type:text;comment:Json数据" json:"screenDataJson"`
-	ScreenBase64   string `gorm:"screenBase64;type:text;comment:Base64缩略图" json:"screenBase64"` //缩略图 base64
+	ScreenDataJson string `gorm:"screenDataJson;type:longtext;comment:Json数据" json:"screenDataJson"` //pg 使用类型 text
+	ScreenBase64   string `gorm:"screenBase64;type:longtext;comment:Base64缩略图" json:"screenBase64"`  //缩略图 base64
 	ScreenRemark   string `gorm:"screenRemark;type:varchar(255);comment:说明" json:"screenRemark"`
 	Status         string `gorm:"status;type:varchar(1);comment:状态" json:"status"`
 	Creator        string `json:"creator"` //创建者
@@ -37,4 +37,13 @@ type VisualScreen struct {
 
 func (VisualScreen) TableName() string {
 	return "visual_screen"
+}
+
+type VisualScreenImage struct {
+	FileName string `gorm:"fileName;type:varchar(255);comment:文件名" json:"fileName"`
+	FilePath string `gorm:"filePath;type:varchar(255);comment:文件路径" json:"filePath"`
+}
+
+func (VisualScreenImage) TableName() string {
+	return "visual_screen_image"
 }

@@ -6,13 +6,16 @@ package api
 // 生成人：panda
 // ==========================================================================
 import (
+	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/emicklei/go-restful/v3"
 	"github.com/kakuilan/kgo"
 	"strings"
 
 	"pandax/apps/visual/entity"
 	"pandax/apps/visual/services"
+	pxSocket "pandax/pkg/websocket"
 )
 
 type VisualScreenApi struct {
@@ -75,4 +78,25 @@ func (p *VisualScreenApi) UpdateScreenStatus(rc *restfulx.ReqCtx) {
 	var screen entity.VisualScreen
 	restfulx.BindQuery(rc, &screen)
 	p.VisualScreenApp.Update(screen)
+}
+
+func (p *VisualScreenApi) ScreenTwin(request *restful.Request, response *restful.Response) {
+	screenId := request.QueryParameter("screenId")
+	biz.IsTrue(screenId != "", "请传组态Id")
+	newWebsocket, err := pxSocket.NewWebsocket(response.ResponseWriter, request.Request, nil)
+	biz.ErrIsNil(err, "创建Websocket失败")
+	if err != nil {
+		return
+	}
+	pxSocket.AddWebSocketByScreenId(screenId, newWebsocket)
+	go func() {
+		for {
+			_, message, err := newWebsocket.Conn.ReadMessage()
+			if err != nil {
+				return
+			}
+			pxSocket.OnMessage(string(message))
+		}
+
+	}()
 }

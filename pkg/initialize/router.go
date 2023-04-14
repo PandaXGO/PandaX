@@ -53,6 +53,7 @@ func InitRouter() *transport.HttpServer {
 	}
 	// 可视化
 	{
+		visualRouter.InitUploadRouter(container)
 		visualRouter.InitRuleChainRouter(container)
 		visualRouter.InitVisualScreenGroupRouter(container)
 		visualRouter.InitVisualScreenRouter(container)
