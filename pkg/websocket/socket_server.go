@@ -37,8 +37,11 @@ func NewWebsocket(writer http.ResponseWriter, r *http.Request, header http.Heade
 
 // OnMessage 消息
 //发送消息消息类型 01:发送的设备数据  02:收到指令回复  03: 心跳回复
-func OnMessage(message string) {
+func OnMessage(ws *Websocket, message string) {
 	log.Println(message)
+	if message != "" && strings.Index(message, "ONLINE") != -1 {
+		AddWebSocketByScreenId(strings.Split(message, "ONLINE")[0], ws)
+	}
 	//画布离开
 	if message != "" && strings.Index(message, "LEAVE") != -1 {
 		RemoveWebSocket(strings.Split(message, "LEAVE")[0])
@@ -58,8 +61,13 @@ func OnMessage(message string) {
 		sendMessages("02", "'命令发送成功'", screenId)
 	}
 	//心跳处理
-	if message != "" && strings.Index(message, "ping") != -1 {
-		sendMessages("03", "'心跳正常'", "")
+	if message != "" && strings.Index(message, "HEARTCMD") != -1 {
+		split := strings.Split(message, "HEARTCMD")
+		if len(split) < 1 {
+			return
+		}
+		screenId := split[0]
+		sendMessages("03", "'心跳正常'", screenId)
 	}
 
 }

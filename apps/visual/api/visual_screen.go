@@ -6,7 +6,6 @@ package api
 // 生成人：panda
 // ==========================================================================
 import (
-	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/emicklei/go-restful/v3"
@@ -82,10 +81,13 @@ func (p *VisualScreenApi) UpdateScreenStatus(rc *restfulx.ReqCtx) {
 
 func (p *VisualScreenApi) ScreenTwin(request *restful.Request, response *restful.Response) {
 	screenId := request.QueryParameter("screenId")
-	biz.IsTrue(screenId != "", "请传组态Id")
+	if screenId == "" {
+		restfulx.ErrorRes(response, "请传组态Id")
+		return
+	}
 	newWebsocket, err := pxSocket.NewWebsocket(response.ResponseWriter, request.Request, nil)
-	biz.ErrIsNil(err, "创建Websocket失败")
 	if err != nil {
+		restfulx.ErrorRes(response, "创建Websocket失败")
 		return
 	}
 	pxSocket.AddWebSocketByScreenId(screenId, newWebsocket)
@@ -95,8 +97,7 @@ func (p *VisualScreenApi) ScreenTwin(request *restful.Request, response *restful
 			if err != nil {
 				return
 			}
-			pxSocket.OnMessage(string(message))
+			pxSocket.OnMessage(newWebsocket, string(message))
 		}
-
 	}()
 }
