@@ -63,12 +63,14 @@ func newInstanceWithManifest(m *manifest.Manifest) (*ruleChainInstance, []error)
 			errs = append(errs, err)
 			continue
 		}
-		//可以有多个类型
-		if ty, ok := edge.Properties["lineType"]; ok {
-			split := strings.Split(ty.(string), "/")
-			for _, ty := range split {
-				originalNode.AddLinkedNode(ty, targetNode)
-			}
+		types := make([]string, 0)
+		if _, ok := edge.Properties["lineType"]; !ok {
+			types = append(types, "True")
+		} else {
+			types = strings.Split(edge.Properties["lineType"].(string), "/")
+		}
+		for _, ty := range types {
+			originalNode.AddLinkedNode(ty, targetNode)
 		}
 	}
 	return r, errs
