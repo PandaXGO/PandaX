@@ -64,23 +64,13 @@ func newInstanceWithManifest(m *manifest.Manifest) (*ruleChainInstance, []error)
 			continue
 		}
 		//可以有多个类型
-		split := strings.Split(edge.Properties["type"].(string), "/")
-		for _, ty := range split {
-			originalNode.AddLinkedNode(ty, targetNode)
-		}
-	}
-	for name, node := range r.nodes {
-		targetNodes := node.GetLinkedNodes()
-		mustLabels := node.MustLabels()
-		for _, label := range mustLabels {
-			if _, found := targetNodes[label]; !found {
-				err := fmt.Errorf("the label '%s' in node '%s' no exist'", label, name)
-				errs = append(errs, err)
-				continue
+		if ty, ok := edge.Properties["lineType"]; ok {
+			split := strings.Split(ty.(string), "/")
+			for _, ty := range split {
+				originalNode.AddLinkedNode(ty, targetNode)
 			}
 		}
 	}
-
 	return r, errs
 }
 
