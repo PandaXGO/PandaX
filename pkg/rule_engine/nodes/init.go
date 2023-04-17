@@ -31,4 +31,6 @@ func init() {
 	RegisterFactory(externalSendSmsNodeFactory{})
 	RegisterFactory(externalRuleChainNodeFactory{})
 
+	RegisterFactory(myNodeFactory{})
+
 }

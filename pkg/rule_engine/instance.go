@@ -2,10 +2,12 @@ package rule_engine
 
 import (
 	"context"
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/manifest"
 	"pandax/pkg/rule_engine/message"
 	"pandax/pkg/rule_engine/nodes"
+	"strings"
 )
 
 // ruleChainInstance is rulechain's runtime instance that manage all nodes in this chain,
@@ -37,6 +39,30 @@ func newInstanceWithManifest(m *manifest.Manifest) (*ruleChainInstance, []error)
 	r := &ruleChainInstance{
 		firstRuleNodeId: m.FirstRuleNodeId,
 		nodes:           nodes,
+	}
+
+	for _, edge := range m.Edges {
+		originalNode, found := r.nodes[edge.SourceNodeId]
+		if !found {
+			err := fmt.Errorf("original node '%s' no exist in", originalNode.Name())
+			errs = append(errs, err)
+			continue
+		}
+		targetNode, found := r.nodes[edge.TargetNodeId]
+		if !found {
+			err := fmt.Errorf("target node '%s' no exist in rulechain", targetNode.Name())
+			errs = append(errs, err)
+			continue
+		}
+		types := make([]string, 0)
+		if _, ok := edge.Properties["lineType"]; !ok {
+			types = append(types, "True")
+		} else {
+			types = strings.Split(edge.Properties["lineType"].(string), "/")
+		}
+		for _, ty := range types {
+			originalNode.AddLinkedNode(ty, targetNode)
+		}
 	}
 	return r, errs
 }
