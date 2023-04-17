@@ -1,24 +1,14 @@
-//  Licensed under the Apache License, Version 2.0 (the "License"); you may
-//  not use p file except in compliance with the License. You may obtain
-//  a copy of the License at
-//
-//        http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-//  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-//  License for the specific language governing permissions and limitations
-//  under the License.
 package nodes
 
 import (
 	"github.com/sirupsen/logrus"
+	"log"
 	"pandax/pkg/rule_engine/message"
 )
 
 type switchFilterNode struct {
 	bareNode
-	Scripts string `json:"scripts" yaml:"scripts"`
+	Script string `json:"script" yaml:"script"`
 }
 
 type switchFilterNodeFactory struct{}
@@ -27,8 +17,13 @@ func (f switchFilterNodeFactory) Name() string     { return "SwitchNode" }
 func (f switchFilterNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
 func (f switchFilterNodeFactory) Labels() []string {
 	return []string{
-		"Failure", "True", "False", message.MessageTypePostTelemetryRequest,
-		message.MessageTypeConnectEvent,
+		"Failure", "True", "False",
+		message.EventAttributesType,
+		message.EventAlarmType,
+		message.EventTelemetryType,
+		message.EventUpEventType,
+		message.EventConnectType,
+		message.EventDisConnectType,
 	}
 }
 func (f switchFilterNodeFactory) Create(id string, meta Metadata) (Node, error) {
@@ -42,7 +37,8 @@ func (n *switchFilterNode) Handle(msg message.Message) error {
 	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
 
 	scriptEngine := NewScriptEngine()
-	SwitchResults, err := scriptEngine.ScriptOnSwitch(msg, n.Scripts)
+	SwitchResults, err := scriptEngine.ScriptOnSwitch(msg, n.Script)
+	log.Println("开始执行switchFilterNode", SwitchResults)
 	if err != nil {
 		return nil
 	}
@@ -50,7 +46,7 @@ func (n *switchFilterNode) Handle(msg message.Message) error {
 	for label, node := range nodes {
 		for _, switchresult := range SwitchResults {
 			if label == switchresult {
-				return node.Handle(msg)
+				node.Handle(msg)
 			}
 		}
 	}

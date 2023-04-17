@@ -1,10 +1,9 @@
 package nodes
 
 import (
-	"fmt"
-	"pandax/pkg/rule_engine/message"
-
 	"github.com/sirupsen/logrus"
+	"log"
+	"pandax/pkg/rule_engine/message"
 )
 
 type messageTypeSwitchNode struct {
@@ -16,10 +15,12 @@ func (f messageTypeSwitchNodeFactory) Name() string     { return "MessageTypeSwi
 func (f messageTypeSwitchNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
 func (f messageTypeSwitchNodeFactory) Labels() []string {
 	return []string{
-		message.MessageTypePostAttributesRequest,
-		message.MessageTypePostTelemetryRequest,
-		message.MessageTypeConnectEvent,
-		message.MessageTypeDisconnectEvent,
+		message.EventAttributesType,
+		message.EventAlarmType,
+		message.EventTelemetryType,
+		message.EventUpEventType,
+		message.EventConnectType,
+		message.EventDisConnectType,
 		"Other",
 	}
 }
@@ -35,7 +36,7 @@ func (n *messageTypeSwitchNode) Handle(msg message.Message) error {
 
 	nodes := n.GetLinkedNodes()
 	messageType := msg.GetType()
-
+	log.Println("开始执行messageTypeSwitchNode")
 	for label, node := range nodes {
 		if messageType == label {
 			return node.Handle(msg)
@@ -46,5 +47,5 @@ func (n *messageTypeSwitchNode) Handle(msg message.Message) error {
 		return node.Handle(msg)
 	}
 	// not found
-	return fmt.Errorf("%s no label to handle message", n.Name())
+	return nil
 }

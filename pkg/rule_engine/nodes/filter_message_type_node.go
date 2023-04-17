@@ -12,7 +12,7 @@ type messageTypeFilterNode struct {
 
 type messageTypeFilterNodeFactory struct{}
 
-func (f messageTypeFilterNodeFactory) Name() string     { return "MessageTypeFilterNode" }
+func (f messageTypeFilterNodeFactory) Name() string     { return "MessageTypeNode" }
 func (f messageTypeFilterNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
 func (f messageTypeFilterNodeFactory) Labels() []string { return []string{"True", "False"} }
 
@@ -32,9 +32,12 @@ func (n *messageTypeFilterNode) Handle(msg message.Message) error {
 	messageType := msg.GetType()
 
 	for _, filterType := range n.MessageTypes {
-		if filterType == messageType {
+		if filterType == messageType && trueLabelNode != nil {
 			return trueLabelNode.Handle(msg)
 		}
 	}
-	return falseLabelNode.Handle(msg)
+	if falseLabelNode != nil {
+		return falseLabelNode.Handle(msg)
+	}
+	return nil
 }

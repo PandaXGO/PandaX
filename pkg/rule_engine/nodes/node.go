@@ -2,7 +2,9 @@ package nodes
 
 import (
 	"errors"
+	"pandax/pkg/rule_engine/manifest"
 	"pandax/pkg/rule_engine/message"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 )
@@ -62,4 +64,47 @@ func decodePath(meta Metadata, n Node) (Node, error) {
 		return n, err
 	}
 	return n, nil
+}
+
+func GetNodes(m *manifest.Manifest) (map[string]Node, error) {
+	nodes := make(map[string]Node)
+	// Create All nodes
+	for _, n := range m.Nodes {
+		metadata := NewMetadataWithValues(n.Properties)
+		node, err := NewNode(n.Type, n.Id, metadata)
+		if err != nil {
+			continue
+		}
+		if _, found := nodes[n.Id]; found {
+			logrus.Errorf("node '%s' already exist in rulechain", n.Id)
+			continue
+		}
+		nodes[n.Id] = node
+	}
+	for _, edge := range m.Edges {
+		originalNode, found := nodes[edge.SourceNodeId]
+		if !found {
+			logrus.Errorf("original node '%s' no exist in", originalNode.Name())
+			continue
+		}
+		targetNode, found := nodes[edge.TargetNodeId]
+		if !found {
+			logrus.Errorf("target node '%s' no exist in rulechain", targetNode.Name())
+			continue
+		}
+		//可以有多个类型
+		//可以有多个类型
+		types := make([]string, 0)
+		if _, ok := edge.Properties["type"]; !ok {
+			types = append(types, "True")
+		} else {
+			types = strings.Split(edge.Properties["type"].(string), "/")
+		}
+		for _, ty := range types {
+			originalNode.AddLinkedNode(ty, targetNode)
+		}
+
+	}
+
+	return nodes, nil
 }

@@ -2,6 +2,7 @@ package websocket
 
 import (
 	"github.com/gorilla/websocket"
+	"log"
 	"pandax/pkg/global"
 )
 
@@ -32,6 +33,7 @@ func RemoveWebSocket(screenId string) bool {
 func SendMessage(message, screenId string) {
 	ws := GetWebSocketByScreenId(screenId)
 	if ws != nil {
+		log.Println("发送消息", message)
 		ws.Conn.WriteMessage(websocket.TextMessage, []byte(message))
 	}
 }

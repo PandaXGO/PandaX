@@ -10,6 +10,7 @@ import (
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/kakuilan/kgo"
+	"pandax/pkg/global"
 	"strings"
 
 	"pandax/apps/visual/entity"
@@ -100,4 +101,5 @@ func (p *VisualScreenApi) ScreenTwin(request *restful.Request, response *restful
 			pxSocket.OnMessage(newWebsocket, string(message))
 		}
 	}()
+	global.Log.Info("Websocket连接成功")
 }

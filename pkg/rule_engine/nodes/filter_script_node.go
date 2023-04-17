@@ -2,6 +2,7 @@ package nodes
 
 import (
 	"github.com/sirupsen/logrus"
+	"log"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -9,7 +10,7 @@ const ScriptFilterNodeName = "ScriptFilterNode"
 
 type scriptFilterNode struct {
 	bareNode
-	Scripts string `json:"scripts" yaml:"scripts"`
+	Script string `json:"script" yaml:"script"`
 }
 
 type scriptFilterNodeFactory struct{}
@@ -30,9 +31,14 @@ func (n *scriptFilterNode) Handle(msg message.Message) error {
 	trueLabelNode := n.GetLinkedNode("True")
 	falseLabelNode := n.GetLinkedNode("False")
 	scriptEngine := NewScriptEngine()
-	isTrue, error := scriptEngine.ScriptOnFilter(msg, n.Scripts)
-	if isTrue == true && error == nil {
+	isTrue, error := scriptEngine.ScriptOnFilter(msg, n.Script)
+	log.Println(isTrue)
+	if isTrue == true && error == nil && trueLabelNode != nil {
 		return trueLabelNode.Handle(msg)
+	} else {
+		if falseLabelNode != nil {
+			return falseLabelNode.Handle(msg)
+		}
 	}
-	return falseLabelNode.Handle(msg)
+	return nil
 }

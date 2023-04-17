@@ -31,12 +31,12 @@ type Metadata interface {
 
 // Predefined message types
 const (
-	MessageTypePostAttributesRequest = "Post attributes"
-	MessageTypePostTelemetryRequest  = "Post telemetry"
-	MessageTypeActivityEvent         = "Activity event"
-	MessageTypeInactivityEvent       = "Inactivity event"
-	MessageTypeConnectEvent          = "Connect event"
-	MessageTypeDisconnectEvent       = "Disconnect event"
+	EventConnectType    = "connect"
+	EventDisConnectType = "disconnect"
+	EventUpEventType    = "event"
+	EventAlarmType      = "alarm"
+	EventTelemetryType  = "telemetry"
+	EventAttributesType = "attributes"
 )
 
 // NewMessage ...
