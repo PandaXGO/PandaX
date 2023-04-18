@@ -11,8 +11,8 @@ type transformRenameKeyNode struct {
 	Keys     []KeyName `json:"keys" yaml:"keys"`
 }
 type KeyName struct {
-	oldName string `json:"oldName" yaml:"oldName"`
-	newName string `json:"newName" yaml:"newName"`
+	OldName string `json:"oldName" yaml:"oldName"`
+	NewName string `json:"newName" yaml:"newName"`
 }
 type transformRenameKeyNodeFactory struct{}
 
@@ -20,7 +20,7 @@ func (f transformRenameKeyNodeFactory) Name() string     { return "RenameKeyNode
 func (f transformRenameKeyNodeFactory) Category() string { return NODE_CATEGORY_TRANSFORM }
 func (f transformRenameKeyNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f transformRenameKeyNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	node := &transformScriptNode{
+	node := &transformRenameKeyNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
@@ -34,25 +34,29 @@ func (n *transformRenameKeyNode) Handle(msg message.Message) error {
 	if n.FormType == "msg" {
 		data := msg.GetMsg()
 		for _, key := range n.Keys {
-			if _, found := data[key.oldName]; found {
-				data[key.newName] = data[key.oldName]
-				delete(data, key.oldName)
+			if _, found := data[key.OldName]; found {
+				data[key.NewName] = data[key.OldName]
+				delete(data, key.OldName)
 				msg.SetMsg(data)
 			}
 		}
 	} else if n.FormType == "metadata" {
 		data := msg.GetMetadata()
 		for _, key := range n.Keys {
-			if data.GetKeyValue(key.oldName) != nil {
+			if data.GetKeyValue(key.OldName) != nil {
 				values := data.GetValues()
-				values[key.newName] = values[key.oldName]
-				delete(values, key.oldName)
+				values[key.NewName] = values[key.OldName]
+				delete(values, key.OldName)
 				msg.SetMetadata(message.NewDefaultMetadata(values))
 			}
 		}
 	} else {
-		failureLabelNode.Handle(msg)
+		if failureLabelNode != nil {
+			return failureLabelNode.Handle(msg)
+		}
 	}
-
-	return successLabelNode.Handle(msg)
+	if successLabelNode != nil {
+		return successLabelNode.Handle(msg)
+	}
+	return nil
 }

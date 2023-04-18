@@ -7,6 +7,12 @@ import (
 
 type externalSendSmsNode struct {
 	bareNode
+	SecretId      string                 `json:"secretId" yaml:"secretId"`
+	SecretKey     string                 `json:"secretKey" yaml:"secretKey"`
+	SdkAppId      string                 `json:"sdkAppId" yaml:"sdkAppId"`           //应用Id（腾讯） 或 签名名称（阿里）
+	PhoneNumber   string                 `json:"phoneNumber" yaml:"phoneNumber"`     //发送到手机号
+	TemplateId    string                 `json:"templateId" yaml:"templateId"`       //短信模板Id
+	TemplateParam map[string]interface{} `json:"templateParam" yaml:"templateParam"` //模板参数: 模板参数的个数需要与 TemplateId 对应模板的变量个数保持一致，若无模板参数，则设置为空*/
 }
 
 type externalSendSmsNodeFactory struct{}

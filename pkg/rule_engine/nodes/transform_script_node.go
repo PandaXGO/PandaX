@@ -16,9 +16,8 @@ func (f transformScriptNodeFactory) Name() string     { return "ScriptNode" }
 func (f transformScriptNodeFactory) Category() string { return NODE_CATEGORY_TRANSFORM }
 func (f transformScriptNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f transformScriptNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{"Success", "Failure"}
 	node := &transformScriptNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
 }
@@ -29,10 +28,17 @@ func (n *transformScriptNode) Handle(msg message.Message) error {
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
 
-	scriptEngine := NewScriptEngine()
-	newMessage, err := scriptEngine.ScriptOnMessage(msg, n.Script)
+	scriptEngine := NewScriptEngine(msg, "Transform", n.Script)
+	newMessage, err := scriptEngine.ScriptOnMessage()
 	if err != nil {
-		return failureLabelNode.Handle(msg)
+		if failureLabelNode != nil {
+			return failureLabelNode.Handle(msg)
+		} else {
+			return err
+		}
 	}
-	return successLabelNode.Handle(newMessage)
+	if successLabelNode != nil {
+		return successLabelNode.Handle(newMessage)
+	}
+	return nil
 }

@@ -1,129 +1,121 @@
 {
   "nodes": [
     {
-      "id": "d2cc123c-d0d7-4830-8547-21d5e52b4011",
+      "id": "input",
       "type": "InputNode",
-      "x": 120,
-      "y": 340,
-      "properties": {
-        "debugMode": false,
-        "status": false
-      },
-      "zIndex": 1013,
+      "x": 300,
+      "y": 200,
+      "properties": {},
       "text": {
-        "x": 130,
-        "y": 340,
-        "value": "输入"
+        "x": 310,
+        "y": 200,
+        "value": "input"
       }
     },
     {
-      "id": "6c497a23-ece2-41fa-927d-9e2e9a1c7316",
-      "type": "MyNode",
-      "x": 400,
-      "y": 340,
+      "id": "cf717a24-2917-444f-9927-74a0d486ad7a",
+      "type": "LogNode",
+      "x": 820,
+      "y": 200,
       "properties": {
-        "debugMode": false,
-        "status": false
+        "name": "log",
+        "script": "function ToString(msg, metadata, msgType) {\n        return '\\nIncoming message:\\n' + JSON.stringify(msg) + \n   '\\nIncoming metadata:\\n' + JSON.stringify(metadata);\n\n        }\n        "
       },
-      "zIndex": 1002,
       "text": {
-        "x": 410,
-        "y": 340,
-        "value": "测试节点"
+        "x": 830,
+        "y": 200,
+        "value": "log"
       }
     },
     {
-      "id": "7235c088-73e0-4683-982a-77b0fd31313d",
-      "type": "MyNode",
-      "x": 660,
-      "y": 340,
+      "id": "c56b90cc-64fc-4782-8d9e-b0b24dabc876",
+      "type": "MessageGeneratorNode",
+      "x": 520,
+      "y": 40,
       "properties": {
-        "debugMode": false,
-        "status": false
+        "name": "ada",
+        "messageCount": 2,
+        "periodSecond": 5,
+        "script": "function Generate(msg, metadata, msgType) {\n        var msg = { temp: 42, humidity: 77 };\nvar metadata = { data: 40 };\nvar msgType = \"telemetry\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };\n        }\n        "
       },
-      "zIndex": 1005,
       "text": {
-        "x": 670,
-        "y": 340,
-        "value": "测试节点"
+        "x": 530,
+        "y": 40,
+        "value": "generator"
       }
     }
   ],
   "edges": [
     {
-      "id": "b6c8b0c4-1481-40d3-b345-780f96efa909",
-      "type": "bezier-link",
-      "sourceNodeId": "d2cc123c-d0d7-4830-8547-21d5e52b4011",
-      "targetNodeId": "6c497a23-ece2-41fa-927d-9e2e9a1c7316",
+      "id": "ca4c7e4b-2ffa-4f72-83d0-456d9db72add",
+      "type": "node-link",
+      "sourceNodeId": "input",
+      "targetNodeId": "c56b90cc-64fc-4782-8d9e-b0b24dabc876",
       "startPoint": {
-        "x": 180,
-        "y": 340
+        "x": 350,
+        "y": 200
       },
       "endPoint": {
-        "x": 340,
-        "y": 340
+        "x": 460,
+        "y": 40
       },
-      "properties": {
-        "lineType": "True"
-      },
-      "zIndex": 1003,
+      "properties": {},
       "pointsList": [
         {
-          "x": 180,
-          "y": 340
+          "x": 350,
+          "y": 200
         },
         {
-          "x": 280,
-          "y": 340
+          "x": 450,
+          "y": 200
         },
         {
-          "x": 240,
-          "y": 340
+          "x": 360,
+          "y": 40
         },
         {
-          "x": 340,
-          "y": 340
+          "x": 460,
+          "y": 40
         }
       ]
     },
     {
-      "id": "1e38236e-716b-44e7-8d96-6424f63fdacc",
-      "type": "bezier-link",
-      "sourceNodeId": "6c497a23-ece2-41fa-927d-9e2e9a1c7316",
-      "targetNodeId": "7235c088-73e0-4683-982a-77b0fd31313d",
+      "id": "feeb016c-c52c-48ed-8d2c-fde36439da7d",
+      "type": "node-link",
+      "sourceNodeId": "c56b90cc-64fc-4782-8d9e-b0b24dabc876",
+      "targetNodeId": "cf717a24-2917-444f-9927-74a0d486ad7a",
       "startPoint": {
-        "x": 460,
-        "y": 340
+        "x": 580,
+        "y": 40
       },
       "endPoint": {
-        "x": 600,
-        "y": 340
+        "x": 770,
+        "y": 200
       },
       "properties": {
-        "lineType": "Next"
+        "type": "Success"
       },
       "text": {
-        "x": 530,
-        "y": 340,
-        "value": "Next"
+        "x": 675,
+        "y": 120,
+        "value": "Success"
       },
-      "zIndex": 1006,
       "pointsList": [
         {
-          "x": 460,
-          "y": 340
+          "x": 580,
+          "y": 40
         },
         {
-          "x": 560,
-          "y": 340
+          "x": 680,
+          "y": 40
         },
         {
-          "x": 500,
-          "y": 340
+          "x": 670,
+          "y": 200
         },
         {
-          "x": 600,
-          "y": 340
+          "x": 770,
+          "y": 200
         }
       ]
     }

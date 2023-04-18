@@ -19,7 +19,24 @@ func (f saveTimeSeriesNodeFactory) Create(id string, meta Metadata) (Node, error
 
 func (n *SaveTimeSeriesNode) Handle(msg message.Message) error {
 	successLableNode := n.GetLinkedNode("Success")
-	//failureLableNode := n.GetLinkedNode("Failure")
+	failureLableNode := n.GetLinkedNode("Failure")
+	if msg.GetType() != message.EventTelemetryType {
+		if failureLableNode != nil {
+			return failureLableNode.Handle(msg)
+		} else {
+			return nil
+		}
+	}
+	/*deviceName := msg.GetMetadata().GetValues()["deviceName"].(string)
+	namespace := msg.GetMetadata().GetValues()["namespace"].(string)
+	marshal, err := json.Marshal(msg.GetMsg())*/
 
-	return successLableNode.Handle(msg)
+	// todo 添加设备上报遥测
+
+	if successLableNode != nil {
+		return successLableNode.Handle(msg)
+	} else {
+		return nil
+	}
+
 }

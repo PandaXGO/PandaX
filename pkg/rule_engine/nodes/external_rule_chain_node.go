@@ -1,8 +1,13 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
+	"pandax/apps/visual/services"
+	"pandax/pkg/rule_engine/manifest"
 	"pandax/pkg/rule_engine/message"
+
+	"errors"
+	"fmt"
+	"github.com/sirupsen/logrus"
 )
 
 type externalRuleChainNode struct {
@@ -13,13 +18,11 @@ type externalRuleChainNode struct {
 type externalRuleChainNodeFactory struct{}
 
 func (f externalRuleChainNodeFactory) Name() string     { return "RuleChainNode" }
-func (f externalRuleChainNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
-func (f externalRuleChainNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
+func (f externalRuleChainNodeFactory) Category() string { return NODE_CATEGORY_FLOWS }
+func (f externalRuleChainNodeFactory) Labels() []string { return []string{} }
 func (f externalRuleChainNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	labels := []string{"Success", "Failure"}
-
 	node := &externalRuleChainNode{
-		bareNode: newBareNode(f.Name(), id, meta, labels),
+		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 
 	return decodePath(meta, node)
@@ -27,6 +30,21 @@ func (f externalRuleChainNodeFactory) Create(id string, meta Metadata) (Node, er
 
 func (n *externalRuleChainNode) Handle(msg message.Message) error {
 	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
-
+	data := services.VisualRuleChainModelDao.FindOne(n.RuleId)
+	if data == nil {
+		return errors.New(fmt.Sprintf("节点 %s ,获取规则链失败", n.Name()))
+	}
+	m, err := manifest.New([]byte(data.RuleDataJson))
+	if err != nil {
+		logrus.WithError(err).Errorf("invalidi manifest file")
+		return err
+	}
+	nodes, err := GetNodes(m)
+	if err != nil {
+		return errors.New(fmt.Sprintf("节点 %s ,构建节点失败", n.Name()))
+	}
+	if node, found := nodes[m.FirstRuleNodeId]; found {
+		go node.Handle(msg)
+	}
 	return nil
 }

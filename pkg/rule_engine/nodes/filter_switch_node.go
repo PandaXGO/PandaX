@@ -2,7 +2,6 @@ package nodes
 
 import (
 	"github.com/sirupsen/logrus"
-	"log"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -36,17 +35,16 @@ func (f switchFilterNodeFactory) Create(id string, meta Metadata) (Node, error) 
 func (n *switchFilterNode) Handle(msg message.Message) error {
 	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
 
-	scriptEngine := NewScriptEngine()
-	SwitchResults, err := scriptEngine.ScriptOnSwitch(msg, n.Script)
-	log.Println("开始执行switchFilterNode", SwitchResults)
+	scriptEngine := NewScriptEngine(msg, "Switch", n.Script)
+	SwitchResults, err := scriptEngine.ScriptOnSwitch()
 	if err != nil {
-		return nil
+		return err
 	}
 	nodes := n.GetLinkedNodes()
 	for label, node := range nodes {
 		for _, switchresult := range SwitchResults {
 			if label == switchresult {
-				node.Handle(msg)
+				go node.Handle(msg)
 			}
 		}
 	}

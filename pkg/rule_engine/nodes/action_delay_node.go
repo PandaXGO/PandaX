@@ -13,8 +13,8 @@ const DelayNodeName = "DelayNode"
 
 type delayNode struct {
 	bareNode
-	PeriodTs           int               `json:"periodTs" yaml:"periodTs" jpath:"periodTs"`
-	MaxPendingMessages int               `json:"maxPendingMessages" yaml:"maxPendingMessages" jpath:"maxPendingMessages"`
+	PeriodTs           int               `json:"periodTs" yaml:"periodTs" jpath:"periodTs"`                               //周期时间
+	MaxPendingMessages int               `json:"maxPendingMessages" yaml:"maxPendingMessages" jpath:"maxPendingMessages"` //最大等待消息数
 	messageQueue       []message.Message `jpath:"-"`
 	delayTimer         *time.Timer       `jpath:"-"`
 	lock               sync.Mutex        `jpath:"-"`
@@ -48,7 +48,7 @@ func (n *delayNode) Handle(msg message.Message) error {
 	if n.delayTimer == nil {
 		n.messageQueue = append(n.messageQueue, msg)
 		n.delayTimer = time.NewTimer(time.Duration(n.PeriodTs) * time.Second)
-		// start timecallback goroutine
+
 		go func(n *delayNode) error {
 			defer n.delayTimer.Stop()
 			for {
@@ -64,7 +64,6 @@ func (n *delayNode) Handle(msg message.Message) error {
 		}(n)
 		return nil
 	}
-	// the delay timer had already been created, just queue message
 	n.lock.Lock()
 	defer n.lock.Unlock()
 	if len(n.messageQueue) == n.MaxPendingMessages {

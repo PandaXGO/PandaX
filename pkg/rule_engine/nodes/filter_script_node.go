@@ -2,7 +2,6 @@ package nodes
 
 import (
 	"github.com/sirupsen/logrus"
-	"log"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -30,9 +29,8 @@ func (n *scriptFilterNode) Handle(msg message.Message) error {
 
 	trueLabelNode := n.GetLinkedNode("True")
 	falseLabelNode := n.GetLinkedNode("False")
-	scriptEngine := NewScriptEngine()
-	isTrue, error := scriptEngine.ScriptOnFilter(msg, n.Script)
-	log.Println(isTrue)
+	scriptEngine := NewScriptEngine(msg, "Filter", n.Script)
+	isTrue, error := scriptEngine.ScriptOnFilter()
 	if isTrue == true && error == nil && trueLabelNode != nil {
 		return trueLabelNode.Handle(msg)
 	} else {
@@ -40,5 +38,6 @@ func (n *scriptFilterNode) Handle(msg message.Message) error {
 			return falseLabelNode.Handle(msg)
 		}
 	}
+
 	return nil
 }

@@ -49,7 +49,6 @@ func (n *bareNode) GetLinkedNode(label string) Node {
 	if node, found := n.nodes[label]; found {
 		return node
 	}
-	logrus.Errorf("no label '%s' in node '%s'", label, n.name)
 	return nil
 }
 
@@ -73,6 +72,7 @@ func GetNodes(m *manifest.Manifest) (map[string]Node, error) {
 		metadata := NewMetadataWithValues(n.Properties)
 		node, err := NewNode(n.Type, n.Id, metadata)
 		if err != nil {
+			logrus.Errorf("new node '%s' failure", n.Id)
 			continue
 		}
 		if _, found := nodes[n.Id]; found {

@@ -1,20 +1,18 @@
 package nodes
 
 import (
-	"fmt"
-	"pandax/pkg/rule_engine/message"
-
 	"github.com/sirupsen/logrus"
+	"pandax/pkg/rule_engine/message"
 )
 
 type createAlarmNode struct {
 	bareNode
-	DetailBuilderScript string `json:"detailBuilderScript" yaml:"detailBuilderScript"`
-	AlarmType           string `json:"alarmType" yaml:"alarmType"`
-	AlarmSeverity       string `json:"alarmSeverity" yaml:"alarmSeverity"`
-	Propagate           string `json:"propagate" yaml:"propagate"`
-	AlarmStartTime      string `json:"alarmStartTime" yaml:"alarmStartTime"`
-	AlarmEndTime        string `json:"alarmEndTime" yaml:"alarmEndTime"`
+	Script        string `json:"script" yaml:"script"`
+	AlarmType     string `json:"alarmType" yaml:"alarmType"`
+	AlarmSeverity int64  `json:"alarmSeverity" yaml:"alarmSeverity"`
+	Propagate     string `json:"propagate" yaml:"propagate"`
+	/*	AlarmStartTime      string `json:"alarmStartTime" yaml:"alarmStartTime"`
+		AlarmEndTime        string `json:"alarmEndTime" yaml:"alarmEndTime"`*/
 }
 
 type createAlarmNodeFactory struct{}
@@ -33,11 +31,19 @@ func (n *createAlarmNode) Handle(msg message.Message) error {
 	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
 
 	node1 := n.GetLinkedNode("Created")
-	node2 := n.GetLinkedNode("Updated")
+	//node2 := n.GetLinkedNode("Updated")
 	node3 := n.GetLinkedNode("Failure")
-	if node1 == nil || node2 == nil || node3 == nil {
-		return fmt.Errorf("no valid label linked node in %s", n.Name())
+
+	scriptEngine := NewScriptEngine(msg, "Details", n.Script)
+	details, err := scriptEngine.ScriptAlarmDetails()
+	if err != nil {
+		if node3 != nil {
+			return node3.Handle(msg)
+		}
 	}
+	// TODO 创建告警
+	logrus.Info(details)
+	node1.Handle(msg)
 
 	return nil
 }

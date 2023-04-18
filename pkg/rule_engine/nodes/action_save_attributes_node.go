@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"fmt"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -22,13 +21,33 @@ func (f saveAttributesNodeFactory) Create(id string, meta Metadata) (Node, error
 }
 
 func (n *SaveAttributesNode) Handle(msg message.Message) error {
-	successLableNode := n.GetLinkedNode("Success")
-	failureLableNode := n.GetLinkedNode("Failure")
-	if successLableNode == nil || failureLableNode == nil {
-		return fmt.Errorf("no valid label linked node in %s", n.Name())
+	successLabelNode := n.GetLinkedNode("Success")
+	failureLabelNode := n.GetLinkedNode("Failure")
+	if msg.GetType() != message.EventAttributesType {
+		if failureLabelNode != nil {
+			return failureLabelNode.Handle(msg)
+		} else {
+			return nil
+		}
 	}
-	if msg.GetType() != "POST_ATTRIBUTES_REQUEST" {
-		return failureLableNode.Handle(msg)
+	//deviceName := msg.GetMetadata().GetValues()["deviceName"].(string)
+	//namespace := msg.GetMetadata().GetValues()["namespace"].(string)
+	//marshal, err := json.Marshal(msg.GetMsg())
+
+	//if err != nil {
+	//	if failureLabelNode != nil {
+	//		return failureLabelNode.Handle(msg)
+	//	} else {
+	//		return nil
+	//	}
+	//}
+
+	// todo 添加设备上报参数
+
+	if successLabelNode != nil {
+		return successLabelNode.Handle(msg)
+	} else {
+		return nil
 	}
 
 	return nil

@@ -1,8 +1,8 @@
 package nodes
 
 import (
-	"fmt"
-	"log"
+	"pandax/apps/visual/entity"
+	"pandax/apps/visual/services"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -27,15 +27,31 @@ func (n *logNode) Handle(msg message.Message) error {
 	successLableNode := n.GetLinkedNode("Success")
 	failureLableNode := n.GetLinkedNode("Failure")
 
-	scriptEngine := NewScriptEngine()
-	logMessage, err := scriptEngine.ScriptToString(msg, n.Script)
-
-	if successLableNode == nil || failureLableNode == nil {
-		return fmt.Errorf("no valid label linked node in %s", n.Name())
-	}
+	scriptEngine := NewScriptEngine(msg, "ToString", n.Script)
+	logMessage, err := scriptEngine.ScriptToString()
 	if err != nil {
-		return failureLableNode.Handle(msg)
+		if failureLableNode != nil {
+			return failureLableNode.Handle(msg)
+		} else {
+			return err
+		}
 	}
-	log.Println(logMessage)
-	return successLableNode.Handle(msg)
+	services.VisualRuleChainMsgLogModelDao.Insert(entity.VisualRuleChainMsgLog{
+		MessageId:  msg.GetId(),
+		MsgType:    msg.GetType(),
+		DeviceName: msg.GetMetadata().GetValues()["deviceName"].(string),
+		Ts:         msg.GetTs(),
+		Content:    logMessage,
+	})
+	if err != nil {
+		if failureLableNode != nil {
+			return failureLableNode.Handle(msg)
+		} else {
+			return err
+		}
+	}
+	if successLableNode != nil {
+		return successLableNode.Handle(msg)
+	}
+	return nil
 }

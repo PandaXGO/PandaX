@@ -2,6 +2,7 @@ package entity
 
 import (
 	"github.com/XM-GO/PandaKit/model"
+	"time"
 )
 
 type VisualRuleChain struct {
@@ -18,4 +19,17 @@ type VisualRuleChain struct {
 
 func (VisualRuleChain) TableName() string {
 	return "visual_rule_chain"
+}
+
+type VisualRuleChainMsgLog struct {
+	MessageId  string    `json:"message_id"`
+	MsgType    string    `json:"msg_type"`
+	DeviceName string    `json:"device_name"`
+	Ts         time.Time `json:"ts"`
+	Content    string    `json:"content"`
+	CreatedAt  time.Time // 创建时间
+}
+
+func (VisualRuleChainMsgLog) TableName() string {
+	return "visual_rule_chain_msg_log"
 }

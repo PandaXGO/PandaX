@@ -37,12 +37,23 @@ func (f externalNatsNodeFactory) Create(id string, meta Metadata) (Node, error) 
 
 func (n *externalNatsNode) Handle(msg message.Message) error {
 	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+	defer n.client.Close()
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
-	err := n.client.Publish(n.Subject, []byte(n.Body))
+	template, err := ParseTemplate(n.Body, msg.GetAllMap())
 	if err != nil {
-		n.client.Close()
-		return failureLabelNode.Handle(msg)
+		return err
 	}
-	return successLabelNode.Handle(msg)
+	err = n.client.Publish(n.Subject, []byte(template))
+	if err != nil {
+		if failureLabelNode != nil {
+			return failureLabelNode.Handle(msg)
+		} else {
+			return err
+		}
+	}
+	if successLabelNode != nil {
+		return successLabelNode.Handle(msg)
+	}
+	return nil
 }

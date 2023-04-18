@@ -1,14 +1,8 @@
 package nodes
 
 import (
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
-)
-
-const (
-	DEVICE  = "DEVICE"
-	GATEWAY = "GATEWAY"
 )
 
 //检查关联关系
@@ -21,7 +15,9 @@ type deviceTypeSwitchNodeFactory struct{}
 
 func (f deviceTypeSwitchNodeFactory) Name() string     { return "DeviceTypeSwitchNode" }
 func (f deviceTypeSwitchNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
-func (f deviceTypeSwitchNodeFactory) Labels() []string { return []string{DEVICE, GATEWAY} }
+func (f deviceTypeSwitchNodeFactory) Labels() []string {
+	return []string{message.DEVICE, message.GATEWAY}
+}
 func (f deviceTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, error) {
 	node := &deviceTypeSwitchNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
@@ -32,15 +28,18 @@ func (f deviceTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, err
 func (n *deviceTypeSwitchNode) Handle(msg message.Message) error {
 	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
 
-	deviceLabelNode := n.GetLinkedNode(DEVICE)
-	gatewayLabelNode := n.GetLinkedNode(GATEWAY)
+	deviceLabelNode := n.GetLinkedNode(message.DEVICE)
+	gatewayLabelNode := n.GetLinkedNode(message.GATEWAY)
 
-	if deviceLabelNode == nil && gatewayLabelNode == nil {
-		return fmt.Errorf("no device and gateway label linked node in %s", n.Name())
+	if msg.GetMetadata().GetKeyValue("deviceType") == message.DEVICE {
+		if deviceLabelNode != nil {
+			return deviceLabelNode.Handle(msg)
+		}
 	}
-
-	if msg.GetMetadata().GetKeyValue("deviceType") == DEVICE {
-		return deviceLabelNode.Handle(msg)
+	if msg.GetMetadata().GetKeyValue("deviceType") == message.GATEWAY {
+		if gatewayLabelNode != nil {
+			return gatewayLabelNode.Handle(msg)
+		}
 	}
-	return gatewayLabelNode.Handle(msg)
+	return nil
 }

@@ -2,7 +2,6 @@ package nodes
 
 import (
 	"github.com/sirupsen/logrus"
-	"log"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -36,7 +35,6 @@ func (n *messageTypeSwitchNode) Handle(msg message.Message) error {
 
 	nodes := n.GetLinkedNodes()
 	messageType := msg.GetType()
-	log.Println("开始执行messageTypeSwitchNode")
 	for label, node := range nodes {
 		if messageType == label {
 			return node.Handle(msg)

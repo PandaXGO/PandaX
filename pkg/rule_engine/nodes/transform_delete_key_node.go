@@ -3,12 +3,13 @@ package nodes
 import (
 	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
+	"strings"
 )
 
 type transformDeleteKeyNode struct {
 	bareNode
-	FormType string   `json:"formType" yaml:"formType"` //msg metadata
-	Keys     []string `json:"keys" yaml:"keys"`
+	FormType string `json:"formType" yaml:"formType"` //msg metadata
+	Keys     string `json:"keys" yaml:"keys"`
 }
 type transformDeleteKeyNodeFactory struct{}
 
@@ -27,9 +28,10 @@ func (n *transformDeleteKeyNode) Handle(msg message.Message) error {
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
+	keys := strings.Split(n.Keys, ",")
 	if n.FormType == "msg" {
 		data := msg.GetMsg()
-		for _, key := range n.Keys {
+		for _, key := range keys {
 			if _, found := data[key]; found {
 				delete(data, key)
 				msg.SetMsg(data)
@@ -37,7 +39,7 @@ func (n *transformDeleteKeyNode) Handle(msg message.Message) error {
 		}
 	} else if n.FormType == "metadata" {
 		data := msg.GetMetadata()
-		for _, key := range n.Keys {
+		for _, key := range keys {
 			if data.GetKeyValue(key) != nil {
 				values := data.GetValues()
 				delete(values, key)
@@ -45,8 +47,12 @@ func (n *transformDeleteKeyNode) Handle(msg message.Message) error {
 			}
 		}
 	} else {
-		failureLabelNode.Handle(msg)
+		if failureLabelNode != nil {
+			return failureLabelNode.Handle(msg)
+		}
 	}
-
-	return successLabelNode.Handle(msg)
+	if successLabelNode != nil {
+		return successLabelNode.Handle(msg)
+	}
+	return nil
 }
