@@ -18,7 +18,7 @@ func (VisualDataSetGroup) TableName() string {
 type VisualDataSetTable struct {
 	model.BaseModelD
 	TableId      string               `gorm:"primary_key;tableId;comment:表id" json:"tableId"`
-	DataSourceId string               `gorm:"dataSourceId;type:varchar(64);comment:数据圆ID" json:"dataSourceId"`
+	DataSourceId string               `gorm:"dataSourceId;type:varchar(64);comment:数据源ID" json:"dataSourceId"`
 	TableType    string               `gorm:"tableType;type:varchar(64);comment:db,sql,excel,custom,api" json:"tableType"` //'db,sql,excel,custom',
 	Mode         string               `gorm:"mode;type:varchar(1);comment:原始表信息" json:"mode"`                              //'连接模式：0-直连，1-定时同步',
 	Info         string               `gorm:"info;type:TEXT;comment:原始表信息" json:"info"`

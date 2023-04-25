@@ -55,9 +55,6 @@ func (m *datasourceModelImpl) FindListPage(page, pageSize int, data entity.Visua
 		db = db.Where("source_id = ?", data.SourceId)
 	}
 	db.Where("delete_time IS NULL")
-	if data.SourceComment != "" {
-		db = db.Where("source_comment = ?", data.SourceComment)
-	}
 	if data.SourceType != "" {
 		db = db.Where("source_type = ?", data.SourceType)
 	}
@@ -66,9 +63,6 @@ func (m *datasourceModelImpl) FindListPage(page, pageSize int, data entity.Visua
 	}
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
-	}
-	if data.Configuration != "" {
-		db = db.Where("configuration = ?", data.Configuration)
 	}
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
@@ -84,9 +78,6 @@ func (m *datasourceModelImpl) FindList(data entity.VisualDataSource) *[]entity.V
 		db = db.Where("source_id = ?", data.SourceId)
 	}
 	db.Where("delete_time IS NULL")
-	if data.SourceComment != "" {
-		db = db.Where("source_comment = ?", data.SourceComment)
-	}
 	if data.SourceType != "" {
 		db = db.Where("source_type = ?", data.SourceType)
 	}
@@ -95,9 +86,6 @@ func (m *datasourceModelImpl) FindList(data entity.VisualDataSource) *[]entity.V
 	}
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
-	}
-	if data.Configuration != "" {
-		db = db.Where("configuration = ?", data.Configuration)
 	}
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询数据源列表失败")
 	return &list

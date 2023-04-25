@@ -6,8 +6,11 @@ package api
 // 生成人：panda
 // ==========================================================================
 import (
+	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/kakuilan/kgo"
+	"pandax/apps/visual/driver"
 	"strings"
 
 	"pandax/apps/visual/entity"
@@ -24,6 +27,7 @@ func (p *VisualDataSourceApi) GetVisualDataSourceList(rc *restfulx.ReqCtx) {
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 	data.SourceName = restfulx.QueryParam(rc, "sourceName")
+	data.SourceType = restfulx.QueryParam(rc, "sourceType")
 	data.Status = restfulx.QueryParam(rc, "status")
 
 	list, total := p.VisualDataSourceApp.FindListPage(pageNum, pageSize, data)
@@ -46,7 +50,13 @@ func (p *VisualDataSourceApi) GetVisualDataSource(rc *restfulx.ReqCtx) {
 func (p *VisualDataSourceApi) InsertVisualDataSource(rc *restfulx.ReqCtx) {
 	var data entity.VisualDataSource
 	restfulx.BindQuery(rc, &data)
-
+	data.SourceId = kgo.KStr.Uniqid("px")
+	err := driver.TestConnection(&data)
+	if err != nil {
+		data.Status = "0"
+	} else {
+		data.Status = "1"
+	}
 	p.VisualDataSourceApp.Insert(data)
 }
 
@@ -63,4 +73,31 @@ func (p *VisualDataSourceApi) DeleteVisualDataSource(rc *restfulx.ReqCtx) {
 	sourceId := restfulx.PathParam(rc, "sourceId")
 	sourceIds := strings.Split(sourceId, ",")
 	p.VisualDataSourceApp.Delete(sourceIds)
+}
+
+// GetDataSourceTest 校验数据源连接性
+func (p *VisualDataSourceApi) GetDataSourceTest(rc *restfulx.ReqCtx) {
+	var data entity.VisualDataSource
+	restfulx.BindQuery(rc, &data)
+	err := driver.TestConnection(&data)
+	biz.ErrIsNilAppendErr(err, "数据库连接失败: %s")
+}
+
+// GetDataSourceTables 获取数据源下所有表
+func (p *VisualDataSourceApi) GetDataSourceTables(rc *restfulx.ReqCtx) {
+	sourceId := restfulx.PathParam(rc, "sourceId")
+	one := p.VisualDataSourceApp.FindOne(sourceId)
+	instance := driver.NewDbInstance(one)
+	biz.IsTrue(instance != nil, "获取数据源下所有表失败")
+	rc.ResData = instance.GetMeta().GetTableInfos()
+}
+
+// GetDataSourceTableDetails 获取表下面的所有字段
+func (p *VisualDataSourceApi) GetDataSourceTableDetails(rc *restfulx.ReqCtx) {
+	sourceId := restfulx.PathParam(rc, "sourceId")
+	tableName := restfulx.QueryParam(rc, "tableName")
+	one := p.VisualDataSourceApp.FindOne(sourceId)
+	instance := driver.NewDbInstance(one)
+	biz.IsTrue(instance != nil, "获取表下所有字段失败")
+	rc.ResData = instance.GetMeta().GetColumns(tableName)
 }

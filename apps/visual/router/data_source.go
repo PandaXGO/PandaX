@@ -26,7 +26,7 @@ func InitVisualDataSourceRouter(container *restful.Container) {
 	tags := []string{"datasource"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("获取DataSource分页列表").Handle(s.GetVisualDataSourceList)
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取DataSource分页列表").Handle(s.GetVisualDataSourceList)
 	}).
 		Doc("获取DataSource分页列表").
 		Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
@@ -46,25 +46,46 @@ func InitVisualDataSourceRouter(container *restful.Container) {
 		Returns(404, "Not Found", nil))
 
 	ws.Route(ws.POST("").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("添加DataSource信息").Handle(s.InsertVisualDataSource)
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("添加DataSource信息").Handle(s.InsertVisualDataSource)
 	}).
 		Doc("添加DataSource信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Reads(entity.VisualDataSource{}))
 
 	ws.Route(ws.PUT("").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("修改DataSource信息").Handle(s.UpdateVisualDataSource)
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("修改DataSource信息").Handle(s.UpdateVisualDataSource)
 	}).
 		Doc("修改DataSource信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Reads(entity.VisualDataSource{}))
 
 	ws.Route(ws.DELETE("/{sourceId}").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("删除DataSource信息").Handle(s.DeleteVisualDataSource)
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("删除DataSource信息").Handle(s.DeleteVisualDataSource)
 	}).
 		Doc("删除DataSource信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Param(ws.PathParameter("sourceId", "多id 1,2,3").DataType("string")))
+
+	ws.Route(ws.POST("/test").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("验证数据源").Handle(s.GetDataSourceTest)
+	}).
+		Doc("验证数据源").
+		Metadata(restfulspec.KeyOpenAPITags, tags))
+
+	ws.Route(ws.GET("/tables/{sourceId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("验证数据源下所有表").Handle(s.GetDataSourceTables)
+	}).
+		Doc("验证数据源下所有表").
+		Param(ws.PathParameter("sourceId", "sourceId").DataType("string")).
+		Metadata(restfulspec.KeyOpenAPITags, tags))
+
+	ws.Route(ws.GET("/tablesDetails/{sourceId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("验证数据源下所有表").Handle(s.GetDataSourceTableDetails)
+	}).
+		Doc("验证数据源下所有表").
+		Param(ws.PathParameter("sourceId", "sourceId").DataType("string")).
+		Param(ws.QueryParameter("tableName", "表明").Required(true).DataType("string")).
+		Metadata(restfulspec.KeyOpenAPITags, tags))
 
 	container.Add(ws)
 }
