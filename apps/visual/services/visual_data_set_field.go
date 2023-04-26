@@ -51,26 +51,14 @@ func (m *datasetfieldModelImpl) FindListPage(page, pageSize int, data entity.Vis
 	offset := pageSize * (page - 1)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	if data.JsonField != "" {
-		db = db.Where("json_field = ?", data.JsonField)
-	}
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
 	}
 	if data.TableId != "" {
 		db = db.Where("table_id = ?", data.TableId)
 	}
-	if data.Comment != "" {
-		db = db.Where("comment = ?", data.Comment)
-	}
-	if data.GoType != "" {
-		db = db.Where("go_type = ?", data.GoType)
-	}
-	if data.Type != "" {
-		db = db.Where("type = ?", data.Type)
-	}
-	if data.GoField != "" {
-		db = db.Where("go_field = ?", data.GoField)
+	if data.GroupType != "" {
+		db = db.Where("group_type = ?", data.GroupType)
 	}
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
@@ -82,26 +70,14 @@ func (m *datasetfieldModelImpl) FindList(data entity.VisualDataSetField) *[]enti
 	list := make([]entity.VisualDataSetField, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	if data.JsonField != "" {
-		db = db.Where("json_field = ?", data.JsonField)
-	}
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
 	}
 	if data.TableId != "" {
 		db = db.Where("table_id = ?", data.TableId)
 	}
-	if data.Comment != "" {
-		db = db.Where("comment = ?", data.Comment)
-	}
-	if data.GoType != "" {
-		db = db.Where("go_type = ?", data.GoType)
-	}
-	if data.Type != "" {
-		db = db.Where("type = ?", data.Type)
-	}
-	if data.GoField != "" {
-		db = db.Where("go_field = ?", data.GoField)
+	if data.GroupType != "" {
+		db = db.Where("group_type = ?", data.GroupType)
 	}
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询数据集字段列表失败")
 	return &list

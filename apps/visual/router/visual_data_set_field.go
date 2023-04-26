@@ -26,7 +26,7 @@ func InitVisualDataSetFieldRouter(container *restful.Container) {
 	tags := []string{"datasetfield"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("获取DataSetField分页列表").Handle(s.GetVisualDataSetFieldList)
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取DataSetField分页列表").Handle(s.GetVisualDataSetFieldList)
 	}).
 		Doc("获取DataSetField分页列表").
 		Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
@@ -36,7 +36,7 @@ func InitVisualDataSetFieldRouter(container *restful.Container) {
 		Returns(200, "OK", model.ResultPage{}))
 
 	ws.Route(ws.GET("/{fieldId}").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("获取DataSetField信息").Handle(s.GetVisualDataSetField)
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取DataSetField信息").Handle(s.GetVisualDataSetField)
 	}).
 		Doc("获取DataSetField信息").
 		Param(ws.PathParameter("fieldId", "Id").DataType("string")).
@@ -46,21 +46,21 @@ func InitVisualDataSetFieldRouter(container *restful.Container) {
 		Returns(404, "Not Found", nil))
 
 	ws.Route(ws.POST("").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("添加DataSetField信息").Handle(s.InsertVisualDataSetField)
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("添加DataSetField信息").Handle(s.InsertVisualDataSetField)
 	}).
 		Doc("添加DataSetField信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Reads(entity.VisualDataSetField{}))
 
 	ws.Route(ws.PUT("").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("修改DataSetField信息").Handle(s.UpdateVisualDataSetField)
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("修改DataSetField信息").Handle(s.UpdateVisualDataSetField)
 	}).
 		Doc("修改DataSetField信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Reads(entity.VisualDataSetField{}))
 
 	ws.Route(ws.DELETE("/{fieldId}").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("删除DataSetField信息").Handle(s.DeleteVisualDataSetField)
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("删除DataSetField信息").Handle(s.DeleteVisualDataSetField)
 	}).
 		Doc("删除DataSetField信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

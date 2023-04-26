@@ -49,7 +49,6 @@ func InitTable() {
 				flowEntity.FlowWorkOrderTemplate{},
 				flowEntity.FlowWorkStage{},
 
-				visualEntity.VisualDataSetGroup{},
 				visualEntity.VisualDataSource{},
 				visualEntity.VisualDataSetTable{},
 				visualEntity.VisualDataSetField{},

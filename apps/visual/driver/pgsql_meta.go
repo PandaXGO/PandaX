@@ -109,3 +109,8 @@ func (pm *PgsqlMetadata) GetTableIndex(tableName string) []map[string]interface{
 func (pm *PgsqlMetadata) GetTableRecord(tableName string, pageNum, pageSize int) ([]string, []map[string]interface{}, error) {
 	return pm.di.SelectData(fmt.Sprintf("SELECT * FROM %s OFFSET %d LIMIT %d", tableName, (pageNum-1)*pageSize, pageSize))
 }
+
+// 获取所有Schema
+func (pm *PgsqlMetadata) GetSchemas() ([]string, []map[string]interface{}, error) {
+	return pm.di.SelectData("SELECT schema_name FROM information_schema.schemata")
+}
