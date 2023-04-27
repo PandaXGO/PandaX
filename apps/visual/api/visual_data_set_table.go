@@ -6,16 +6,26 @@ package api
 // 生成人：panda
 // ==========================================================================
 import (
+	"encoding/json"
+	"fmt"
+	"github.com/XM-GO/PandaKit/biz"
+	filek "github.com/XM-GO/PandaKit/file"
 	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
-	"strings"
-
+	"github.com/kakuilan/kgo"
+	"log"
+	"pandax/apps/visual/driver"
 	"pandax/apps/visual/entity"
 	"pandax/apps/visual/services"
+	"pandax/pkg/tool"
+	"path"
+	"strings"
+	"time"
 )
 
 type VisualDataSetTableApi struct {
 	VisualDataSetTableApp services.VisualDataSetTableModel
+	VisualDataSourceApp   services.VisualDataSourceModel
 }
 
 // GetVisualDataSetTableList DataSetTable列表数据
@@ -23,7 +33,8 @@ func (p *VisualDataSetTableApi) GetVisualDataSetTableList(rc *restfulx.ReqCtx) {
 	data := entity.VisualDataSetTable{}
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
-
+	data.Name = restfulx.QueryParam(rc, "sourceName")
+	data.TableType = restfulx.QueryParam(rc, "sourceType")
 	list, total := p.VisualDataSetTableApp.FindListPage(pageNum, pageSize, data)
 
 	rc.ResData = model.ResultPage{
@@ -44,8 +55,29 @@ func (p *VisualDataSetTableApi) GetVisualDataSetTable(rc *restfulx.ReqCtx) {
 func (p *VisualDataSetTableApi) InsertVisualDataSetTable(rc *restfulx.ReqCtx) {
 	var data entity.VisualDataSetTable
 	restfulx.BindQuery(rc, &data)
-
+	data.TableId = kgo.KStr.Uniqid("px")
 	p.VisualDataSetTableApp.Insert(data)
+	// 协程执行添加字段
+	/*go func() {
+		info := make(map[string]string)
+		err := json.Unmarshal([]byte(data.Info), &info)
+		if err != nil {
+			return
+		}
+		one := p.VisualDataSourceApp.FindOne(data.DataSourceId)
+		if data.TableType == "db" {
+			instance := driver.NewDbInstance(one)
+			instance.GetMeta().GetColumns(info["table"])
+		}
+		if data.TableType == "sql" {
+
+		}
+
+	}()*/
+	/*entity.VisualDataSetField{
+		TableId: data.TableId,
+
+	}*/
 }
 
 // UpdateVisualDataSetTable 修改DataSetTable
@@ -61,4 +93,58 @@ func (p *VisualDataSetTableApi) DeleteVisualDataSetTable(rc *restfulx.ReqCtx) {
 	tableId := restfulx.PathParam(rc, "tableId")
 	tableIds := strings.Split(tableId, ",")
 	p.VisualDataSetTableApp.Delete(tableIds)
+}
+
+// GetVisualDataSetTableResult 获取运行结果
+func (p *VisualDataSetTableApi) GetVisualDataSetTableResult(rc *restfulx.ReqCtx) {
+	dsr := entity.VisualDataSetRequest{}
+	restfulx.BindQuery(rc, &dsr)
+	info := make(map[string]string)
+	biz.ErrIsNil(json.Unmarshal([]byte(dsr.Info), &info), "获取表信息失败")
+	if dsr.Type == "excel" {
+		filePath := info["filePath"]
+		fields, data := tool.ReadExcel(filePath)
+		rc.ResData = entity.VisualDataSetRes{
+			Data:   data,
+			Fields: fields,
+		}
+		return
+	}
+	one := p.VisualDataSourceApp.FindOne(dsr.SourceId)
+	instance := driver.NewDbInstance(one)
+	var sql string
+	if dsr.Type == "db" {
+		sql = fmt.Sprintf(`select * from %s LIMIT 20`, info["table"])
+	}
+	if dsr.Type == "sql" {
+		sql = info["sql"] + " LIMIT 20"
+	}
+	log.Println(sql)
+	fields, data, err := instance.SelectData(sql)
+	biz.ErrIsNil(err, "查询表信息失败")
+	rc.ResData = entity.VisualDataSetRes{
+		Data:   data,
+		Fields: fields,
+	}
+}
+
+const filePath = "uploads/excel"
+
+// GetVisualDataSetTableByExcelResult 通过excel读取结果
+func (p *VisualDataSetTableApi) GetVisualDataSetTableByExcelResult(rc *restfulx.ReqCtx) {
+	_, fileHeader, err := rc.Request.Request.FormFile("excelFile")
+	ext := path.Ext(fileHeader.Filename)
+	// 读取文件名并加密
+	name := strings.TrimSuffix(fileHeader.Filename, ext)
+	name = kgo.KStr.Md5(name, 10)
+	// 拼接新文件名
+	filename := name + "_" + time.Now().Format("20060102150405") + ext
+	dst := fmt.Sprintf("%s/%s", filePath, filename)
+	filek.SaveUploadedFile(fileHeader, dst)
+	biz.ErrIsNil(err, "文件上传失败")
+	rc.ResData = dst
+}
+
+func GetDataSetTableFun() {
+
 }

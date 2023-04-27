@@ -35,6 +35,12 @@ func InitVisualDataSourceRouter(container *restful.Container) {
 		Writes(model.ResultPage{}).
 		Returns(200, "OK", model.ResultPage{}))
 
+	ws.Route(ws.GET("/list/all").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取DataSource列表").Handle(s.GetVisualDataSourceListAll)
+	}).
+		Doc("获取DataSource列表").
+		Metadata(restfulspec.KeyOpenAPITags, tags))
+
 	ws.Route(ws.GET("/{sourceId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取DataSource信息").Handle(s.GetVisualDataSource)
 	}).

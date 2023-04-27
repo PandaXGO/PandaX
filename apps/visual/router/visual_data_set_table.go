@@ -19,6 +19,7 @@ import (
 func InitVisualDataSetTableRouter(container *restful.Container) {
 	s := &api.VisualDataSetTableApi{
 		VisualDataSetTableApp: services.VisualDataSetTableModelDao,
+		VisualDataSourceApp:   services.VisualDataSourceModelDao,
 	}
 
 	ws := new(restful.WebService)
@@ -65,6 +66,22 @@ func InitVisualDataSetTableRouter(container *restful.Container) {
 		Doc("删除DataSetTable信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Param(ws.PathParameter("tableId", "多id 1,2,3").DataType("string")))
+
+	ws.Route(ws.POST("/resultPreview").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("运行结果").Handle(s.GetVisualDataSetTableResult)
+	}).
+		Doc("运行结果").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Reads(entity.VisualDataSetRequest{}).
+		Returns(200, "OK", entity.VisualDataSetRes{}))
+
+	ws.Route(ws.POST("/up/excel").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("上传Excel").Handle(s.GetVisualDataSetTableByExcelResult)
+	}).
+		Doc("上传Excel").
+		Param(ws.FormParameter("excelFile", "Excel文件")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", entity.VisualDataSetRes{}))
 
 	container.Add(ws)
 }

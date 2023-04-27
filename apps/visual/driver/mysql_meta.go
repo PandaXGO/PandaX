@@ -6,6 +6,7 @@ import (
 	"github.com/XM-GO/PandaKit/biz"
 	"log"
 	"pandax/apps/visual/entity"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -44,6 +45,13 @@ const (
 	column_comment columnComment, column_key columnKey, extra, is_nullable nullable from information_schema.columns
 	WHERE table_schema = (SELECT database()) AND table_name in (%s) ORDER BY tableName, ordinal_position`
 )
+
+func sqlFix(sql string) string {
+	if strings.LastIndex(sql, ";") == (len(sql) - 1) {
+		sql = sql[0 : len(sql)-1]
+	}
+	return sql
+}
 
 type MysqlMetadata struct {
 	di *DbInstance

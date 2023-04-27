@@ -40,6 +40,16 @@ func (p *VisualDataSourceApi) GetVisualDataSourceList(rc *restfulx.ReqCtx) {
 	}
 }
 
+// GetVisualDataSourceListAll DataSource列表数据
+func (p *VisualDataSourceApi) GetVisualDataSourceListAll(rc *restfulx.ReqCtx) {
+	data := entity.VisualDataSource{}
+	data.SourceName = restfulx.QueryParam(rc, "sourceName")
+	data.SourceType = restfulx.QueryParam(rc, "sourceType")
+	data.Status = restfulx.QueryParam(rc, "status")
+	list := p.VisualDataSourceApp.FindList(data)
+	rc.ResData = list
+}
+
 // GetVisualDataSource 获取DataSource
 func (p *VisualDataSourceApi) GetVisualDataSource(rc *restfulx.ReqCtx) {
 	sourceId := restfulx.PathParam(rc, "sourceId")
