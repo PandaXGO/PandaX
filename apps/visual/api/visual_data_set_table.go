@@ -26,15 +26,18 @@ import (
 type VisualDataSetTableApi struct {
 	VisualDataSetTableApp services.VisualDataSetTableModel
 	VisualDataSourceApp   services.VisualDataSourceModel
+	VisualDataSetFieldApi services.VisualDataSetFieldModel
 }
+
+var ColumnTypeStr = []string{"delete_time", "update_time"}
 
 // GetVisualDataSetTableList DataSetTable列表数据
 func (p *VisualDataSetTableApi) GetVisualDataSetTableList(rc *restfulx.ReqCtx) {
 	data := entity.VisualDataSetTable{}
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
-	data.Name = restfulx.QueryParam(rc, "sourceName")
-	data.TableType = restfulx.QueryParam(rc, "sourceType")
+	data.Name = restfulx.QueryParam(rc, "name")
+	data.TableType = restfulx.QueryParam(rc, "tableType")
 	list, total := p.VisualDataSetTableApp.FindListPage(pageNum, pageSize, data)
 
 	rc.ResData = model.ResultPage{
@@ -58,26 +61,41 @@ func (p *VisualDataSetTableApi) InsertVisualDataSetTable(rc *restfulx.ReqCtx) {
 	data.TableId = kgo.KStr.Uniqid("px")
 	p.VisualDataSetTableApp.Insert(data)
 	// 协程执行添加字段
-	/*go func() {
+	go func() {
 		info := make(map[string]string)
 		err := json.Unmarshal([]byte(data.Info), &info)
 		if err != nil {
 			return
 		}
+		// 保存 excel field
+		if data.TableType == "excel" {
+			filePath := info["filePath"]
+			_, datas := tool.ReadExcel(filePath)
+			field := getDataSetField(datas)
+			if field != nil {
+				field.TableId = data.TableId
+				p.VisualDataSetFieldApi.Insert(*field)
+			}
+			return
+		}
+
 		one := p.VisualDataSourceApp.FindOne(data.DataSourceId)
+		instance := driver.NewDbInstance(one)
+		sql := ""
 		if data.TableType == "db" {
-			instance := driver.NewDbInstance(one)
-			instance.GetMeta().GetColumns(info["table"])
+			sql = fmt.Sprintf(`select * from %s LIMIT 1`, info["table"])
 		}
 		if data.TableType == "sql" {
-
+			sql = info["sql"] + " LIMIT 1"
 		}
+		_, datas, err := instance.SelectData(sql)
+		field := getDataSetField(datas)
+		if field != nil {
+			field.TableId = data.TableId
+			p.VisualDataSetFieldApi.Insert(*field)
+		}
+	}()
 
-	}()*/
-	/*entity.VisualDataSetField{
-		TableId: data.TableId,
-
-	}*/
 }
 
 // UpdateVisualDataSetTable 修改DataSetTable
@@ -114,12 +132,11 @@ func (p *VisualDataSetTableApi) GetVisualDataSetTableResult(rc *restfulx.ReqCtx)
 	instance := driver.NewDbInstance(one)
 	var sql string
 	if dsr.Type == "db" {
-		sql = fmt.Sprintf(`select * from %s LIMIT 20`, info["table"])
+		sql = fmt.Sprintf(`select * from %s LIMIT 10`, info["table"])
 	}
 	if dsr.Type == "sql" {
-		sql = info["sql"] + " LIMIT 20"
+		sql = info["sql"] + " LIMIT 10"
 	}
-	log.Println(sql)
 	fields, data, err := instance.SelectData(sql)
 	biz.ErrIsNil(err, "查询表信息失败")
 	rc.ResData = entity.VisualDataSetRes{
@@ -145,6 +162,51 @@ func (p *VisualDataSetTableApi) GetVisualDataSetTableByExcelResult(rc *restfulx.
 	rc.ResData = dst
 }
 
-func GetDataSetTableFun() {
+func (p *VisualDataSetTableApi) GetDataSetTableFun(rc *restfulx.ReqCtx) {
+	sourceId := restfulx.QueryParam(rc, "sourceId")
+	one := p.VisualDataSourceApp.FindOne(sourceId)
+	log.Println(one.SourceType)
+	rc.ResData = p.VisualDataSetTableApp.FindFunList(one.SourceType)
+}
 
+func getDataSetField(datas []map[string]interface{}) *entity.VisualDataSetField {
+	field := new(entity.VisualDataSetField)
+	if len(datas) > 0 {
+		for k, v := range datas[0] {
+			if needDelete(k) {
+				continue
+			}
+			field.FieldId = kgo.KStr.Uniqid("px")
+			field.Name = k
+			field.DeName = k
+			switch v.(type) {
+			case int64, float64:
+				field.DeType = "2"
+				field.GroupType = "q"
+			case time.Time:
+				field.DeType = "1"
+				field.GroupType = "d"
+			default:
+				field.DeType = "0"
+				field.GroupType = "d"
+			}
+		}
+	}
+	return field
+}
+
+func needDelete(name string) bool {
+	if strings.Contains(name, "id") || strings.Contains(name, "Id") {
+		return true
+	}
+	return isExistInArray(name, ColumnTypeStr)
+}
+
+func isExistInArray(value string, array []string) bool {
+	for _, v := range array {
+		if v == value {
+			return true
+		}
+	}
+	return false
 }

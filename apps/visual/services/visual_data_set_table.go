@@ -20,6 +20,8 @@ type (
 		FindList(data entity.VisualDataSetTable) *[]entity.VisualDataSetTable
 		Update(data entity.VisualDataSetTable) *entity.VisualDataSetTable
 		Delete(tableIds []string)
+
+		FindFunList(dbType string) *[]entity.VisualDataSetTableFun
 	}
 
 	datasettableModelImpl struct {
@@ -84,4 +86,10 @@ func (m *datasettableModelImpl) Update(data entity.VisualDataSetTable) *entity.V
 
 func (m *datasettableModelImpl) Delete(tableIds []string) {
 	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.VisualDataSetTable{}, "table_id in (?)", tableIds).Error, "删除数据集表失败")
+}
+
+func (m *datasettableModelImpl) FindFunList(dbType string) *[]entity.VisualDataSetTableFun {
+	list := make([]entity.VisualDataSetTableFun, 0)
+	biz.ErrIsNil(global.Db.Table("visual_data_set_table_function").Where("db_type = ?", dbType).Find(&list).Error, "查询数据函数列表失败")
+	return &list
 }

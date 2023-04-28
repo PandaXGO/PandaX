@@ -20,6 +20,7 @@ func InitVisualDataSetTableRouter(container *restful.Container) {
 	s := &api.VisualDataSetTableApi{
 		VisualDataSetTableApp: services.VisualDataSetTableModelDao,
 		VisualDataSourceApp:   services.VisualDataSourceModelDao,
+		VisualDataSetFieldApi: services.VisualDataSetFieldModelDao,
 	}
 
 	ws := new(restful.WebService)
@@ -82,6 +83,13 @@ func InitVisualDataSetTableRouter(container *restful.Container) {
 		Param(ws.FormParameter("excelFile", "Excel文件")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Returns(200, "OK", entity.VisualDataSetRes{}))
+
+	ws.Route(ws.GET("/list/func").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取函数列表").Handle(s.GetDataSetTableFun)
+	}).
+		Doc("获取函数列表").
+		Param(ws.QueryParameter("sourceId", "数据源Id").Required(true).DataType("string")).
+		Metadata(restfulspec.KeyOpenAPITags, tags))
 
 	container.Add(ws)
 }
