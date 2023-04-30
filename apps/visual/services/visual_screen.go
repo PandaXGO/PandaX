@@ -16,7 +16,7 @@ type (
 	VisualScreenModel interface {
 		Insert(data entity.VisualScreen) *entity.VisualScreen
 		FindOne(screenId string) *entity.VisualScreen
-		FindListPage(page, pageSize int, data entity.VisualScreen) (*[]entity.VisualScreen, int64)
+		FindListPage(page, pageSize int, data entity.VisualScreen) (*[]entity.VisualScreenBase, int64)
 		FindList(data entity.VisualScreen) *[]entity.VisualScreen
 		Update(data entity.VisualScreen) *entity.VisualScreen
 		Delete(screenIds []string)
@@ -45,8 +45,8 @@ func (m *screenModelImpl) FindOne(screenId string) *entity.VisualScreen {
 	return resData
 }
 
-func (m *screenModelImpl) FindListPage(page, pageSize int, data entity.VisualScreen) (*[]entity.VisualScreen, int64) {
-	list := make([]entity.VisualScreen, 0)
+func (m *screenModelImpl) FindListPage(page, pageSize int, data entity.VisualScreen) (*[]entity.VisualScreenBase, int64) {
+	list := make([]entity.VisualScreenBase, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
 	db := global.Db.Table(m.table)

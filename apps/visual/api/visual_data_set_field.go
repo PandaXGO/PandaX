@@ -6,6 +6,7 @@ package api
 // 生成人：panda
 // ==========================================================================
 import (
+	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"strings"
@@ -33,6 +34,15 @@ func (p *VisualDataSetFieldApi) GetVisualDataSetFieldList(rc *restfulx.ReqCtx) {
 		PageSize: int64(pageNum),
 		Data:     list,
 	}
+}
+
+// GetVisualDataSetFieldListAll DataSetField列表数据
+func (p *VisualDataSetFieldApi) GetVisualDataSetFieldListAll(rc *restfulx.ReqCtx) {
+	data := entity.VisualDataSetField{}
+	data.TableId = restfulx.QueryParam(rc, "tableId")
+	biz.NotEmpty(data.TableId, "tableId 必传")
+
+	rc.ResData = p.VisualDataSetFieldApp.FindList(data)
 }
 
 // GetVisualDataSetField 获取DataSetField

@@ -16,7 +16,7 @@ type (
 	VisualRuleChainModel interface {
 		Insert(data entity.VisualRuleChain) *entity.VisualRuleChain
 		FindOne(id string) *entity.VisualRuleChain
-		FindListPage(page, pageSize int, data entity.VisualRuleChain) (*[]entity.VisualRuleChain, int64)
+		FindListPage(page, pageSize int, data entity.VisualRuleChain) (*[]entity.VisualRuleChainBase, int64)
 		FindList(data entity.VisualRuleChain) *[]entity.VisualRuleChain
 		Update(data entity.VisualRuleChain) *entity.VisualRuleChain
 		Delete(ids []string)
@@ -45,8 +45,8 @@ func (m *ruleChainModelImpl) FindOne(id string) *entity.VisualRuleChain {
 	return resData
 }
 
-func (m *ruleChainModelImpl) FindListPage(page, pageSize int, data entity.VisualRuleChain) (*[]entity.VisualRuleChain, int64) {
-	list := make([]entity.VisualRuleChain, 0)
+func (m *ruleChainModelImpl) FindListPage(page, pageSize int, data entity.VisualRuleChain) (*[]entity.VisualRuleChainBase, int64) {
+	list := make([]entity.VisualRuleChainBase, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
 	db := global.Db.Table(m.table)

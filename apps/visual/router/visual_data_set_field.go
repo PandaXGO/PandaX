@@ -35,6 +35,13 @@ func InitVisualDataSetFieldRouter(container *restful.Container) {
 		Writes(model.ResultPage{}).
 		Returns(200, "OK", model.ResultPage{}))
 
+	ws.Route(ws.GET("/list/all").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取DataSetField列表").Handle(s.GetVisualDataSetFieldListAll)
+	}).
+		Doc("获取DataSetField列表").
+		Param(ws.QueryParameter("tableId", "tableId").Required(true).DataType("string")).
+		Metadata(restfulspec.KeyOpenAPITags, tags))
+
 	ws.Route(ws.GET("/{fieldId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取DataSetField信息").Handle(s.GetVisualDataSetField)
 	}).

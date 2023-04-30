@@ -22,17 +22,21 @@ func (VisualScreenGroup) TableName() string {
 	return "visual_screen_group"
 }
 
-type VisualScreen struct {
-	UserId         int64  `gorm:"userId;type:int;comment:用户Id" json:"userId"`
-	ScreenId       string `gorm:"primary_key;" json:"screenId"`
-	GroupId        int64  `gorm:"screenGroup;type:int;comment:分组Id" json:"groupId"`
-	ScreenName     string `gorm:"screenName;type:varchar(50);comment:名称" json:"screenName"`
-	ScreenDataJson string `gorm:"screenDataJson;type:longtext;comment:Json数据" json:"screenDataJson"` //pg 使用类型 text
-	ScreenBase64   string `gorm:"screenBase64;type:longtext;comment:Base64缩略图" json:"screenBase64"`  //缩略图 base64
-	ScreenRemark   string `gorm:"screenRemark;type:varchar(255);comment:说明" json:"screenRemark"`
-	Status         string `gorm:"status;type:varchar(1);comment:状态" json:"status"`
-	Creator        string `json:"creator"` //创建者
+type VisualScreenBase struct {
+	UserId       int64  `gorm:"userId;type:int;comment:用户Id" json:"userId"`
+	ScreenId     string `gorm:"primary_key;" json:"screenId"`
+	GroupId      int64  `gorm:"screenGroup;type:int;comment:分组Id" json:"groupId"`
+	ScreenName   string `gorm:"screenName;type:varchar(50);comment:名称" json:"screenName"`
+	ScreenBase64 string `gorm:"screenBase64;type:longtext;comment:Base64缩略图" json:"screenBase64"` //缩略图 base64
+	ScreenRemark string `gorm:"screenRemark;type:varchar(255);comment:说明" json:"screenRemark"`
+	Status       string `gorm:"status;type:varchar(1);comment:状态" json:"status"`
+	Creator      string `json:"creator"` //创建者
 	model.BaseModel
+}
+
+type VisualScreen struct {
+	VisualScreenBase
+	ScreenDataJson string `gorm:"screenDataJson;type:longtext;comment:Json数据" json:"screenDataJson"` //pg 使用类型 text
 }
 
 func (VisualScreen) TableName() string {

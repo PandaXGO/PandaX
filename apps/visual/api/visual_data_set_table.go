@@ -17,6 +17,7 @@ import (
 	"pandax/apps/visual/driver"
 	"pandax/apps/visual/entity"
 	"pandax/apps/visual/services"
+	"pandax/pkg/global"
 	"pandax/pkg/tool"
 	"path"
 	"strings"
@@ -80,7 +81,14 @@ func (p *VisualDataSetTableApi) InsertVisualDataSetTable(rc *restfulx.ReqCtx) {
 		}
 
 		one := p.VisualDataSourceApp.FindOne(data.DataSourceId)
+		if driver.TestConnection(one) != nil {
+			one.Status = "0"
+			one := p.VisualDataSourceApp.Update(*one)
+			global.Log.Errorf("数据源:%s不在线", one.SourceName)
+			return
+		}
 		instance := driver.NewDbInstance(one)
+
 		sql := ""
 		if data.TableType == "db" {
 			sql = fmt.Sprintf(`select * from %s LIMIT 1`, info["table"])
