@@ -42,7 +42,7 @@ func (m *datasettableModelImpl) Insert(data entity.VisualDataSetTable) *entity.V
 func (m *datasettableModelImpl) FindOne(tableId string) *entity.VisualDataSetTable {
 	resData := new(entity.VisualDataSetTable)
 	db := global.Db.Table(m.table).Where("table_id = ?", tableId)
-	err := db.Preload("DataSource").First(resData).Error
+	err := db.Preload("DataSetFields").Preload("DataSource").First(resData).Error
 	biz.ErrIsNil(err, "查询数据集表失败")
 	return resData
 }
@@ -60,7 +60,7 @@ func (m *datasettableModelImpl) FindListPage(page, pageSize int, data entity.Vis
 		db = db.Where("table_type = ?", data.TableType)
 	}
 	err := db.Count(&total).Error
-	err = db.Order("create_time").Limit(pageSize).Offset(offset).Preload("DataSource").Find(&list).Error
+	err = db.Order("create_time").Limit(pageSize).Offset(offset).Preload("DataSetFields").Preload("DataSource").Find(&list).Error
 	biz.ErrIsNil(err, "查询数据集表分页列表失败")
 	return &list, total
 }
@@ -75,7 +75,7 @@ func (m *datasettableModelImpl) FindList(data entity.VisualDataSetTable) *[]enti
 	if data.TableType != "" {
 		db = db.Where("table_type = ?", data.TableType)
 	}
-	biz.ErrIsNil(db.Order("create_time").Preload("DataSource").Find(&list).Error, "查询数据集表列表失败")
+	biz.ErrIsNil(db.Order("create_time").Preload("DataSetFields").Preload("DataSource").Find(&list).Error, "查询数据集表列表失败")
 	return &list
 }
 

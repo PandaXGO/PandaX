@@ -49,6 +49,14 @@ func (p *VisualDataSetTableApi) GetVisualDataSetTableList(rc *restfulx.ReqCtx) {
 	}
 }
 
+// GetVisualDataSetTableListAll DataSetTable列表数据
+func (p *VisualDataSetTableApi) GetVisualDataSetTableListAll(rc *restfulx.ReqCtx) {
+	data := entity.VisualDataSetTable{}
+	data.Name = restfulx.QueryParam(rc, "name")
+	data.TableType = restfulx.QueryParam(rc, "tableType")
+	rc.ResData = p.VisualDataSetTableApp.FindList(data)
+}
+
 // GetVisualDataSetTable 获取DataSetTable
 func (p *VisualDataSetTableApi) GetVisualDataSetTable(rc *restfulx.ReqCtx) {
 	tableId := restfulx.PathParam(rc, "tableId")

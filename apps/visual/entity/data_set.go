@@ -4,13 +4,14 @@ import "github.com/XM-GO/PandaKit/model"
 
 type VisualDataSetTable struct {
 	model.BaseModelD
-	TableId      string           `gorm:"primary_key;tableId;comment:表id" json:"tableId"`
-	DataSourceId string           `gorm:"dataSourceId;type:varchar(64);comment:数据源ID" json:"sourceId"`
-	Name         string           `gorm:"name;type:varchar(64);comment:名称" json:"name"`
-	TableType    string           `gorm:"tableType;type:varchar(64);comment:db,sql,excel,union" json:"tableType"`
-	Info         string           `gorm:"info;type:TEXT;comment:原始表信息" json:"info"` //
-	CreateBy     int64            `gorm:"create_by" json:"createBy"`                //创建人ID
-	DataSource   VisualDataSource `gorm:"foreignKey:DataSourceId;references:SourceId" json:"dataSource"`
+	TableId       string               `gorm:"primary_key;tableId;comment:表id" json:"tableId"`
+	DataSourceId  string               `gorm:"dataSourceId;type:varchar(64);comment:数据源ID" json:"sourceId"`
+	Name          string               `gorm:"name;type:varchar(64);comment:名称" json:"name"`
+	TableType     string               `gorm:"tableType;type:varchar(64);comment:db,sql,excel,union" json:"tableType"`
+	Info          string               `gorm:"info;type:TEXT;comment:原始表信息" json:"info"` //
+	CreateBy      int64                `gorm:"create_by" json:"createBy"`                //创建人ID
+	DataSource    VisualDataSource     `gorm:"foreignKey:DataSourceId;references:SourceId" json:"dataSource"`
+	DataSetFields []VisualDataSetField `gorm:"foreignKey:TableId" json:"dataSetFields"` //
 }
 
 func (VisualDataSetTable) TableName() string {
@@ -33,7 +34,7 @@ func (VisualDataSetField) TableName() string {
 }
 
 type VisualDataSetRes struct {
-	Data   []map[string]interface{} `json:"data"`
+	Data   []map[string]interface{} `json:"series"`
 	Fields []string                 `json:"fields"`
 }
 

@@ -37,6 +37,12 @@ func InitVisualDataSetTableRouter(container *restful.Container) {
 		Writes(model.ResultPage{}).
 		Returns(200, "OK", model.ResultPage{}))
 
+	ws.Route(ws.GET("/list/all").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取DataSetTable列表").Handle(s.GetVisualDataSetTableListAll)
+	}).
+		Doc("获取DataSetTable分页列表").
+		Metadata(restfulspec.KeyOpenAPITags, tags))
+
 	ws.Route(ws.GET("/{tableId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取DataSetTable信息").Handle(s.GetVisualDataSetTable)
 	}).
