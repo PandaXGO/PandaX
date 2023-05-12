@@ -20,6 +20,7 @@ type (
 		FindList(data entity.VisualDataSetField) *[]entity.VisualDataSetField
 		Update(data entity.VisualDataSetField) *entity.VisualDataSetField
 		Delete(fieldIds []string)
+		DeleteByTable(tableId string)
 	}
 
 	datasetfieldModelImpl struct {
@@ -90,4 +91,8 @@ func (m *datasetfieldModelImpl) Update(data entity.VisualDataSetField) *entity.V
 
 func (m *datasetfieldModelImpl) Delete(fieldIds []string) {
 	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.VisualDataSetField{}, "field_id in (?)", fieldIds).Error, "删除数据集字段失败")
+}
+
+func (m *datasetfieldModelImpl) DeleteByTable(tableId string) {
+	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.VisualDataSetField{}, "table_id = ?", tableId).Error, "删除数据集字段失败")
 }

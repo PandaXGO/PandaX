@@ -15,7 +15,6 @@ func ReadExcel(filename string) ([]string, []map[string]interface{}) {
 	}
 	sheets := f.GetSheetMap()
 	sheet1 := sheets[1]
-	fmt.Println("第一个工作表", sheet1)
 	rows, err := f.GetRows(sheet1)
 	cols := make([]string, 0)
 	isHead := true
@@ -28,7 +27,6 @@ func ReadExcel(filename string) ([]string, []map[string]interface{}) {
 				cols = append(cols, colCell)
 			}
 			isHead = false
-			fmt.Println("列信息", cols)
 		} else {
 			theRow := map[string]interface{}{}
 			for j, colCell := range row {

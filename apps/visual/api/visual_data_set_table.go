@@ -24,13 +24,15 @@ import (
 	"time"
 )
 
+const filePath = "uploads/excel"
+
+var ColumnTypeStr = []string{"delete_time", "update_time"}
+
 type VisualDataSetTableApi struct {
 	VisualDataSetTableApp services.VisualDataSetTableModel
 	VisualDataSourceApp   services.VisualDataSourceModel
 	VisualDataSetFieldApi services.VisualDataSetFieldModel
 }
-
-var ColumnTypeStr = []string{"delete_time", "update_time"}
 
 // GetVisualDataSetTableList DataSetTable列表数据
 func (p *VisualDataSetTableApi) GetVisualDataSetTableList(rc *restfulx.ReqCtx) {
@@ -70,56 +72,16 @@ func (p *VisualDataSetTableApi) InsertVisualDataSetTable(rc *restfulx.ReqCtx) {
 	data.TableId = kgo.KStr.Uniqid("px")
 	p.VisualDataSetTableApp.Insert(data)
 	// 协程执行添加字段
-	go func() {
-		info := make(map[string]string)
-		err := json.Unmarshal([]byte(data.Info), &info)
-		if err != nil {
-			return
-		}
-		// 保存 excel field
-		if data.TableType == "excel" {
-			filePath := info["filePath"]
-			_, datas := tool.ReadExcel(filePath)
-			field := getDataSetField(datas)
-			if field != nil {
-				field.TableId = data.TableId
-				p.VisualDataSetFieldApi.Insert(*field)
-			}
-			return
-		}
-
-		one := p.VisualDataSourceApp.FindOne(data.DataSourceId)
-		if driver.TestConnection(one) != nil {
-			one.Status = "0"
-			one := p.VisualDataSourceApp.Update(*one)
-			global.Log.Errorf("数据源:%s不在线", one.SourceName)
-			return
-		}
-		instance := driver.NewDbInstance(one)
-
-		sql := ""
-		if data.TableType == "db" {
-			sql = fmt.Sprintf(`select * from %s LIMIT 1`, info["table"])
-		}
-		if data.TableType == "sql" {
-			sql = info["sql"] + " LIMIT 1"
-		}
-		_, datas, err := instance.SelectData(sql)
-		field := getDataSetField(datas)
-		if field != nil {
-			field.TableId = data.TableId
-			p.VisualDataSetFieldApi.Insert(*field)
-		}
-	}()
-
+	go p.operateTable("add", data)
 }
 
 // UpdateVisualDataSetTable 修改DataSetTable
 func (p *VisualDataSetTableApi) UpdateVisualDataSetTable(rc *restfulx.ReqCtx) {
 	var data entity.VisualDataSetTable
 	restfulx.BindQuery(rc, &data)
-
 	p.VisualDataSetTableApp.Update(data)
+
+	go p.operateTable("edit", data)
 }
 
 // DeleteVisualDataSetTable 删除DataSetTable
@@ -161,8 +123,6 @@ func (p *VisualDataSetTableApi) GetVisualDataSetTableResult(rc *restfulx.ReqCtx)
 	}
 }
 
-const filePath = "uploads/excel"
-
 // GetVisualDataSetTableByExcelResult 通过excel读取结果
 func (p *VisualDataSetTableApi) GetVisualDataSetTableByExcelResult(rc *restfulx.ReqCtx) {
 	_, fileHeader, err := rc.Request.Request.FormFile("excelFile")
@@ -178,6 +138,7 @@ func (p *VisualDataSetTableApi) GetVisualDataSetTableByExcelResult(rc *restfulx.
 	rc.ResData = dst
 }
 
+// GetDataSetTableFun 获取sql函数
 func (p *VisualDataSetTableApi) GetDataSetTableFun(rc *restfulx.ReqCtx) {
 	sourceId := restfulx.QueryParam(rc, "sourceId")
 	one := p.VisualDataSourceApp.FindOne(sourceId)
@@ -185,10 +146,72 @@ func (p *VisualDataSetTableApi) GetDataSetTableFun(rc *restfulx.ReqCtx) {
 	rc.ResData = p.VisualDataSetTableApp.FindFunList(one.SourceType)
 }
 
-func getDataSetField(datas []map[string]interface{}) *entity.VisualDataSetField {
-	field := new(entity.VisualDataSetField)
+// GetDataSets 获取图表设置的数据集查询数据
+func (p *VisualDataSetFieldApi) GetDataSets(rc *restfulx.ReqCtx) {
+	var data entity.DataSetDataReq
+	restfulx.BindQuery(rc, &data)
+
+}
+
+func (p *VisualDataSetTableApi) operateTable(opType string, data entity.VisualDataSetTable) {
+	info := make(map[string]string)
+	err := json.Unmarshal([]byte(data.Info), &info)
+	if err != nil {
+		return
+	}
+	// 保存 excel field
+	if data.TableType == "excel" {
+		filePath := info["filePath"]
+		_, datas := tool.ReadExcel(filePath)
+		fields := getDataSetField(datas)
+		if len(fields) > 0 {
+			for _, field := range fields {
+				field.TableId = data.TableId
+				if opType == "edit" {
+					p.VisualDataSetFieldApi.DeleteByTable(data.TableId)
+				}
+				p.VisualDataSetFieldApi.Insert(field)
+			}
+		}
+		return
+	}
+
+	one := p.VisualDataSourceApp.FindOne(data.DataSourceId)
+	if driver.TestConnection(one) != nil {
+		one.Status = "0"
+		one := p.VisualDataSourceApp.Update(*one)
+		global.Log.Errorf("数据源:%s不在线", one.SourceName)
+		return
+	}
+	instance := driver.NewDbInstance(one)
+
+	sql := ""
+	if data.TableType == "db" {
+		sql = fmt.Sprintf(`select * from %s LIMIT 1`, info["table"])
+	}
+	if data.TableType == "sql" {
+		sql = info["sql"] + " LIMIT 1"
+	}
+	_, datas, err := instance.SelectData(sql)
+
+	fields := getDataSetField(datas)
+	if len(fields) > 0 {
+		for _, field := range fields {
+			field.TableId = data.TableId
+			if opType == "edit" {
+				p.VisualDataSetFieldApi.DeleteByTable(data.TableId)
+			}
+			p.VisualDataSetFieldApi.Insert(field)
+		}
+	}
+}
+
+// 根据读取的Data获取字段
+func getDataSetField(datas []map[string]interface{}) []entity.VisualDataSetField {
+	fields := make([]entity.VisualDataSetField, 0)
 	if len(datas) > 0 {
 		for k, v := range datas[0] {
+			field := entity.VisualDataSetField{}
 			if needDelete(k) {
 				continue
 			}
@@ -196,19 +219,22 @@ func getDataSetField(datas []map[string]interface{}) *entity.VisualDataSetField 
 			field.Name = k
 			field.DeName = k
 			switch v.(type) {
-			case int64, float64:
+			case int, uint, int8, uint8, int64, uint64, float32, float64:
 				field.DeType = "2"
 				field.GroupType = "q"
-			case time.Time:
-				field.DeType = "1"
-				field.GroupType = "d"
-			default:
-				field.DeType = "0"
-				field.GroupType = "d"
+			case string:
+				if _, err := time.Parse("2006-01-02", v.(string)); err != nil {
+					field.DeType = "1"
+					field.GroupType = "d"
+				} else {
+					field.DeType = "0"
+					field.GroupType = "d"
+				}
 			}
+			fields = append(fields, field)
 		}
 	}
-	return field
+	return fields
 }
 
 func needDelete(name string) bool {
