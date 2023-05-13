@@ -146,11 +146,89 @@ func (p *VisualDataSetTableApi) GetDataSetTableFun(rc *restfulx.ReqCtx) {
 	rc.ResData = p.VisualDataSetTableApp.FindFunList(one.SourceType)
 }
 
-// GetDataSets 获取图表设置的数据集查询数据
-func (p *VisualDataSetFieldApi) GetDataSets(rc *restfulx.ReqCtx) {
+// GetDataSetSeries 获取图表设置的数据集查询数据
+func (p *VisualDataSetTableApi) GetDataSetSeries(rc *restfulx.ReqCtx) {
 	var data entity.DataSetDataReq
 	restfulx.BindQuery(rc, &data)
+	one := p.VisualDataSetTableApp.FindOne(data.TableId)
+	biz.NotNil(one, "未查到该数据集")
+	info := make(map[string]string)
+	biz.ErrIsNil(json.Unmarshal([]byte(one.Info), &info), "解析info失败")
+	// 数据源查询
+	source := p.VisualDataSourceApp.FindOne(one.DataSourceId)
+	// 拼接维度
+	dataDs := make([]string, 0)
+	dataQs := make([]string, 0)
+	sorts := make([]string, 0)
+	filters := make([]string, 0)
 
+	for _, ds := range data.DataDs {
+		dataDs = append(dataDs, ds.Value)
+	}
+	// 拼接指标
+	for _, qs := range data.DataQs {
+		q := qs.Value
+		if qs.Func != "" {
+			q = fmt.Sprintf("%s(%s) as %s", qs.Func, q, qs.Value)
+		}
+		if qs.Decimal > 0 {
+			q = fmt.Sprintf("ROUND(%s,%d)", q, qs.Decimal)
+		}
+		if qs.Sort != "" {
+			//升序
+			if qs.Sort == "2" {
+				sorts = append(sorts, fmt.Sprintf("%s asc", qs.Value))
+			}
+			//降序
+			if qs.Sort == "3" {
+				sorts = append(sorts, fmt.Sprintf("%s desc", qs.Value))
+			}
+		}
+		if len(qs.Filters) > 0 {
+			for _, filter := range qs.Filters {
+				filters = append(filters, fmt.Sprintf("%s %s %d", filter.Name, filter.Rule, filter.Num))
+			}
+		}
+		dataQs = append(dataQs, q)
+	}
+
+	//
+	if one.TableType == "excel" {
+		rc.ResData = "占时不支持"
+		return
+	}
+
+	var sql string
+	//根据信息拼接sql
+	if one.TableType == "db" {
+		sql = fmt.Sprintf(`select %s from %s`,
+			strings.Join(dataQs, ","),
+			info["table"],
+		)
+	}
+	if one.TableType == "sql" {
+		sql = fmt.Sprintf(`select %s from (%s) as table`,
+			strings.Join(dataQs, ","),
+			info["sql"],
+		)
+	}
+	if len(filters) > 0 {
+		sql += fmt.Sprintf(" WHERE %s", strings.Join(filters, " AND "))
+	}
+	if len(dataDs) > 0 {
+		sql += fmt.Sprintf(" GROUP BY %s", strings.Join(dataDs, ","))
+	}
+	if len(sorts) > 0 {
+		sql += fmt.Sprintf(" ORDER BY %s", strings.Join(sorts, ","))
+	}
+	if data.ShowNumType == "2" {
+		sql += fmt.Sprintf(" LIMIT %d", data.ShowNum)
+	}
+	// 执行
+	instance := driver.NewDbInstance(source)
+	_, series, err := instance.SelectData(sql)
+	biz.ErrIsNil(err, "查询表信息失败")
+	rc.ResData = series
 }
 
 func (p *VisualDataSetTableApi) operateTable(opType string, data entity.VisualDataSetTable) {

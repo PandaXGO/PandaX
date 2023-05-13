@@ -56,15 +56,34 @@ func (VisualDataSetTableFun) TableName() string {
 }
 
 type DataSetDataReq struct {
-	TableId     string                   `json:"tableId"` //数据集Id
-	ShowNumType string                   `json:"showNumType"`
-	ShowNum     int64                    `json:"showNum"`
-	DataDs      []map[string]interface{} `json:"dataDs"`
-	DataQs      []map[string]interface{} `json:"dataQs"`
-	DataLs      []map[string]interface{} `json:"dataLs"`
+	TableId     string          `json:"tableId"` //数据集Id
+	ShowNumType string          `json:"showNumType"`
+	ShowNum     int64           `json:"showNum"`
+	DataDs      []DataSetDataDs `json:"dataDs"`
+	DataQs      []DataSetDataQs `json:"dataQs"`
+	DataLs      []DataSetDataDs `json:"dataLs"`
 }
 
 type DataSetDataRes struct {
 	Fields []string                 `json:"fields"`
 	Series []map[string]interface{} `json:"series"`
+}
+
+type DataSetDataDs struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+type DataSetDataQs struct {
+	DataSetDataDs
+	Func    string               `json:"func"`
+	Decimal int64                `json:"decimal"`
+	Sort    string               `json:"sort"`
+	Filters []DataSetDataFilters `json:"filters"`
+}
+
+type DataSetDataFilters struct {
+	Name string `json:"name"`
+	Rule string `json:"rule"`
+	Num  int64  `json:"num"`
 }

@@ -97,5 +97,12 @@ func InitVisualDataSetTableRouter(container *restful.Container) {
 		Param(ws.QueryParameter("sourceId", "数据源Id").Required(true).DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags))
 
+	ws.Route(ws.POST("/list/series").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取数列表").Handle(s.GetDataSetSeries)
+	}).
+		Doc("获取数列表").
+		Reads(entity.DataSetDataReq{}).
+		Metadata(restfulspec.KeyOpenAPITags, tags))
+
 	container.Add(ws)
 }
