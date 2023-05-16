@@ -13,7 +13,6 @@ import (
 	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/kakuilan/kgo"
-	"log"
 	"pandax/apps/visual/driver"
 	"pandax/apps/visual/entity"
 	"pandax/apps/visual/services"
@@ -142,7 +141,6 @@ func (p *VisualDataSetTableApi) GetVisualDataSetTableByExcelResult(rc *restfulx.
 func (p *VisualDataSetTableApi) GetDataSetTableFun(rc *restfulx.ReqCtx) {
 	sourceId := restfulx.QueryParam(rc, "sourceId")
 	one := p.VisualDataSourceApp.FindOne(sourceId)
-	log.Println(one.SourceType)
 	rc.ResData = p.VisualDataSetTableApp.FindFunList(one.SourceType)
 }
 
@@ -164,24 +162,30 @@ func (p *VisualDataSetTableApi) GetDataSetSeries(rc *restfulx.ReqCtx) {
 
 	for _, ds := range data.DataDs {
 		dataDs = append(dataDs, ds.Value)
+		dataQs = append(dataQs, ds.Value)
 	}
 	// 拼接指标
 	for _, qs := range data.DataQs {
 		q := qs.Value
+		rename := qs.Func + "_" + qs.Value
 		if qs.Func != "" {
-			q = fmt.Sprintf("%s(%s) as %s", qs.Func, q, qs.Value)
+			q = fmt.Sprintf("%s(%s)", qs.Func, q)
 		}
+
 		if qs.Decimal > 0 {
-			q = fmt.Sprintf("ROUND(%s,%d)", q, qs.Decimal)
+			q = fmt.Sprintf("ROUND(%s,%d) as %s", q, qs.Decimal, rename)
+		} else {
+			q = fmt.Sprintf("%s as %s", q, rename)
 		}
+
 		if qs.Sort != "" {
 			//升序
 			if qs.Sort == "2" {
-				sorts = append(sorts, fmt.Sprintf("%s asc", qs.Value))
+				sorts = append(sorts, fmt.Sprintf("%s asc", rename))
 			}
 			//降序
 			if qs.Sort == "3" {
-				sorts = append(sorts, fmt.Sprintf("%s desc", qs.Value))
+				sorts = append(sorts, fmt.Sprintf("%s desc", rename))
 			}
 		}
 		if len(qs.Filters) > 0 {

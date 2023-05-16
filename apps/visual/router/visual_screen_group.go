@@ -73,12 +73,12 @@ func InitVisualScreenGroupRouter(container *restful.Container) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Reads(entity.VisualScreenGroup{}))
 
-	ws.Route(ws.DELETE("/{}").To(func(request *restful.Request, response *restful.Response) {
+	ws.Route(ws.DELETE("/{id}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("删除ScreenGroup信息").Handle(s.DeleteVisualScreenGroup)
 	}).
 		Doc("删除ScreenGroup信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Param(ws.PathParameter("", "多id 1,2,3").DataType("string")))
+		Param(ws.PathParameter("id", "多id 1,2,3").DataType("string")))
 
 	container.Add(ws)
 }
