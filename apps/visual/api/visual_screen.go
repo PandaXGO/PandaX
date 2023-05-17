@@ -91,7 +91,6 @@ func (p *VisualScreenApi) ScreenTwin(request *restful.Request, response *restful
 		restfulx.ErrorRes(response, "创建Websocket失败")
 		return
 	}
-	pxSocket.AddWebSocketByScreenId(screenId, newWebsocket)
 	go func() {
 		for {
 			_, message, err := newWebsocket.Conn.ReadMessage()

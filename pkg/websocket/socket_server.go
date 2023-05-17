@@ -38,9 +38,9 @@ func NewWebsocket(writer http.ResponseWriter, r *http.Request, header http.Heade
 // OnMessage 消息
 //发送消息消息类型 01:发送的设备数据  02:收到指令回复  03: 心跳回复
 func OnMessage(ws *Websocket, message string) {
-	log.Println(message)
 	if message != "" && strings.Index(message, "ONLINE") != -1 {
-		AddWebSocketByScreenId(strings.Split(message, "ONLINE")[0], ws)
+		screenId := strings.Split(message, "ONLINE")[0]
+		AddWebSocketByScreenId(screenId, ws)
 	}
 	//画布离开
 	if message != "" && strings.Index(message, "LEAVE") != -1 {
@@ -58,7 +58,7 @@ func OnMessage(ws *Websocket, message string) {
 		//1. 根据组态Id查询设备Id，及设备模型
 		//2. 根据设备下发CMD指令
 
-		sendMessages("02", "'命令发送成功'", screenId)
+		sendMessages("02", "命令发送成功", screenId)
 	}
 	//心跳处理
 	if message != "" && strings.Index(message, "HEARTCMD") != -1 {
@@ -67,12 +67,11 @@ func OnMessage(ws *Websocket, message string) {
 			return
 		}
 		screenId := split[0]
-		sendMessages("03", "'心跳正常'", screenId)
+		sendMessages("03", "心跳正常", screenId)
 	}
 
 }
-
 func sendMessages(messageType, messageContent, screenId string) {
-	msg := fmt.Sprintf(`{'MESSAGETYPE':'%s','MESSAGECONTENT':%s}`, messageType, messageContent)
+	msg := fmt.Sprintf(`{"MESSAGETYPE":"%s","MESSAGECONTENT": "%s"}`, messageType, messageContent)
 	SendMessage(msg, screenId)
 }
