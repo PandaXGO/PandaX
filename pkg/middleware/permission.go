@@ -7,7 +7,6 @@ import (
 	"github.com/XM-GO/PandaKit/token"
 	"github.com/dgrijalva/jwt-go"
 	"pandax/pkg/global"
-	"strconv"
 )
 
 func PermissionHandler(rc *restfulx.ReqCtx) error {
@@ -38,8 +37,7 @@ func PermissionHandler(rc *restfulx.ReqCtx) error {
 	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
 	e := ca.Casbin()
 	// 判断策略中是否存在
-	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
-	success, err := e.Enforce(tenantId, loginAccount.RoleKey, rc.Request.Request.URL.Path, rc.Request.Request.Method)
+	success, err := e.Enforce(loginAccount.RoleKey, rc.Request.Request.URL.Path, rc.Request.Request.Method)
 	if !success {
 		return biz.CasbinErr
 	}

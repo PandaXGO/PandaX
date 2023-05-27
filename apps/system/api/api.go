@@ -8,7 +8,6 @@ import (
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 	"pandax/pkg/global"
-	"strconv"
 )
 
 type SystemApiApi struct {
@@ -61,7 +60,6 @@ func (s *SystemApiApi) GetAllApis(rc *restfulx.ReqCtx) {
 
 func (s *SystemApiApi) GetPolicyPathByRoleId(rc *restfulx.ReqCtx) {
 	roleKey := rc.Request.QueryParameter("roleKey")
-	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
 	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
-	rc.ResData = ca.GetPolicyPathByRoleId(tenantId, roleKey)
+	rc.ResData = ca.GetPolicyPathByRoleId(roleKey)
 }
