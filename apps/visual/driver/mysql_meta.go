@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/XM-GO/PandaKit/biz"
-	"log"
 	"pandax/apps/visual/entity"
 	"strings"
 
@@ -19,7 +18,6 @@ func getMysqlDB(d *entity.VisualDataSource) (*sql.DB, error) {
 	if d.Db.Config != "" {
 		dsn = fmt.Sprintf("%s&%s", dsn, d.Db.Config)
 	}
-	log.Println(dsn)
 	return sql.Open("mysql", dsn)
 }
 
