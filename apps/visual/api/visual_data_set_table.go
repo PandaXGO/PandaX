@@ -305,7 +305,7 @@ func getDataSetField(datas []map[string]interface{}) []entity.VisualDataSetField
 				field.DeType = "2"
 				field.GroupType = "q"
 			case string:
-				if _, err := time.Parse("2006-01-02", v.(string)); err != nil {
+				if _, err := time.Parse("2006-01-02", v.(string)); err == nil {
 					field.DeType = "1"
 					field.GroupType = "d"
 				} else {
