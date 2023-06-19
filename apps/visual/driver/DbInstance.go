@@ -6,6 +6,7 @@ import (
 	"github.com/XM-GO/PandaKit/cache"
 	"pandax/apps/visual/entity"
 	"pandax/pkg/global"
+	"pandax/pkg/tool"
 	"reflect"
 	"strconv"
 	"strings"
@@ -74,6 +75,12 @@ func (di *DbInstance) GetMeta() DbMetadata {
 	if dbType == entity.DbTypePostgres {
 		return &PgsqlMetadata{di: di}
 	}
+	if dbType == entity.DbTypeTdengine {
+		return &TDMetadata{di: di}
+	}
+	if dbType == entity.DbTypeClickHouse {
+		return &ClickHouseMetadata{di: di}
+	}
 	return nil
 }
 
@@ -121,11 +128,10 @@ func AddDbInstanceToCache(id string, di *DbInstance) {
 
 func TestConnection(d *entity.VisualDataSource) error {
 	// 验证第一个库是否可以连接即可
-	DB, err := GetDbConn(d)
+	_, err := GetDbConn(d)
 	if err != nil {
 		return err
 	} else {
-		DB.Close()
 		return nil
 	}
 }
@@ -138,8 +144,11 @@ func GetDbConn(d *entity.VisualDataSource) (*sql.DB, error) {
 		DB, err = getMysqlDB(d)
 	} else if d.SourceType == entity.DbTypePostgres {
 		DB, err = getPgsqlDB(d)
+	} else if d.SourceType == entity.DbTypeTdengine {
+		DB, err = getTdDB(d)
+	} else if d.SourceType == entity.DbTypeClickHouse {
+		DB, err = getClickHouseDB(d)
 	}
-
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +157,6 @@ func GetDbConn(d *entity.VisualDataSource) (*sql.DB, error) {
 		DB.Close()
 		return nil, err
 	}
-
 	return DB, nil
 }
 
@@ -194,6 +202,9 @@ func SelectDataByDb(db *sql.DB, selectSql string) ([]string, []map[string]interf
 			// 如果是第一行，则将列名加入到列信息中，由于map是无序的，所有需要返回列名的有序数组
 			if isFirst {
 				colNames = append(colNames, colName)
+			}
+			if strings.Contains(colName, "_") {
+				colName = tool.ToCamelCase(colName)
 			}
 			rowData[colName] = valueConvert(v, colType)
 		}

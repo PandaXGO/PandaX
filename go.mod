@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/Shopify/sarama v1.38.1
-	github.com/XM-GO/PandaKit v0.0.0-20230527040642-b5fb5258717c
+	github.com/XM-GO/PandaKit v0.0.0-20230619032950-ff62bb372352
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didip/tollbooth v4.0.2+incompatible
 	github.com/dop251/goja v0.0.0-20230304130813-e2f543bf4b4c
@@ -14,7 +14,7 @@ require (
 	github.com/go-openapi/spec v0.20.6
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/google/uuid v1.3.0
-	github.com/gorilla/websocket v1.4.2
+	github.com/gorilla/websocket v1.5.0
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/kakuilan/kgo v0.1.8
 	github.com/lib/pq v1.10.4
@@ -24,6 +24,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.5.0
+	github.com/taosdata/driver-go/v3 v3.5.0
 	github.com/xuri/excelize/v2 v2.7.1
 	golang.org/x/crypto v0.8.0
 	google.golang.org/grpc v1.48.0

@@ -8,8 +8,10 @@ import (
 )
 
 const (
-	DbTypeMysql    = "MySQL"
-	DbTypePostgres = "PostgreSQL"
+	DbTypeMysql      = "MySQL"
+	DbTypePostgres   = "PostgreSQL"
+	DbTypeTdengine   = "Tdengine"
+	DbTypeClickHouse = "ClickHouse"
 )
 
 type VisualDataSource struct {

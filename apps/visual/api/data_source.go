@@ -99,7 +99,7 @@ func (p *VisualDataSourceApi) GetDataSourceTables(rc *restfulx.ReqCtx) {
 	one := p.VisualDataSourceApp.FindOne(sourceId)
 	instance := driver.NewDbInstance(one)
 	biz.IsTrue(instance != nil, "获取数据源下所有表失败")
-	rc.ResData = instance.GetMeta().GetTableInfos()
+	rc.ResData = instance.GetMeta().GetTables()
 }
 
 // GetDataSourceTableDetails 获取表下面的所有字段

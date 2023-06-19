@@ -28,9 +28,6 @@ const (
 	PGSQL_TABLE_INFO = `SELECT obj_description(c.oid) AS "tableComment", c.relname AS "tableName" FROM pg_class c 
 	JOIN pg_namespace n ON c.relnamespace = n.oid WHERE n.nspname = (select current_schema()) AND c.reltype > 0`
 
-	PGSQL_INDEX_INFO = `SELECT indexname AS "indexName", indexdef AS "indexComment"
-	FROM pg_indexes WHERE schemaname =  (select current_schema()) AND tablename = '%s'`
-
 	PGSQL_COLUMN_MA = `SELECT
 		C.relname AS "tableName",
 		A.attname AS "columnName",
@@ -80,34 +77,11 @@ func (pm *PgsqlMetadata) GetColumns(tableNames ...string) []map[string]interface
 	return result
 }
 
-func (pm *PgsqlMetadata) GetPrimaryKey(tablename string) string {
-	columns := pm.GetColumns(tablename)
-	biz.IsTrue(len(columns) > 0, "[%s] 表不存在", tablename)
-	for _, v := range columns {
-		if v["columnKey"].(string) == "PRI" {
-			return v["columnName"].(string)
-		}
-	}
-
-	return columns[0]["columnName"].(string)
-}
-
 // 获取表信息，比GetTables获取更详细的表信息
 func (pm *PgsqlMetadata) GetTableInfos() []map[string]interface{} {
 	res, err := pm.di.innerSelect(PGSQL_TABLE_INFO)
 	biz.ErrIsNilAppendErr(err, "获取表信息失败: %s")
 	return res
-}
-
-// 获取表索引信息
-func (pm *PgsqlMetadata) GetTableIndex(tableName string) []map[string]interface{} {
-	res, err := pm.di.innerSelect(fmt.Sprintf(PGSQL_INDEX_INFO, tableName))
-	biz.ErrIsNilAppendErr(err, "获取表索引信息失败: %s")
-	return res
-}
-
-func (pm *PgsqlMetadata) GetTableRecord(tableName string, pageNum, pageSize int) ([]string, []map[string]interface{}, error) {
-	return pm.di.SelectData(fmt.Sprintf("SELECT * FROM %s OFFSET %d LIMIT %d", tableName, (pageNum-1)*pageSize, pageSize))
 }
 
 // 获取所有Schema
