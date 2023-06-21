@@ -82,7 +82,7 @@ func (p *VisualScreenApi) UpdateScreenStatus(rc *restfulx.ReqCtx) {
 }
 
 func (p *VisualScreenApi) ScreenTwinData(rc *restfulx.ReqCtx) {
-	twin := `[{"twinId":"1001","name":"监测站001","attrs":[{"key":"wd","type":"int64","name":"温度"},{"key":"sd","type":"int64","name":"湿度"}]},{"twinId":"2001","name":"控制器001","attrs":[{"key":"q","type":"int64","name":"灯光强度"},{"key":"open","type":"bool","name":"灯光开关"}]}]`
+	twin := `[{"twinId":"1001","name":"监测站001","attrs":[{"key":"wd","type":"int64","name":"温度"},{"key":"sd","type":"int64","name":"湿度"}]},{"twinId":"2001","name":"控制器001","attrs":[{"key":"q","type":"int64","name":"灯光强度1"},{"key":"open","type":"bool","name":"灯光开关"}]}]`
 
 	data := make([]map[string]interface{}, 0)
 	json.Unmarshal([]byte(twin), &data)
