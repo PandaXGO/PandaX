@@ -81,5 +81,11 @@ func InitVisualScreenRouter(container *restful.Container) {
 		Doc("孪生体数据").
 		Metadata(restfulspec.KeyOpenAPITags, tags))
 
+	ws.Route(ws.GET("/twin/data1").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("孪生体数据").Handle(s.ScreenTwinData1)
+	}).
+		Doc("孪生体数据").
+		Metadata(restfulspec.KeyOpenAPITags, tags))
+
 	container.Add(ws)
 }

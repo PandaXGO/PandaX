@@ -8,6 +8,7 @@ import (
 type VisualRuleChainBase struct {
 	UserId     string `gorm:"userId;type:varchar(64);comment:用户Id" json:"userId"`
 	RuleId     string `gorm:"primary_key;" json:"ruleId"`
+	Root       bool   `gorm:"root;comment:根链" json:"root"`
 	RuleName   string `gorm:"ruleName;type:varchar(50);comment:名称" json:"ruleName"`
 	RuleBase64 string `gorm:"ruleBase64;type:longtext;comment:Base64缩略图" json:"ruleBase64"` //缩略图 base64
 	RuleRemark string `gorm:"ruleRemark;type:varchar(256);comment:说明" json:"ruleRemark"`

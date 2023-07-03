@@ -11,6 +11,7 @@ import (
 	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/kakuilan/kgo"
+	"log"
 	"pandax/pkg/global"
 	"strings"
 
@@ -82,11 +83,30 @@ func (p *VisualScreenApi) UpdateScreenStatus(rc *restfulx.ReqCtx) {
 }
 
 func (p *VisualScreenApi) ScreenTwinData(rc *restfulx.ReqCtx) {
-	twin := `[{"key":"1001","name":"监测站001","attrs":[{"key":"wd","type":"int64","name":"温度"},{"key":"sd","type":"int64","name":"湿度"}]},{"key":"2001","name":"控制器001","attrs":[{"key":"q","type":"int64","name":"灯光强度1"},{"key":"open","type":"bool","name":"灯光开关"}]}]`
+	twin := `[{"key":"1001","name":"监测站001","attrs":[{"key":"wd","type":"int64","name":"温度"},{"key":"sd","type":"float64","name":"湿度"}]},{"key":"2001","name":"控制器001","attrs":[{"key":"q","type":"struct","name":"灯光强度1"},{"key":"open","type":"bool","name":"灯光开关"}]}]`
 
 	data := make([]map[string]interface{}, 0)
 	json.Unmarshal([]byte(twin), &data)
 	rc.ResData = data
+}
+
+func (p *VisualScreenApi) ScreenTwinData1(rc *restfulx.ReqCtx) {
+	products := `[{"classId": "p313123","name": "微型环境监测站"},{"classId": "p313124","name": "温湿度传感器"}]`
+	twin := `[{"twinId":"1001","name":"监测站001","attrs":[{"key":"wd","type":"int64","name":"温度"},{"key":"sd","type":"float64","name":"湿度"}]},{"twinId":"2001","name":"控制器001","attrs":[{"key":"q","type":"struct","name":"灯光强度1"},{"key":"open","type":"bool","name":"灯光开关"}]}]`
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	classId := restfulx.QueryParam(rc, "classId")
+	if classId == "" {
+		data := make([]map[string]interface{}, 0)
+		json.Unmarshal([]byte(products), &data)
+		rc.ResData = data
+	} else {
+		//todo 分页查询孪生体
+		log.Println(pageNum, pageSize)
+		data := make([]map[string]interface{}, 0)
+		json.Unmarshal([]byte(twin), &data)
+		rc.ResData = data
+	}
 }
 
 func (p *VisualScreenApi) ScreenTwin(request *restful.Request, response *restful.Response) {
