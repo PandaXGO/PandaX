@@ -16,7 +16,7 @@ type SystemApiApi struct {
 
 func (s *SystemApiApi) CreateApi(rc *restfulx.ReqCtx) {
 	var api entity.SysApi
-	restfulx.BindQuery(rc, &api)
+	restfulx.BindJsonAndValid(rc, &api)
 	s.ApiApp.Insert(api)
 }
 
@@ -50,7 +50,7 @@ func (s *SystemApiApi) GetApiById(rc *restfulx.ReqCtx) {
 
 func (s *SystemApiApi) UpdateApi(rc *restfulx.ReqCtx) {
 	var api entity.SysApi
-	restfulx.BindQuery(rc, &api)
+	restfulx.BindJsonAndValid(rc, &api)
 	s.ApiApp.Update(api)
 }
 

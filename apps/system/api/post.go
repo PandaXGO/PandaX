@@ -28,10 +28,6 @@ func (p *PostApi) GetPostList(rc *restfulx.ReqCtx) {
 	postCode := restfulx.QueryParam(rc, "postCode")
 	post := entity.SysPost{Status: status, PostName: postName, PostCode: postCode}
 
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		post.TenantId = rc.LoginAccount.TenantId
-	}
-
 	list, total := p.PostApp.FindListPage(pageNum, pageSize, post)
 
 	rc.ResData = model.ResultPage{
@@ -51,8 +47,7 @@ func (p *PostApi) GetPost(rc *restfulx.ReqCtx) {
 // InsertPost 添加职位
 func (p *PostApi) InsertPost(rc *restfulx.ReqCtx) {
 	var post entity.SysPost
-	restfulx.BindQuery(rc, &post)
-	post.TenantId = rc.LoginAccount.TenantId
+	restfulx.BindJsonAndValid(rc, &post)
 	post.CreateBy = rc.LoginAccount.UserName
 	p.PostApp.Insert(post)
 }
@@ -60,7 +55,7 @@ func (p *PostApi) InsertPost(rc *restfulx.ReqCtx) {
 // UpdatePost 修改职位
 func (p *PostApi) UpdatePost(rc *restfulx.ReqCtx) {
 	var post entity.SysPost
-	restfulx.BindQuery(rc, &post)
+	restfulx.BindJsonAndValid(rc, &post)
 
 	post.CreateBy = rc.LoginAccount.UserName
 	p.PostApp.Update(post)

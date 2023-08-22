@@ -2,9 +2,9 @@ package entity
 
 import "github.com/XM-GO/PandaKit/model"
 
+// 部门组织
 type SysDept struct {
 	DeptId   int64     `json:"deptId" gorm:"primary_key;AUTO_INCREMENT"` //部门编码
-	TenantId int64     `json:"tenantId" gorm:"type:int;comment:租户Id"`
 	ParentId int64     `json:"parentId" gorm:"type:int;comment:上级部门"`
 	DeptPath string    `json:"deptPath" gorm:"type:varchar(255);comment:部门路径"`
 	DeptName string    `json:"deptName"  gorm:"type:varchar(128);comment:部门名称"`

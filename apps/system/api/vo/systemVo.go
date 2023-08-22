@@ -55,6 +55,7 @@ type UserVo struct {
 	RoleIds string           `json:"roleIds"`
 	Roles   []entity.SysRole `json:"roles"`
 	Posts   []entity.SysPost `json:"posts"`
+	Depts   []entity.SysDept `json:"depts"`
 }
 
 type UserRolePost struct {

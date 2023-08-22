@@ -58,7 +58,7 @@ func (u *UserApi) RefreshToken(rc *restfulx.ReqCtx) {
 // Login 用户登录
 func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 	var l form.Login
-	restfulx.BindQuery(rc, &l)
+	restfulx.BindJsonAndValid(rc, &l)
 	log.Println(l)
 	biz.IsTrue(captcha.Verify(l.CaptchaId, l.Captcha), "验证码认证失败")
 
@@ -67,7 +67,6 @@ func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 	j := token.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
 	token, err := j.CreateToken(token.Claims{
 		UserId:   login.UserId,
-		TenantId: login.TenantId,
 		UserName: login.Username,
 		RoleId:   login.RoleId,
 		RoleKey:  role.RoleKey,
@@ -156,9 +155,6 @@ func (u *UserApi) GetSysUserList(rc *restfulx.ReqCtx) {
 	user.Phone = phone
 	user.DeptId = int64(deptId)
 
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		user.TenantId = rc.LoginAccount.TenantId
-	}
 	list, total := u.UserApp.FindListPage(pageNum, pageSize, user)
 
 	rc.ResData = model.ResultPage{
@@ -222,7 +218,7 @@ func (u *UserApi) InsetSysUserAvatar(rc *restfulx.ReqCtx) {
 // SysUserUpdatePwd 修改密码
 func (u *UserApi) SysUserUpdatePwd(rc *restfulx.ReqCtx) {
 	var pws entity.SysUserPwd
-	restfulx.BindQuery(rc, &pws)
+	restfulx.BindJsonAndValid(rc, &pws)
 
 	user := entity.SysUser{}
 	user.UserId = rc.LoginAccount.UserId
@@ -238,23 +234,16 @@ func (u *UserApi) GetSysUser(rc *restfulx.ReqCtx) {
 	result := u.UserApp.FindOne(user)
 
 	var role entity.SysRole
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		role.TenantId = rc.LoginAccount.TenantId
-	}
-	roles := u.RoleApp.FindList(role)
-
 	var post entity.SysPost
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		post.TenantId = rc.LoginAccount.TenantId
-	}
-	posts := u.PostApp.FindList(post)
+	var dept entity.SysDept
 
 	rc.ResData = vo.UserVo{
 		Data:    result,
 		PostIds: result.PostIds,
 		RoleIds: result.RoleIds,
-		Roles:   *roles,
-		Posts:   *posts,
+		Roles:   *u.RoleApp.FindList(role),
+		Posts:   *u.PostApp.FindList(post),
+		Depts:   u.DeptApp.SelectDept(dept),
 	}
 }
 
@@ -262,14 +251,8 @@ func (u *UserApi) GetSysUser(rc *restfulx.ReqCtx) {
 func (u *UserApi) GetSysUserInit(rc *restfulx.ReqCtx) {
 
 	var role entity.SysRole
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		role.TenantId = rc.LoginAccount.TenantId
-	}
 	roles := u.RoleApp.FindList(role)
 	var post entity.SysPost
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		post.TenantId = rc.LoginAccount.TenantId
-	}
 	posts := u.PostApp.FindList(post)
 	rc.ResData = vo.UserRolePost{
 		Roles: *roles,
@@ -303,7 +286,7 @@ func (u *UserApi) GetUserRolePost(rc *restfulx.ReqCtx) {
 // InsertSysUser 创建用户
 func (u *UserApi) InsertSysUser(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
-	restfulx.BindQuery(rc, &sysUser)
+	restfulx.BindJsonAndValid(rc, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
 	u.UserApp.Insert(sysUser)
 }
@@ -311,7 +294,7 @@ func (u *UserApi) InsertSysUser(rc *restfulx.ReqCtx) {
 // UpdateSysUser 修改用户数据
 func (u *UserApi) UpdateSysUser(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
-	restfulx.BindQuery(rc, &sysUser)
+	restfulx.BindJsonAndValid(rc, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
 	u.UserApp.Update(sysUser)
 }
@@ -319,7 +302,7 @@ func (u *UserApi) UpdateSysUser(rc *restfulx.ReqCtx) {
 // UpdateSysUserStu 修改用户状态
 func (u *UserApi) UpdateSysUserStu(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
-	restfulx.BindQuery(rc, &sysUser)
+	restfulx.BindJsonAndValid(rc, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
 	u.UserApp.Update(sysUser)
 }
@@ -341,10 +324,6 @@ func (u *UserApi) ExportUser(rc *restfulx.ReqCtx) {
 	user.Status = status
 	user.Username = username
 	user.Phone = phone
-
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		user.TenantId = rc.LoginAccount.TenantId
-	}
 
 	list := u.UserApp.FindList(user)
 	fileName := utils.GetFileName(global.Conf.Server.ExcelDir, filename)

@@ -40,7 +40,7 @@ func (p *NoticeApi) GetNoticeList(rc *restfulx.ReqCtx) {
 // InsertNotice 添加通知
 func (p *NoticeApi) InsertNotice(rc *restfulx.ReqCtx) {
 	var notice entity.SysNotice
-	restfulx.BindQuery(rc, &notice)
+	restfulx.BindJsonAndValid(rc, &notice)
 	notice.UserName = rc.LoginAccount.UserName
 	p.NoticeApp.Insert(notice)
 }
@@ -48,7 +48,7 @@ func (p *NoticeApi) InsertNotice(rc *restfulx.ReqCtx) {
 // UpdateNotice 修改通知
 func (p *NoticeApi) UpdateNotice(rc *restfulx.ReqCtx) {
 	var notice entity.SysNotice
-	restfulx.BindQuery(rc, &notice)
+	restfulx.BindJsonAndValid(rc, &notice)
 
 	p.NoticeApp.Update(notice)
 }

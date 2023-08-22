@@ -21,6 +21,14 @@ func InitUploadRouter(container *restful.Container) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Returns(200, "OK", map[string]string{}))
 
+	ws.Route(ws.POST("/up/oss").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("上传图片").Handle(s.UplaodToOss)
+	}).
+		Doc("上传图片到oss").
+		Param(ws.FormParameter("imagefile", "文件")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", map[string]string{}))
+
 	ws.Route(ws.GET("/get/{subpath}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithNeedToken(false).WithNeedCasbin(false).WithLog("获取图片").Handle(s.GetImage)
 	}).

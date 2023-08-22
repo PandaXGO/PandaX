@@ -63,9 +63,6 @@ func (m *sysDeptModelImpl) FindListPage(page, pageSize int, data entity.SysDept)
 	if data.DeptName != "" {
 		db = db.Where("dept_name like ?", "%"+data.DeptName+"%")
 	}
-	if data.TenantId != 0 {
-		db = db.Where("tenant_id = ?", data.TenantId)
-	}
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
 	}
@@ -86,9 +83,6 @@ func (m *sysDeptModelImpl) FindList(data entity.SysDept) *[]entity.SysDept {
 	// 此处填写 where参数判断
 	if data.DeptId != 0 {
 		db = db.Where("dept_id = ?", data.DeptId)
-	}
-	if data.TenantId != 0 {
-		db = db.Where("tenant_id = ?", data.TenantId)
 	}
 	if data.DeptName != "" {
 		db = db.Where("dept_name like ?", "%"+data.DeptName+"%")

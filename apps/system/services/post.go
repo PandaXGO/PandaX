@@ -50,9 +50,6 @@ func (m *sysPostModelImpl) FindListPage(page, pageSize int, data entity.SysPost)
 	if data.PostName != "" {
 		db = db.Where("post_name like ?", "%"+data.PostName+"%")
 	}
-	if data.TenantId != 0 {
-		db = db.Where("tenant_id = ?", data.TenantId)
-	}
 	if data.PostCode != "" {
 		db = db.Where("post_code like ?", "%"+data.PostCode+"%")
 	}
@@ -75,9 +72,6 @@ func (m *sysPostModelImpl) FindList(data entity.SysPost) *[]entity.SysPost {
 	}
 	if data.PostName != "" {
 		db = db.Where("post_name = ?", data.PostName)
-	}
-	if data.TenantId != 0 {
-		db = db.Where("tenant_id = ?", data.TenantId)
 	}
 	if data.PostCode != "" {
 		db = db.Where("post_code = ?", data.PostCode)

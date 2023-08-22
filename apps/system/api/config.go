@@ -43,14 +43,14 @@ func (p *ConfigApi) GetConfig(rc *restfulx.ReqCtx) {
 
 func (p *ConfigApi) InsertConfig(rc *restfulx.ReqCtx) {
 	var config entity.SysConfig
-	restfulx.BindQuery(rc, &config)
+	restfulx.BindJsonAndValid(rc, &config)
 
 	p.ConfigApp.Insert(config)
 }
 
 func (p *ConfigApi) UpdateConfig(rc *restfulx.ReqCtx) {
 	var post entity.SysConfig
-	restfulx.BindQuery(rc, &post)
+	restfulx.BindJsonAndValid(rc, &post)
 	p.ConfigApp.Update(post)
 }
 

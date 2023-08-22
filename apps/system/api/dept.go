@@ -21,9 +21,6 @@ type DeptApi struct {
 func (m *DeptApi) GetDeptTreeRoleSelect(rc *restfulx.ReqCtx) {
 	roleId := restfulx.PathParamInt(rc, "roleId")
 	var dept entity.SysDept
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		dept.TenantId = rc.LoginAccount.TenantId
-	}
 	result := m.DeptApp.SelectDeptLable(dept)
 
 	deptIds := make([]int64, 0)
@@ -43,9 +40,7 @@ func (a *DeptApi) GetDeptList(rc *restfulx.ReqCtx) {
 	status := restfulx.QueryParam(rc, "status")
 	deptId := restfulx.QueryInt(rc, "deptId", 0)
 	dept := entity.SysDept{DeptName: deptName, Status: status, DeptId: int64(deptId)}
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		dept.TenantId = rc.LoginAccount.TenantId
-	}
+
 	if dept.DeptName == "" {
 		rc.ResData = a.DeptApp.SelectDept(dept)
 	} else {
@@ -55,9 +50,6 @@ func (a *DeptApi) GetDeptList(rc *restfulx.ReqCtx) {
 
 func (a *DeptApi) GetOrdinaryDeptList(rc *restfulx.ReqCtx) {
 	var dept entity.SysDept
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		dept.TenantId = rc.LoginAccount.TenantId
-	}
 
 	rc.ResData = a.DeptApp.FindList(dept)
 }
@@ -67,9 +59,7 @@ func (a *DeptApi) GetDeptTree(rc *restfulx.ReqCtx) {
 	status := restfulx.QueryParam(rc, "status")
 	deptId := restfulx.QueryInt(rc, "deptId", 0)
 	dept := entity.SysDept{DeptName: deptName, Status: status, DeptId: int64(deptId)}
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		dept.TenantId = rc.LoginAccount.TenantId
-	}
+
 	rc.ResData = a.DeptApp.SelectDept(dept)
 }
 
@@ -80,15 +70,14 @@ func (a *DeptApi) GetDept(rc *restfulx.ReqCtx) {
 
 func (a *DeptApi) InsertDept(rc *restfulx.ReqCtx) {
 	var dept entity.SysDept
-	restfulx.BindQuery(rc, &dept)
-	dept.TenantId = rc.LoginAccount.TenantId
+	restfulx.BindJsonAndValid(rc, &dept)
 	dept.CreateBy = rc.LoginAccount.UserName
 	a.DeptApp.Insert(dept)
 }
 
 func (a *DeptApi) UpdateDept(rc *restfulx.ReqCtx) {
 	var dept entity.SysDept
-	restfulx.BindQuery(rc, &dept)
+	restfulx.BindJsonAndValid(rc, &dept)
 
 	dept.UpdateBy = rc.LoginAccount.UserName
 	a.DeptApp.Update(dept)

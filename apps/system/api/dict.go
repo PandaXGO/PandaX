@@ -39,7 +39,7 @@ func (p *DictApi) GetDictType(rc *restfulx.ReqCtx) {
 
 func (p *DictApi) InsertDictType(rc *restfulx.ReqCtx) {
 	var dict entity.SysDictType
-	restfulx.BindQuery(rc, &dict)
+	restfulx.BindJsonAndValid(rc, &dict)
 
 	dict.CreateBy = rc.LoginAccount.UserName
 	p.DictType.Insert(dict)
@@ -47,7 +47,7 @@ func (p *DictApi) InsertDictType(rc *restfulx.ReqCtx) {
 
 func (p *DictApi) UpdateDictType(rc *restfulx.ReqCtx) {
 	var dict entity.SysDictType
-	restfulx.BindQuery(rc, &dict)
+	restfulx.BindJsonAndValid(rc, &dict)
 
 	dict.CreateBy = rc.LoginAccount.UserName
 	p.DictType.Update(dict)
@@ -102,14 +102,14 @@ func (p *DictApi) GetDictData(rc *restfulx.ReqCtx) {
 
 func (p *DictApi) InsertDictData(rc *restfulx.ReqCtx) {
 	var data entity.SysDictData
-	restfulx.BindQuery(rc, &data)
+	restfulx.BindJsonAndValid(rc, &data)
 	data.CreateBy = rc.LoginAccount.UserName
 	p.DictData.Insert(data)
 }
 
 func (p *DictApi) UpdateDictData(rc *restfulx.ReqCtx) {
 	var data entity.SysDictData
-	restfulx.BindQuery(rc, &data)
+	restfulx.BindJsonAndValid(rc, &data)
 
 	data.CreateBy = rc.LoginAccount.UserName
 	p.DictData.Update(data)

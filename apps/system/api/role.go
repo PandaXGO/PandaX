@@ -28,11 +28,6 @@ func (r *RoleApi) GetRoleList(rc *restfulx.ReqCtx) {
 	roleName := restfulx.QueryParam(rc, "roleName")
 	roleKey := restfulx.QueryParam(rc, "roleKey")
 	role := entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
-
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		role.TenantId = rc.LoginAccount.TenantId
-	}
-
 	list, total := r.RoleApp.FindListPage(pageNum, pageSize, role)
 
 	rc.ResData = model.ResultPage{
@@ -55,9 +50,8 @@ func (r *RoleApi) GetRole(rc *restfulx.ReqCtx) {
 // InsertRole 创建角色
 func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	restfulx.BindQuery(rc, &role)
+	restfulx.BindJsonAndValid(rc, &role)
 	role.CreateBy = rc.LoginAccount.UserName
-	role.TenantId = rc.LoginAccount.TenantId
 	insert := r.RoleApp.Insert(role)
 	role.RoleId = insert.RoleId
 	r.RoleMenuApp.Insert(insert.RoleId, role.MenuIds)
@@ -69,7 +63,7 @@ func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 // UpdateRole 修改用户角色
 func (r *RoleApi) UpdateRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	restfulx.BindQuery(rc, &role)
+	restfulx.BindJsonAndValid(rc, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	r.RoleApp.Update(role)
@@ -85,7 +79,7 @@ func (r *RoleApi) UpdateRole(rc *restfulx.ReqCtx) {
 // UpdateRoleStatus 修改用户角色状态
 func (r *RoleApi) UpdateRoleStatus(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	restfulx.BindQuery(rc, &role)
+	restfulx.BindJsonAndValid(rc, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	r.RoleApp.Update(role)
@@ -94,7 +88,7 @@ func (r *RoleApi) UpdateRoleStatus(rc *restfulx.ReqCtx) {
 // UpdateRoleDataScope 修改用户角色部门
 func (r *RoleApi) UpdateRoleDataScope(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	restfulx.BindQuery(rc, &role)
+	restfulx.BindJsonAndValid(rc, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	update := r.RoleApp.Update(role)
@@ -141,9 +135,7 @@ func (p *RoleApi) ExportRole(rc *restfulx.ReqCtx) {
 	roleName := restfulx.QueryParam(rc, "roleName")
 	roleKey := restfulx.QueryParam(rc, "roleKey")
 	role := entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
-	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
-		role.TenantId = rc.LoginAccount.TenantId
-	}
+
 	list := p.RoleApp.FindList(role)
 
 	fileName := utils.GetFileName(global.Conf.Server.ExcelDir, filename)

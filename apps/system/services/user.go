@@ -6,7 +6,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"pandax/apps/system/entity"
 	"pandax/pkg/global"
-	"time"
 )
 
 type (
@@ -40,11 +39,6 @@ func (m *sysUserModelImpl) Login(u entity.Login) *entity.SysUser {
 	b := kgo.KEncr.PasswordVerify([]byte(u.Password), []byte(user.Password))
 	biz.IsTrue(b, "密码错误")
 
-	//验证租户
-	if SysTenantModelDao.FindOne(user.TenantId).ExpireTime.Unix() < time.Now().Unix() {
-		biz.IsTrue(b, "租户已经过期")
-	}
-
 	return user
 }
 
@@ -69,9 +63,6 @@ func (m *sysUserModelImpl) FindOne(data entity.SysUser) *entity.SysUserView {
 	if data.UserId != 0 {
 		db = db.Where("user_id = ?", data.UserId)
 	}
-	if data.TenantId != 0 {
-		db = db.Where("tenant_id = ?", data.TenantId)
-	}
 	if data.Username != "" {
 		db = db.Where("username = ?", data.Username)
 	}
@@ -87,7 +78,7 @@ func (m *sysUserModelImpl) FindOne(data entity.SysUser) *entity.SysUserView {
 	if data.PostId != 0 {
 		db = db.Where("post_id = ?", data.PostId)
 	}
-	biz.ErrIsNil(db.Preload("SysTenants").First(resData).Error, "查询用户失败")
+	biz.ErrIsNil(db.First(resData).Error, "查询用户失败")
 
 	return resData
 }
@@ -101,9 +92,6 @@ func (m *sysUserModelImpl) FindListPage(page, pageSize int, data entity.SysUser)
 	// 此处填写 where参数判断
 	if data.Username != "" {
 		db = db.Where("sys_users.username = ?", data.Username)
-	}
-	if data.TenantId != 0 {
-		db = db.Where("sys_users.tenant_id = ?", data.TenantId)
 	}
 	if data.NickName != "" {
 		db = db.Where("sys_users.nick_name like ?", "%"+data.NickName+"%")
@@ -121,7 +109,7 @@ func (m *sysUserModelImpl) FindListPage(page, pageSize int, data entity.SysUser)
 	}
 	db.Where("sys_users.delete_time IS NULL")
 	err := db.Count(&total).Error
-	err = db.Limit(pageSize).Offset(offset).Preload("SysTenants").Find(&list).Error
+	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
 	biz.ErrIsNil(err, "查询用户分页列表失败")
 	return &list, total
 }
@@ -133,9 +121,6 @@ func (m *sysUserModelImpl) FindList(data entity.SysUser) *[]entity.SysUserView {
 	db = db.Joins("left join sys_roles on sys_users.role_id=sys_roles.role_id")
 	if data.UserId != 0 {
 		db = db.Where("user_id = ?", data.UserId)
-	}
-	if data.TenantId != 0 {
-		db = db.Where("tenant_id = ?", data.TenantId)
 	}
 	if data.Username != "" {
 		db = db.Where("username = ?", data.Username)

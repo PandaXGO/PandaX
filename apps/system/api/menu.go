@@ -68,7 +68,7 @@ func (m *MenuApi) GetMenu(rc *restfulx.ReqCtx) {
 
 func (m *MenuApi) InsertMenu(rc *restfulx.ReqCtx) {
 	var menu entity.SysMenu
-	restfulx.BindQuery(rc, &menu)
+	restfulx.BindJsonAndValid(rc, &menu)
 	menu.CreateBy = rc.LoginAccount.UserName
 	m.MenuApp.Insert(menu)
 	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
@@ -81,7 +81,7 @@ func (m *MenuApi) InsertMenu(rc *restfulx.ReqCtx) {
 
 func (m *MenuApi) UpdateMenu(rc *restfulx.ReqCtx) {
 	var menu entity.SysMenu
-	restfulx.BindQuery(rc, &menu)
+	restfulx.BindJsonAndValid(rc, &menu)
 	menu.UpdateBy = rc.LoginAccount.UserName
 	m.MenuApp.Update(menu)
 	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
