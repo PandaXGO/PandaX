@@ -8,7 +8,6 @@ import (
 	logEntity "pandax/apps/log/entity"
 	resSourceEntity "pandax/apps/resource/entity"
 	systemEntity "pandax/apps/system/entity"
-	visualEntity "pandax/apps/visual/entity"
 	"pandax/pkg/global"
 )
 
@@ -35,7 +34,6 @@ func InitTable() {
 
 				logEntity.LogLogin{},
 				logEntity.LogOper{},
-				logEntity.LogJob{},
 				jobEntity.SysJob{},
 				devEntity.DevGenTable{},
 				devEntity.DevGenTableColumn{},
@@ -48,14 +46,11 @@ func InitTable() {
 				flowEntity.FlowWorkOrder{},
 				flowEntity.FlowWorkOrderTemplate{},
 				flowEntity.FlowWorkStage{},
-
-				visualEntity.VisualDataSource{},
-				visualEntity.VisualDataSetTable{},
-				visualEntity.VisualDataSetField{},
-				visualEntity.VisualScreen{},
-				visualEntity.VisualScreenGroup{},
-				visualEntity.VisualRuleChain{},
 			),
 			"初始化表失败")
+	}
+	err := global.TdDb.CreateEventTable()
+	if err != nil {
+		global.Log.Panic(err)
 	}
 }

@@ -1,11 +1,13 @@
 package websocket
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
-	"log"
 	"net/http"
+	"pandax/apps/device/entity"
 	"pandax/pkg/global"
+	"pandax/pkg/mqtt"
 	"strings"
 )
 
@@ -36,7 +38,7 @@ func NewWebsocket(writer http.ResponseWriter, r *http.Request, header http.Heade
 }
 
 // OnMessage 消息
-//发送消息消息类型 01:发送的设备数据  02:收到指令回复  03: 心跳回复
+// 发送消息消息类型 01:发送的设备数据  02:收到指令回复  03: 心跳回复
 func OnMessage(ws *Websocket, message string) {
 	if message != "" && strings.Index(message, "ONLINE") != -1 {
 		screenId := strings.Split(message, "ONLINE")[0]
@@ -52,12 +54,27 @@ func OnMessage(ws *Websocket, message string) {
 		if len(split) < 2 {
 			return
 		}
-		screenId, controlCMD := split[0], split[1] //指令cmd : {key: '', value: 3} k:v形式
-		log.Println(screenId, controlCMD)
-		//TODO 在这里编写代码，将命令发送到现场设备 这里已经拿到了 按钮命令和画布id
-		//1. 根据组态Id查询设备Id，及设备模型
-		//2. 根据设备下发CMD指令
+		screenId, controlCMD := split[0], split[1]
 
+		vtsa := new(entity.VisualTwinSendAttrs)
+		//1. 获取设备孪生
+		err := json.Unmarshal([]byte(controlCMD), vtsa)
+		if err != nil {
+			global.Log.Error("设备参数下发，孪生体参数解析失败", err)
+			sendMessages("02", "下发失败", screenId)
+			return
+		}
+		//2. 根据设备下发属性更改
+		//topic := fmt.Sprintf(global.AttributesTopic, vtsa.TwinId)
+		content, _ := json.Marshal(vtsa.Attrs)
+		var rpc = &mqtt.RpcRequest{Client: global.MqttClient, Mode: "single"}
+		rpc.GetRequestId()
+		err = rpc.RequestAttributes(mqtt.RpcPayload{Params: string(content)})
+		if err != nil {
+			global.Log.Error("属性下发失败", err)
+			sendMessages("02", "下发失败", screenId)
+			return
+		}
 		sendMessages("02", "命令发送成功", screenId)
 	}
 	//心跳处理

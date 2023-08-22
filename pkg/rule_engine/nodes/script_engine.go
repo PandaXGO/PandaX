@@ -12,7 +12,6 @@ type ScriptEngine interface {
 	ScriptOnSwitch() ([]string, error)
 	ScriptOnFilter() (bool, error)
 	ScriptToString() (string, error)
-	ScriptAlarmDetails() (map[string]interface{}, error)
 	ScriptGenerate() (map[string]interface{}, error)
 }
 
@@ -103,24 +102,6 @@ func (bse *baseScriptEngine) ScriptToString() (string, error) {
 	}
 	data := fn(msg.GetMsg(), msg.GetMetadata().GetValues(), msg.GetType())
 	return data, nil
-}
-
-func (bse *baseScriptEngine) ScriptAlarmDetails() (map[string]interface{}, error) {
-	msg := bse.Msg
-	vm := goja.New()
-	_, err := vm.RunString(bse.Script)
-	if err != nil {
-		logrus.Info("JS代码有问题")
-		return nil, err
-	}
-	var fn func(map[string]interface{}, map[string]interface{}, string) map[string]interface{}
-	err = vm.ExportTo(vm.Get(bse.Fun), &fn)
-	if err != nil {
-		logrus.Info("Js函数映射到 Go 函数失败！")
-		return nil, err
-	}
-	datas := fn(msg.GetMsg(), msg.GetMetadata().GetValues(), msg.GetType())
-	return datas, nil
 }
 
 func (bse *baseScriptEngine) ScriptGenerate() (map[string]interface{}, error) {

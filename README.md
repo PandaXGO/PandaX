@@ -1,15 +1,16 @@
 # PandaX
 
-<div align="center"><img src="https://s3.bmp.ovh/imgs/2021/12/3c6ddcf3877171c9.png"/></div>
-<div align="center"><h3 align="center">PandaX 快速开发平台</h3></div>
-<div align="center"><h3 align="center">基于Gin前后端分离架构，代码精简，开箱即用，前端紧随前沿 Vue3.0 + TypeScript + vite2 + Element-plus技术</h3></div>
+<div align="center"><img src="https://s3.bmp.ovh/imgs/2021/12/86b15968432fc6ea.png"/></div>
+<div align="center"><h3 align="center">PandaX 物联网快速开发基座</h3></div>
+<div align="center"><h3 align="center">基于Go前后端分离架构，代码精简，开箱即用，前端紧随前沿 Vue3.0 + TypeScript + vite3 + Element-plus技术</h3></div>
 
 
 ## 🌈平台简介
 
-* 采用前后端分离的模式，后端采用GO语言，后端集成框架gin和go-restful（k8s使用的api框架）通过对GIn和go-restful自封装框架ginx,restfulx，代码更简洁，逻辑更清晰。另外拥抱云原生后期更新会采用go-restful框架做主要开发
-* 根据不同分支选择使用的框架[gin分支](https://github.com/XM-GO/PandaX/tree/ginx) [go-restful分支](https://github.com/XM-GO/PandaX/tree/go-restful)
-* 前端采用VUE3.0+ TypeScript + vite2 + Element-plus：[PandaUI](https://github.com/PandaGoAdmin/PandaUi)，适配手机、平板、pc 内置多种ui功能减少开发量
+* 对前后端进行了大部分功能的封装，后端自封装go-restful，使用起来更加简洁，功能逻辑清晰，能快速上手学习，并用在生产中。
+* 报表大屏设计器: 我们只需要拖拉拽即可绑定数据库，完成组态，报表和炫酷大屏的制作，无需要单独开发大屏。
+* 成熟的规则引擎: 项目针对数据处理使用了规则链进行处理，简化开发及配置。
+* 前端采用VUE3.0+ TypeScript + vite3 + Element-plus：[PandaUI](https://gitee.com/XM-GO/PandaUi)，适配手机、平板、pc 内置多种ui功能减少开发量
 * 高效率的开发，使用代码生成器可以一键生成前后端代码，可在线预览代码，减少代码开发量。。
 * 完善的权限认证系统：完善的权限认证系统，包含，菜单按钮权限，api权限，部门权限。
 * 多数据库：项目同时支持MySQL，PostgreSql等数据库根据自身需求更改。
@@ -18,13 +19,12 @@
 
 演示地址：http://101.35.247.125:7789/  帐号：admin 密码：123456  
 组态大屏：http://101.35.247.125:7790/  
-规则引擎：http://101.35.247.125:7791/  
-报表设计器：http://101.35.247.125:9001/  
+规则引擎：http://101.35.247.125:7791/
 
 ---
 系统在线文档
 ---
-* 文档地址 ：http://www.pandazhuan.cn/
+* 文档地址 ：http://101.35.247.125
 
  **> 未来会补充文档和视频，方便友友们使用！** 
 
@@ -32,52 +32,45 @@
 
 <table>
     <tr>
-        <td><img src="https://s3.bmp.ovh/imgs/2021/12/26ce3214765103e8.png"/></td>
-        <td><img src="https://s3.bmp.ovh/imgs/2021/12/20e0a825d40380d3.png"/></td>
+        <img src="http://101.35.247.125/images/manage.png"/>
     </tr>
     <tr>
-        <td><img src="https://s3.bmp.ovh/imgs/2021/12/59840c8fe6fe1493.png"/></td>
-        <td><img src="https://s3.bmp.ovh/imgs/2021/12/013cf70246e96e95.png"/></td>
+        <td><img src="https://s3.bmp.ovh/imgs/2023/03/24/0f9a87733b5fe8da.png"/></td>
+         <td><img src="http://101.35.247.125/images/rule/rule.png"/></td>
     </tr>
-	<tr>
-        <td><img src="https://s3.bmp.ovh/imgs/2021/12/c0a5fa3d0a670fa7.png"/></td>
-        <td><img src="https://s3.bmp.ovh/imgs/2021/12/80192c1976a7c14f.png"/></td>
-    </tr>	 
-    <tr>
-        <td><img src="https://s3.bmp.ovh/imgs/2021/12/2dd2a25cb0f1a1df.png"/></td>
-    </tr>
-
 </table>
 更多功能请访问系统体验
-
-#### 💒 代码仓库
-
-- PandaX 快速开发平台 <a href="https://github.com/PandaGoAdmin/PandaX" target="_blank">https://github.com/PandaGoAdmin/PandaX</a>
-- PandaUI  平台Ui <a href="https://github.com/PandaGoAdmin/PandaUi" target="_blank">https://github.com/PandaGoAdmin/PandaUi</a>
 
 ## 联系我们
  **QQ：2417920382**  <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=2417920382&amp;site=qq&amp;menu=yes">    点击这里给我发消息</a>
  
  **QQ群：467890197**  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=BqzPxK0qWQEyI7YhnSfxc-GsAMlAIgta&jump_from=webapi"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="PandaX快速开发交流群" title="PandaX快速开发交流群"></a>
-    <div align="center"><img src="https://s3.bmp.ovh/imgs/2021/12/f0f93d5622ef9e47.jpg"/></div>
 
 ## ⚡ 内置功能
 
-1.  _用户管理：用户是系统操作者，该功能主要完成系统用户配置。_
-2.  _部门管理：配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。_
-3.  _岗位管理：配置系统用户所属担任职务。_
-4.  _菜单管理：配置系统菜单，操作权限，按钮权限标识等。_
-5.  _角色管理：角色菜单,API权限分配、设置角色按机构进行数据范围权限划分。_
-6.  _字典管理：对系统中经常使用的一些较为固定的数据进行维护。_
-7.  _参数管理：对系统动态配置常用参数。_
-8.  通知公告：系统通知公告信息发布维护。
-9.  操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
-10. _登录日志：系统登录日志记录查询包含登录异常。_
-11. 在线用户：当前系统中活跃用户状态监控。
-12. _定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。_
-13. _代码生成：前后端代码的生成（go、vue、sql）支持CRUD下载 。_
-14. 系统接口：根据业务代码自动生成相关的api接口文档。
-15. _服务监控：监视当前系统CPU、内存、磁盘、堆栈等相关信息。_
+- <span class="tag done-tag">✔</span> **`用户管理`** - _用户是系统操作者，该功能主要完成系统用户配置。._
+- <span class="tag done-tag">✔</span> **`部门管理`** - _配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。_
+- <span class="tag done-tag">✔</span> **`岗位管理`** - _配置系统用户所属担任职务。_
+- <span class="tag done-tag">✔</span> **`菜单管理`** - _配置系统菜单，操作权限，按钮权限标识等。_
+- <span class="tag done-tag">✔</span> **`角色管理`** - _角色菜单,API权限分配、设置角色按机构进行数据范围权限划分。_
+- <span class="tag done-tag">✔</span> **`字典管理`** - _对系统中经常使用的一些较为固定的数据进行维护。_
+- <span class="tag done-tag">✔</span> **`参数管理`** - _对系统动态配置常用参数。_
+- <span class="tag done-tag">✔</span> **`通知公告`** - _系统通知公告信息发布维护_
+- <span class="tag done-tag">✔</span> **`日志系统`** - _记录日志，更直观浏览_
+- <span class="tag done-tag">✔</span> **`系统接口`** - _根据业务代码自动生成相关的api接口文档。_
+- <span class="tag done-tag">✔</span> **`服务监控`** - _监视当前系统CPU、内存、磁盘、堆栈等相关信息。_
+- <span class="tag done-tag">✔</span> **`代码生成`** - _可直接通过框架生成前后端基础业务代码（go、vue），减少开发时间。_
+- <span class="tag done-tag">✔</span> **`组态大屏设计器`** - _通过拖拉拽直接生成组态、大屏。_
+- <span class="tag done-tag">✔</span> **`规则链设计`** - _物联网规则链过滤_
+- <span class="tag done-tag">✔</span> **`报表设计`** - _数据报表设计_
+- <span class="tag done-tag">✔</span> **`产品管理`** - _设备的产品管理_
+- <span class="tag done-tag">✔</span> **`设备管理`** - _设备的管理_
+
+## 🛠 以后可能会有什么NB功能？
+- <span class="tag wip-tag">开发中</span> **`应用管理`** - _基于K8S编排能力，创建应用管理模块。_
+- <span class="tag wip-tag">开发中</span> **`多协议接入`** - _根据插件形式创建多协议接入_
+- <span class="tag wip-tag">开发中</span> **`3D组态`** - _根据2d组态自动生成3D组态_
+- <span class="tag wip-tag">开发中</span> **`数字孪生编辑器`** - _web直接构建数字孪生模型_
 
 ---
 前端工程结构
@@ -103,32 +96,21 @@
 
 ## 后端工程结构
 
-| 项目 | 说明 |
-| --- | --- |
-| `base` | 自封装restfulx和工具类 |
-| `docs` | api接口文档 |
-| `initialize` | 初始化 |
-| `resource` | 文件导出目录 |
-| `static` | 前端代码构建 |
-| `system` | 系统模块 |
+|     目录     | 功能                                   |
+|:----------:|:-------------------------------------|
+|  `deploy`  | 部署文件，本项目部署是利用`K3S`进行部署的，因此里面的文档为部署文档 |
+|   `apps`   | 基本功能,所有功能模块全在这里面                     |
+|  `iothub`  | 设备接入层，设备数据上报在这里处理，使用emqx的hook模式      |
+| `resource` | 项目启动或生成的资源文件存放目录。                    |
+|   `pkg`    | 所有开发过程中的全局通用代码。                      |
+| `uploads`  | 存储上传的文件的地方                           |
 
 更多功能请访问系统。
-
-## 🍉 开发计划
-
-* :clipboard: 代码生成器
-* :clipboard: 资源文件管理中心
-* :clipboard: 任务调度系统
-* :clipboard: 监控系统
-* :clipboard: 移动开发平台-基于uniapp
-* :clipboard: 工作流
-* :clipboard: 大屏系统
-* :clipboard: 报表系统
 
   
 ## ❤特别鸣谢
 
-  * 感谢[VUE-NEXT-ADMIN](https://github.com/lyt-Top/vue-next-admin)
+  * 感谢[VUE-NEXT-ADMIN](https://gitee.com/lyt-top/vue-next-admin)
 
 ---
 版权说明

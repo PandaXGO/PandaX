@@ -9,11 +9,11 @@ import (
 type (
 	JobModel interface {
 		Insert(data entity.SysJob) *entity.SysJob
-		FindOne(jobId int64) *entity.SysJob
+		FindOne(jobId string) *entity.SysJob
 		FindListPage(page, pageSize int, data entity.SysJob) (*[]entity.SysJob, int64)
 		FindList(data entity.SysJob) *[]entity.SysJob
 		Update(data entity.SysJob) *entity.SysJob
-		Delete(jobId []int64)
+		Delete(jobId []string)
 		FindByEntryId(entryId int64) *entity.SysJob
 		RemoveAllEntryID() error
 		RemoveEntryID(EntryID int) error
@@ -25,7 +25,7 @@ type (
 )
 
 var JobModelDao JobModel = &jobModelImpl{
-	table: `sys_jobs`,
+	table: `jobs`,
 }
 
 func (m *jobModelImpl) Insert(data entity.SysJob) *entity.SysJob {
@@ -33,9 +33,9 @@ func (m *jobModelImpl) Insert(data entity.SysJob) *entity.SysJob {
 	return &data
 }
 
-func (m *jobModelImpl) FindOne(jobId int64) *entity.SysJob {
+func (m *jobModelImpl) FindOne(jobId string) *entity.SysJob {
 	resData := new(entity.SysJob)
-	err := global.Db.Table(m.table).Where("job_id = ?", jobId).First(resData).Error
+	err := global.Db.Table(m.table).Where("id = ?", jobId).First(resData).Error
 	biz.ErrIsNil(err, "查询任务信息失败")
 	return resData
 }
@@ -52,10 +52,7 @@ func (m *jobModelImpl) FindListPage(page, pageSize int, data entity.SysJob) (*[]
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
 	}
-	if data.JobGroup != "" {
-		db = db.Where("job_group = ?", data.JobGroup)
-	}
-	err := db.Where("delete_time IS NULL").Count(&total).Error
+	err := db.Count(&total).Error
 	err = db.Order("create_time desc").Limit(pageSize).Offset(offset).Find(&list).Error
 
 	biz.ErrIsNil(err, "查询任务分页信息失败")
@@ -72,9 +69,6 @@ func (m *jobModelImpl) FindList(data entity.SysJob) *[]entity.SysJob {
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
 	}
-	if data.JobGroup != "" {
-		db = db.Where("job_group = ?", data.JobGroup)
-	}
 	err := db.Order("create_time desc").Find(&list).Error
 	if err != nil {
 		global.Log.Error("查询任务分页信息失败:" + err.Error())
@@ -87,8 +81,8 @@ func (m *jobModelImpl) Update(data entity.SysJob) *entity.SysJob {
 	return &data
 }
 
-func (m *jobModelImpl) Delete(jobIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysJob{}, "job_id in (?)", jobIds).Error
+func (m *jobModelImpl) Delete(jobIds []string) {
+	err := global.Db.Table(m.table).Delete(&entity.SysJob{}, "id in (?)", jobIds).Error
 	biz.ErrIsNil(err, "删除操作日志信息失败")
 	return
 }

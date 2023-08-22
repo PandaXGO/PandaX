@@ -3,7 +3,6 @@ package tool
 import (
 	"fmt"
 	"github.com/xuri/excelize/v2"
-	"pandax/apps/visual/entity"
 )
 
 // 读取数据表
@@ -40,6 +39,7 @@ func ReadExcel(filename string) ([]string, []map[string]interface{}) {
 	return cols, ret
 }
 
+/*
 func ReadExcelByFilter(filename string, data entity.DataSetDataReq) ([]string, []map[string]interface{}) {
 	dataDs := make([]string, 0)
 	for _, ds := range data.DataDs {
@@ -87,3 +87,4 @@ func ReadExcelByFilter(filename string, data entity.DataSetDataReq) ([]string, [
 	}
 	return cols, ret
 }
+*/

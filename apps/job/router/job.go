@@ -27,7 +27,6 @@ func InitJobRouter(container *restful.Container) {
 		Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
 		Param(ws.QueryParameter("pageSize", "每页条数").Required(true).DataType("int")).
 		Param(ws.QueryParameter("jobName", "jobName").DataType("string")).
-		Param(ws.QueryParameter("jobGroup", "jobGroup").DataType("string")).
 		Param(ws.QueryParameter("status", "status").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Writes(model.ResultPage{}).
@@ -68,17 +67,17 @@ func InitJobRouter(container *restful.Container) {
 		restfulx.NewReqCtx(request, response).WithLog("停止一个job").Handle(s.StopJobForService)
 	}).
 		Doc("停止一个job").
-		Param(ws.PathParameter("jobId", "Id").DataType("int")).
+		Param(ws.PathParameter("jobId", "Id").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags))
 
 	ws.Route(ws.GET("/start/{jobId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("开启一个job").Handle(s.StartJobForService)
 	}).
 		Doc("开启一个job").
-		Param(ws.PathParameter("jobId", "Id").DataType("int")).
+		Param(ws.PathParameter("jobId", "Id").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags))
 
-	ws.Route(ws.GET("/changeStatus").To(func(request *restful.Request, response *restful.Response) {
+	ws.Route(ws.PUT("/changeStatus").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("修改状态").Handle(s.UpdateStatusJob)
 	}).
 		Doc("修改状态").

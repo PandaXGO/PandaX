@@ -34,11 +34,6 @@ func (f externalSendEmailNodeFactory) Create(id string, meta Metadata) (Node, er
 
 	node := &externalSendEmailNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
-		/*Host:     email.Host,
-		Port:     email.Port,
-		Nickname: email.Nickname,
-		Secret:   email.Secret,
-		IsSSL:    email.IsSSL,*/
 	}
 	return decodePath(meta, node)
 }

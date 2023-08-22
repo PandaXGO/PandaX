@@ -3,119 +3,204 @@
     {
       "id": "input",
       "type": "InputNode",
-      "x": 300,
-      "y": 200,
-      "properties": {},
+      "x": 116,
+      "y": 337,
+      "properties": {
+        "debugMode": false
+      },
+      "zIndex": 1013,
       "text": {
-        "x": 310,
-        "y": 200,
-        "value": "input"
+        "x": 126,
+        "y": 337,
+        "value": "输入"
       }
     },
     {
-      "id": "cf717a24-2917-444f-9927-74a0d486ad7a",
+      "id": "8bdef3d4-9ea3-4a09-8313-4e534ee1b387",
+      "type": "SaveTimeSeriesNode",
+      "x": 751,
+      "y": 341,
+      "properties": {
+        "debugMode": false,
+        "name": ""
+      },
+      "zIndex": 1002,
+      "text": {
+        "x": 761,
+        "y": 341,
+        "value": "保存遥测"
+      }
+    },
+    {
+      "id": "4d6b6519-35f2-44ce-9b9c-5a7bafe516ac",
+      "type": "SaveAttributesNode",
+      "x": 753,
+      "y": 177,
+      "properties": {
+        "debugMode": false,
+        "name": ""
+      },
+      "zIndex": 1004,
+      "text": {
+        "x": 763,
+        "y": 177,
+        "value": "保存参数"
+      }
+    },
+    {
+      "id": "a8e691c6-947b-44a3-aeff-f5c816c9a004",
       "type": "LogNode",
-      "x": 820,
-      "y": 200,
+      "x": 770,
+      "y": 497,
       "properties": {
-        "name": "log",
-        "script": "function ToString(msg, metadata, msgType) {\n        return '\\nIncoming message:\\n' + JSON.stringify(msg) + \n   '\\nIncoming metadata:\\n' + JSON.stringify(metadata);\n\n        }\n        "
+        "debugMode": false,
+        "name": "",
+        "script": "return '\\nIncoming message:\\n' + JSON.stringify(msg) + \n   '\\nIncoming metadata:\\n' + JSON.stringify(metadata);\n"
       },
+      "zIndex": 1006,
       "text": {
-        "x": 830,
-        "y": 200,
-        "value": "log"
+        "x": 780,
+        "y": 497,
+        "value": "日志节点"
       }
     },
     {
-      "id": "c56b90cc-64fc-4782-8d9e-b0b24dabc876",
-      "type": "MessageGeneratorNode",
-      "x": 520,
-      "y": 40,
+      "id": "326ff560-9485-459c-b07d-23191385f18b",
+      "type": "MessageTypeSwitchNode",
+      "x": 400,
+      "y": 338,
       "properties": {
-        "name": "ada",
-        "messageCount": 2,
-        "periodSecond": 5,
-        "script": "function Generate(msg, metadata, msgType) {\n        var msg = { temp: 42, humidity: 77 };\nvar metadata = { data: 40 };\nvar msgType = \"telemetry\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };\n        }\n        "
+        "debugMode": false
       },
+      "zIndex": 1010,
       "text": {
-        "x": 530,
-        "y": 40,
-        "value": "generator"
+        "x": 410,
+        "y": 338,
+        "value": "消息类型切换"
       }
     }
   ],
   "edges": [
     {
-      "id": "ca4c7e4b-2ffa-4f72-83d0-456d9db72add",
-      "type": "node-link",
+      "id": "ddcf4bc0-c5fc-465a-9c37-b907cd4c6985",
+      "type": "bezier-link",
       "sourceNodeId": "input",
-      "targetNodeId": "c56b90cc-64fc-4782-8d9e-b0b24dabc876",
+      "targetNodeId": "326ff560-9485-459c-b07d-23191385f18b",
       "startPoint": {
-        "x": 350,
-        "y": 200
+        "x": 176,
+        "y": 337
       },
       "endPoint": {
-        "x": 460,
-        "y": 40
+        "x": 330,
+        "y": 338
       },
-      "properties": {},
+      "properties": {
+        "lineType": ["True"]
+      },
+      "text": {
+        "x": 253,
+        "y": 337.5,
+        "value": "True"
+      },
+      "zIndex": 1013,
       "pointsList": [
         {
-          "x": 350,
-          "y": 200
+          "x": 176,
+          "y": 337
         },
         {
-          "x": 450,
-          "y": 200
+          "x": 276,
+          "y": 337
         },
         {
-          "x": 360,
-          "y": 40
+          "x": 230,
+          "y": 338
         },
         {
-          "x": 460,
-          "y": 40
+          "x": 330,
+          "y": 338
         }
       ]
     },
     {
-      "id": "feeb016c-c52c-48ed-8d2c-fde36439da7d",
-      "type": "node-link",
-      "sourceNodeId": "c56b90cc-64fc-4782-8d9e-b0b24dabc876",
-      "targetNodeId": "cf717a24-2917-444f-9927-74a0d486ad7a",
+      "id": "9445ceea-22a6-4af4-9599-cf806b51172d",
+      "type": "bezier-link",
+      "sourceNodeId": "326ff560-9485-459c-b07d-23191385f18b",
+      "targetNodeId": "4d6b6519-35f2-44ce-9b9c-5a7bafe516ac",
       "startPoint": {
-        "x": 580,
-        "y": 40
+        "x": 470,
+        "y": 338
       },
       "endPoint": {
-        "x": 770,
-        "y": 200
+        "x": 693,
+        "y": 177
       },
       "properties": {
-        "type": "Success"
+        "lineType": ["Attributes"]
       },
       "text": {
-        "x": 675,
-        "y": 120,
-        "value": "Success"
+        "x": 581.5,
+        "y": 257.5,
+        "value": "Attributes"
       },
+      "zIndex": 1014,
       "pointsList": [
         {
-          "x": 580,
-          "y": 40
+          "x": 470,
+          "y": 338
         },
         {
-          "x": 680,
-          "y": 40
+          "x": 570,
+          "y": 338
         },
         {
-          "x": 670,
-          "y": 200
+          "x": 593,
+          "y": 177
         },
         {
-          "x": 770,
-          "y": 200
+          "x": 693,
+          "y": 177
+        }
+      ]
+    },
+    {
+      "id": "a5728c6d-eaa2-4a86-b892-bcdfb7bd432f",
+      "type": "bezier-link",
+      "sourceNodeId": "326ff560-9485-459c-b07d-23191385f18b",
+      "targetNodeId": "8bdef3d4-9ea3-4a09-8313-4e534ee1b387",
+      "startPoint": {
+        "x": 470,
+        "y": 338
+      },
+      "endPoint": {
+        "x": 691,
+        "y": 341
+      },
+      "properties": {
+        "lineType": ["Telemetry"]
+      },
+      "text": {
+        "x": 580.5,
+        "y": 339.5,
+        "value": "Telemetry"
+      },
+      "zIndex": 1015,
+      "pointsList": [
+        {
+          "x": 470,
+          "y": 338
+        },
+        {
+          "x": 570,
+          "y": 338
+        },
+        {
+          "x": 591,
+          "y": 341
+        },
+        {
+          "x": 691,
+          "y": 341
         }
       ]
     }

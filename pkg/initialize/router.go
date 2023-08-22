@@ -1,17 +1,16 @@
 package initialize
 
 import (
+	"pandax/apps/job/jobs"
+	ruleRouter "pandax/apps/rule/router"
 	"pandax/pkg/global"
 	"pandax/pkg/transport"
 
 	devRouter "pandax/apps/develop/router"
-	flowRouter "pandax/apps/flow/router"
+	deviceRouter "pandax/apps/device/router"
 	jobRouter "pandax/apps/job/router"
 	logRouter "pandax/apps/log/router"
-	resRouter "pandax/apps/resource/router"
 	sysRouter "pandax/apps/system/router"
-	visualRouter "pandax/apps/visual/router"
-
 	"pandax/pkg/middleware"
 )
 
@@ -21,6 +20,8 @@ func InitRouter() *transport.HttpServer {
 	server := transport.NewHttpServer(serverConfig.GetPort())
 
 	container := server.Container
+	// 防止XSS
+	container.Filter(middleware.EscapeHTML)
 	// 是否允许跨域
 	if serverConfig.Cors {
 		container.Filter(middleware.Cors(container).Filter)
@@ -31,7 +32,6 @@ func InitRouter() *transport.HttpServer {
 	}
 	// 设置路由组
 	{
-		sysRouter.InitSysTenantRouter(container)
 		sysRouter.InitSystemRouter(container)
 		sysRouter.InitDeptRouter(container)
 		sysRouter.InitConfigRouter(container)
@@ -45,29 +45,8 @@ func InitRouter() *transport.HttpServer {
 		//本地图片上传接口
 		sysRouter.InitUploadRouter(container)
 	}
-	//流程管理
-	{
-		flowRouter.InitFlowWorkClassifyRouter(container)
-		flowRouter.InitFlowWorkInfoRouter(container)
-		flowRouter.InitFlowWorkTemplatesRouter(container)
-	}
-	// 可视化
-	{
-		visualRouter.InitUploadRouter(container)
-		visualRouter.InitRuleChainRouter(container)
-		visualRouter.InitVisualScreenGroupRouter(container)
-		visualRouter.InitVisualScreenRouter(container)
-		visualRouter.InitVisualDataSourceRouter(container)
-		visualRouter.InitVisualDataSetTableRouter(container)
-		visualRouter.InitVisualDataSetFieldRouter(container)
-	}
-	// 任务
-	{
-		jobRouter.InitJobRouter(container)
-	}
 	//日志系统
 	{
-		logRouter.InitJobLogRouter(container)
 		logRouter.InitOperLogRouter(container)
 		logRouter.InitLoginLogRouter(container)
 	}
@@ -76,13 +55,30 @@ func InitRouter() *transport.HttpServer {
 		devRouter.InitGenTableRouter(container)
 		devRouter.InitGenRouter(container)
 	}
-	// 资源管理
+	//设备
 	{
-		resRouter.InitResOssRouter(container)
-		resRouter.InitResEmailsRouter(container)
+		deviceRouter.InitProductCategoryRouter(container)
+		deviceRouter.InitDeviceGroupRouter(container)
+		deviceRouter.InitProductRouter(container)
+		deviceRouter.InitProductTemplateRouter(container)
+		deviceRouter.InitProductOtaRouter(container)
+		deviceRouter.InitDeviceRouter(container)
+		deviceRouter.InitDeviceAlarmRouter(container)
+		deviceRouter.InitDeviceCmdLogRouter(container)
 	}
-
+	{
+		jobRouter.InitJobRouter(container)
+		jobRouter.InitJobLogRouter(container)
+	}
+	{
+		ruleRouter.InitRuleChainRouter(container)
+	}
 	// api接口
 	middleware.SwaggerConfig(container)
+	// 开启调度任务
+	go func() {
+		jobs.InitJob()
+	}()
+
 	return server
 }

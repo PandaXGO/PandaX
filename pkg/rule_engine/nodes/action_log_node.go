@@ -1,8 +1,9 @@
 package nodes
 
 import (
-	"pandax/apps/visual/entity"
-	"pandax/apps/visual/services"
+	"pandax/apps/rule/entity"
+	"pandax/apps/rule/services"
+	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -36,13 +37,14 @@ func (n *logNode) Handle(msg message.Message) error {
 			return err
 		}
 	}
-	services.VisualRuleChainMsgLogModelDao.Insert(entity.VisualRuleChainMsgLog{
+	services.RuleChainMsgLogModelDao.Insert(entity.RuleChainMsgLog{
 		MessageId:  msg.GetId(),
 		MsgType:    msg.GetType(),
 		DeviceName: msg.GetMetadata().GetValues()["deviceName"].(string),
 		Ts:         msg.GetTs(),
 		Content:    logMessage,
 	})
+	global.Log.Info(logMessage)
 	if err != nil {
 		if failureLableNode != nil {
 			return failureLableNode.Handle(msg)

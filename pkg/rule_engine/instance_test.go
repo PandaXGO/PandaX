@@ -18,15 +18,23 @@ func TestNewRuleChainInstance(t *testing.T) {
 		t.Error(errs[0])
 	}
 
-	metadata := message.NewDefaultMetadata(map[string]interface{}{"deviceName": "aa", "namespace": "default", "test": "aa"})
-	msg := message.NewMessageWithDetail("1", nodes.DEVICE, message.EventTelemetryType, map[string]interface{}{"temperature": 60}, metadata)
+	metadata := message.NewDefaultMetadata(map[string]interface{}{
+		"deviceName": "ws432",
+		"deviceId":   "d_1928b99619910dae5a001fa7",
+		"deviceType": "direct",
+		"productId":  "p_3ba460634520cf4590dc90e5",
+	})
+	msg := message.NewMessageWithDetail("1", message.TelemetryMes, map[string]interface{}{"temperature": 60.4, "humidity": 32.5}, metadata)
 	t.Log("开始执行力流程")
-	instance.StartRuleChain(context.Background(), msg)
+	err = instance.StartRuleChain(context.Background(), msg)
+	if err != nil {
+		t.Log(err)
+	}
 }
 
 func TestScriptEngine(t *testing.T) {
 	metadata := message.NewDefaultMetadata(map[string]interface{}{"device": "aa"})
-	msg := message.NewMessageWithDetail("1", "device", message.EventUpEventType, map[string]interface{}{"aa": 5}, metadata)
+	msg := message.NewMessageWithDetail("1", message.UpEventMes, map[string]interface{}{"aa": 5}, metadata)
 	const baseScript = `
         function nextRelation(metadata, msg) {
 			return ['one','nine'];
@@ -50,7 +58,7 @@ func TestScriptEngine(t *testing.T) {
 
 func TestScriptOnMessage(t *testing.T) {
 	metadata := message.NewDefaultMetadata(map[string]interface{}{"device": "aa"})
-	msg := message.NewMessageWithDetail("1", "device", message.EventUpEventType, map[string]interface{}{"aa": 5}, metadata)
+	msg := message.NewMessageWithDetail("1", message.UpEventMes, map[string]interface{}{"aa": 5}, metadata)
 
 	const baseScript = `
         msg.bb = "33"

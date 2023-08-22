@@ -16,13 +16,15 @@ func (f switchFilterNodeFactory) Name() string     { return "SwitchNode" }
 func (f switchFilterNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
 func (f switchFilterNodeFactory) Labels() []string {
 	return []string{
-		"Failure", "True", "False",
-		message.EventAttributesType,
-		message.EventAlarmType,
-		message.EventTelemetryType,
-		message.EventUpEventType,
-		message.EventConnectType,
-		message.EventDisConnectType,
+		"True", "False",
+		message.RowMes,
+		message.AttributesMes,
+		message.TelemetryMes,
+		message.RpcRequestMes,
+		message.AlarmMes,
+		message.UpEventMes,
+		message.ConnectMes,
+		message.DisConnectMes,
 	}
 }
 func (f switchFilterNodeFactory) Create(id string, meta Metadata) (Node, error) {

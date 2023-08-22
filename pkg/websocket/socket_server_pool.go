@@ -2,23 +2,22 @@ package websocket
 
 import (
 	"github.com/gorilla/websocket"
-	"log"
 	"pandax/pkg/global"
 )
 
 var Wsp = make(map[string]*Websocket)
 
-//GetWebSocketByScreenId 获取WebSocket
+// GetWebSocketByScreenId 获取WebSocket
 func GetWebSocketByScreenId(screenId string) *Websocket {
 	return Wsp[screenId]
 }
 
-//AddWebSocketByScreenId 添加WebSocket
+// AddWebSocketByScreenId 添加WebSocket
 func AddWebSocketByScreenId(screenId string, webs *Websocket) {
 	Wsp[screenId] = webs
 }
 
-//RemoveWebSocket 移除WebSocket
+// RemoveWebSocket 移除WebSocket
 func RemoveWebSocket(screenId string) bool {
 	if ws, ok := Wsp[screenId]; ok {
 		ws.Conn.Close()
@@ -29,11 +28,10 @@ func RemoveWebSocket(screenId string) bool {
 	return false
 }
 
-//SendMessage 向特定场景id发送消息，同一场景代码有可能在多台客户机上连接 ，这时就会在多台客户机接受到了数据
+// SendMessage 向特定场景id发送消息，同一场景代码有可能在多台客户机上连接 ，这时就会在多台客户机接受到了数据
 func SendMessage(message, screenId string) {
 	ws := GetWebSocketByScreenId(screenId)
 	if ws != nil {
-		log.Println("发送消息", message)
 		ws.Conn.WriteMessage(websocket.TextMessage, []byte(message))
 	}
 }

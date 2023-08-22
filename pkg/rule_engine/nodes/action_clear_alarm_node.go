@@ -1,7 +1,11 @@
 package nodes
 
 import (
+	"encoding/json"
 	"github.com/sirupsen/logrus"
+	"log"
+	"pandax/apps/device/services"
+	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -30,13 +34,26 @@ func (n *clearAlarmNode) Handle(msg message.Message) error {
 	cleared := n.GetLinkedNode("Cleared")
 	failure := n.GetLinkedNode("Failure")
 
-	scriptEngine := NewScriptEngine(msg, "Details", n.Script)
-	details, err := scriptEngine.ScriptAlarmDetails()
-	if err != nil {
-		return failure.Handle(msg)
+	alarm := services.DeviceAlarmModelDao.FindOneByType(msg.GetMetadata().GetKeyValue("deviceId").(string), n.AlarmType, "0")
+	if alarm.DeviceId != "" {
+		log.Println("清除告警")
+		alarm.State = global.CLEARED
+		marshal, _ := json.Marshal(msg.GetMsg())
+		alarm.Details = string(marshal)
+		err := services.DeviceAlarmModelDao.Update(*alarm)
+		if err != nil {
+			if failure != nil {
+				return failure.Handle(msg)
+			}
+		} else {
+			if cleared != nil {
+				return cleared.Handle(msg)
+			}
+		}
+	} else {
+		if failure != nil {
+			return failure.Handle(msg)
+		}
 	}
-	// TODO 编写创建告警信息
-	logrus.Info(details)
-	cleared.Handle(msg)
 	return nil
 }

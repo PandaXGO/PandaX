@@ -1,10 +1,12 @@
 package nodes
 
 import (
+	"github.com/sirupsen/logrus"
+	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
 )
 
-type SaveAttributesNode struct {
+type saveAttributesNode struct {
 	bareNode
 }
 
@@ -14,41 +16,33 @@ func (f saveAttributesNodeFactory) Name() string     { return "SaveAttributesNod
 func (f saveAttributesNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
 func (f saveAttributesNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
 func (f saveAttributesNodeFactory) Create(id string, meta Metadata) (Node, error) {
-	node := &SaveAttributesNode{
+	node := &saveAttributesNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
 }
 
-func (n *SaveAttributesNode) Handle(msg message.Message) error {
+func (n *saveAttributesNode) Handle(msg message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
-	if msg.GetType() != message.EventAttributesType {
+	if msg.GetType() != message.AttributesMes {
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
 		} else {
 			return nil
 		}
 	}
-	//deviceName := msg.GetMetadata().GetValues()["deviceName"].(string)
-	//namespace := msg.GetMetadata().GetValues()["namespace"].(string)
-	//marshal, err := json.Marshal(msg.GetMsg())
-
-	//if err != nil {
-	//	if failureLabelNode != nil {
-	//		return failureLabelNode.Handle(msg)
-	//	} else {
-	//		return nil
-	//	}
-	//}
-
-	// todo 添加设备上报参数
-
+	//deviceId := msg.GetMetadata().GetValues()["deviceId"].(string)
+	deviceName := msg.GetMetadata().GetValues()["deviceName"].(string)
+	err := global.TdDb.InsertDevice(deviceName+"_attributes", msg.GetMsg())
+	if err != nil {
+		if failureLabelNode != nil {
+			return failureLabelNode.Handle(msg)
+		}
+	}
 	if successLabelNode != nil {
 		return successLabelNode.Handle(msg)
-	} else {
-		return nil
 	}
-
 	return nil
 }

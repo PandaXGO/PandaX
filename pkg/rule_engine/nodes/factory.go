@@ -14,9 +14,6 @@ const (
 	NODE_CATEGORY_FLOWS      = "flows"
 )
 
-// Factory is node's factory to create node based on metadata
-// factory also manage node's metadta description which can be used by other
-// service to present node in web
 type Factory interface {
 	Name() string
 	Category() string
@@ -33,8 +30,6 @@ var (
 	allCategories     []map[string]interface{}            = make([]map[string]interface{}, 0)
 )
 
-// RegisterFactory add a new node factory and classify its category for
-// metadata description
 func RegisterFactory(f Factory) {
 	allNodeFactories[f.Name()] = f
 

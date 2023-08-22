@@ -2,11 +2,10 @@ package nodes
 
 import (
 	"errors"
+	"github.com/sirupsen/logrus"
+	"log"
 	"pandax/pkg/rule_engine/manifest"
 	"pandax/pkg/rule_engine/message"
-	"strings"
-
-	"github.com/sirupsen/logrus"
 )
 
 type Node interface {
@@ -72,6 +71,7 @@ func GetNodes(m *manifest.Manifest) (map[string]Node, error) {
 		metadata := NewMetadataWithValues(n.Properties)
 		node, err := NewNode(n.Type, n.Id, metadata)
 		if err != nil {
+			log.Println(err)
 			logrus.Errorf("new node '%s' failure", n.Id)
 			continue
 		}
@@ -93,15 +93,14 @@ func GetNodes(m *manifest.Manifest) (map[string]Node, error) {
 			continue
 		}
 		//可以有多个类型
-		//可以有多个类型
-		types := make([]string, 0)
-		if _, ok := edge.Properties["type"]; !ok {
+		types := make([]interface{}, 0)
+		if _, ok := edge.Properties["lineType"]; !ok {
 			types = append(types, "True")
 		} else {
-			types = strings.Split(edge.Properties["type"].(string), "/")
+			types = edge.Properties["lineType"].([]interface{})
 		}
 		for _, ty := range types {
-			originalNode.AddLinkedNode(ty, targetNode)
+			originalNode.AddLinkedNode(ty.(string), targetNode)
 		}
 
 	}

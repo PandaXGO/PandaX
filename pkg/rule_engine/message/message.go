@@ -6,27 +6,29 @@ import (
 	"time"
 )
 
-//消息类型
+// 消息类型
 const (
-	EventConnectType    = "connect"
-	EventDisConnectType = "disconnect"
-	EventUpEventType    = "event"
-	EventAlarmType      = "alarm"
-	EventTelemetryType  = "telemetry"
-	EventAttributesType = "attributes"
+	ConnectMes    = "Connect"
+	DisConnectMes = "Disconnect"
+	RpcRequestMes = "RpcRequest"
+	UpEventMes    = "Event"
+	AlarmMes      = "Alarm"
+	RowMes        = "Row"
+	TelemetryMes  = "Telemetry"
+	AttributesMes = "Attributes"
 )
 
 // 数据类型Originator
 const (
 	DEVICE  = "DEVICE"
 	GATEWAY = "GATEWAY"
+	MONITOR = "MONITOR" //监控
 )
 
 // Message ...
 type Message interface {
 	GetId() string
 	GetTs() time.Time
-	GetOriginator() string
 	GetUserId() string
 	GetType() string
 	GetMsg() map[string]interface{}
@@ -34,7 +36,6 @@ type Message interface {
 	GetAllMap() map[string]interface{} //msg 和 Metadata的合并
 	SetType(string)
 	SetMsg(map[string]interface{})
-	SetOriginator(string)
 	SetUserId(string)
 	SetMetadata(Metadata)
 	MarshalBinary() ([]byte, error)
@@ -58,31 +59,28 @@ func NewMessage() Message {
 }
 
 type defaultMessage struct {
-	Id         string                 //uuid     消息Id
-	Ts         time.Time              //时间戳
-	MsgType    string                 //消息类型，   attributes（参数），telemetry（遥测），Connect连接事件
-	Originator string                 //数据发布者	 设备 规则链
-	UserId     string                 //客户Id  UUID  设备发布人
-	Msg        map[string]interface{} //数据		数据结构JSON  设备原始数据 msg
-	Metadata   Metadata               //消息的元数据		包括，设备名称，设备类型，命名空间，时间戳等
+	Id       string                 //uuid     消息Id
+	Ts       time.Time              //时间戳
+	MsgType  string                 //消息类型，   attributes（参数），telemetry（遥测），Connect连接事件
+	UserId   string                 //客户Id  UUID  设备发布人
+	Msg      map[string]interface{} //数据		数据结构JSON  设备原始数据 msg
+	Metadata Metadata               //消息的元数据		包括设备Id，设备类型，产品ID等
 }
 
 // NewMessageWithDetail ...
-func NewMessageWithDetail(userId, originator string, messageType string, msg map[string]interface{}, metadata Metadata) Message {
+func NewMessageWithDetail(userId, messageType string, msg map[string]interface{}, metadata Metadata) Message {
 	return &defaultMessage{
-		Id:         uuid.New().String(),
-		Ts:         time.Now(),
-		UserId:     userId,
-		Originator: originator,
-		MsgType:    messageType,
-		Msg:        msg,
-		Metadata:   metadata,
+		Id:       uuid.New().String(),
+		Ts:       time.Now(),
+		UserId:   userId,
+		MsgType:  messageType,
+		Msg:      msg,
+		Metadata: metadata,
 	}
 }
 
 func (t *defaultMessage) GetId() string                  { return t.Id }
 func (t *defaultMessage) GetTs() time.Time               { return t.Ts }
-func (t *defaultMessage) GetOriginator() string          { return t.Originator }
 func (t *defaultMessage) GetUserId() string              { return t.UserId }
 func (t *defaultMessage) GetType() string                { return t.MsgType }
 func (t *defaultMessage) GetMsg() map[string]interface{} { return t.Msg }
@@ -107,7 +105,6 @@ func (t *defaultMessage) GetAllMap() map[string]interface{} {
 }
 func (t *defaultMessage) SetType(msgType string)            { t.MsgType = msgType }
 func (t *defaultMessage) SetMsg(msg map[string]interface{}) { t.Msg = msg }
-func (t *defaultMessage) SetOriginator(originator string)   { t.Originator = originator }
 func (t *defaultMessage) SetUserId(userId string)           { t.UserId = userId }
 func (t *defaultMessage) SetMetadata(metadata Metadata)     { t.Metadata = metadata }
 

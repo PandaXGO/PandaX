@@ -14,13 +14,15 @@ func (f messageTypeSwitchNodeFactory) Name() string     { return "MessageTypeSwi
 func (f messageTypeSwitchNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
 func (f messageTypeSwitchNodeFactory) Labels() []string {
 	return []string{
-		message.EventAttributesType,
-		message.EventAlarmType,
-		message.EventTelemetryType,
-		message.EventUpEventType,
-		message.EventConnectType,
-		message.EventDisConnectType,
-		"Other",
+		message.RowMes,
+		message.AttributesMes,
+		message.TelemetryMes,
+		message.RpcRequestMes,
+		message.AlarmMes,
+		message.UpEventMes,
+		message.ConnectMes,
+		message.ConnectMes,
+		message.DisConnectMes,
 	}
 }
 func (f messageTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, error) {
@@ -40,10 +42,5 @@ func (n *messageTypeSwitchNode) Handle(msg message.Message) error {
 			return node.Handle(msg)
 		}
 	}
-	// 自定义类型 或 未识别类型
-	if node := n.GetLinkedNode("Other"); node != nil {
-		return node.Handle(msg)
-	}
-	// not found
 	return nil
 }

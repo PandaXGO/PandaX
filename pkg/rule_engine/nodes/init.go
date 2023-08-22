@@ -7,7 +7,6 @@ func init() {
 	RegisterFactory(scriptFilterNodeFactory{})
 	RegisterFactory(messageTypeFilterNodeFactory{})
 	RegisterFactory(messageTypeSwitchNodeFactory{})
-	RegisterFactory(deviceTypeSwitchNodeFactory{})
 
 	RegisterFactory(transformDeleteKeyNodeFactory{})
 	RegisterFactory(transformRenameKeyNodeFactory{})
@@ -15,7 +14,6 @@ func init() {
 
 	RegisterFactory(createAlarmNodeFactory{})
 	RegisterFactory(clearAlarmNodeFactory{})
-	RegisterFactory(messageGeneratorNodeFactory{})
 	RegisterFactory(logNodeFactory{})
 	RegisterFactory(saveAttributesNodeFactory{})
 	RegisterFactory(saveTimeSeriesNodeFactory{})

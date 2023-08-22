@@ -1,36 +1,23 @@
 package jobs
 
 import (
-	"fmt"
-	"time"
+	"log"
 )
 
-// 需要将定义的struct 添加到字典中；
-// 字典 key 可以配置到 自动任务 调用目标 中；
-func InitJob() {
-	jobList = map[string]JobsExec{
-		"cronHandle": CronHandle{},
-		// ...
-	}
+type CronDeviceHandle struct {
 }
 
-// 新添加的job 必须按照以下格式定义，并实现Exec函数
-type CronHandle struct {
+func (t CronDeviceHandle) Exec(arg any, content any) error {
+	log.Println("执行设备任务", arg, content)
+
+	return nil
 }
 
-func (t CronHandle) Exec(arg any) error {
-	str := time.Now().Format(timeFormat) + " [INFO] JobCore ExamplesOne exec success"
-	// TODO: 这里需要注意 Examples 传入参数是 string 所以 arg.(string)；请根据对应的类型进行转化；
-	switch arg.(type) {
+type CronProductHandle struct {
+}
 
-	case string:
-		if arg.(string) != "" {
-			fmt.Println(str, arg.(string))
-		} else {
-			fmt.Println(str, "arg is nil")
-		}
-		break
-	}
+func (t CronProductHandle) Exec(arg any, content any) error {
+	log.Println("执行产品任务", arg, content)
 
 	return nil
 }
