@@ -1,12 +1,14 @@
 package api
 
 import (
+	"github.com/XM-GO/PandaKit/model"
 	"github.com/XM-GO/PandaKit/token"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
+	"github.com/emicklei/go-restful/v3"
 	"github.com/kakuilan/kgo"
 	"github.com/mssola/user_agent"
-	"net/http"
+	"log"
+
 	"pandax/apps/system/api/form"
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
@@ -16,7 +18,8 @@ import (
 
 	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/captcha"
-	"github.com/XM-GO/PandaKit/ginx"
+	filek "github.com/XM-GO/PandaKit/file"
+	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/services"
 	"pandax/pkg/global"
@@ -34,38 +37,29 @@ type UserApi struct {
 	LogLogin    logServices.LogLoginModel
 }
 
-// @Tags Base
-// @Summary 获取验证码
-// @Produce  application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
-// @Router /system/user/getCaptcha [get]
-func (u *UserApi) GenerateCaptcha(c *gin.Context) {
+// GenerateCaptcha 获取验证码
+func (u *UserApi) GenerateCaptcha(request *restful.Request, response *restful.Response) {
 	id, image := captcha.Generate()
-	c.JSON(http.StatusOK, map[string]any{"base64Captcha": image, "captchaId": id})
+	response.WriteEntity(vo.CaptchaVo{Base64Captcha: image, CaptchaId: id})
 }
 
-// @Tags Base
-// @Summary 刷新token
-// @Produce  application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
-// @Router /system/user/refreshToken [get]
-func (u *UserApi) RefreshToken(rc *ginx.ReqCtx) {
-	tokenStr := rc.GinCtx.Request.Header.Get("X-TOKEN")
+// RefreshToken 刷新token
+func (u *UserApi) RefreshToken(rc *restfulx.ReqCtx) {
+	tokenStr := rc.Request.Request.Header.Get("X-TOKEN")
 	j := token.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
 	token, err := j.RefreshToken(tokenStr)
 	biz.ErrIsNil(err, "刷新token失败")
-	rc.ResData = map[string]any{"token": token, "expire": time.Now().Unix() + global.Conf.Jwt.ExpireTime}
+	rc.ResData = vo.TokenVo{
+		Token:  token,
+		Expire: time.Now().Unix() + global.Conf.Jwt.ExpireTime,
+	}
 }
 
-// @Tags Base
-// @Summary 用户登录
-// @Produce  application/json
-// @Param data body form.Login true "用户名, 密码, 验证码"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
-// @Router /system/user/login [post]
-func (u *UserApi) Login(rc *ginx.ReqCtx) {
+// Login 用户登录
+func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 	var l form.Login
-	ginx.BindJsonAndValid(rc.GinCtx, &l)
+	restfulx.BindQuery(rc, &l)
+	log.Println(l)
 	biz.IsTrue(captcha.Verify(l.CaptchaId, l.Captcha), "验证码认证失败")
 
 	login := u.UserApp.Login(entity.Login{Username: l.Username, Password: l.Password})
@@ -87,36 +81,32 @@ func (u *UserApi) Login(rc *ginx.ReqCtx) {
 	})
 	biz.ErrIsNil(err, "生成Token失败")
 
-	rc.ResData = map[string]any{
-		"token":  token,
-		"expire": time.Now().Unix() + global.Conf.Jwt.ExpireTime,
+	rc.ResData = vo.TokenVo{
+		Token:  token,
+		Expire: time.Now().Unix() + global.Conf.Jwt.ExpireTime,
 	}
-
-	var loginLog logEntity.LogLogin
-	ua := user_agent.New(rc.GinCtx.Request.UserAgent())
-	loginLog.Ipaddr = rc.GinCtx.ClientIP()
-	loginLog.LoginLocation = utils.GetRealAddressByIP(rc.GinCtx.ClientIP())
-	loginLog.LoginTime = time.Now()
-	loginLog.Status = "0"
-	loginLog.Remark = rc.GinCtx.Request.UserAgent()
-	browserName, browserVersion := ua.Browser()
-	loginLog.Browser = browserName + " " + browserVersion
-	loginLog.Os = ua.OS()
-	loginLog.Platform = ua.Platform()
-	loginLog.Username = login.Username
-	loginLog.Msg = "登录成功"
-	loginLog.CreateBy = login.Username
-	u.LogLogin.Insert(loginLog)
+	go func() {
+		var loginLog logEntity.LogLogin
+		ua := user_agent.New(rc.Request.Request.UserAgent())
+		loginLog.Ipaddr = rc.Request.Request.RemoteAddr
+		loginLog.LoginLocation = utils.GetRealAddressByIP(rc.Request.Request.RemoteAddr)
+		loginLog.LoginTime = time.Now()
+		loginLog.Status = "0"
+		loginLog.Remark = rc.Request.Request.UserAgent()
+		browserName, browserVersion := ua.Browser()
+		loginLog.Browser = browserName + " " + browserVersion
+		loginLog.Os = ua.OS()
+		loginLog.Platform = ua.Platform()
+		loginLog.Username = login.Username
+		loginLog.Msg = "登录成功"
+		loginLog.CreateBy = login.Username
+		u.LogLogin.Insert(loginLog)
+	}()
 }
 
-// @Tags Base
-// @Summary 用户权限信息
-// @Param userName query string false "userName"
-// @Produce  application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"成功"}"
-// @Router /system/user/auth [get]
-func (u *UserApi) Auth(rc *ginx.ReqCtx) {
-	userName := rc.GinCtx.Query("username")
+// Auth 用户权限信息
+func (u *UserApi) Auth(rc *restfulx.ReqCtx) {
+	userName := restfulx.QueryParam(rc, "username")
 	biz.NotEmpty(userName, "用户名必传")
 	var user entity.SysUser
 	user.Username = userName
@@ -126,26 +116,22 @@ func (u *UserApi) Auth(rc *ginx.ReqCtx) {
 	permis := u.RoleMenuApp.GetPermis(role.RoleId)
 	menus := u.MenuApp.SelectMenuRole(role.RoleKey)
 
-	rc.ResData = map[string]any{
-		"user":        userData,
-		"role":        role,
-		"permissions": permis,
-		"menus":       Build(*menus),
+	rc.ResData = vo.AuthVo{
+		User:        *userData,
+		Role:        *role,
+		Permissions: permis,
+		Menus:       Build(*menus),
 	}
 }
 
-// @Tags Base
-// @Summary 退出登录
-// @Produce  application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
-// @Router /system/user/logout [post]
-func (u *UserApi) LogOut(rc *ginx.ReqCtx) {
+// LogOut 退出登录
+func (u *UserApi) LogOut(rc *restfulx.ReqCtx) {
 	var loginLog logEntity.LogLogin
-	ua := user_agent.New(rc.GinCtx.Request.UserAgent())
-	loginLog.Ipaddr = rc.GinCtx.ClientIP()
+	ua := user_agent.New(rc.Request.Request.UserAgent())
+	loginLog.Ipaddr = rc.Request.Request.RemoteAddr
 	loginLog.LoginTime = time.Now()
 	loginLog.Status = "0"
-	loginLog.Remark = rc.GinCtx.Request.UserAgent()
+	loginLog.Remark = rc.Request.Request.UserAgent()
 	browserName, browserVersion := ua.Browser()
 	loginLog.Browser = browserName + " " + browserVersion
 	loginLog.Os = ua.OS()
@@ -155,28 +141,18 @@ func (u *UserApi) LogOut(rc *ginx.ReqCtx) {
 	u.LogLogin.Insert(loginLog)
 }
 
-// @Summary 列表数据
-// @Description 获取JSON
-// @Tags 用户
-// @Param userName query string false "userName"
-// @Param phone query string false "phone"
-// @Param status query string false "status"
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Success 200 {string} string "{"code": -1, "message": "抱歉未找到相关信息"}"
-// @Router /system/user/sysUserList [get]
-// @Security X-TOKEN
-func (u *UserApi) GetSysUserList(rc *ginx.ReqCtx) {
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
-	status := rc.GinCtx.Query("status")
-	userName := rc.GinCtx.Query("username")
-	phone := rc.GinCtx.Query("phone")
-	deptId := ginx.QueryInt(rc.GinCtx, "deptId", 0)
+// GetSysUserList 列表数据
+func (u *UserApi) GetSysUserList(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	status := restfulx.QueryParam(rc, "status")
+	username := restfulx.QueryParam(rc, "username")
+	phone := restfulx.QueryParam(rc, "phone")
+
+	deptId := restfulx.QueryInt(rc, "deptId", 0)
 	var user entity.SysUser
 	user.Status = status
-	user.Username = userName
+	user.Username = username
 	user.Phone = phone
 	user.DeptId = int64(deptId)
 
@@ -185,21 +161,16 @@ func (u *UserApi) GetSysUserList(rc *ginx.ReqCtx) {
 	}
 	list, total := u.UserApp.FindListPage(pageNum, pageSize, user)
 
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 
-// @Summary 获取当前登录用户
-// @Description 获取JSON
-// @Tags 个人中心
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/user/profile [get]
-// @Security
-func (u *UserApi) GetSysUserProfile(rc *ginx.ReqCtx) {
+// GetSysUserProfile 获取当前登录用户
+func (u *UserApi) GetSysUserProfile(rc *restfulx.ReqCtx) {
 
 	sysUser := entity.SysUser{}
 	sysUser.UserId = rc.LoginAccount.UserId
@@ -218,26 +189,19 @@ func (u *UserApi) GetSysUserProfile(rc *ginx.ReqCtx) {
 	roleIds := make([]int64, 0)
 	roleIds = append(roleIds, rc.LoginAccount.RoleId)
 
-	rc.ResData = map[string]any{
-		"data":    user,
-		"postIds": postIds,
-		"roleIds": roleIds,
-		"roles":   roleList,
-		"posts":   postList,
-		"dept":    deptList,
+	rc.ResData = vo.UserProfileVo{
+		Data:    user,
+		PostIds: postIds,
+		RoleIds: roleIds,
+		Roles:   *roleList,
+		Posts:   *postList,
+		Dept:    *deptList,
 	}
 }
 
-// @Summary 修改头像
-// @Description 修改头像
-// @Tags 用户
-// @Param file formData file true "file"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
-// @Router /system/user/profileAvatar [post]
-func (u *UserApi) InsetSysUserAvatar(rc *ginx.ReqCtx) {
-	form, err := rc.GinCtx.MultipartForm()
-	biz.ErrIsNil(err, "头像上传失败")
+// InsetSysUserAvatar 修改头像
+func (u *UserApi) InsetSysUserAvatar(rc *restfulx.ReqCtx) {
+	form := rc.Request.Request.MultipartForm
 
 	files := form.File["upload[]"]
 	guid, _ := kgo.KStr.UuidV4()
@@ -245,7 +209,7 @@ func (u *UserApi) InsetSysUserAvatar(rc *ginx.ReqCtx) {
 	for _, file := range files {
 		global.Log.Info(file.Filename)
 		// 上传文件至指定目录
-		biz.ErrIsNil(rc.GinCtx.SaveUploadedFile(file, filPath), "保存头像失败")
+		biz.ErrIsNil(filek.SaveUploadedFile(file, filPath), "保存头像失败")
 	}
 	sysuser := entity.SysUser{}
 	sysuser.UserId = rc.LoginAccount.UserId
@@ -255,31 +219,19 @@ func (u *UserApi) InsetSysUserAvatar(rc *ginx.ReqCtx) {
 	u.UserApp.Update(sysuser)
 }
 
-// @Summary 修改密码
-// @Description 修改密码
-// @Tags 用户
-// @Param pwd body entity.SysUserPwd true "pwd"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": -1, "message": "添加失败"}"
-// @Router /system/user/updatePwd [post]
-func (u *UserApi) SysUserUpdatePwd(rc *ginx.ReqCtx) {
+// SysUserUpdatePwd 修改密码
+func (u *UserApi) SysUserUpdatePwd(rc *restfulx.ReqCtx) {
 	var pws entity.SysUserPwd
-	ginx.BindJsonAndValid(rc.GinCtx, &pws)
+	restfulx.BindQuery(rc, &pws)
 
 	user := entity.SysUser{}
 	user.UserId = rc.LoginAccount.UserId
 	u.UserApp.SetPwd(user, pws)
 }
 
-// @Summary 获取用户
-// @Description 获取JSON
-// @Tags 用户
-// @Param userId path int true "用户编码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/user/sysUser/{userId} [get]
-// @Security
-func (u *UserApi) GetSysUser(rc *ginx.ReqCtx) {
-	userId := ginx.PathParamInt(rc.GinCtx, "userId")
+// GetSysUser 获取用户
+func (u *UserApi) GetSysUser(rc *restfulx.ReqCtx) {
+	userId := restfulx.PathParamInt(rc, "userId")
 
 	user := entity.SysUser{}
 	user.UserId = int64(userId)
@@ -297,22 +249,17 @@ func (u *UserApi) GetSysUser(rc *ginx.ReqCtx) {
 	}
 	posts := u.PostApp.FindList(post)
 
-	rc.ResData = map[string]any{
-		"data":    result,
-		"postIds": result.PostIds,
-		"roleIds": result.RoleIds,
-		"roles":   roles,
-		"posts":   posts,
+	rc.ResData = vo.UserVo{
+		Data:    result,
+		PostIds: result.PostIds,
+		RoleIds: result.RoleIds,
+		Roles:   *roles,
+		Posts:   *posts,
 	}
 }
 
-// @Summary 获取添加用户角色和职位
-// @Description 获取JSON
-// @Tags 用户
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/user/getInit [get]
-// @Security
-func (u *UserApi) GetSysUserInit(rc *ginx.ReqCtx) {
+// GetSysUserInit 获取添加用户角色和职位
+func (u *UserApi) GetSysUserInit(rc *restfulx.ReqCtx) {
 
 	var role entity.SysRole
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
@@ -324,19 +271,14 @@ func (u *UserApi) GetSysUserInit(rc *ginx.ReqCtx) {
 		post.TenantId = rc.LoginAccount.TenantId
 	}
 	posts := u.PostApp.FindList(post)
-	mp := make(map[string]any, 2)
-	mp["roles"] = roles
-	mp["posts"] = posts
-	rc.ResData = mp
+	rc.ResData = vo.UserRolePost{
+		Roles: *roles,
+		Posts: *posts,
+	}
 }
 
-// @Summary 获取添加用户角色和职位
-// @Description 获取JSON
-// @Tags 用户
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/user/getInit [get]
-// @Security
-func (u *UserApi) GetUserRolePost(rc *ginx.ReqCtx) {
+// GetUserRolePost 获取添加用户角色和职位
+func (u *UserApi) GetUserRolePost(rc *restfulx.ReqCtx) {
 	var user entity.SysUser
 	user.UserId = rc.LoginAccount.UserId
 
@@ -352,91 +294,52 @@ func (u *UserApi) GetUserRolePost(rc *ginx.ReqCtx) {
 		po := u.PostApp.FindOne(kgo.KConv.Str2Int64(postId))
 		posts = append(posts, *po)
 	}
-	mp := make(map[string]any, 2)
-	mp["roles"] = roles
-	mp["posts"] = posts
-	rc.ResData = mp
+	rc.ResData = vo.UserRolePost{
+		Roles: roles,
+		Posts: posts,
+	}
 }
 
-// @Summary 创建用户
-// @Description 获取JSON
-// @Tags 用户
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysUser true "用户数据"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/user/sysUser [post]
-func (u *UserApi) InsertSysUser(rc *ginx.ReqCtx) {
+// InsertSysUser 创建用户
+func (u *UserApi) InsertSysUser(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
-	ginx.BindJsonAndValid(rc.GinCtx, &sysUser)
+	restfulx.BindQuery(rc, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
 	u.UserApp.Insert(sysUser)
 }
 
-// @Summary 修改用户数据
-// @Description 获取JSON
-// @Tags 用户
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysUser true "用户数据"g
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/user/sysUser [put]
-func (u *UserApi) UpdateSysUser(rc *ginx.ReqCtx) {
+// UpdateSysUser 修改用户数据
+func (u *UserApi) UpdateSysUser(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
-	ginx.BindJsonAndValid(rc.GinCtx, &sysUser)
+	restfulx.BindQuery(rc, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
 	u.UserApp.Update(sysUser)
 }
 
-// @Summary 修改用户状态
-// @Description 获取JSON
-// @Tags 用户
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysUser true "用户数据"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/user/sysUser [put]
-func (u *UserApi) UpdateSysUserStu(rc *ginx.ReqCtx) {
+// UpdateSysUserStu 修改用户状态
+func (u *UserApi) UpdateSysUserStu(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
-	ginx.BindJsonAndValid(rc.GinCtx, &sysUser)
+	restfulx.BindQuery(rc, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
 	u.UserApp.Update(sysUser)
 }
 
-// @Summary 删除用户数据
-// @Description 删除数据
-// @Tags 用户
-// @Param userId path int true "多个id 使用逗号隔开"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/user/sysuser/{userId} [delete]
-func (u *UserApi) DeleteSysUser(rc *ginx.ReqCtx) {
-	userIds := rc.GinCtx.Param("userId")
-	us := utils.IdsStrToIdsIntGroup(userIds)
-	u.UserApp.Delete(us)
+// DeleteSysUser 删除用户数据
+func (u *UserApi) DeleteSysUser(rc *restfulx.ReqCtx) {
+	userIds := restfulx.PathParam(rc, "userId")
+	u.UserApp.Delete(utils.IdsStrToIdsIntGroup(userIds))
 }
 
-// @Summary 导出用户
-// @Description 导出数据
-// @Tags 用户
-// @Param userName query string false "userName"
-// @Param phone query string false "phone"
-// @Param status query string false "status"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/dict/type/export [get]
-func (u *UserApi) ExportUser(rc *ginx.ReqCtx) {
-	filename := rc.GinCtx.Query("filename")
-	status := rc.GinCtx.Query("status")
-	userName := rc.GinCtx.Query("username")
-	phone := rc.GinCtx.Query("phone")
+// ExportUser 导出用户
+func (u *UserApi) ExportUser(rc *restfulx.ReqCtx) {
+	filename := restfulx.QueryParam(rc, "filename")
+	status := restfulx.QueryParam(rc, "status")
+	username := restfulx.QueryParam(rc, "username")
+	phone := restfulx.QueryParam(rc, "phone")
 
 	var user entity.SysUser
 	user.Status = status
-	user.Username = userName
+	user.Username = username
 	user.Phone = phone
 
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {

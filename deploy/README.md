@@ -10,8 +10,8 @@ sudo /usr/local/bin/k3s-uninstall.sh
 
 ## k3s部署流程
 1. 设置打包环境  
- set GOOS=linux
- set GOARCH=amd64
+ go env -w GOOS=linux
+ go env -w GOARCH=amd64
 2. 构建Linux执行命令  
  go build -o pandax .
 4. 构建docker镜像 (修改版本号 xmadmin/pandax:v1.0)  

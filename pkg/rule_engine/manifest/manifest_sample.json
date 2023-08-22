@@ -1,0 +1,208 @@
+{
+  "nodes": [
+    {
+      "id": "input",
+      "type": "InputNode",
+      "x": 116,
+      "y": 337,
+      "properties": {
+        "debugMode": false
+      },
+      "zIndex": 1013,
+      "text": {
+        "x": 126,
+        "y": 337,
+        "value": "输入"
+      }
+    },
+    {
+      "id": "8bdef3d4-9ea3-4a09-8313-4e534ee1b387",
+      "type": "SaveTimeSeriesNode",
+      "x": 751,
+      "y": 341,
+      "properties": {
+        "debugMode": false,
+        "name": ""
+      },
+      "zIndex": 1002,
+      "text": {
+        "x": 761,
+        "y": 341,
+        "value": "保存遥测"
+      }
+    },
+    {
+      "id": "4d6b6519-35f2-44ce-9b9c-5a7bafe516ac",
+      "type": "SaveAttributesNode",
+      "x": 753,
+      "y": 177,
+      "properties": {
+        "debugMode": false,
+        "name": ""
+      },
+      "zIndex": 1004,
+      "text": {
+        "x": 763,
+        "y": 177,
+        "value": "保存参数"
+      }
+    },
+    {
+      "id": "a8e691c6-947b-44a3-aeff-f5c816c9a004",
+      "type": "LogNode",
+      "x": 770,
+      "y": 497,
+      "properties": {
+        "debugMode": false,
+        "name": "",
+        "script": "return '\\nIncoming message:\\n' + JSON.stringify(msg) + \n   '\\nIncoming metadata:\\n' + JSON.stringify(metadata);\n"
+      },
+      "zIndex": 1006,
+      "text": {
+        "x": 780,
+        "y": 497,
+        "value": "日志节点"
+      }
+    },
+    {
+      "id": "326ff560-9485-459c-b07d-23191385f18b",
+      "type": "MessageTypeSwitchNode",
+      "x": 400,
+      "y": 338,
+      "properties": {
+        "debugMode": false
+      },
+      "zIndex": 1010,
+      "text": {
+        "x": 410,
+        "y": 338,
+        "value": "消息类型切换"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "ddcf4bc0-c5fc-465a-9c37-b907cd4c6985",
+      "type": "bezier-link",
+      "sourceNodeId": "input",
+      "targetNodeId": "326ff560-9485-459c-b07d-23191385f18b",
+      "startPoint": {
+        "x": 176,
+        "y": 337
+      },
+      "endPoint": {
+        "x": 330,
+        "y": 338
+      },
+      "properties": {
+        "lineType": ["True"]
+      },
+      "text": {
+        "x": 253,
+        "y": 337.5,
+        "value": "True"
+      },
+      "zIndex": 1013,
+      "pointsList": [
+        {
+          "x": 176,
+          "y": 337
+        },
+        {
+          "x": 276,
+          "y": 337
+        },
+        {
+          "x": 230,
+          "y": 338
+        },
+        {
+          "x": 330,
+          "y": 338
+        }
+      ]
+    },
+    {
+      "id": "9445ceea-22a6-4af4-9599-cf806b51172d",
+      "type": "bezier-link",
+      "sourceNodeId": "326ff560-9485-459c-b07d-23191385f18b",
+      "targetNodeId": "4d6b6519-35f2-44ce-9b9c-5a7bafe516ac",
+      "startPoint": {
+        "x": 470,
+        "y": 338
+      },
+      "endPoint": {
+        "x": 693,
+        "y": 177
+      },
+      "properties": {
+        "lineType": ["Attributes"]
+      },
+      "text": {
+        "x": 581.5,
+        "y": 257.5,
+        "value": "Attributes"
+      },
+      "zIndex": 1014,
+      "pointsList": [
+        {
+          "x": 470,
+          "y": 338
+        },
+        {
+          "x": 570,
+          "y": 338
+        },
+        {
+          "x": 593,
+          "y": 177
+        },
+        {
+          "x": 693,
+          "y": 177
+        }
+      ]
+    },
+    {
+      "id": "a5728c6d-eaa2-4a86-b892-bcdfb7bd432f",
+      "type": "bezier-link",
+      "sourceNodeId": "326ff560-9485-459c-b07d-23191385f18b",
+      "targetNodeId": "8bdef3d4-9ea3-4a09-8313-4e534ee1b387",
+      "startPoint": {
+        "x": 470,
+        "y": 338
+      },
+      "endPoint": {
+        "x": 691,
+        "y": 341
+      },
+      "properties": {
+        "lineType": ["Telemetry"]
+      },
+      "text": {
+        "x": 580.5,
+        "y": 339.5,
+        "value": "Telemetry"
+      },
+      "zIndex": 1015,
+      "pointsList": [
+        {
+          "x": 470,
+          "y": 338
+        },
+        {
+          "x": 570,
+          "y": 338
+        },
+        {
+          "x": 591,
+          "y": 341
+        },
+        {
+          "x": 691,
+          "y": 341
+        }
+      ]
+    }
+  ]
+}

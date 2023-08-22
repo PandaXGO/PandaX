@@ -15,14 +15,14 @@ package entity
 
 type {{.ClassName}} struct {
 	{{- range $index, $column := .Columns}}
-        {{- if eq $column.IsPk "1" }}
-        {{$column.GoField}}  {{if eq $column.GoType "Time"}}time.Time{{else}}{{$column.GoType}}{{end}}    `gorm:"primary_key;{{if eq $column.IsIncrement "1"}}AUTO_INCREMENT{{end}}" json:"{{$column.JsonField}}"`    // {{$column.ColumnComment}}
-        {{- else if ne $column.LinkTableName ""}}
-        {{$column.GoField}}   {{if eq $column.GoType "Time"}}time.Time{{else}}{{$column.GoType}}{{end}}   `gorm:"{{$column.ColumnName}};type:{{$column.ColumnType}};comment:{{$column.ColumnComment}}" json:"{{$column.JsonField}}"`
-        {{$column.LinkTableClass}} {{$column.LinkTableClass}} `json:"{{$column.LinkTablePackage}}" gorm:"foreignKey:{{$column.LinkLabelName}};references:{{$column.GoField}};"`
-        {{- else }}
-        {{$column.GoField}}   {{if eq $column.GoType "Time"}}time.Time{{else}}{{$column.GoType}}{{end}}   `gorm:"{{$column.ColumnName}};type:{{$column.ColumnType}};comment:{{$column.ColumnComment}}" json:"{{$column.JsonField}}" {{if eq $column.IsRequired "1"}}binding:"required"{{- end }}`    // {{$column.ColumnComment}}
-        {{- end -}}
+    {{- if eq $column.IsPk "1" }}
+    {{$column.GoField}}  {{if eq $column.GoType "Time"}}time.Time{{else}}{{$column.GoType}}{{end}}    `gorm:"primary_key;{{if eq $column.IsIncrement "1"}}AUTO_INCREMENT{{end}}" json:"{{$column.JsonField}}"`    // {{$column.ColumnComment}}
+    {{- else if ne $column.LinkTableName ""}}
+    {{$column.GoField}}   {{if eq $column.GoType "Time"}}time.Time{{else}}{{$column.GoType}}{{end}}   `gorm:"{{$column.ColumnName}};type:{{$column.ColumnType}};comment:{{$column.ColumnComment}}" json:"{{$column.JsonField}}"`
+    {{$column.LinkTableClass}} {{$column.LinkTableClass}} `json:"{{$column.LinkTablePackage}}" gorm:"foreignKey:{{$column.LinkLabelName}};references:{{$column.GoField}};"`
+    {{- else }}
+    {{$column.GoField}}   {{if eq $column.GoType "Time"}}time.Time{{else}}{{$column.GoType}}{{end}}   `gorm:"{{$column.ColumnName}};type:{{$column.ColumnType}};comment:{{$column.ColumnComment}}" json:"{{$column.JsonField}}" {{if eq $column.IsRequired "1"}}binding:"required"{{- end }}`    // {{$column.ColumnComment}}
+    {{- end -}}
     {{end}}
 }
 

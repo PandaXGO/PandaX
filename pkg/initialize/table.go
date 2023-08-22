@@ -3,10 +3,11 @@ package initialize
 import (
 	"github.com/XM-GO/PandaKit/biz"
 	devEntity "pandax/apps/develop/entity"
+	flowEntity "pandax/apps/flow/entity"
 	jobEntity "pandax/apps/job/entity"
 	logEntity "pandax/apps/log/entity"
 	resSourceEntity "pandax/apps/resource/entity"
-	"pandax/apps/system/entity"
+	systemEntity "pandax/apps/system/entity"
 	"pandax/pkg/global"
 )
 
@@ -17,28 +18,39 @@ func InitTable() {
 		biz.ErrIsNil(
 			global.Db.AutoMigrate(
 				//casbin.CasbinRule{},
-				entity.SysDept{},
-				entity.SysApi{},
-				entity.SysConfig{},
-				entity.SysDictType{},
-				entity.SysDictData{},
+				systemEntity.SysDept{},
+				systemEntity.SysApi{},
+				systemEntity.SysConfig{},
+				systemEntity.SysDictType{},
+				systemEntity.SysDictData{},
+				systemEntity.SysUser{},
+				systemEntity.SysTenants{},
+				systemEntity.SysRole{},
+				systemEntity.SysMenu{},
+				systemEntity.SysPost{},
+				systemEntity.SysRoleMenu{},
+				systemEntity.SysRoleDept{},
+				systemEntity.SysNotice{},
+
 				logEntity.LogLogin{},
 				logEntity.LogOper{},
-				logEntity.LogJob{},
-				entity.SysUser{},
-				entity.SysTenants{},
-				entity.SysRole{},
-				entity.SysMenu{},
-				entity.SysPost{},
-				entity.SysRoleMenu{},
-				entity.SysRoleDept{},
-				entity.SysNotice{},
 				jobEntity.SysJob{},
 				devEntity.DevGenTable{},
 				devEntity.DevGenTableColumn{},
 				resSourceEntity.ResOss{},
 				resSourceEntity.ResEmail{},
+
+				flowEntity.FlowWorkClassify{},
+				flowEntity.FlowWorkInfo{},
+				flowEntity.FlowWorkTemplates{},
+				flowEntity.FlowWorkOrder{},
+				flowEntity.FlowWorkOrderTemplate{},
+				flowEntity.FlowWorkStage{},
 			),
 			"初始化表失败")
+	}
+	err := global.TdDb.CreateEventTable()
+	if err != nil {
+		global.Log.Panic(err)
 	}
 }

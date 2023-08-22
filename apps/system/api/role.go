@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/casbin"
-	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/model"
+	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
 	"pandax/pkg/global"
-	"strconv"
 )
 
 type RoleApi struct {
@@ -20,23 +20,13 @@ type RoleApi struct {
 	RoleDeptApp services.SysRoleDeptModel
 }
 
-// @Summary 角色列表数据
-// @Description Get JSON
-// @Tags 角色
-// @Param roleName query string false "roleName"
-// @Param status query string false "status"
-// @Param roleKey query string false "roleKey"
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/role/rolelist [get]
-// @Security
-func (r *RoleApi) GetRoleList(rc *ginx.ReqCtx) {
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
-	status := rc.GinCtx.Query("status")
-	roleName := rc.GinCtx.Query("roleName")
-	roleKey := rc.GinCtx.Query("roleKey")
+// GetRoleList角色列表数据
+func (r *RoleApi) GetRoleList(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	status := restfulx.QueryParam(rc, "status")
+	roleName := restfulx.QueryParam(rc, "roleName")
+	roleKey := restfulx.QueryParam(rc, "roleKey")
 	role := entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
 
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
@@ -45,64 +35,41 @@ func (r *RoleApi) GetRoleList(rc *ginx.ReqCtx) {
 
 	list, total := r.RoleApp.FindListPage(pageNum, pageSize, role)
 
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 
-// @Summary 获取Role数据
-// @Description 获取JSON
-// @Tags 角色/Role
-// @Param roleId path string true "roleId"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Success 200 {string} string "{"code": 400, "message": "抱歉未找到相关信息"}"
-// @Router /system/role [get]
-// @Security X-TOKEN
-func (r *RoleApi) GetRole(rc *ginx.ReqCtx) {
-	roleId := ginx.PathParamInt(rc.GinCtx, "roleId")
+// GetRole 获取Role数据
+func (r *RoleApi) GetRole(rc *restfulx.ReqCtx) {
+	roleId := restfulx.PathParamInt(rc, "roleId")
 	role := r.RoleApp.FindOne(int64(roleId))
 	role.MenuIds = r.RoleApp.GetRoleMeunId(entity.SysRole{RoleId: int64(roleId)})
 
 	rc.ResData = role
 }
 
-// @Summary 创建角色
-// @Description 获取JSON
-// @Tags 角色/Role
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysRole true "data"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/role [post]
-func (r *RoleApi) InsertRole(rc *ginx.ReqCtx) {
+// InsertRole 创建角色
+func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	ginx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindQuery(rc, &role)
 	role.CreateBy = rc.LoginAccount.UserName
 	role.TenantId = rc.LoginAccount.TenantId
 	insert := r.RoleApp.Insert(role)
 	role.RoleId = insert.RoleId
 	r.RoleMenuApp.Insert(insert.RoleId, role.MenuIds)
 	//添加权限
-	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
-	casbin.UpdateCasbin(tenantId, role.RoleKey, role.ApiIds)
+	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+	ca.UpdateCasbin(role.RoleKey, role.ApiIds)
 }
 
-// @Summary 修改用户角色
-// @Description 获取JSON
-// @Tags 角色/Role
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysRole true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
-// @Router /system/role [put]
-func (r *RoleApi) UpdateRole(rc *ginx.ReqCtx) {
+// UpdateRole 修改用户角色
+func (r *RoleApi) UpdateRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	ginx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindQuery(rc, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	r.RoleApp.Update(role)
@@ -111,39 +78,23 @@ func (r *RoleApi) UpdateRole(rc *ginx.ReqCtx) {
 	// 添加角色菜单绑定
 	r.RoleMenuApp.Insert(role.RoleId, role.MenuIds)
 	//修改api权限
-	tenantId := strconv.Itoa(int(rc.LoginAccount.TenantId))
-	casbin.UpdateCasbin(tenantId, role.RoleKey, role.ApiIds)
+	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+	ca.UpdateCasbin(role.RoleKey, role.ApiIds)
 }
 
-// @Summary 修改用户角色状态
-// @Description 获取JSON
-// @Tags 角色/Role
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysRole true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
-// @Router /system/role/changeStatus [put]
-func (r *RoleApi) UpdateRoleStatus(rc *ginx.ReqCtx) {
+// UpdateRoleStatus 修改用户角色状态
+func (r *RoleApi) UpdateRoleStatus(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	ginx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindQuery(rc, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	r.RoleApp.Update(role)
 }
 
-// @Summary 修改用户角色部门
-// @Description 获取JSON
-// @Tags 角色/Role
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysRole true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "修改失败"}"
-// @Router /system/role/dataScope [put]
-func (r *RoleApi) UpdateRoleDataScope(rc *ginx.ReqCtx) {
+// UpdateRoleDataScope 修改用户角色部门
+func (r *RoleApi) UpdateRoleDataScope(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
-	ginx.BindJsonAndValid(rc.GinCtx, &role)
+	restfulx.BindQuery(rc, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	update := r.RoleApp.Update(role)
@@ -155,15 +106,9 @@ func (r *RoleApi) UpdateRoleDataScope(rc *ginx.ReqCtx) {
 	}
 }
 
-// @Summary 删除用户角色
-// @Description 删除数据
-// @Tags 角色/Role
-// @Param roleId path string true "roleId 多个用，分割"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/role/{roleId} [delete]
-func (r *RoleApi) DeleteRole(rc *ginx.ReqCtx) {
-	roleId := rc.GinCtx.Param("roleId")
+// DeleteRole 删除用户角色
+func (r *RoleApi) DeleteRole(rc *restfulx.ReqCtx) {
+	roleId := restfulx.PathParam(rc, "roleId")
 	roleIds := utils.IdsStrToIdsIntGroup(roleId)
 
 	user := entity.SysUser{}
@@ -176,7 +121,8 @@ func (r *RoleApi) DeleteRole(rc *ginx.ReqCtx) {
 		if len(*list) == 0 {
 			delList = append(delList, rid)
 			//删除角色绑定api
-			casbin.ClearCasbin(0, role.RoleKey)
+			ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+			ca.ClearCasbin(0, role.RoleKey)
 		} else {
 			global.Log.Info(fmt.Sprintf("role:%d 存在用户无法删除", rid))
 		}
@@ -188,20 +134,12 @@ func (r *RoleApi) DeleteRole(rc *ginx.ReqCtx) {
 	r.RoleMenuApp.DeleteRoleMenus(delList)
 }
 
-// @Summary 导出角色
-// @Description 导出数据
-// @Tags 角色
-// @Param roleName query string false "roleName"
-// @Param status query string false "status"
-// @Param roleKey query string false "roleKey"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/dict/type/export [get]
-func (p *RoleApi) ExportRole(rc *ginx.ReqCtx) {
-	filename := rc.GinCtx.Query("filename")
-	status := rc.GinCtx.Query("status")
-	roleName := rc.GinCtx.Query("roleName")
-	roleKey := rc.GinCtx.Query("roleKey")
+// ExportRole 导出角色
+func (p *RoleApi) ExportRole(rc *restfulx.ReqCtx) {
+	filename := restfulx.QueryParam(rc, "filename")
+	status := restfulx.QueryParam(rc, "status")
+	roleName := restfulx.QueryParam(rc, "roleName")
+	roleKey := restfulx.QueryParam(rc, "roleKey")
 	role := entity.SysRole{Status: status, RoleName: roleName, RoleKey: roleKey}
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
 		role.TenantId = rc.LoginAccount.TenantId

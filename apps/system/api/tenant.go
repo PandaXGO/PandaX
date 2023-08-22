@@ -6,7 +6,8 @@ package api
  * @Date 2022/7/14 17:55
  **/
 import (
-	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/model"
+	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
@@ -16,34 +17,22 @@ type SysTenantsApi struct {
 	SysTenantsApp services.SysTenantsModel
 }
 
-// @Summary SysTenants列表数据
-// @Tags SysTenants
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/tenant/list [get]
-// @Security
-func (p *SysTenantsApi) GetSysTenantsList(rc *ginx.ReqCtx) {
+func (p *SysTenantsApi) GetSysTenantsList(rc *restfulx.ReqCtx) {
 	data := entity.SysTenants{}
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 
 	list, total := p.SysTenantsApp.FindListPage(pageNum, pageSize, data)
 
-	rc.ResData = map[string]interface{}{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 
-// @Summary SysTenants列表数据
-// @Tags SysTenants
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/tenant/lists [get]
-// @Security
-func (p *SysTenantsApi) GetSysTenantsAll(rc *ginx.ReqCtx) {
+func (p *SysTenantsApi) GetSysTenantsAll(rc *restfulx.ReqCtx) {
 	list := make([]entity.SysTenants, 0)
 	if rc.LoginAccount.RoleKey == "admin" {
 		data := entity.SysTenants{}
@@ -54,61 +43,27 @@ func (p *SysTenantsApi) GetSysTenantsAll(rc *ginx.ReqCtx) {
 	rc.ResData = list
 }
 
-// @Summary 获取SysTenants
-// @Description 获取JSON
-// @Tags SysTenants
-// @Param tenantId path int true "tenantId"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/tenant/{tenantId} [get]
-// @Security
-func (p *SysTenantsApi) GetSysTenants(rc *ginx.ReqCtx) {
-	tenantId := ginx.PathParamInt(rc.GinCtx, "tenantId")
+func (p *SysTenantsApi) GetSysTenants(rc *restfulx.ReqCtx) {
+	tenantId := restfulx.PathParamInt(rc, "tenantId")
 	p.SysTenantsApp.FindOne(int64(tenantId))
 }
 
-// @Summary 添加SysTenants
-// @Description 获取JSON
-// @Tags SysTenants
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysTenants true "data"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/tenant [post]
-// @Security X-TOKEN
-func (p *SysTenantsApi) InsertSysTenants(rc *ginx.ReqCtx) {
+func (p *SysTenantsApi) InsertSysTenants(rc *restfulx.ReqCtx) {
 	var data entity.SysTenants
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 
 	p.SysTenantsApp.Insert(data)
 }
 
-// @Summary 修改SysTenants
-// @Description 获取JSON
-// @Tags SysTenants
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysTenants true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/tenant [put]
-// @Security X-TOKEN
-func (p *SysTenantsApi) UpdateSysTenants(rc *ginx.ReqCtx) {
+func (p *SysTenantsApi) UpdateSysTenants(rc *restfulx.ReqCtx) {
 	var data entity.SysTenants
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 
 	p.SysTenantsApp.Update(data)
 }
 
-// @Summary 删除SysTenants
-// @Description 删除数据
-// @Tags SysTenants
-// @Param tenantId path string true "tenantId"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/tenant/{tenantId} [delete]
-func (p *SysTenantsApi) DeleteSysTenants(rc *ginx.ReqCtx) {
-	tenantId := rc.GinCtx.Param("tenantId")
+func (p *SysTenantsApi) DeleteSysTenants(rc *restfulx.ReqCtx) {
+	tenantId := rc.Request.PathParameter("tenantId")
 	tenantIds := utils.IdsStrToIdsIntGroup(tenantId)
 	p.SysTenantsApp.Delete(tenantIds)
 }

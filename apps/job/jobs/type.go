@@ -8,9 +8,9 @@ type Job interface {
 }
 
 type JobsExec interface {
-	Exec(arg any) error
+	Exec(arg any, content any) error
 }
 
-func CallExec(e JobsExec, arg any) error {
-	return e.Exec(arg)
+func CallExec(e JobsExec, arg any, content any) error {
+	return e.Exec(arg, content)
 }

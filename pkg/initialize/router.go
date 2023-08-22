@@ -1,100 +1,84 @@
 package initialize
 
 import (
-	"fmt"
+	"pandax/apps/job/jobs"
+	ruleRouter "pandax/apps/rule/router"
 	"pandax/pkg/global"
-
-	ginSwagger "github.com/swaggo/gin-swagger"
-
-	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"pandax/pkg/transport"
 
 	devRouter "pandax/apps/develop/router"
+	deviceRouter "pandax/apps/device/router"
 	jobRouter "pandax/apps/job/router"
 	logRouter "pandax/apps/log/router"
-	resRouter "pandax/apps/resource/router"
 	sysRouter "pandax/apps/system/router"
-
 	"pandax/pkg/middleware"
-
-	_ "pandax/docs"
-
-	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
-func InitRouter() *gin.Engine {
+func InitRouter() *transport.HttpServer {
 	// server配置
 	serverConfig := global.Conf.Server
-	gin.SetMode(serverConfig.Model)
+	server := transport.NewHttpServer(serverConfig.GetPort())
 
-	var router = gin.New()
-	router.MaxMultipartMemory = 8 << 20
-
-	// 没有路由即 404返回
-	router.NoRoute(func(g *gin.Context) {
-		g.JSON(http.StatusNotFound, gin.H{"code": 404, "msg": fmt.Sprintf("not found '%s:%s'", g.Request.Method, g.Request.URL.Path)})
-	})
-
-	// 设置静态资源
-	if staticConfs := serverConfig.Static; staticConfs != nil {
-		for _, scs := range *staticConfs {
-			router.Static(scs.RelativePath, scs.Root)
-		}
-
-	}
-	// 设置静态文件
-	if staticFileConfs := serverConfig.StaticFile; staticFileConfs != nil {
-		for _, sfs := range *staticFileConfs {
-			router.StaticFile(sfs.RelativePath, sfs.Filepath)
-		}
-	}
+	container := server.Container
+	// 防止XSS
+	container.Filter(middleware.EscapeHTML)
 	// 是否允许跨域
 	if serverConfig.Cors {
-		router.Use(middleware.Cors())
+		container.Filter(middleware.Cors(container).Filter)
 	}
 	// 流量限制
 	if serverConfig.Rate.Enable {
-		router.Use(middleware.Rate())
+		container.Filter(middleware.Rate)
 	}
-	// api接口
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// 设置路由组
-	sys := router.Group("system")
 	{
-		sysRouter.InitSysTenantRouter(sys)
-		sysRouter.InitSystemRouter(sys)
-		sysRouter.InitDeptRouter(sys)
-		sysRouter.InitConfigRouter(sys)
-		sysRouter.InitApiRouter(sys)
-		sysRouter.InitDictRouter(sys)
-		sysRouter.InitMenuRouter(sys)
-		sysRouter.InitRoleRouter(sys)
-		sysRouter.InitPostRouter(sys)
-		sysRouter.InitUserRouter(sys)
-		sysRouter.InitNoticeRouter(sys)
-	}
-	// 任务
-	job := router.Group("job")
-	{
-		jobRouter.InitJobRouter(job)
+		sysRouter.InitSystemRouter(container)
+		sysRouter.InitDeptRouter(container)
+		sysRouter.InitConfigRouter(container)
+		sysRouter.InitApiRouter(container)
+		sysRouter.InitDictRouter(container)
+		sysRouter.InitMenuRouter(container)
+		sysRouter.InitRoleRouter(container)
+		sysRouter.InitPostRouter(container)
+		sysRouter.InitUserRouter(container)
+		sysRouter.InitNoticeRouter(container)
+		//本地图片上传接口
+		sysRouter.InitUploadRouter(container)
 	}
 	//日志系统
-	log := router.Group("log")
 	{
-		logRouter.InitLogRouter(log)
+		logRouter.InitOperLogRouter(container)
+		logRouter.InitLoginLogRouter(container)
 	}
 	// 代码生成
-	dev := router.Group("develop/code")
 	{
-		devRouter.InitGenTableRouter(dev)
-		devRouter.InitGenRouter(dev)
+		devRouter.InitGenTableRouter(container)
+		devRouter.InitGenRouter(container)
 	}
-	// 资源管理
-	res := router.Group("resource")
+	//设备
 	{
-		resRouter.InitResOssRouter(res)
-		resRouter.InitResEmailsRouter(res)
+		deviceRouter.InitProductCategoryRouter(container)
+		deviceRouter.InitDeviceGroupRouter(container)
+		deviceRouter.InitProductRouter(container)
+		deviceRouter.InitProductTemplateRouter(container)
+		deviceRouter.InitProductOtaRouter(container)
+		deviceRouter.InitDeviceRouter(container)
+		deviceRouter.InitDeviceAlarmRouter(container)
+		deviceRouter.InitDeviceCmdLogRouter(container)
 	}
-	return router
+	{
+		jobRouter.InitJobRouter(container)
+		jobRouter.InitJobLogRouter(container)
+	}
+	{
+		ruleRouter.InitRuleChainRouter(container)
+	}
+	// api接口
+	middleware.SwaggerConfig(container)
+	// 开启调度任务
+	go func() {
+		jobs.InitJob()
+	}()
+
+	return server
 }

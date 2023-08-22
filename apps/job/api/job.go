@@ -1,13 +1,13 @@
 package api
 
 import (
-	"github.com/XM-GO/PandaKit/biz"
-	"github.com/XM-GO/PandaKit/ginx"
-	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/job/api/from"
 	"pandax/apps/job/entity"
 	"pandax/apps/job/jobs"
 	"pandax/apps/job/services"
+	"pandax/base/biz"
+	"pandax/base/ginx"
+	"pandax/base/utils"
 )
 
 type JobApi struct {

@@ -5,10 +5,11 @@ package api
 // 生成人：{{.FunctionAuthor}}
 // ==========================================================================
 import (
+    "github.com/XM-GO/PandaKit/model"
+    "github.com/XM-GO/PandaKit/restfulx"
+
 	"pandax/apps/{{.PackageName}}/entity"
 	"pandax/apps/{{.PackageName}}/services"
-	"github.com/XM-GO/PandaKit/ginx"
-	"github.com/XM-GO/PandaKit/ginx"
 	"github.com/XM-GO/PandaKit/utils"
 )
 
@@ -16,93 +17,56 @@ type {{.ClassName}}Api struct {
 	{{.ClassName}}App services.{{.ClassName}}Model
 }
 
-// @Summary {{.FunctionName}}列表数据
-// @Tags {{.FunctionName}}
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /{{.PackageName}}/{{.BusinessName}}/list [get]
-// @Security
-func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *ginx.ReqCtx) {
+// Get{{.ClassName}}List {{.FunctionName}}列表数据
+func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *restfulx.ReqCtx) {
     data := entity.{{.ClassName}}{}
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 	{{- range $index, $column := .Columns -}}
 	{{- if eq $column.IsRequired "1" -}}
 	{{- if eq $column.GoType "string" }}
-    data.{{$column.GoField}} = rc.GinCtx.Query("{{$column.JsonField}}")
+    data.{{$column.GoField}} = restfulx.QueryParam(rc, "{{$column.JsonField}}")
     {{- else if or (eq $column.GoType "int") (eq $column.GoType "int64") (eq $column.GoType "uint") (eq $column.GoType "uint64") -}}
-    data.{{$column.GoField}} = ginx.QueryInt(rc.GinCtx, "{{$column.JsonField}}", 0)
+    data.{{$column.GoField}} = restfulx.QueryInt(rc, "{{$column.JsonField}}", 0)
 	{{- end -}}
     {{- end -}}
 	{{- end }}
 
 	list, total := p.{{.ClassName}}App.FindListPage(pageNum, pageSize, data)
 
-	rc.ResData = map[string]interface{}{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
-	}
+	rc.ResData = model.ResultPage{
+    	Total: total,
+    	PageNum: int64(pageNum),
+    	PageSize: int64(pageNum),
+    	Data: list,
+    }
 }
 
-// @Summary 获取{{.FunctionName}}
-// @Description 获取JSON
-// @Tags {{.FunctionName}}
-// @Param {{.PkJsonField}} path int true "{{.PkJsonField}}"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /{{.PackageName}}/{{.BusinessName}}/{{"{"}}{{.PkJsonField}}{{"}"}} [get]
-// @Security
-func (p *{{.ClassName}}Api) Get{{.ClassName}}(rc *ginx.ReqCtx) {
-	{{.PkJsonField}} := ginx.PathParamInt(rc.GinCtx, "{{.PkJsonField}}")
-	p.{{.ClassName}}App.FindOne(int64({{.PkJsonField}}))
+// Get{{.ClassName}} 获取{{.FunctionName}}
+func (p *{{.ClassName}}Api) Get{{.ClassName}}(rc *restfulx.ReqCtx) {
+	{{.PkJsonField}} := restfulx.PathParamInt(rc, "{{.PkJsonField}}")
+	rc.ResData = p.{{.ClassName}}App.FindOne(int64({{.PkJsonField}}))
 }
 
-// @Summary 添加{{.FunctionName}}
-// @Description 获取JSON
-// @Tags {{.FunctionName}}
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.{{.ClassName}} true "data"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /{{.PackageName}}/{{.BusinessName}} [post]
-// @Security X-TOKEN
-func (p *{{.ClassName}}Api) Insert{{.ClassName}}(rc *ginx.ReqCtx) {
+// Insert{{.ClassName}} 添加{{.FunctionName}}
+func (p *{{.ClassName}}Api) Insert{{.ClassName}}(rc *restfulx.ReqCtx) {
 	var data entity.{{.ClassName}}
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 
 	p.{{.ClassName}}App.Insert(data)
 }
 
-// @Summary 修改{{.FunctionName}}
-// @Description 获取JSON
-// @Tags {{.FunctionName}}
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.{{.ClassName}} true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /{{.PackageName}}/{{.BusinessName}} [put]
-// @Security X-TOKEN
-func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *ginx.ReqCtx) {
+// Update{{.ClassName}} 修改{{.FunctionName}}
+func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *restfulx.ReqCtx) {
 	var data entity.{{.ClassName}}
-	ginx.BindJsonAndValid(rc.GinCtx, &data)
+	restfulx.BindQuery(rc, &data)
 
 	p.{{.ClassName}}App.Update(data)
 }
 
-// @Summary 删除{{.FunctionName}}
-// @Description 删除数据
-// @Tags {{.FunctionName}}
-// @Param {{.PkJsonField}} path string true "{{.PkJsonField}}"
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /{{.PackageName}}/{{.BusinessName}}/{{"{"}}{{.PkJsonField}}{{"}"}} [delete]
-func (p *{{.ClassName}}Api) Delete{{.ClassName}}(rc *ginx.ReqCtx) {
-
-	{{.PkJsonField}} := rc.GinCtx.Param("{{.PkJsonField}}")
+// Delete{{.ClassName}} 删除{{.FunctionName}}
+func (p *{{.ClassName}}Api) Delete{{.ClassName}}(rc *restfulx.ReqCtx) {
+	{{.PkJsonField}} := restfulx.PathParam(rc,"{{.PkJsonField}}")
 	{{.PkJsonField}}s := utils.IdsStrToIdsIntGroup({{.PkJsonField}})
     p.{{.ClassName}}App.Delete({{.PkJsonField}}s)
 }

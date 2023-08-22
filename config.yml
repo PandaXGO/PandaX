@@ -5,8 +5,12 @@ app:
 server:
   # debug release test
   model: release
-  port: 8080
+  port: 8889
+  # iothub使用的rpc端口  9000 9001 可能与minio端口冲突
+  grpc-port: 9001
   cors: true
+  # 数据上报 队列池
+  queue-num: 1000
   # 接口限流
   rate:
     enable: true
@@ -19,54 +23,74 @@ server:
     enable: false
     key-file: ./resource/default.key
     cert-file: ./resource/default.pem
-  # 静态资源
-  static:
-    - relative-path: /assets
-      root: ./static/assets
-  # 静态文件
-  static-file:
-    - relative-path: /
-      filepath: ./static/index.html
-    - relative-path: /favicon.ico
-      filepath: ./static/favicon.ico
-
 jwt:
-  key: mykey
+  key: PandaX
   # 过期时间单位秒 7天
   expire-time: 604800
-
+#数据上报并发识别任务数量限制
+queue:
+  enable: false
+  num: 3000
 redis:
   host: 127.0.0.1
+  password: root
   port: 6379
 
 mysql:
   host: 127.0.0.1:3306
   username: root
-  password: 123456
-  db-name: pandax
+  password: '!MyEMS1'
+  db-name: pandax_iot
   config: charset=utf8&loc=Local&parseTime=true
+# mini0
+oss:
+  endpoint: 127.0.0.1:9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucketName: pandaxiot
+  useSSL: false
 
-postgresql:
-  username: postgres
-  password: 123456
-  host: 127.0.0.1
-  port: 5432
-  db-name: pandax
-  max-idle-conns: 10
-  max-open-conns: 10
+taos:
+  username: "root"
+  password: "taosdata"
+  host: "127.0.0.1:6041"
+  database: "iot"
+  config: ""
+
+mqtt:
+  broker: 127.0.0.1:1883
+  qos: 1
+  username: pandax
+  password: pandax
 
 casbin:
   model-path: './resource/rbac_model.conf'
 
 gen:
   # 代码生成读取的数据库名称
-  dbname: pandax
+  dbname: pandax_iot
   # 代码生成是使用前端代码存放位置，需要指定到src文件夹，相对路径
   frontpath: ../PandaUi/src
 
 log:
    # 日志等级, trace, debug, info, warn, error, fatal
   level: info
-  # file:
-  #   path: ./
-  #   name: panda_log.log
+  file:
+     path: ./
+     name: panda_log.log
+
+# 视频服务器使用的全局配置
+global:
+  http:
+    listenaddr: :8801 # 网关地址，用于访问API
+    listenaddrtls: :8443  # 用于HTTPS方式访问API的端口配置
+
+gb28181:
+  #sip服务器地址 默认 自动适配设备网段
+  sipip:          ""
+  serial:         "34020000002000000001"
+  realm:          "3402000000"
+  password:       "pandax"
+  #sip服务器端口
+  port:
+    sip: udp:5060

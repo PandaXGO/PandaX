@@ -77,10 +77,10 @@ func (m *devGenTableModelImpl) FindDbTableOne(tableName string) *entity.DBTables
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
 	db := global.Db.Table("information_schema.tables")
-	if global.Conf.Server.DbType != "mysql" {
+	if global.Conf.Server.DbType == "mysql" {
 		db = db.Where("table_schema= ? ", global.Conf.Gen.Dbname)
 	}
-	if global.Conf.Server.DbType != "postgresql" {
+	if global.Conf.Server.DbType == "postgresql" {
 		db = db.Where("table_schema= ? ", "public")
 	}
 	db = db.Where("table_name = ?", tableName)
@@ -187,7 +187,7 @@ func (m *devGenTableModelImpl) Update(data entity.DevGenTable) *entity.DevGenTab
 			t, ok := tableMap[data.Columns[i].LinkTableName]
 			if ok {
 				data.Columns[i].LinkTableClass = t.ClassName
-				data.Columns[i].LinkTablePackage = t.PackageName
+				data.Columns[i].LinkTablePackage = t.BusinessName
 				data.Columns[i].LinkLabelId = t.PkColumn
 				data.Columns[i].LinkLabelName = t.PkGoField
 			}

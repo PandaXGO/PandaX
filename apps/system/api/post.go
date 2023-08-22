@@ -4,7 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/XM-GO/PandaKit/biz"
-	"github.com/XM-GO/PandaKit/ginx"
+	"github.com/XM-GO/PandaKit/model"
+	"github.com/XM-GO/PandaKit/restfulx"
 	"github.com/XM-GO/PandaKit/utils"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
@@ -17,24 +18,14 @@ type PostApi struct {
 	RoleApp services.SysRoleModel
 }
 
-// @Summary 职位列表数据
-// @Description 获取JSON
-// @Tags 职位
-// @Param postName query string false "postName"
-// @Param postCode query string false "postCode"
-// @Param status query string false "status"
-// @Param pageSize query int false "页条数"
-// @Param pageNum query int false "页码"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/post [get]
-// @Security
-func (p *PostApi) GetPostList(rc *ginx.ReqCtx) {
+// GetPostList 职位列表数据
+func (p *PostApi) GetPostList(rc *restfulx.ReqCtx) {
 
-	pageNum := ginx.QueryInt(rc.GinCtx, "pageNum", 1)
-	pageSize := ginx.QueryInt(rc.GinCtx, "pageSize", 10)
-	status := rc.GinCtx.Query("status")
-	postName := rc.GinCtx.Query("postName")
-	postCode := rc.GinCtx.Query("postCode")
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	status := restfulx.QueryParam(rc, "status")
+	postName := restfulx.QueryParam(rc, "postName")
+	postCode := restfulx.QueryParam(rc, "postCode")
 	post := entity.SysPost{Status: status, PostName: postName, PostCode: postCode}
 
 	if !IsTenantAdmin(rc.LoginAccount.TenantId) {
@@ -43,72 +34,41 @@ func (p *PostApi) GetPostList(rc *ginx.ReqCtx) {
 
 	list, total := p.PostApp.FindListPage(pageNum, pageSize, post)
 
-	rc.ResData = map[string]any{
-		"data":     list,
-		"total":    total,
-		"pageNum":  pageNum,
-		"pageSize": pageSize,
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageNum),
+		Data:     list,
 	}
 }
 
-// @Summary 获取职位
-// @Description 获取JSON
-// @Tags 职位
-// @Param postId path int true "postId"
-// @Success 200 {string} string "{"code": 200, "data": [...]}"
-// @Router /system/post/{postId} [get]
-// @Security
-func (p *PostApi) GetPost(rc *ginx.ReqCtx) {
-	postId := ginx.PathParamInt(rc.GinCtx, "postId")
+// GetPost 获取职位
+func (p *PostApi) GetPost(rc *restfulx.ReqCtx) {
+	postId := restfulx.PathParamInt(rc, "postId")
 	p.PostApp.FindOne(int64(postId))
 }
 
-// @Summary 添加职位
-// @Description 获取JSON
-// @Tags 职位
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysPost true "data"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/post [post]
-// @Security X-TOKEN
-func (p *PostApi) InsertPost(rc *ginx.ReqCtx) {
+// InsertPost 添加职位
+func (p *PostApi) InsertPost(rc *restfulx.ReqCtx) {
 	var post entity.SysPost
-	ginx.BindJsonAndValid(rc.GinCtx, &post)
+	restfulx.BindQuery(rc, &post)
 	post.TenantId = rc.LoginAccount.TenantId
 	post.CreateBy = rc.LoginAccount.UserName
 	p.PostApp.Insert(post)
 }
 
-// @Summary 修改职位
-// @Description 获取JSON
-// @Tags 职位
-// @Accept  application/json
-// @Product application/json
-// @Param data body entity.SysPost true "body"
-// @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "添加失败"}"
-// @Router /system/post [put]
-// @Security X-TOKEN
-func (p *PostApi) UpdatePost(rc *ginx.ReqCtx) {
+// UpdatePost 修改职位
+func (p *PostApi) UpdatePost(rc *restfulx.ReqCtx) {
 	var post entity.SysPost
-	ginx.BindJsonAndValid(rc.GinCtx, &post)
+	restfulx.BindQuery(rc, &post)
 
 	post.CreateBy = rc.LoginAccount.UserName
 	p.PostApp.Update(post)
 }
 
-// @Summary 删除职位
-// @Description 删除数据
-// @Tags 职位
-// @Param postId path string true "postId "
-// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
-// @Success 200 {string} string	"{"code": 400, "message": "删除失败"}"
-// @Router /system/post/{postId} [delete]
-func (p *PostApi) DeletePost(rc *ginx.ReqCtx) {
-
-	postId := rc.GinCtx.Param("postId")
+// DeletePost 删除职位
+func (p *PostApi) DeletePost(rc *restfulx.ReqCtx) {
+	postId := restfulx.PathParam(rc, "postId")
 	postIds := utils.IdsStrToIdsIntGroup(postId)
 
 	deList := make([]int64, 0)

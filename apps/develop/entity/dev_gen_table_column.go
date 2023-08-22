@@ -44,3 +44,18 @@ type DBColumns struct {
 	Extra                  string `gorm:"column:EXTRA" json:"extra"`
 	ColumnComment          string `gorm:"column:COLUMN_COMMENT" json:"columnComment"`
 }
+
+type DBColumnsP struct {
+	TableSchema            string `gorm:"column:table_schema" json:"tableSchema"`
+	TableName              string `gorm:"column:table_name" json:"tableName"`
+	ColumnName             string `gorm:"column:column_name" json:"columnName"`
+	ColumnDefault          string `gorm:"column:column_default" json:"columnDefault"`
+	IsNullable             string `gorm:"column:is_nullable" json:"isNullable"`
+	DataType               string `gorm:"column:data_type" json:"dataType"`
+	CharacterMaximumLength string `gorm:"column:character_maximum_length" json:"characterMaximumLength"`
+	CharacterSetName       string `gorm:"column:character_set_name" json:"characterSetName"`
+	ColumnType             string `gorm:"column:udt_name" json:"columnType"`
+	ColumnKey              string ` json:"columnKey"` // 判断自增比较困难
+	Extra                  string ` json:"extra"`
+	ColumnComment          string ` json:"columnComment"`
+}
