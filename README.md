@@ -32,11 +32,11 @@
 
 <table>
     <tr>
-        <img src="http://101.35.247.125/images/manage.png"/>
+        <img src="https://s3.bmp.ovh/imgs/2023/08/22/9b285c377717adc7.png"/>
     </tr>
     <tr>
         <td><img src="https://s3.bmp.ovh/imgs/2023/03/24/0f9a87733b5fe8da.png"/></td>
-         <td><img src="http://101.35.247.125/images/rule/rule.png"/></td>
+         <td><img src="https://s3.bmp.ovh/imgs/2023/08/22/58dda6cddceba5da.png"/></td>
     </tr>
 </table>
 更多功能请访问系统体验
