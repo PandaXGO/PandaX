@@ -1,0 +1,18 @@
+2023-08-22 15:15:49.405 [INFO] [D:/workspace/go/pkg/mod/github.com/!x!m-!g!o/!panda!kit@v0.0.0-20230628055017-c47e7aa81cd4/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-08-22 15:15:49.410 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-08-22 15:15:49.413 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-08-22 15:15:49.413 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-08-22 15:15:49.663 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-08-22 15:15:49.664 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :8889
+2023-08-22 15:15:49.665 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-08-22 15:15:49.729 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:83] : 2023-08-22 15:15:49 [INFO] JobCore start success.
+2023-08-22 15:51:54.609 [INFO] [D:/workspace/go/pkg/mod/github.com/!x!m-!g!o/!panda!kit@v0.0.0-20230628055017-c47e7aa81cd4/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-08-22 15:51:54.615 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-08-22 15:51:54.617 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-08-22 15:51:54.617 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-08-22 15:51:54.626 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-08-22 15:51:54.626 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :8889
+2023-08-22 15:51:54.627 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-08-22 15:51:54.634 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:83] : 2023-08-22 15:51:54 [INFO] JobCore start success.
+2023-08-22 15:51:54.637 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:156] : 账号pandax，密码pandax,开始认证
+2023-08-22 15:51:54.641 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.2 Connected 

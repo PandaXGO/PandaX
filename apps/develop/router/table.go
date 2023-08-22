@@ -1,48 +1,81 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/XM-GO/PandaKit/model"
+	"github.com/XM-GO/PandaKit/restfulx"
+	restfulspec "github.com/emicklei/go-restful-openapi/v2"
+	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/develop/api"
+	"pandax/apps/develop/api/vo"
+	"pandax/apps/develop/entity"
 	"pandax/apps/develop/services"
-	"pandax/base/ginx"
 )
 
-func InitGenTableRouter(router *gin.RouterGroup) {
+func InitGenTableRouter(container *restful.Container) {
 	// 登录日志
-	genApi := &api.GenTableApi{
+	s := &api.GenTableApi{
 		GenTableApp: services.DevGenTableModelDao,
 	}
-	gen := router.Group("table")
 
-	gen.GET("/db/list", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取数据库列表").Handle(genApi.GetDBTableList)
-	})
+	ws := new(restful.WebService)
+	ws.Path("/develop/code/table").Produces(restful.MIME_JSON)
+	tags := []string{"codetable"}
 
-	gen.GET("list", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取表列表").Handle(genApi.GetTablePage)
-	})
+	ws.Route(ws.GET("/db/list").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取数据库列表").Handle(s.GetDBTableList)
+	}).
+		Doc("获取数据库列表").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", model.ResultPage{}))
 
-	gen.GET("/info/tableName", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取表信息By tableName").Handle(genApi.GetTableInfoByName)
-	})
+	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取表列表").Handle(s.GetTablePage)
+	}).
+		Doc("获取表列表").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", model.ResultPage{}))
 
-	gen.GET("info/:tableId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取表信息").Handle(genApi.GetTableInfo)
-	})
+	ws.Route(ws.GET("/info/tableName").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取表信息By tableName").Handle(s.GetTableInfoByName)
+	}).
+		Doc("获取表信息By tableName").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", vo.TableInfoVo{}))
 
-	gen.GET("tableTree", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取表树").Handle(genApi.GetTableTree)
-	})
+	ws.Route(ws.GET("/info/{tableId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取表信息").Handle(s.GetTableInfo)
+	}).
+		Doc("获取表信息").
+		Param(ws.PathParameter("tenantId", "租户Id").DataType("int").DefaultValue("1")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", vo.TableInfoVo{}).
+		Returns(404, "Not Found", nil))
 
-	gen.POST("", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("新增表").Handle(genApi.Insert)
-	})
+	ws.Route(ws.GET("/tableTree").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取表树").Handle(s.GetTableTree)
+	}).
+		Doc("获取表树").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", []entity.DevGenTable{}))
 
-	gen.PUT("", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("修改表").Handle(genApi.Update)
-	})
+	ws.Route(ws.POST("").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("新增表").Handle(s.Insert)
+	}).
+		Doc("新增表").
+		Metadata(restfulspec.KeyOpenAPITags, tags)) // from the request
 
-	gen.DELETE(":tableId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("删除表").Handle(genApi.Delete)
-	})
+	ws.Route(ws.PUT("").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("修改表").Handle(s.Update)
+	}).
+		Doc("修改表").
+		Metadata(restfulspec.KeyOpenAPITags, tags)) // from the request
+
+	ws.Route(ws.DELETE("/{tableId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("删除表").Handle(s.Delete)
+	}).
+		Doc("删除表").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Param(ws.PathParameter("tableId", "多id 1,2,3").DataType("string")))
+
+	container.Add(ws)
 }

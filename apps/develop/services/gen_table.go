@@ -53,7 +53,7 @@ func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data ent
 	if global.Conf.Server.DbType == "postgresql" {
 		db = db.Where("table_schema = ? ", "public")
 	}
-	db = db.Where("table_name NOT LIKE 'dev_%'")
+	//db = db.Where("table_name NOT LIKE 'dev_%'")
 	if data.TableName != "" {
 		db = db.Where("table_name like ?", "%"+data.TableName+"%")
 	}

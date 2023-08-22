@@ -6,7 +6,6 @@ import (
 	"github.com/XM-GO/PandaKit/biz"
 	"github.com/XM-GO/PandaKit/utils"
 	"github.com/kakuilan/kgo"
-	"log"
 	"os"
 	"pandax/apps/develop/entity"
 	"pandax/apps/develop/services"
@@ -380,7 +379,7 @@ func Preview(tableId int64) map[string]any {
 
 	mp := make(map[string]any)
 	mp["template/entity.template"] = b1.String()
-	mp["template/service.template"] = b2.String()
+	mp["template/services.template"] = b2.String()
 	mp["template/api.template"] = b3.String()
 	mp["template/router.template"] = b4.String()
 	mp["template/jsApi.template"] = b5.String()
@@ -398,7 +397,7 @@ func GenCode(tableId int64) {
 	t1, err := template.ParseFiles("resource/template/go/entity.template")
 	biz.ErrIsNil(err, "entity模版读取失败！")
 
-	t2, err := template.ParseFiles("resource/template/go/service.template")
+	t2, err := template.ParseFiles("resource/template/go/services.template")
 	biz.ErrIsNil(err, "service模版读取失败！")
 
 	t3, err := template.ParseFiles("resource/template/go/api.template")
@@ -473,7 +472,6 @@ func GenConfigure(tableId, parentId int) {
 		CreateBy:    "admin",
 	}
 	insert := sysServices.SysMenuModelDao.Insert(menu)
-	log.Println("insert", insert.MenuId)
 	//新增按钮
 	menuA := sysEntity.SysMenu{
 		ParentId:   insert.MenuId,

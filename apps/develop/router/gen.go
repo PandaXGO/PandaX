@@ -1,28 +1,50 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/XM-GO/PandaKit/restfulx"
+	restfulspec "github.com/emicklei/go-restful-openapi/v2"
+	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/develop/api"
 	"pandax/apps/develop/services"
-	"pandax/base/ginx"
 )
 
-func InitGenRouter(router *gin.RouterGroup) {
+func InitGenRouter(container *restful.Container) {
+
 	// 登录日志
-	genApi := &api.GenApi{
+	s := &api.GenApi{
 		GenTableApp: services.DevGenTableModelDao,
 	}
-	gen := router.Group("gen")
 
-	gen.GET("preview/:tableId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("获取生成代码视图").Handle(genApi.Preview)
-	})
+	ws := new(restful.WebService)
+	ws.Path("/develop/code/gen").Produces(restful.MIME_JSON)
+	tags := []string{"codegen"}
 
-	gen.GET("code/:tableId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("生成代码").Handle(genApi.GenCode)
-	})
+	ws.Route(ws.GET("/preview/{tableId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取生成代码视图").Handle(s.Preview)
+	}).
+		Doc("获取生成代码视图").
+		Param(ws.PathParameter("tableId", "Id").DataType("int").DefaultValue("1")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", map[string]any{}).
+		Returns(404, "Not Found", nil))
 
-	gen.GET("configure/:tableId", func(c *gin.Context) {
-		ginx.NewReqCtx(c).WithLog("生成配置").Handle(genApi.GenConfigure)
-	})
+	ws.Route(ws.GET("/code/{tableId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("生成代码").Handle(s.GenCode)
+	}).
+		Doc("生成代码").
+		Param(ws.PathParameter("tableId", "Id").DataType("int").DefaultValue("1")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", map[string]any{}).
+		Returns(404, "Not Found", nil))
+
+	ws.Route(ws.GET("/configure/{tableId}").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("生成配置").Handle(s.GenConfigure)
+	}).
+		Doc("生成配置").
+		Param(ws.PathParameter("tableId", "Id").DataType("int").DefaultValue("1")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", map[string]any{}).
+		Returns(404, "Not Found", nil))
+
+	container.Add(ws)
 }
