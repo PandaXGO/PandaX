@@ -40,7 +40,6 @@ func (m *ruleChainLogModelImpl) FindListPage(page, pageSize int, data entity.Rul
 	offset := pageSize * (page - 1)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	db.Where("delete_time IS NULL")
 	if data.DeviceName != "" {
 		db = db.Where("device_name = ?", data.DeviceName)
 	}

@@ -72,6 +72,7 @@ func InitRouter() *transport.HttpServer {
 	}
 	{
 		ruleRouter.InitRuleChainRouter(container)
+		ruleRouter.InitRuleChainMsgLogRouter(container)
 	}
 	// api接口
 	middleware.SwaggerConfig(container)
