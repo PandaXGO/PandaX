@@ -74,10 +74,10 @@ gen:
 
 log:
    # 日志等级, trace, debug, info, warn, error, fatal
-  level: info
+  level: debug
   file:
      path: ./
-     name: panda_log.log
+#     name: panda_log.log
 
 # 视频服务器使用的全局配置
 global:
