@@ -5,7 +5,7 @@ app:
 server:
   # debug release test
   model: release
-  port: 8889
+  port: 7788
   # iothub使用的rpc端口  9000 9001 可能与minio端口冲突
   grpc-port: 9001
   cors: true
