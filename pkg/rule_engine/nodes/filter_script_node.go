@@ -24,12 +24,12 @@ func (f scriptFilterNodeFactory) Create(id string, meta Metadata) (Node, error) 
 	return decodePath(meta, node)
 }
 
-func (n *scriptFilterNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *scriptFilterNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 
 	trueLabelNode := n.GetLinkedNode("True")
 	falseLabelNode := n.GetLinkedNode("False")
-	scriptEngine := NewScriptEngine(msg, "Filter", n.Script)
+	scriptEngine := NewScriptEngine(*msg, "Filter", n.Script)
 	isTrue, error := scriptEngine.ScriptOnFilter()
 	if isTrue == true && error == nil && trueLabelNode != nil {
 		return trueLabelNode.Handle(msg)

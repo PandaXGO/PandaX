@@ -59,13 +59,13 @@ func (f externalMqttNodeFactory) Create(id string, meta Metadata) (Node, error) 
 	return node, nil
 }
 
-func (n *externalMqttNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *externalMqttNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 	defer n.MqttCli.Disconnect(1000)
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
 	topic := n.TopicPattern //need fix add msg.metadata in it
-	sendmqttmsg, err := json.Marshal(msg.GetMsg())
+	sendmqttmsg, err := json.Marshal(msg.Msg)
 	if err != nil {
 		return err
 	}

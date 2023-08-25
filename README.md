@@ -107,11 +107,6 @@
 
 更多功能请访问系统。
 
-  
-## ❤特别鸣谢
-
-  * 感谢[VUE-NEXT-ADMIN](https://gitee.com/lyt-top/vue-next-admin)
-
 ---
 版权说明
 ---

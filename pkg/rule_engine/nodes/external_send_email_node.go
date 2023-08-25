@@ -38,8 +38,8 @@ func (f externalSendEmailNodeFactory) Create(id string, meta Metadata) (Node, er
 	return decodePath(meta, node)
 }
 
-func (n *externalSendEmailNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *externalSendEmailNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -48,7 +48,7 @@ func (n *externalSendEmailNode) Handle(msg message.Message) error {
 	if tos[len(tos)-1] == "" { // 判断切片的最后一个元素是否为空,为空则移除
 		tos = tos[:len(tos)-1]
 	}
-	err := n.send(tos, msg)
+	err := n.send(tos, *msg)
 	if err != nil {
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
@@ -73,7 +73,7 @@ func (m *externalSendEmailNode) send(to []string, msg message.Message) error {
 	}
 	e.To = to
 	e.Subject = m.Subject
-	template, err := ParseTemplate(m.Body, msg.GetMetadata().GetValues())
+	template, err := ParseTemplate(m.Body, msg.Metadata)
 	if err != nil {
 		return err
 	}

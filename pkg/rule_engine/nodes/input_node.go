@@ -23,8 +23,8 @@ func (f inputNodeFactory) Create(id string, meta Metadata) (Node, error) {
 	return node, nil
 }
 
-func (n *inputNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *inputNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 
 	nodes := n.GetLinkedNodes()
 	for _, node := range nodes {

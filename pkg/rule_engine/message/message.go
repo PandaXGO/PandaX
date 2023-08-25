@@ -1,11 +1,6 @@
 package message
 
-import (
-	"encoding/json"
-	"github.com/google/uuid"
-	"time"
-)
-
+/*
 // 消息类型
 const (
 	ConnectMes    = "Connect"
@@ -154,3 +149,4 @@ func (t *defaultMetadata) GetValues() map[string]interface{} {
 func (t *defaultMetadata) SetValues(values map[string]interface{}) {
 	t.values = values
 }
+*/

@@ -685,3 +685,12 @@
 
 2023-08-24 15:27:41.492 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->6ms
 2023-08-24 15:27:41.504 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/log/logLogin/list] : 获取登录日志列表 ->8ms
+2023-08-24 17:35:27.159 [DEBUG] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:59] : no Route found (in 2 routes) that matches HTTP method OPTIONS
+
+2023-08-24 17:35:27.197 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/visual/screen/zt_08ca17dbc53c916369ffb3d0] [uid=1] [uname=panda] : 获取Screen信息 ->6ms
+2023-08-24 17:35:28.459 [DEBUG] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:59] : no Route found (in 2 routes) that matches HTTP method OPTIONS
+
+2023-08-24 17:35:28.491 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/rule/chain/rule_a37571bb6c45378b57803793] [uid=1] : 获取规则引擎信息 ->4ms
+2023-08-24 17:35:28.749 [DEBUG] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:59] : no Route found (in 3 routes) that matches HTTP method OPTIONS
+
+2023-08-24 17:35:28.756 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/rule/chain/nodeLabels] [uid=1] [uname=panda] : 获取所有节点标签 ->0ms

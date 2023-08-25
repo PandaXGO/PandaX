@@ -18,13 +18,13 @@ func TestNewRuleChainInstance(t *testing.T) {
 		t.Error(errs[0])
 	}
 
-	metadata := message.NewDefaultMetadata(map[string]interface{}{
+	metadata := message.Metadata{
 		"deviceName": "ws432",
 		"deviceId":   "d_1928b99619910dae5a001fa7",
 		"deviceType": "direct",
 		"productId":  "p_3ba460634520cf4590dc90e5",
-	})
-	msg := message.NewMessageWithDetail("1", message.TelemetryMes, map[string]interface{}{"temperature": 60.4, "humidity": 32.5}, metadata)
+	}
+	msg := message.NewMessage("1", message.TelemetryMes, message.Msg{"temperature": 60.4, "humidity": 32.5}, metadata)
 	t.Log("开始执行力流程")
 	err = instance.StartRuleChain(context.Background(), msg)
 	if err != nil {
@@ -33,8 +33,7 @@ func TestNewRuleChainInstance(t *testing.T) {
 }
 
 func TestScriptEngine(t *testing.T) {
-	metadata := message.NewDefaultMetadata(map[string]interface{}{"device": "aa"})
-	msg := message.NewMessageWithDetail("1", message.UpEventMes, map[string]interface{}{"aa": 5}, metadata)
+	msg := message.NewMessage("1", message.UpEventMes, map[string]interface{}{"aa": 5}, map[string]interface{}{"device": "aa"})
 	const baseScript = `
         function nextRelation(metadata, msg) {
 			return ['one','nine'];
@@ -47,7 +46,7 @@ func TestScriptEngine(t *testing.T) {
 		}
 		return nextRelation(metadata, msg);
     `
-	scriptEngine := nodes.NewScriptEngine(msg, "Switch", baseScript)
+	scriptEngine := nodes.NewScriptEngine(*msg, "Switch", baseScript)
 	SwitchResults, err := scriptEngine.ScriptOnSwitch()
 
 	if err != nil {
@@ -57,19 +56,18 @@ func TestScriptEngine(t *testing.T) {
 }
 
 func TestScriptOnMessage(t *testing.T) {
-	metadata := message.NewDefaultMetadata(map[string]interface{}{"device": "aa"})
-	msg := message.NewMessageWithDetail("1", message.UpEventMes, map[string]interface{}{"aa": 5}, metadata)
+	msg := message.NewMessage("1", message.UpEventMes, map[string]interface{}{"aa": 5}, map[string]interface{}{"device": "aa"})
 
 	const baseScript = `
         msg.bb = "33"
 		metadata.event = 55
 		return {msg: msg, metadata: metadata, msgType: msgType};
     `
-	scriptEngine := nodes.NewScriptEngine(msg, "Transform", baseScript)
+	scriptEngine := nodes.NewScriptEngine(*msg, "Transform", baseScript)
 	ScriptOnMessageResults, err := scriptEngine.ScriptOnMessage()
 
 	if err != nil {
 		t.Error(err)
 	}
-	t.Log(ScriptOnMessageResults.GetMetadata())
+	t.Log(ScriptOnMessageResults.Metadata)
 }

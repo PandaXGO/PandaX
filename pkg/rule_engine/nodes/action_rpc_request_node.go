@@ -24,7 +24,7 @@ func (f rpcRequestNodeFactory) Create(id string, meta Metadata) (Node, error) {
 	return decodePath(meta, node)
 }
 
-func (n *rpcRequestNode) Handle(msg message.Message) error {
+func (n *rpcRequestNode) Handle(msg *message.Message) error {
 	successLableNode := n.GetLinkedNode("Success")
 	failureLableNode := n.GetLinkedNode("Failure")
 
@@ -38,9 +38,9 @@ func (n *rpcRequestNode) Handle(msg message.Message) error {
 			return err
 		}
 	}
-	msgM := msg.GetMsg()
+	msgM := msg.Msg
 	msgM["payload"] = respPayload
-	msg.SetMsg(msgM)
+	msg.Msg = msgM
 	if successLableNode != nil {
 		return successLableNode.Handle(msg)
 	}

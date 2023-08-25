@@ -41,7 +41,7 @@ func newInstanceWithManifest(m *manifest.Manifest) (*ruleChainInstance, []error)
 }
 
 // StartRuleChain TODO 是否需要添加context
-func (c *ruleChainInstance) StartRuleChain(context context.Context, message message.Message) error {
+func (c *ruleChainInstance) StartRuleChain(context context.Context, message *message.Message) error {
 	if node, found := c.nodes[c.firstRuleNodeId]; found {
 		node.Handle(message)
 	}

@@ -45,20 +45,20 @@ func (f externalKafkaNodeFactory) Create(id string, meta Metadata) (Node, error)
 	return node, nil
 }
 
-func (n *externalKafkaNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *externalKafkaNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 	defer n.KafkaCli.Close()
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
 	value := sarama.ByteEncoder("")
 	if n.KeyPattern == "metadataKey" {
-		marshal, err := json.Marshal(msg.GetMetadata().GetValues())
+		marshal, err := json.Marshal(msg.Metadata)
 		if err != nil {
 			return err
 		}
 		value = marshal
 	} else {
-		marshal, err := json.Marshal(msg.GetMsg())
+		marshal, err := json.Marshal(msg.Msg)
 		if err != nil {
 			return err
 		}

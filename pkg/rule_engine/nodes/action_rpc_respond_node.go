@@ -23,16 +23,16 @@ func (f rpcRespondFactory) Create(id string, meta Metadata) (Node, error) {
 	return decodePath(meta, node)
 }
 
-func (n *rpcRespondNode) Handle(msg message.Message) error {
+func (n *rpcRespondNode) Handle(msg *message.Message) error {
 	successLableNode := n.GetLinkedNode("Success")
 	failureLableNode := n.GetLinkedNode("Failure")
 	RequestId := n.RequestId
 	if RequestId == 0 {
-		RequestId = int(msg.GetMetadata().GetKeyValue("requestId").(float64))
+		RequestId = int(msg.Metadata.GetValue("requestId").(float64))
 	}
 	var datas = mqtt.RpcPayload{
-		Method: msg.GetMsg()["method"].(string),
-		Params: msg.GetMsg()["params"],
+		Method: msg.Msg.GetValue("method").(string),
+		Params: msg.Msg.GetValue("params"),
 	}
 	rpc := &mqtt.RpcRequest{Client: global.MqttClient, RequestId: RequestId}
 	err := rpc.RespondTpc(datas)

@@ -8,7 +8,7 @@ import (
 )
 
 type ScriptEngine interface {
-	ScriptOnMessage() (message.Message, error)
+	ScriptOnMessage() (*message.Message, error)
 	ScriptOnSwitch() ([]string, error)
 	ScriptOnFilter() (bool, error)
 	ScriptToString() (string, error)
@@ -29,7 +29,7 @@ func NewScriptEngine(msg message.Message, fun string, script string) ScriptEngin
 	}
 }
 
-func (bse *baseScriptEngine) ScriptOnMessage() (message.Message, error) {
+func (bse *baseScriptEngine) ScriptOnMessage() (*message.Message, error) {
 	msg := bse.Msg
 	vm := goja.New()
 	_, err := vm.RunString(bse.Script)
@@ -43,11 +43,11 @@ func (bse *baseScriptEngine) ScriptOnMessage() (message.Message, error) {
 		logrus.Info("Js函数映射到 Go 函数失败！")
 		return nil, err
 	}
-	datas := fn(msg.GetMsg(), msg.GetMetadata().GetValues(), msg.GetType())
-	msg.SetMsg(datas["msg"].(map[string]interface{}))
-	msg.SetMetadata(message.NewDefaultMetadata(datas["metadata"].(map[string]interface{})))
-	msg.SetType(datas["msgType"].(string))
-	return msg, nil
+	datas := fn(msg.Msg, msg.Metadata, msg.MsgType)
+	msg.Msg = datas["msg"].(map[string]interface{})
+	msg.Metadata = datas["metadata"].(map[string]interface{})
+	msg.MsgType = datas["msgType"].(string)
+	return &msg, nil
 }
 
 func (bse *baseScriptEngine) ScriptOnSwitch() ([]string, error) {
@@ -64,7 +64,7 @@ func (bse *baseScriptEngine) ScriptOnSwitch() ([]string, error) {
 		logrus.Info("Js函数映射到 Go 函数失败！")
 		return nil, err
 	}
-	datas := fn(msg.GetMsg(), msg.GetMetadata().GetValues(), msg.GetType())
+	datas := fn(msg.Msg, msg.Metadata, msg.MsgType)
 	return datas, nil
 }
 
@@ -82,7 +82,7 @@ func (bse *baseScriptEngine) ScriptOnFilter() (bool, error) {
 		logrus.Info("Js函数映射到 Go 函数失败！")
 		return false, err
 	}
-	datas := fn(msg.GetMsg(), msg.GetMetadata().GetValues(), msg.GetType())
+	datas := fn(msg.Msg, msg.Metadata, msg.MsgType)
 	return datas, nil
 }
 
@@ -100,7 +100,7 @@ func (bse *baseScriptEngine) ScriptToString() (string, error) {
 		logrus.Info("Js函数映射到 Go 函数失败！")
 		return "", err
 	}
-	data := fn(msg.GetMsg(), msg.GetMetadata().GetValues(), msg.GetType())
+	data := fn(msg.Msg, msg.Metadata, msg.MsgType)
 	return data, nil
 }
 
@@ -118,6 +118,6 @@ func (bse *baseScriptEngine) ScriptGenerate() (map[string]interface{}, error) {
 		logrus.Info("Js函数映射到 Go 函数失败！")
 		return nil, err
 	}
-	datas := fn(msg.GetMsg(), msg.GetMetadata().GetValues(), msg.GetType())
+	datas := fn(msg.Msg, msg.Metadata, msg.MsgType)
 	return datas, nil
 }

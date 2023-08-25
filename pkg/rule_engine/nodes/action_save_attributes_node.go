@@ -22,11 +22,11 @@ func (f saveAttributesNodeFactory) Create(id string, meta Metadata) (Node, error
 	return decodePath(meta, node)
 }
 
-func (n *saveAttributesNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *saveAttributesNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
-	if msg.GetType() != message.AttributesMes {
+	if msg.MsgType != message.AttributesMes {
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
 		} else {
@@ -34,8 +34,8 @@ func (n *saveAttributesNode) Handle(msg message.Message) error {
 		}
 	}
 	//deviceId := msg.GetMetadata().GetValues()["deviceId"].(string)
-	deviceName := msg.GetMetadata().GetValues()["deviceName"].(string)
-	err := global.TdDb.InsertDevice(deviceName+"_attributes", msg.GetMsg())
+	deviceName := msg.Metadata["deviceName"].(string)
+	err := global.TdDb.InsertDevice(deviceName+"_attributes", msg.Msg)
 	if err != nil {
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)

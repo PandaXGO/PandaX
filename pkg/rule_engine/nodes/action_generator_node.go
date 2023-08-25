@@ -25,8 +25,8 @@ func (f messageGeneratorNodeFactory) Create(id string, meta Metadata) (Node, err
 	return decodePath(meta, node)
 }
 
-func (n *messageGeneratorNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *messageGeneratorNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -42,7 +42,7 @@ func (n *messageGeneratorNode) Handle(msg message.Message) error {
 				ticker.Stop()
 				return
 			}
-			scriptEngine := NewScriptEngine(msg, "Generate", n.Script)
+			scriptEngine := NewScriptEngine(*msg, "Generate", n.Script)
 			generate, err := scriptEngine.ScriptGenerate()
 			if err != nil {
 				if failureLabelNode != nil {
@@ -50,9 +50,9 @@ func (n *messageGeneratorNode) Handle(msg message.Message) error {
 				}
 				return
 			}
-			msg.SetMsg(generate["msg"].(map[string]interface{}))
-			msg.SetType(generate["msgType"].(string))
-			msg.SetMetadata(message.NewDefaultMetadata(generate["metadata"].(map[string]interface{})))
+			msg.Msg = generate["msg"].(message.Msg)
+			msg.Metadata = generate["metadata"].(message.Metadata)
+			msg.MsgType = generate["msgType"].(string)
 			if successLabelNode != nil {
 				go successLabelNode.Handle(msg)
 			}
