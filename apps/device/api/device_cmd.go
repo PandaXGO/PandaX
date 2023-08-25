@@ -50,7 +50,7 @@ func (p *DeviceCmdLogApi) InsertDeviceCmdLog(rc *restfulx.ReqCtx) {
 	// 下发指令
 	var rpc = &mqtt.RpcRequest{Client: global.MqttClient, Mode: "single"}
 	rpc.GetRequestId()
-	err = rpc.RequestCmd(mqtt.RpcPayload{Method: data.CmdName, Params: data.CmdContent})
+	_, err = rpc.RequestCmd(mqtt.RpcPayload{Method: data.CmdName, Params: data.CmdContent})
 	if err != nil {
 		global.Log.Error("指令下发失败")
 	}
