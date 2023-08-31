@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/XM-GO/PandaKit/httpclient"
+	"github.com/PandaXGO/PandaKit/httpclient"
 	"github.com/sirupsen/logrus"
 	"net/url"
 	"pandax/pkg/rule_engine/message"

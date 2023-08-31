@@ -3,7 +3,7 @@ package nodes
 import (
 	"encoding/json"
 	"errors"
-	"github.com/XM-GO/PandaKit/httpclient"
+	"github.com/PandaXGO/PandaKit/httpclient"
 	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/XM-GO/PandaKit/model"
-	"github.com/XM-GO/PandaKit/token"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/token"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/kakuilan/kgo"
@@ -16,11 +16,11 @@ import (
 	logEntity "pandax/apps/log/entity"
 	logServices "pandax/apps/log/services"
 
-	"github.com/XM-GO/PandaKit/biz"
-	"github.com/XM-GO/PandaKit/captcha"
-	filek "github.com/XM-GO/PandaKit/file"
-	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/XM-GO/PandaKit/utils"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/captcha"
+	filek "github.com/PandaXGO/PandaKit/file"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/system/services"
 	"pandax/pkg/global"
 	"strings"

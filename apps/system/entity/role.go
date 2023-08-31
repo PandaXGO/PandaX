@@ -1,8 +1,8 @@
 package entity
 
 import (
-	"github.com/XM-GO/PandaKit/casbin"
-	"github.com/XM-GO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/casbin"
+	"github.com/PandaXGO/PandaKit/model"
 )
 
 type SysRole struct {

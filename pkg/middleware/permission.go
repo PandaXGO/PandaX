@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"github.com/XM-GO/PandaKit/biz"
-	"github.com/XM-GO/PandaKit/casbin"
-	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/XM-GO/PandaKit/token"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/casbin"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/token"
 	"github.com/dgrijalva/jwt-go"
 	"pandax/pkg/global"
 )

@@ -2,7 +2,7 @@ package services
 
 import (
 	"fmt"
-	"github.com/XM-GO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/system/entity"
 	"pandax/pkg/global"
 )

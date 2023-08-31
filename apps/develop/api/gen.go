@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/develop/gen"
 	"pandax/apps/develop/services"
 )

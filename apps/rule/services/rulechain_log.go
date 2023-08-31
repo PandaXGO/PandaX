@@ -7,7 +7,7 @@
 package services
 
 import (
-	"github.com/XM-GO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/rule/entity"
 	"pandax/pkg/global"
 )

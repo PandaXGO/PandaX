@@ -1,7 +1,7 @@
 package global
 
 import (
-	"github.com/XM-GO/PandaKit/rediscli"
+	"github.com/PandaXGO/PandaKit/rediscli"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"pandax/pkg/config"

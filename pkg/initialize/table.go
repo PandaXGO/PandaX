@@ -1,7 +1,7 @@
 package initialize
 
 import (
-	"github.com/XM-GO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/biz"
 	devEntity "pandax/apps/develop/entity"
 	jobEntity "pandax/apps/job/entity"
 	logEntity "pandax/apps/log/entity"

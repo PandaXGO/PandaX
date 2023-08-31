@@ -6,9 +6,9 @@ package api
  * @Date 2022/7/14 17:55
  **/
 import (
-	"github.com/XM-GO/PandaKit/model"
-	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/XM-GO/PandaKit/utils"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
 )

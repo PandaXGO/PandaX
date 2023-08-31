@@ -2,8 +2,8 @@ package api
 
 // ==========================================================================
 import (
-	"github.com/XM-GO/PandaKit/model"
-	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"strings"
 
 	"pandax/apps/device/entity"

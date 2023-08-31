@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/XM-GO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/model"
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/system/api"
@@ -10,7 +10,7 @@ import (
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
 
-	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/restfulx"
 	logServices "pandax/apps/log/services"
 )
 

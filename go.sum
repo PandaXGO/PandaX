@@ -12,8 +12,8 @@ github.com/Shopify/sarama v1.38.1/go.mod h1:iwv9a67Ha8VNa+TifujYoWGxWnu2kNVAQdSd
 github.com/Shopify/toxiproxy/v2 v2.5.0 h1:i4LPT+qrSlKNtQf5QliVjdP08GyAH8+BUIc9gT0eahc=
 github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 h1:5sXbqlSomvdjlRbWyNqkPsJ3Fg+tQZCbgeX1VGljbQY=
 github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46/go.mod h1:3eOhrUMpNV+6aFIbp5/iudMxNCF27Vw2OZgy4xEx0Fg=
-github.com/XM-GO/PandaKit v0.0.0-20230628055017-c47e7aa81cd4 h1:SlGUf970WIctMhu8ZZBNsZfY1bdCbGGo9wLm5V0ceeM=
-github.com/XM-GO/PandaKit v0.0.0-20230628055017-c47e7aa81cd4/go.mod h1:iyVx5byF4Z//dBpXMy22ZtgSnQAN/U9qjwGyU02QfSA=
+github.com/PandaXGO/PandaKit v0.0.0-20230628055017-c47e7aa81cd4 h1:SlGUf970WIctMhu8ZZBNsZfY1bdCbGGo9wLm5V0ceeM=
+github.com/PandaXGO/PandaKit v0.0.0-20230628055017-c47e7aa81cd4/go.mod h1:iyVx5byF4Z//dBpXMy22ZtgSnQAN/U9qjwGyU02QfSA=
 github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible h1:ht2+VfbXtNLGhCsnTMc6/N26nSTBK6qdhktjYyjJQkk=
 github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible/go.mod h1:T/Aws4fEfogEE9v+HPhhw+CntffsBHJ8nXQCwKr0/g8=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=

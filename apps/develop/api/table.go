@@ -1,9 +1,9 @@
 package api
 
 import (
-	"github.com/XM-GO/PandaKit/model"
-	"github.com/XM-GO/PandaKit/restfulx"
-	"github.com/XM-GO/PandaKit/utils"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/develop/api/vo"
 	"pandax/apps/develop/entity"
 	"pandax/apps/develop/gen"
