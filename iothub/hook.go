@@ -146,8 +146,6 @@ func (s *HookService) OnClientDisconnected(ctx context.Context, in *exhook.Clien
 		Datas:    string(v),
 		Type:     message.DisConnectMes,
 	}
-	// todo 网关掉线子设备全部离线状态，更改设备下线状态
-
 	s.messageCh <- data
 	return &exhook.EmptySuccess{}, nil
 }

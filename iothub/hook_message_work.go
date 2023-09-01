@@ -104,17 +104,16 @@ func getRuleChain(etoken *tool.DeviceAuth) *ruleEntity.RuleDataJson {
 	return &ruleData
 }
 
-func buildRuleMessage(etoken *tool.DeviceAuth, dei *DeviceEventInfo, msgType string) message.Message {
+func buildRuleMessage(etoken *tool.DeviceAuth, dei *DeviceEventInfo, msgType string) *message.Message {
 	metadataVals := map[string]interface{}{
 		"deviceId":   etoken.DeviceId,
 		"deviceName": etoken.Name,
 		"deviceType": etoken.DeviceType,
 		"productId":  etoken.ProductId,
 	}
-	metadata := message.NewDefaultMetadata(metadataVals)
 	msgVals := make(map[string]interface{})
 	json.Unmarshal([]byte(dei.Datas), &msgVals)
-	return message.NewMessageWithDetail(etoken.User, msgType, msgVals, metadata)
+	return message.NewMessage(etoken.User, msgType, msgVals, metadataVals)
 }
 
 func SendZtWebsocket(deviceId, message string) {
