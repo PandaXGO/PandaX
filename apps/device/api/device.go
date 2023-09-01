@@ -107,7 +107,7 @@ func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
 		key: value,
 	}
 	content, _ := json.Marshal(contentMap)
-	var rpc = &mqtt.RpcRequest{Client: global.MqttClient, RequestId: 1, Mode: "single"}
+	var rpc = &mqtt.RpcRequest{Client: global.MqttClient, Mode: "single"}
 	rpc.GetRequestId()
 	err := rpc.RequestAttributes(mqtt.RpcPayload{Params: string(content)})
 	biz.ErrIsNil(err, "属性下发失败")

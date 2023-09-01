@@ -3,8 +3,8 @@ module pandax
 go 1.18
 
 require (
+	github.com/PandaXGO/PandaKit v0.0.0-20230901074047-e0e8e4bf2bed
 	github.com/Shopify/sarama v1.38.1
-	github.com/PandaXGO/PandaKit v0.0.0-20230831024915-a6882c1dbfe9
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didip/tollbooth v4.0.2+incompatible
 	github.com/dop251/goja v0.0.0-20230304130813-e2f543bf4b4c
