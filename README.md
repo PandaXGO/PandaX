@@ -62,7 +62,7 @@
 - <span class="tag done-tag">✔</span> **`代码生成`** - _可直接通过框架生成前后端基础业务代码（go、vue），减少开发时间。_
 - <span class="tag done-tag">✔</span> **`组态大屏设计器`** - _通过拖拉拽直接生成组态、大屏。_
 - <span class="tag done-tag">✔</span> **`规则链设计`** - _物联网规则链过滤_
-- - <span class="tag done-tag">✔</span> **`表单设计`** - _表单设计_
+- <span class="tag done-tag">✔</span> **`表单设计`** - _表单设计_
 - <span class="tag done-tag">✔</span> **`报表设计`** - _数据报表设计_
 - <span class="tag done-tag">✔</span> **`产品管理`** - _设备的产品管理_
 - <span class="tag done-tag">✔</span> **`设备管理`** - _设备的管理_

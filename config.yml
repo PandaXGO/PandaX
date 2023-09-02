@@ -72,13 +72,6 @@ gen:
   # 代码生成是使用前端代码存放位置，需要指定到src文件夹，相对路径
   frontpath: ../PandaUi/src
 
-log:
-   # 日志等级, trace, debug, info, warn, error, fatal
-  level: info
-  file:
-     path: ./
-#     name: panda_log.log
-
 # 视频服务器使用的全局配置
 global:
   http:
@@ -94,3 +87,10 @@ gb28181:
   #sip服务器端口
   port:
     sip: udp:5060
+
+log:
+  # 日志等级, trace, debug, info, warn, error, fatal
+  level: info
+  file:
+    path: ./
+#     name: panda_log.log

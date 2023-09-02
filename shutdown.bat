@@ -1,1 +1,0 @@
-taskkill /pid 25952  -t  -f
