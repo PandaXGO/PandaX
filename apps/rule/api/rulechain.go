@@ -24,9 +24,8 @@ func (r *RuleChainApi) GetNodeLabels(rc *restfulx.ReqCtx) {
 func (r *RuleChainApi) RuleChainTest(rc *restfulx.ReqCtx) {
 	code := restfulx.QueryParam(rc, "code")
 	instance, _ := rule_engine.NewRuleChainInstance([]byte(code))
-	newMessage := message.NewMessage()
-	newMessage.SetMetadata(message.NewMetadata())
-	instance.StartRuleChain(context.Background(), newMessage)
+	msg := message.NewMessage("1", message.TelemetryMes, message.Msg{"temperature": 60.4, "humidity": 32.5}, message.Metadata{})
+	instance.StartRuleChain(context.Background(), msg)
 	rc.ResData = []map[string]interface{}{}
 }
 
