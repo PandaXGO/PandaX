@@ -32,14 +32,14 @@ queue:
   enable: false
   num: 3000
 redis:
-  host: 127.0.0.1
-  password: root
+  host: 101.35.247.125
+  password: pandax
   port: 6379
 
 mysql:
-  host: 127.0.0.1:3306
+  host: 101.35.247.125:3306
   username: root
-  password: '!MyEMS1'
+  password: 'pandax'
   db-name: pandax_iot
   config: charset=utf8&loc=Local&parseTime=true
 # mini0
@@ -53,12 +53,12 @@ oss:
 taos:
   username: "root"
   password: "taosdata"
-  host: "127.0.0.1:6041"
+  host: "101.35.247.125:6041"
   database: "iot"
   config: ""
 
 mqtt:
-  broker: 127.0.0.1:1883
+  broker: 101.35.247.125:1883
   qos: 1
   username: pandax
   password: pandax
