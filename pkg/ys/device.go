@@ -22,7 +22,7 @@ func (ys *Ys) GetDeviceList(pageNum, pageSize int) (devices []Device, total int6
 	if err != nil {
 		return nil, 0, err
 	}
-	var page Page
+	var page = Page{}
 	err = tool.InterfaceToStruct(status.Page, &page)
 	if err != nil {
 		return nil, 0, err

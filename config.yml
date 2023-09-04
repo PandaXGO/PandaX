@@ -90,8 +90,8 @@ gb28181:
     sip: tcp:5060
 # 萤石摄像头token
 ys:
-  appKey: 2db7f777fa6f44bdaf1c20b7f065887c
-  secret: bf59b1a2168da4b443473efe9b1cf1b0
+  appKey: ""
+  secret: ""
 
 log:
   # 日志等级, trace, debug, info, warn, error, fatal
