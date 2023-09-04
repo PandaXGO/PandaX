@@ -1,0 +1,1 @@
+taskkill /pid 31288  -t  -f

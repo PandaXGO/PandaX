@@ -45,6 +45,7 @@ type Config struct {
 	Mqtt   *Mqtt   `yaml:"mqtt"`
 	Casbin *Casbin `yaml:"casbin"`
 	Gen    *Gen    `yaml:"gen"`
+	Ys     *Ys     `yaml:"ys"`
 	Log    *Log    `yaml:"log"`
 }
 

@@ -79,6 +79,7 @@ global:
     listenaddrtls: :8443  # 用于HTTPS方式访问API的端口配置
 
 gb28181:
+  loglevel:        info
   #sip服务器地址 默认 自动适配设备网段
   sipip:          ""
   serial:         "34020000002000000001"
@@ -86,11 +87,15 @@ gb28181:
   password:       "pandax"
   #sip服务器端口
   port:
-    sip: udp:5060
+    sip: tcp:5060
+# 萤石摄像头token
+ys:
+  appKey: 2db7f777fa6f44bdaf1c20b7f065887c
+  secret: bf59b1a2168da4b443473efe9b1cf1b0
 
 log:
   # 日志等级, trace, debug, info, warn, error, fatal
   level: info
   file:
     path: ./
-#     name: panda_log.log
+    name: panda_log.log
