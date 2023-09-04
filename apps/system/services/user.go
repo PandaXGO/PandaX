@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/XM-GO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/kakuilan/kgo"
 	"golang.org/x/crypto/bcrypt"
 	"pandax/apps/system/entity"

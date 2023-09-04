@@ -29,16 +29,16 @@ func (f clearAlarmNodeFactory) Create(id string, meta Metadata) (Node, error) {
 	return decodePath(meta, node)
 }
 
-func (n *clearAlarmNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *clearAlarmNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 	cleared := n.GetLinkedNode("Cleared")
 	failure := n.GetLinkedNode("Failure")
 
-	alarm := services.DeviceAlarmModelDao.FindOneByType(msg.GetMetadata().GetKeyValue("deviceId").(string), n.AlarmType, "0")
+	alarm := services.DeviceAlarmModelDao.FindOneByType(msg.Metadata.GetValue("deviceId").(string), n.AlarmType, "0")
 	if alarm.DeviceId != "" {
 		log.Println("清除告警")
 		alarm.State = global.CLEARED
-		marshal, _ := json.Marshal(msg.GetMsg())
+		marshal, _ := json.Marshal(msg.Msg)
 		alarm.Details = string(marshal)
 		err := services.DeviceAlarmModelDao.Update(*alarm)
 		if err != nil {

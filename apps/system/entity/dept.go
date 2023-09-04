@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/XM-GO/PandaKit/model"
+import "github.com/PandaXGO/PandaKit/model"
 
 // 部门组织
 type SysDept struct {

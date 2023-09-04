@@ -24,11 +24,11 @@ func (f logNodeFactory) Create(id string, meta Metadata) (Node, error) {
 	return decodePath(meta, node)
 }
 
-func (n *logNode) Handle(msg message.Message) error {
+func (n *logNode) Handle(msg *message.Message) error {
 	successLableNode := n.GetLinkedNode("Success")
 	failureLableNode := n.GetLinkedNode("Failure")
 
-	scriptEngine := NewScriptEngine(msg, "ToString", n.Script)
+	scriptEngine := NewScriptEngine(*msg, "ToString", n.Script)
 	logMessage, err := scriptEngine.ScriptToString()
 	if err != nil {
 		if failureLableNode != nil {
@@ -38,10 +38,10 @@ func (n *logNode) Handle(msg message.Message) error {
 		}
 	}
 	services.RuleChainMsgLogModelDao.Insert(entity.RuleChainMsgLog{
-		MessageId:  msg.GetId(),
-		MsgType:    msg.GetType(),
-		DeviceName: msg.GetMetadata().GetValues()["deviceName"].(string),
-		Ts:         msg.GetTs(),
+		MessageId:  msg.Id,
+		MsgType:    msg.MsgType,
+		DeviceName: msg.Metadata["deviceName"].(string),
+		Ts:         msg.Ts,
 		Content:    logMessage,
 	})
 	global.Log.Info(logMessage)

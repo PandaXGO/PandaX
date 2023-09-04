@@ -13,7 +13,7 @@ type Node interface {
 	Id() string
 	Metadata() Metadata
 	MustLabels() []string
-	Handle(message.Message) error
+	Handle(*message.Message) error
 
 	AddLinkedNode(label string, node Node)
 	GetLinkedNode(label string) Node
@@ -55,7 +55,7 @@ func (n *bareNode) GetLinkedNodes() map[string]Node { return n.nodes }
 
 func (n *bareNode) Metadata() Metadata { return n.meta }
 
-func (n *bareNode) Handle(message.Message) error { return errors.New("not implemented") }
+func (n *bareNode) Handle(*message.Message) error { return errors.New("not implemented") }
 
 func decodePath(meta Metadata, n Node) (Node, error) {
 	if err := meta.DecodePath(n); err != nil {

@@ -2,9 +2,9 @@ package api
 
 import (
 	"context"
-	"github.com/XM-GO/PandaKit/biz"
-	"github.com/XM-GO/PandaKit/model"
-	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"github.com/kakuilan/kgo"
 	"pandax/apps/rule/entity"
 	"pandax/apps/rule/services"
@@ -24,9 +24,8 @@ func (r *RuleChainApi) GetNodeLabels(rc *restfulx.ReqCtx) {
 func (r *RuleChainApi) RuleChainTest(rc *restfulx.ReqCtx) {
 	code := restfulx.QueryParam(rc, "code")
 	instance, _ := rule_engine.NewRuleChainInstance([]byte(code))
-	newMessage := message.NewMessage()
-	newMessage.SetMetadata(message.NewMetadata())
-	instance.StartRuleChain(context.Background(), newMessage)
+	msg := message.NewMessage("1", message.TelemetryMes, message.Msg{"temperature": 60.4, "humidity": 32.5}, message.Metadata{})
+	instance.StartRuleChain(context.Background(), msg)
 	rc.ResData = []map[string]interface{}{}
 }
 

@@ -1,8 +1,8 @@
 package router
 
 import (
-	"github.com/XM-GO/PandaKit/model"
-	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/device/api"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"

@@ -11,6 +11,7 @@ import (
 	jobRouter "pandax/apps/job/router"
 	logRouter "pandax/apps/log/router"
 	sysRouter "pandax/apps/system/router"
+	videoRouter "pandax/apps/video/router"
 	"pandax/pkg/middleware"
 )
 
@@ -73,6 +74,10 @@ func InitRouter() *transport.HttpServer {
 	{
 		ruleRouter.InitRuleChainRouter(container)
 		ruleRouter.InitRuleChainMsgLogRouter(container)
+	}
+	{
+		//萤石摄像头
+		videoRouter.InitEzvizRouter(container)
 	}
 	// api接口
 	middleware.SwaggerConfig(container)

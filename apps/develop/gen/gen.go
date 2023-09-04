@@ -3,8 +3,8 @@ package gen
 import (
 	"bytes"
 	"fmt"
-	"github.com/XM-GO/PandaKit/biz"
-	"github.com/XM-GO/PandaKit/utils"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/utils"
 	"github.com/kakuilan/kgo"
 	"os"
 	"pandax/apps/develop/entity"

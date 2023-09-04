@@ -10,6 +10,7 @@ const (
 	NODE_CONFIG_ORIGINATOR_TYPE_KEY = "originatorTypeKey"
 )
 
+// Metadata 前端 参数 Properties
 type Metadata interface {
 	Keys() []string
 	With(key string, val interface{}) Metadata

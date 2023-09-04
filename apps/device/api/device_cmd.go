@@ -2,9 +2,9 @@ package api
 
 // ==========================================================================
 import (
-	"github.com/XM-GO/PandaKit/biz"
-	"github.com/XM-GO/PandaKit/model"
-	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"github.com/kakuilan/kgo"
 	"pandax/pkg/global"
 	"pandax/pkg/mqtt"
@@ -50,7 +50,7 @@ func (p *DeviceCmdLogApi) InsertDeviceCmdLog(rc *restfulx.ReqCtx) {
 	// 下发指令
 	var rpc = &mqtt.RpcRequest{Client: global.MqttClient, Mode: "single"}
 	rpc.GetRequestId()
-	err = rpc.RequestCmd(mqtt.RpcPayload{Method: data.CmdName, Params: data.CmdContent})
+	_, err = rpc.RequestCmd(mqtt.RpcPayload{Method: data.CmdName, Params: data.CmdContent})
 	if err != nil {
 		global.Log.Error("指令下发失败")
 	}

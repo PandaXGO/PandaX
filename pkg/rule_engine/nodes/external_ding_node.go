@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/XM-GO/PandaKit/httpclient"
+	"github.com/PandaXGO/PandaKit/httpclient"
 	"github.com/sirupsen/logrus"
 	"net/url"
 	"pandax/pkg/rule_engine/message"
@@ -35,8 +35,8 @@ func (f externalDingNodeFactory) Create(id string, meta Metadata) (Node, error) 
 	return decodePath(meta, node)
 }
 
-func (n *externalDingNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *externalDingNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")

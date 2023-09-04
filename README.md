@@ -1,7 +1,7 @@
 # PandaX
 
 <div align="center"><img src="https://s3.bmp.ovh/imgs/2021/12/86b15968432fc6ea.png"/></div>
-<div align="center"><h3 align="center">PandaX 物联网快速开发基座</h3></div>
+<div align="center"><h3 align="center">PandaX企业级物联网平台快速开发框架</h3></div>
 <div align="center"><h3 align="center">基于Go前后端分离架构，代码精简，开箱即用，前端紧随前沿 Vue3.0 + TypeScript + vite3 + Element-plus技术</h3></div>
 
 
@@ -62,13 +62,12 @@
 - <span class="tag done-tag">✔</span> **`代码生成`** - _可直接通过框架生成前后端基础业务代码（go、vue），减少开发时间。_
 - <span class="tag done-tag">✔</span> **`组态大屏设计器`** - _通过拖拉拽直接生成组态、大屏。_
 - <span class="tag done-tag">✔</span> **`规则链设计`** - _物联网规则链过滤_
+- <span class="tag done-tag">✔</span> **`表单设计`** - _表单设计_
 - <span class="tag done-tag">✔</span> **`报表设计`** - _数据报表设计_
 - <span class="tag done-tag">✔</span> **`产品管理`** - _设备的产品管理_
 - <span class="tag done-tag">✔</span> **`设备管理`** - _设备的管理_
 
 ## 🛠 以后可能会有什么NB功能？
-- <span class="tag wip-tag">开发中</span> **`应用管理`** - _基于K8S编排能力，创建应用管理模块。_
-- <span class="tag wip-tag">开发中</span> **`多协议接入`** - _根据插件形式创建多协议接入_
 - <span class="tag wip-tag">开发中</span> **`3D组态`** - _根据2d组态自动生成3D组态_
 - <span class="tag wip-tag">开发中</span> **`数字孪生编辑器`** - _web直接构建数字孪生模型_
 
@@ -106,11 +105,6 @@
 | `uploads`  | 存储上传的文件的地方                           |
 
 更多功能请访问系统。
-
-  
-## ❤特别鸣谢
-
-  * 感谢[VUE-NEXT-ADMIN](https://gitee.com/lyt-top/vue-next-admin)
 
 ---
 版权说明

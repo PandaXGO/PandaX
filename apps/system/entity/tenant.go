@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"github.com/XM-GO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/model"
 	"time"
 )
 

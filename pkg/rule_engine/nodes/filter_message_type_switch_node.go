@@ -32,11 +32,11 @@ func (f messageTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, er
 	return decodePath(meta, node)
 }
 
-func (n *messageTypeSwitchNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
-
+func (n *messageTypeSwitchNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	msg.Metadata = map[string]interface{}{"AA": "BB", "deviceName": "fff"}
 	nodes := n.GetLinkedNodes()
-	messageType := msg.GetType()
+	messageType := msg.MsgType
 	for label, node := range nodes {
 		if messageType == label {
 			return node.Handle(msg)

@@ -27,8 +27,8 @@ func (f externalRuleChainNodeFactory) Create(id string, meta Metadata) (Node, er
 	return decodePath(meta, node)
 }
 
-func (n *externalRuleChainNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *externalRuleChainNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 	data := services.RuleChainModelDao.FindOne(n.RuleId)
 	if data == nil {
 		return errors.New(fmt.Sprintf("节点 %s ,获取规则链失败", n.Name()))

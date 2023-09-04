@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	"github.com/XM-GO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/entity"
 	"pandax/pkg/global"
 	"pandax/pkg/tool"

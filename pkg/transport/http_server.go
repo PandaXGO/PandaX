@@ -2,7 +2,7 @@ package transport
 
 import (
 	"context"
-	"github.com/XM-GO/PandaKit/logger"
+	"github.com/PandaXGO/PandaKit/logger"
 	"github.com/emicklei/go-restful/v3"
 	"net/http"
 	"pandax/pkg/global"

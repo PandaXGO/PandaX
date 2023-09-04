@@ -2,7 +2,7 @@ package nodes
 
 import (
 	"encoding/json"
-	"github.com/XM-GO/PandaKit/httpclient"
+	"github.com/PandaXGO/PandaKit/httpclient"
 	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
@@ -28,8 +28,8 @@ func (f externalWechatNodeFactory) Create(id string, meta Metadata) (Node, error
 	return decodePath(meta, node)
 }
 
-func (n *externalWechatNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *externalWechatNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")

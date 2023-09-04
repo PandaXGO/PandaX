@@ -3,8 +3,8 @@ package config
 import (
 	"flag"
 	"fmt"
-	"github.com/XM-GO/PandaKit/biz"
-	"github.com/XM-GO/PandaKit/utils"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/utils"
 	"path/filepath"
 )
 
@@ -45,6 +45,7 @@ type Config struct {
 	Mqtt   *Mqtt   `yaml:"mqtt"`
 	Casbin *Casbin `yaml:"casbin"`
 	Gen    *Gen    `yaml:"gen"`
+	Ys     *Ys     `yaml:"ys"`
 	Log    *Log    `yaml:"log"`
 }
 

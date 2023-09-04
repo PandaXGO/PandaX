@@ -3,7 +3,7 @@ package nodes
 import (
 	"encoding/json"
 	"errors"
-	"github.com/XM-GO/PandaKit/httpclient"
+	"github.com/PandaXGO/PandaKit/httpclient"
 	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
@@ -27,8 +27,8 @@ func (f externalRestapiNodeFactory) Create(id string, meta Metadata) (Node, erro
 	return decodePath(meta, node)
 }
 
-func (n *externalRestapiNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *externalRestapiNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 	successLableNode := n.GetLinkedNode("Success")
 	failureLableNode := n.GetLinkedNode("Failure")
 	if n.RequestMethod == "GET" {
@@ -42,11 +42,11 @@ func (n *externalRestapiNode) Handle(msg message.Message) error {
 			return failureLableNode.Handle(msg)
 		} else {
 			if successLableNode != nil {
-				metadata := msg.GetMetadata()
+				metadata := msg.Metadata
 				for key, value := range response {
-					metadata.SetKeyValue(key, value)
+					metadata.SetValue(key, value)
 				}
-				msg.SetMetadata(metadata)
+				msg.Metadata = metadata
 				return successLableNode.Handle(msg)
 			}
 		}

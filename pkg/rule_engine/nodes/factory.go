@@ -22,10 +22,10 @@ type Factory interface {
 }
 
 var (
-	// allNodeFactories hold all node's factory
+	// 所有节点对应关系
 	allNodeFactories map[string]Factory = make(map[string]Factory)
 
-	// allNodeCategories hold node's metadata by category
+	// 所有节点的类型MAP
 	allNodeCategories map[string][]map[string]interface{} = make(map[string][]map[string]interface{})
 	allCategories     []map[string]interface{}            = make([]map[string]interface{}, 0)
 )
@@ -48,7 +48,7 @@ func NewNode(nodeType string, id string, meta Metadata) (Node, error) {
 	return nil, fmt.Errorf("invalid node type '%s'", nodeType)
 }
 
-// GetCategoryNodes return specified category's all nodes
+// GetCategoryNodes 获取所有分类节点
 func GetCategoryNodes() map[string][]map[string]interface{} { return allNodeCategories }
 
 func GetCategory() []map[string]interface{} { return allCategories }

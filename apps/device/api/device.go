@@ -8,9 +8,9 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/XM-GO/PandaKit/biz"
-	"github.com/XM-GO/PandaKit/model"
-	"github.com/XM-GO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"github.com/kakuilan/kgo"
 	"pandax/pkg/global"
 	"pandax/pkg/mqtt"
@@ -107,7 +107,7 @@ func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
 		key: value,
 	}
 	content, _ := json.Marshal(contentMap)
-	var rpc = &mqtt.RpcRequest{Client: global.MqttClient, RequestId: 1, Mode: "single"}
+	var rpc = &mqtt.RpcRequest{Client: global.MqttClient, Mode: "single"}
 	rpc.GetRequestId()
 	err := rpc.RequestAttributes(mqtt.RpcPayload{Params: string(content)})
 	biz.ErrIsNil(err, "属性下发失败")

@@ -26,28 +26,27 @@ func (f transformRenameKeyNodeFactory) Create(id string, meta Metadata) (Node, e
 	return decodePath(meta, node)
 }
 
-func (n *transformRenameKeyNode) Handle(msg message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.GetType())
+func (n *transformRenameKeyNode) Handle(msg *message.Message) error {
+	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
 	if n.FormType == "msg" {
-		data := msg.GetMsg()
+		data := msg.Msg
 		for _, key := range n.Keys {
 			if _, found := data[key.OldName]; found {
 				data[key.NewName] = data[key.OldName]
 				delete(data, key.OldName)
-				msg.SetMsg(data)
+				msg.Msg = data
 			}
 		}
 	} else if n.FormType == "metadata" {
-		data := msg.GetMetadata()
+		data := msg.Metadata
 		for _, key := range n.Keys {
-			if data.GetKeyValue(key.OldName) != nil {
-				values := data.GetValues()
-				values[key.NewName] = values[key.OldName]
-				delete(values, key.OldName)
-				msg.SetMetadata(message.NewDefaultMetadata(values))
+			if data.GetValue(key.OldName) != nil {
+				data[key.NewName] = data[key.OldName]
+				delete(data, key.OldName)
+				msg.Metadata = data
 			}
 		}
 	} else {

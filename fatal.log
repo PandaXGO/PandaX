@@ -1,8 +1,19 @@
 
-2023-08-22 15:15:49--------------------------------
+2023-09-02 12:17:06--------------------------------
+panic: runtime error: index out of range [0] with length 0
 
-2023-08-22 15:51:54--------------------------------
+goroutine 101 [running]:
+m7s.live/plugin/gb28181/v4.(*GB28181Config).OnEvent(0x3b53c20, {0x2177be0?, 0xc00127c4e0?})
+	D:/workspace/go/pkg/mod/m7s.live/plugin/gb28181/v4@v4.3.9/main.go:83 +0x61d
+m7s.live/engine/v4.(*Plugin).run(0xc0002fe7e0)
+	D:/workspace/go/pkg/mod/m7s.live/engine/v4@v4.13.8/plugin.go:170 +0x13b
+m7s.live/engine/v4.(*Plugin).assign(0xc0002fe7e0)
+	D:/workspace/go/pkg/mod/m7s.live/engine/v4@v4.13.8/plugin.go:154 +0x4db
+m7s.live/engine/v4.Run({0x2c43a38?, 0xc000044050}, {0x23cd9d6, 0xa})
+	D:/workspace/go/pkg/mod/m7s.live/engine/v4@v4.13.8/main.go:135 +0x1197
+created by main.glob..func2
+	D:/workspace/go/project/PandaX/PandaX/main.go:81 +0x2e5
 
-2023-08-23 16:02:58--------------------------------
+2023-09-02 12:19:16--------------------------------
 
-2023-08-23 16:05:15--------------------------------
+2023-09-04 11:15:17--------------------------------

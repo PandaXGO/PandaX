@@ -3,8 +3,8 @@ module pandax
 go 1.18
 
 require (
+	github.com/PandaXGO/PandaKit v0.0.0-20230901074047-e0e8e4bf2bed
 	github.com/Shopify/sarama v1.38.1
-	github.com/XM-GO/PandaKit v0.0.0-20230628055017-c47e7aa81cd4
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didip/tollbooth v4.0.2+incompatible
 	github.com/dop251/goja v0.0.0-20230304130813-e2f543bf4b4c
@@ -76,6 +76,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/pprof v0.0.0-20230207041349-798e818bf904 // indirect
+	github.com/gorilla/schema v1.2.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
