@@ -1,0 +1,42 @@
+services:
+  redis:
+    image: redis:7.0.12
+    container_name: redis
+    restart: always
+    environment:
+      requirepass: pandax
+    volumes:
+      - "./redis/conf/redis.conf:/etc/redis/redis.conf"
+      - "./redis/data:/data"
+      - "./redis/logs:/logs"
+    command: ["redis-server","/etc/redis/redis.conf"]
+    ports:
+      - 6379:6379
+  tdengine:
+    image: tdengine/tdengine:3.0.4.2
+    container_name: tdengine-server
+    restart: always
+    ports:
+      - 6030:6030
+      - 6041:6041
+  emqx:
+    image: emqx/emqx:5.1.0
+    restart: always
+    container_name: emqx-server
+    ports:
+      - 1883:1883
+      - 8083:8083
+      - 8084:8084
+      - 8883:8883
+      - 18083:18083
+  mysql:
+    image: mysql:8.0.23
+    container_name: mysql-server
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: pandax_iot
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"

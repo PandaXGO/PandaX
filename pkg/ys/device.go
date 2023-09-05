@@ -46,7 +46,7 @@ func (ys *Ys) GetDeviceLiveAddress(deviceSerial string, channelNo int) (live []L
 	params := make(map[string]interface{})
 	params["deviceSerial"] = deviceSerial
 	params["channelNo"] = channelNo
-	params["protocol"] = 1 //流播放协议，1-ezopen、2-hls、3-rtmp、4-flv，默认为1
+	params["protocol"] = 4 //流播放协议，1-ezopen、2-hls、3-rtmp、4-flv，默认为1
 	params["type"] = "1"   //地址的类型，1-预览，2-本地录像回放，3-云存储录像回放，非必选，默认为1；回放仅支持rtmp、ezopen、flv协议
 	params["quality"] = 1  //视频清晰度，1-高清（主码流）、2-流畅（子码流）
 	_, err = ys.authorizeRequset("POST", DEVICELIVEADDRESS, params, &live)

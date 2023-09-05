@@ -42,7 +42,18 @@ func InitEzvizRouter(container *restful.Container) {
 		Returns(200, "OK", []ys.Channel{}).
 		Returns(404, "Not Found", nil))
 
-	ws.Route(ws.GET("/{deviceSerial}/start/ptz").To(func(request *restful.Request, response *restful.Response) {
+	ws.Route(ws.GET("/{deviceSerial}/channel/live").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("设备直播地址").Handle(s.GetDeviceLiveAddress)
+	}).
+		Doc("设备直播地址").
+		Param(ws.PathParameter("deviceSerial", "deviceSerial").DataType("string")).
+		Param(ws.QueryParameter("channelNo", "通道序号").Required(true).DataType("int")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes(ys.Channel{}). // on the response
+		Returns(200, "OK", []ys.Channel{}).
+		Returns(404, "Not Found", nil))
+
+	ws.Route(ws.GET("/{deviceSerial}/ptz/start").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("摄像头操作").Handle(s.StartPtz)
 	}).
 		Doc("摄像头操作").
@@ -52,7 +63,7 @@ func InitEzvizRouter(container *restful.Container) {
 		Param(ws.QueryParameter("speed", "速度").Required(true).DataType("int")).
 		Metadata(restfulspec.KeyOpenAPITags, tags))
 
-	ws.Route(ws.GET("/{deviceSerial}/stop/ptz").To(func(request *restful.Request, response *restful.Response) {
+	ws.Route(ws.GET("/{deviceSerial}/ptz/stop").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("摄像头操作停止").Handle(s.StopPtz)
 	}).
 		Doc("摄像头操作停止").

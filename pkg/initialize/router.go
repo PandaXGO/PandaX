@@ -26,6 +26,7 @@ func InitRouter() *transport.HttpServer {
 	// 是否允许跨域
 	if serverConfig.Cors {
 		container.Filter(middleware.Cors(container).Filter)
+		container.Filter(container.OPTIONSFilter)
 	}
 	// 流量限制
 	if serverConfig.Rate.Enable {

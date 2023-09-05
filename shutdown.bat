@@ -1,1 +1,1 @@
-taskkill /pid 31288  -t  -f
+taskkill /pid 19788  -t  -f

@@ -17,3 +17,61 @@ created by main.glob..func2
 2023-09-02 12:19:16--------------------------------
 
 2023-09-04 11:15:17--------------------------------
+
+2023-09-05 08:33:55--------------------------------
+
+2023-09-05 08:34:49--------------------------------
+
+2023-09-05 08:35:41--------------------------------
+panic: (*logrus.Entry) 0xc0005604d0
+
+goroutine 1 [running]:
+github.com/sirupsen/logrus.(*Entry).log(0xc0005602a0, 0x0, {0xc0003e41c0, 0x69})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:260 +0x4a7
+github.com/sirupsen/logrus.(*Entry).Log(0xc0005602a0, 0x0, {0xc000725a80?, 0x1?, 0x1?})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:304 +0x4f
+github.com/sirupsen/logrus.(*Entry).Logf(0xc0005602a0, 0x0, {0x1a02c73?, 0xc000725ae0?}, {0xc000725b70?, 0x10?, 0x16c1fa0?})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:349 +0x85
+github.com/sirupsen/logrus.(*Logger).Logf(0xc000134800, 0x0, {0x1a02c73, 0x17}, {0xc000725b70, 0x1, 0x1})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:154 +0x85
+github.com/sirupsen/logrus.(*Logger).Panicf(...)
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:195
+github.com/PandaXGO/PandaKit/starter.(*DbGorm).GormMysql(0xc000725cd0)
+	D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230901074047-e0e8e4bf2bed/starter/gorm.go:48 +0x279
+github.com/PandaXGO/PandaKit/starter.(*DbGorm).GormInit(0xc000705420?)
+	D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230901074047-e0e8e4bf2bed/starter/gorm.go:28 +0x39
+main.glob..func1(0x312cf80?, {0x19b20c5?, 0x0?, 0x0?})
+	D:/workspace/go/project/PandaX/PandaX/main.go:45 +0x2de
+github.com/spf13/cobra.(*Command).execute(0x312cf80, {0xc000078240, 0x0, 0x0})
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:861 +0x5e3
+github.com/spf13/cobra.(*Command).ExecuteC(0x312cf80)
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:990 +0x3bd
+github.com/spf13/cobra.(*Command).Execute(...)
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:918
+main.main()
+	D:/workspace/go/project/PandaX/PandaX/main.go:106 +0x25
+
+2023-09-05 08:36:19--------------------------------
+panic: (*logrus.Entry) 0xc0004ac930
+
+goroutine 1 [running]:
+github.com/sirupsen/logrus.(*Entry).log(0xc0004ac620, 0x0, {0xc0004a4a98, 0x11})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:260 +0x4a7
+github.com/sirupsen/logrus.(*Entry).Log(0xc0004ac620, 0x0, {0xc000e37ca0?, 0xc0002e22f0?, 0x17c1660?})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:304 +0x4f
+github.com/sirupsen/logrus.(*Logger).Log(0xc0001a8780, 0x0, {0xc000e37ca0, 0x1, 0x1})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:204 +0x65
+github.com/sirupsen/logrus.(*Logger).Panic(...)
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:253
+main.glob..func1(0x322cf80?, {0x1ab20c5?, 0x0?, 0x0?})
+	D:/workspace/go/project/PandaX/PandaX/main.go:49 +0x3e5
+github.com/spf13/cobra.(*Command).execute(0x322cf80, {0xc000078240, 0x0, 0x0})
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:861 +0x5e3
+github.com/spf13/cobra.(*Command).ExecuteC(0x322cf80)
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:990 +0x3bd
+github.com/spf13/cobra.(*Command).Execute(...)
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:918
+main.main()
+	D:/workspace/go/project/PandaX/PandaX/main.go:106 +0x25
+
+2023-09-05 08:38:22--------------------------------

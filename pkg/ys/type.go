@@ -26,6 +26,7 @@ type Device struct {
 	Status        int    `json:"status"`
 	Defence       int    `json:"defence"`
 	DeviceVersion string `json:"deviceVersion"`
+	NetAddress    string `json:"netAddress"`
 }
 
 // Channel 萤石摄像头通道数据结构

@@ -1,12 +1,10 @@
 package ys
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"github.com/PandaXGO/PandaKit/httpclient"
 	"log"
-	"net/http"
 	"strings"
 	"time"
 )
@@ -75,36 +73,19 @@ func (ys *Ys) requset(method, url string, params map[string]interface{}, data in
 			return
 		}
 	}()
-	var r http.Request
-	r.ParseForm()
+	ps := make([]string, 0)
 	for k, v := range params {
-		r.Form.Add(k, fmt.Sprint(v))
+		ps = append(ps, fmt.Sprintf("%s=%v", k, v))
 	}
-	req, err := http.NewRequest(method, url, strings.NewReader(r.Form.Encode()))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	client := &http.Client{Timeout: 60 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	buf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	var res = Status{
+	status = &Status{
 		Data: data,
 	}
-	err = json.Unmarshal(buf, &res)
+	err = httpclient.NewRequest(url).Timeout(60).PostParams(strings.Join(ps, "&")).BodyToObj(status)
 	if err != nil {
 		return nil, err
 	}
-	if res.Code != "200" {
-		return status, errors.New(res.Msg)
+	if status.Code != "200" {
+		return status, errors.New(status.Msg)
 	}
 	return status, nil
 }
