@@ -33,8 +33,8 @@ func TestYs_GetDeviceChannelList(t *testing.T) {
 
 func TestYs_GetDeviceDeviceLiveAddress(t *testing.T) {
 	ys := &Ys{
-		AppKey:    "2cc6a5edcee046c1b8bc9a857d67a287",
-		Secret:    "9eb8f595dc02859c91a5d7d0593f8a07",
+		AppKey:    "",
+		Secret:    "",
 		IsRAM:     0,
 		AccountID: "",
 	}
