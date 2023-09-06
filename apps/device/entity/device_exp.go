@@ -19,6 +19,12 @@ type DeviceAlarm struct {
 	Details   string    `gorm:"type:varchar(255);comment:告警详情" json:"details"`
 }
 
+type DeviceAlarmForm struct {
+	DeviceAlarm
+	StartTime string `gorm:"-" json:"startTime"`
+	EndTime   string `gorm:"-" json:"endTime"`
+}
+
 type DeviceCmdLog struct {
 	Id              string `json:"id" gorm:"primary_key;"`
 	DeviceId        string `gorm:"type:varchar(64);comment:所属设备" json:"deviceId"`

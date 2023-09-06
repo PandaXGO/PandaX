@@ -124,10 +124,8 @@ func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	data.LinkStatus = global.INACTIVE
 	data.LastAt = time.Now()
 	p.DeviceApp.Insert(data)
-	// 视频设备不创建超级表
-	if data.DeviceType != global.MONITOR {
-		createDeviceTable(data.Pid, data.Name)
-	}
+	// 创建超级表
+	createDeviceTable(data.Pid, data.Name)
 }
 
 // UpdateDevice 修改Device
@@ -145,9 +143,7 @@ func (p *DeviceApi) DeleteDevice(rc *restfulx.ReqCtx) {
 	for _, id := range ids {
 		list := p.DeviceApp.FindOne(id)
 		// 删除表
-		if list.DeviceType != global.MONITOR {
-			deleteDeviceTable(list.Name)
-		}
+		deleteDeviceTable(list.Name)
 	}
 	p.DeviceApp.Delete(ids)
 }

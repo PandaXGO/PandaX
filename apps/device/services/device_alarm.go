@@ -11,7 +11,7 @@ type (
 		Insert(data entity.DeviceAlarm) error
 		FindOne(id string) *entity.DeviceAlarm
 		FindOneByType(deviceId, ty, state string) *entity.DeviceAlarm
-		FindListPage(page, pageSize int, data entity.DeviceAlarm) (*[]entity.DeviceAlarm, int64)
+		FindListPage(page, pageSize int, data entity.DeviceAlarmForm) (*[]entity.DeviceAlarm, int64)
 		Update(data entity.DeviceAlarm) error
 		Delete(ids []string)
 	}
@@ -46,7 +46,7 @@ func (m *alarmModelImpl) FindOneByType(deviceId, ty, state string) *entity.Devic
 	return resData
 }
 
-func (m *alarmModelImpl) FindListPage(page, pageSize int, data entity.DeviceAlarm) (*[]entity.DeviceAlarm, int64) {
+func (m *alarmModelImpl) FindListPage(page, pageSize int, data entity.DeviceAlarmForm) (*[]entity.DeviceAlarm, int64) {
 	list := make([]entity.DeviceAlarm, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -65,6 +65,12 @@ func (m *alarmModelImpl) FindListPage(page, pageSize int, data entity.DeviceAlar
 	}
 	if data.State != "" {
 		db = db.Where("state = ?", data.State)
+	}
+	if data.StartTime != "" {
+		db = db.Where("time > ?", data.StartTime)
+	}
+	if data.EndTime != "" {
+		db = db.Where("time < ?", data.EndTime)
 	}
 	err := db.Count(&total).Error
 	err = db.Order("time").Limit(pageSize).Offset(offset).Find(&list).Error

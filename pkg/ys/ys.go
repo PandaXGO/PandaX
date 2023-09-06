@@ -101,7 +101,6 @@ func (ys *Ys) authorizeRequset(method, url string, params map[string]interface{}
 			return
 		}
 	}()
-	log.Println("初始化token", *ys)
 	params["accessToken"] = ys.AccessToken
 	status, err = ys.requset(method, url, params, data)
 	return

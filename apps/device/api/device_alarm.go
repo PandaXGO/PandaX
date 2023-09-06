@@ -16,13 +16,15 @@ type DeviceAlarmApi struct {
 
 // GetDeviceAlarmList 告警列表数据
 func (p *DeviceAlarmApi) GetDeviceAlarmList(rc *restfulx.ReqCtx) {
-	data := entity.DeviceAlarm{}
+	data := entity.DeviceAlarmForm{}
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 	data.DeviceId = restfulx.QueryParam(rc, "deviceId")
 	data.Type = restfulx.QueryParam(rc, "type")
 	data.Level = restfulx.QueryParam(rc, "level")
 	data.State = restfulx.QueryParam(rc, "state")
+	data.StartTime = restfulx.QueryParam(rc, "startTime")
+	data.EndTime = restfulx.QueryParam(rc, "endTime")
 
 	list, total := p.DeviceAlarmApp.FindListPage(pageNum, pageSize, data)
 

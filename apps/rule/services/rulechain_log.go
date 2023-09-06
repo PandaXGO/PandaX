@@ -16,7 +16,7 @@ type (
 	RuleChainMsgLogModel interface {
 		Insert(data entity.RuleChainMsgLog) *entity.RuleChainMsgLog
 		FindListPage(page, pageSize int, data entity.RuleChainMsgLog) (*[]entity.RuleChainMsgLog, int64)
-		Delete(ids []string)
+		Delete(data entity.RuleChainMsgLog)
 	}
 
 	ruleChainLogModelImpl struct {
@@ -55,6 +55,17 @@ func (m *ruleChainLogModelImpl) FindListPage(page, pageSize int, data entity.Rul
 	return &list, total
 }
 
-func (m *ruleChainLogModelImpl) Delete(ids []string) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.RuleChainMsgLog{}, "id in (?)", ids).Error, "删除规则链失败")
+func (m *ruleChainLogModelImpl) Delete(data entity.RuleChainMsgLog) {
+	db := global.Db.Table(m.table)
+	// 此处填写 where参数判断
+	if data.DeviceName != "" {
+		db = db.Where("device_name = ?", data.DeviceName)
+	}
+	if data.MessageId != "" {
+		db = db.Where("message_id = ?", data.MessageId)
+	}
+	if data.MsgType != "" {
+		db = db.Where("msg_type = ?", data.MsgType)
+	}
+	biz.ErrIsNil(db.Delete(&entity.RuleChainMsgLog{}).Error, "删除规则链失败")
 }

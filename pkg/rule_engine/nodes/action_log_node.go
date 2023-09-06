@@ -3,7 +3,6 @@ package nodes
 import (
 	"pandax/apps/rule/entity"
 	"pandax/apps/rule/services"
-	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -40,11 +39,11 @@ func (n *logNode) Handle(msg *message.Message) error {
 	services.RuleChainMsgLogModelDao.Insert(entity.RuleChainMsgLog{
 		MessageId:  msg.Id,
 		MsgType:    msg.MsgType,
+		DeviceId:   msg.Metadata["deviceId"].(string),
 		DeviceName: msg.Metadata["deviceName"].(string),
 		Ts:         msg.Ts,
 		Content:    logMessage,
 	})
-	global.Log.Info(logMessage)
 	if err != nil {
 		if failureLableNode != nil {
 			return failureLableNode.Handle(msg)

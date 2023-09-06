@@ -32,9 +32,7 @@ var ProductModelDao ProductModel = &productModelImpl{
 
 func (m *productModelImpl) Insert(data entity.Product) *entity.Product {
 	// 添加产品及规则链到redis中
-	if data.DeviceType != global.MONITOR {
-		setProductRule(&data)
-	}
+	setProductRule(&data)
 	err := global.Db.Table(m.table).Create(&data).Error
 	biz.ErrIsNil(err, "添加产品失败")
 	return &data

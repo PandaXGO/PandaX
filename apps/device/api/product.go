@@ -70,10 +70,8 @@ func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 	data.Id = kgo.KStr.Uniqid("p_")
 	data.Owner = rc.LoginAccount.UserName
 	p.ProductApp.Insert(data)
-	// 创建taos数据库超级表 摄像头产品不创建
-	if data.DeviceType != global.MONITOR {
-		createDeviceStable(data.Id)
-	}
+	// 创建taos数据库超级表
+	createDeviceStable(data.Id)
 }
 
 // UpdateProduct 修改Product

@@ -35,7 +35,7 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 	biz.IsTrue(list != nil && len(*list) == 0, "设备名称已经存在")
 	//2 创建认证TOKEN IOTHUB使用
 	etoken := getDeviceToken(&data)
-	if data.DeviceType != global.GATEWAYS && data.DeviceType != global.MONITOR {
+	if data.DeviceType != global.GATEWAYS {
 		data.Token = etoken.Token
 	}
 	//3 添加设备

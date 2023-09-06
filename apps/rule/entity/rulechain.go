@@ -29,12 +29,13 @@ func (RuleChain) TableName() string {
 }
 
 type RuleChainMsgLog struct {
-	MessageId  string    `json:"message_id"`
-	MsgType    string    `json:"msg_type"`
-	DeviceName string    `json:"device_name"`
-	Ts         time.Time `json:"ts"`
-	Content    string    `json:"content"`
-	CreatedAt  time.Time // 创建时间
+	MessageId  string    `gorm:"message_id;type:varchar(64);comment:消息Id" json:"messageId"`
+	MsgType    string    `gorm:"msg_type;type:varchar(64);comment:消息类型" json:"msgType"`
+	DeviceId   string    `gorm:"device_id;type:varchar(64);comment:设备ID" json:"deviceId"`
+	DeviceName string    `gorm:"device_name;type:varchar(255);comment:设备名称" json:"deviceName"`
+	Ts         time.Time `gorm:"ts;type:varchar(64);comment:时间" json:"ts"`
+	Content    string    `gorm:"content;type:varchar(1024);comment:内容" json:"content"`
+	CreatedAt  time.Time `gorm:"column:create_at" json:"create_at"` // 创建时间
 }
 
 func (RuleChainMsgLog) TableName() string {

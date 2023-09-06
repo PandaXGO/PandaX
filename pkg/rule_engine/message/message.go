@@ -1,6 +1,11 @@
 package message
 
-/*
+import (
+	"encoding/json"
+	"github.com/google/uuid"
+	"time"
+)
+
 // 消息类型
 const (
 	ConnectMes    = "Connect"
@@ -20,51 +25,21 @@ const (
 	MONITOR = "MONITOR" //监控
 )
 
-// Message ...
-type Message interface {
-	GetId() string
-	GetTs() time.Time
-	GetUserId() string
-	GetType() string
-	GetMsg() map[string]interface{}
-	GetMetadata() Metadata
-	GetAllMap() map[string]interface{} //msg 和 Metadata的合并
-	SetType(string)
-	SetMsg(map[string]interface{})
-	SetUserId(string)
-	SetMetadata(Metadata)
-	MarshalBinary() ([]byte, error)
-}
+type Msg map[string]interface{}
+type Metadata map[string]interface{}
 
-// Metadata ...
-type Metadata interface {
-	Keys() []string
-	GetKeyValue(key string) interface{}
-	SetKeyValue(key string, val interface{})
-	GetValues() map[string]interface{}
+type Message struct {
+	Id       string    //uuid     消息Id
+	Ts       time.Time //时间戳
+	MsgType  string    //消息类型，   attributes（参数），telemetry（遥测），Connect连接事件
+	UserId   string    //客户Id  UUID  设备发布人
+	Msg      Msg       //数据		数据结构JSON  设备原始数据 msg
+	Metadata Metadata  //消息的元数据		包括设备Id，设备类型，产品ID等
 }
 
 // NewMessage ...
-func NewMessage() Message {
-	return &defaultMessage{
-		Id:  uuid.New().String(),
-		Ts:  time.Now(),
-		Msg: map[string]interface{}{},
-	}
-}
-
-type defaultMessage struct {
-	Id       string                 //uuid     消息Id
-	Ts       time.Time              //时间戳
-	MsgType  string                 //消息类型，   attributes（参数），telemetry（遥测），Connect连接事件
-	UserId   string                 //客户Id  UUID  设备发布人
-	Msg      map[string]interface{} //数据		数据结构JSON  设备原始数据 msg
-	Metadata Metadata               //消息的元数据		包括设备Id，设备类型，产品ID等
-}
-
-// NewMessageWithDetail ...
-func NewMessageWithDetail(userId, messageType string, msg map[string]interface{}, metadata Metadata) Message {
-	return &defaultMessage{
+func NewMessage(userId, messageType string, msg Msg, metadata Metadata) *Message {
+	return &Message{
 		Id:       uuid.New().String(),
 		Ts:       time.Now(),
 		UserId:   userId,
@@ -74,16 +49,10 @@ func NewMessageWithDetail(userId, messageType string, msg map[string]interface{}
 	}
 }
 
-func (t *defaultMessage) GetId() string                  { return t.Id }
-func (t *defaultMessage) GetTs() time.Time               { return t.Ts }
-func (t *defaultMessage) GetUserId() string              { return t.UserId }
-func (t *defaultMessage) GetType() string                { return t.MsgType }
-func (t *defaultMessage) GetMsg() map[string]interface{} { return t.Msg }
-func (t *defaultMessage) GetMetadata() Metadata          { return t.Metadata }
-func (t *defaultMessage) GetAllMap() map[string]interface{} {
+func (t *Message) GetAllMap() map[string]interface{} {
 	data := make(map[string]interface{})
-	for msgKey, msgValue := range t.GetMsg() {
-		for metaKey, metaValue := range t.GetMetadata().GetValues() {
+	for msgKey, msgValue := range t.Msg {
+		for metaKey, metaValue := range t.Metadata {
 			if msgKey == metaKey {
 				data[msgKey] = metaValue
 			} else {
@@ -98,55 +67,33 @@ func (t *defaultMessage) GetAllMap() map[string]interface{} {
 	}
 	return data
 }
-func (t *defaultMessage) SetType(msgType string)            { t.MsgType = msgType }
-func (t *defaultMessage) SetMsg(msg map[string]interface{}) { t.Msg = msg }
-func (t *defaultMessage) SetUserId(userId string)           { t.UserId = userId }
-func (t *defaultMessage) SetMetadata(metadata Metadata)     { t.Metadata = metadata }
 
-func (t *defaultMessage) MarshalBinary() ([]byte, error) {
+func (t *Message) MarshalBinary() ([]byte, error) {
 	return json.Marshal(t)
 }
 
-// NewMetadata ...
-func NewMetadata() Metadata {
-	return &defaultMetadata{
-		values: make(map[string]interface{}),
-	}
-}
-
-type defaultMetadata struct {
-	values map[string]interface{}
-}
-
-func NewDefaultMetadata(vals map[string]interface{}) Metadata {
-	return &defaultMetadata{
-		values: vals,
-	}
-}
-
-func (t *defaultMetadata) Keys() []string {
+func (meta *Metadata) Keys() []string {
 	keys := make([]string, 0)
-	for key := range t.values {
+	for key := range *meta {
 		keys = append(keys, key)
 	}
 	return keys
 }
 
-func (t *defaultMetadata) GetKeyValue(key string) interface{} {
-	if _, found := t.values[key]; !found {
+func (meta *Metadata) GetValue(key string) any {
+	if _, found := (*meta)[key]; !found {
 		return nil
 	}
-	return t.values[key]
+	return (*meta)[key]
 }
 
-func (t *defaultMetadata) SetKeyValue(key string, val interface{}) {
-	t.values[key] = val
+func (meta *Metadata) SetValue(key string, val interface{}) {
+	(*meta)[key] = val
 }
 
-func (t *defaultMetadata) GetValues() map[string]interface{} {
-	return t.values
+func (msg *Msg) GetValue(key string) any {
+	if _, found := (*msg)[key]; !found {
+		return nil
+	}
+	return (*msg)[key]
 }
-func (t *defaultMetadata) SetValues(values map[string]interface{}) {
-	t.values = values
-}
-*/

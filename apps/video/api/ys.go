@@ -15,7 +15,7 @@ func (j *YsApi) GetDeviceList(rc *restfulx.ReqCtx) {
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 	devices, total, err := j.Ys.GetDeviceList(pageNum, pageSize)
-	biz.ErrIsNilAppendErr(err, "设备列表获取失败")
+	biz.ErrIsNil(err, "设备列表获取失败,可能萤石Token过期，请联系管理员。。")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),

@@ -6,7 +6,6 @@ import (
 	"pandax/apps/rule/entity"
 	"pandax/apps/rule/services"
 	"pandax/pkg/rule_engine/nodes"
-	"strings"
 )
 
 type RuleChainMsgLogApi struct {
@@ -23,6 +22,7 @@ func (p *RuleChainMsgLogApi) GetRuleChainMsgLogList(rc *restfulx.ReqCtx) {
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 	data.DeviceName = restfulx.QueryParam(rc, "deviceName")
+	data.MsgType = restfulx.QueryParam(rc, "msgType")
 	list, total := p.RuleChainMsgLogApp.FindListPage(pageNum, pageSize, data)
 
 	rc.ResData = model.ResultPage{
@@ -35,7 +35,8 @@ func (p *RuleChainMsgLogApi) GetRuleChainMsgLogList(rc *restfulx.ReqCtx) {
 
 // DeleteRuleChainMsgLog 删除规则链
 func (p *RuleChainMsgLogApi) DeleteRuleChainMsgLog(rc *restfulx.ReqCtx) {
-	id := restfulx.PathParam(rc, "id")
-	ids := strings.Split(id, ",")
-	p.RuleChainMsgLogApp.Delete(ids)
+	data := entity.RuleChainMsgLog{}
+	data.DeviceName = restfulx.QueryParam(rc, "deviceName")
+	data.MsgType = restfulx.QueryParam(rc, "msgType")
+	p.RuleChainMsgLogApp.Delete(data)
 }

@@ -29,7 +29,6 @@ const (
 	DIRECT   = "direct"   //直连设备
 	GATEWAY  = "gateway"  //网关设备
 	GATEWAYS = "gatewayS" // 网关子设备
-	MONITOR  = "monitor"  // 监控设备
 )
 
 // 设备命令状态
