@@ -30,6 +30,7 @@ var DeviceModelDao DeviceModel = &deviceModelImpl{
 }
 
 func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
+	tx := global.Db.Begin()
 	//1 检查设备名称是否存在
 	list := m.FindList(entity.Device{Name: data.Name})
 	biz.IsTrue(list != nil && len(*list) == 0, "设备名称已经存在")
@@ -39,8 +40,15 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 		data.Token = etoken.Token
 	}
 	//3 添加设备
-	err := global.Db.Table(m.table).Create(&data).Error
+	err := tx.Table(m.table).Create(&data).Error
 	biz.ErrIsNil(err, "添加设备失败")
+	// 创建超级表 失败就
+	err = createDeviceTable(data.Pid, data.Name)
+	if err != nil {
+		tx.Rollback()
+		biz.ErrIsNil(err, "添加设备失败，设备表创建失败")
+	}
+	tx.Commit()
 	return &data
 }
 
@@ -163,7 +171,37 @@ func (m *deviceModelImpl) UpdateStatus(id, linkStatus string) {
 func (m *deviceModelImpl) Delete(ids []string) {
 	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.Device{}, "id in (?)", ids).Error, "删除设备失败")
 	for _, id := range ids {
+		list := m.FindOne(id)
+		// 删除表
+		err := deleteDeviceTable(list.Name)
+		global.Log.Error("设备时序表删除失败", err)
 		// 删除所有缓存
 		global.RedisDb.Del(context.Background(), id)
 	}
+}
+
+// 获取Tdengine时序数据
+func createDeviceTable(productId, device string) error {
+	err := global.TdDb.CreateTable(productId+"_"+entity.ATTRIBUTES_TSL, device+"_"+entity.ATTRIBUTES_TSL)
+	if err != nil {
+		return err
+	}
+	err = global.TdDb.CreateTable(productId+"_"+entity.TELEMETRY_TSL, device+"_"+entity.TELEMETRY_TSL)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// 删除Tdengine时序数据
+func deleteDeviceTable(device string) error {
+	err := global.TdDb.DropTable(device + "_" + entity.ATTRIBUTES_TSL)
+	if err != nil {
+		return err
+	}
+	err = global.TdDb.DropTable(device + "_" + entity.TELEMETRY_TSL)
+	if err != nil {
+		return err
+	}
+	return nil
 }

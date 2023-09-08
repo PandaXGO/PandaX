@@ -11,7 +11,6 @@ import (
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"github.com/kakuilan/kgo"
-	"pandax/pkg/global"
 	"strings"
 
 	"pandax/apps/device/entity"
@@ -70,8 +69,6 @@ func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 	data.Id = kgo.KStr.Uniqid("p_")
 	data.Owner = rc.LoginAccount.UserName
 	p.ProductApp.Insert(data)
-	// 创建taos数据库超级表
-	createDeviceStable(data.Id)
 }
 
 // UpdateProduct 修改Product
@@ -96,21 +93,5 @@ func (p *ProductApi) DeleteProduct(rc *restfulx.ReqCtx) {
 		// 删除所有模型，固件
 		p.TemplateApp.Delete([]string{id})
 		p.OtaAPP.Delete([]string{id})
-		// 删除超级表
-		deleteDeviceStable(id)
 	}
-}
-
-func createDeviceStable(productId string) {
-	err := global.TdDb.CreateStable(productId + "_" + entity.ATTRIBUTES_TSL)
-	biz.ErrIsNil(err, "创建时序属性超级表失败")
-	err = global.TdDb.CreateStable(productId + "_" + entity.TELEMETRY_TSL)
-	biz.ErrIsNil(err, "创建时序遥测超级表失败")
-}
-
-func deleteDeviceStable(productId string) {
-	err := global.TdDb.DropStable(productId + "_" + entity.ATTRIBUTES_TSL)
-	biz.ErrIsNil(err, "删除时序属性超级表失败")
-	err = global.TdDb.DropStable(productId + "_" + entity.TELEMETRY_TSL)
-	biz.ErrIsNil(err, "删除时序遥测超级表失败")
 }

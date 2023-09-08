@@ -71,6 +71,19 @@ func InitDeviceRouter(container *restful.Container) {
 		Returns(200, "OK", []entity.DeviceStatusVo{}).
 		Returns(404, "Not Found", nil))
 
+	ws.Route(ws.GET("/{id}/property/history").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取设备属性的遥测历史").Handle(s.GetDeviceTelemetryHistory)
+	}).
+		Doc("获取设备属性的遥测历史").
+		Param(ws.PathParameter("id", "Id").DataType("string")).
+		Param(ws.QueryParameter("key", "属性Key").Required(false).DataType("string")).
+		Param(ws.QueryParameter("startTime", "开始时间").Required(false).DataType("string")).
+		Param(ws.QueryParameter("endTime", "结束时间").Required(false).DataType("string")).
+		Param(ws.QueryParameter("limit", "限制条数").Required(false).DataType("int")).
+		Metadata(restfulspec.KeyOpenAPITags, tags). // on the response
+		Returns(200, "OK", []map[string]any{}).
+		Returns(404, "Not Found", nil))
+
 	ws.Route(ws.GET("/{id}/attribute/down").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取Device属性下发").Handle(s.DownAttribute)
 	}).

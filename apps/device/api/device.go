@@ -86,7 +86,7 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 			Define: tel.Define,
 			Time:   rs["ts"],
 		}
-		if v, ok := rs[tel.Key]; ok {
+		if v, ok := rs[strings.ToLower(tel.Key)]; ok {
 			sdv.Value = v
 		} else {
 			sdv.Value = tel.Define["default_value"]
@@ -95,6 +95,20 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	}
 
 	rc.ResData = res
+}
+
+// GetDeviceTelemetryHistory 获取Device属性的遥测历史
+func (p *DeviceApi) GetDeviceTelemetryHistory(rc *restfulx.ReqCtx) {
+	id := restfulx.PathParam(rc, "id")
+	key := restfulx.QueryParam(rc, "key")
+	startTime := restfulx.QueryParam(rc, "startTime")
+	endTime := restfulx.QueryParam(rc, "endTime")
+	limit := restfulx.QueryInt(rc, "limit", 1000)
+	device := p.DeviceApp.FindOne(id)
+	sql := `select ts,? from ? where ts > '?' and ts < '?' and ? is not null ORDER BY ts DESC LIMIT ? `
+	rs, err := global.TdDb.GetAll(sql, key, fmt.Sprintf("%s_telemetry", device.Name), startTime, endTime, key, limit)
+	biz.ErrIsNilAppendErr(err, "查询设备属性的遥测历史失败")
+	rc.ResData = rs
 }
 
 // 下发设备属性
@@ -124,8 +138,6 @@ func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	data.LinkStatus = global.INACTIVE
 	data.LastAt = time.Now()
 	p.DeviceApp.Insert(data)
-	// 创建超级表
-	createDeviceTable(data.Pid, data.Name)
 }
 
 // UpdateDevice 修改Device
@@ -140,11 +152,6 @@ func (p *DeviceApi) UpdateDevice(rc *restfulx.ReqCtx) {
 func (p *DeviceApi) DeleteDevice(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	ids := strings.Split(id, ",")
-	for _, id := range ids {
-		list := p.DeviceApp.FindOne(id)
-		// 删除表
-		deleteDeviceTable(list.Name)
-	}
 	p.DeviceApp.Delete(ids)
 }
 
@@ -193,18 +200,4 @@ func (p *DeviceApi) ScreenTwinData(rc *restfulx.ReqCtx) {
 		}
 		rc.ResData = vt
 	}
-}
-
-func createDeviceTable(productId, device string) {
-	err := global.TdDb.CreateTable(productId+"_"+entity.ATTRIBUTES_TSL, device+"_"+entity.ATTRIBUTES_TSL)
-	biz.ErrIsNil(err, "创建时序属性表失败")
-	err = global.TdDb.CreateTable(productId+"_"+entity.TELEMETRY_TSL, device+"_"+entity.TELEMETRY_TSL)
-	biz.ErrIsNil(err, "创建时序遥测表失败")
-}
-
-func deleteDeviceTable(device string) {
-	err := global.TdDb.DropTable(device + "_" + entity.ATTRIBUTES_TSL)
-	biz.ErrIsNil(err, "删除时序属性表失败")
-	err = global.TdDb.DropTable(device + "_" + entity.TELEMETRY_TSL)
-	biz.ErrIsNil(err, "删除时序遥测表失败")
 }

@@ -31,10 +31,18 @@ var ProductModelDao ProductModel = &productModelImpl{
 }
 
 func (m *productModelImpl) Insert(data entity.Product) *entity.Product {
+	tx := global.Db.Begin()
 	// 添加产品及规则链到redis中
-	setProductRule(&data)
-	err := global.Db.Table(m.table).Create(&data).Error
+	err := tx.Table(m.table).Create(&data).Error
 	biz.ErrIsNil(err, "添加产品失败")
+	// 创建taos数据库超级表
+	err = createDeviceStable(data.Id)
+	if err != nil {
+		tx.Rollback()
+		biz.ErrIsNil(err, "添加设备失败，超级表创建失败")
+	}
+	setProductRule(&data)
+	tx.Commit()
 	return &data
 }
 
@@ -144,7 +152,34 @@ func (m *productModelImpl) Update(data entity.Product) *entity.Product {
 func (m *productModelImpl) Delete(ids []string) {
 	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.Product{}, "id in (?)", ids).Error, "删除产品失败")
 	for _, id := range ids {
+		// 删除超级表
+		err := deleteDeviceStable(id)
+		global.Log.Error("时序数据库超级表删除失败", err)
 		// 删除所有缓存
 		global.RedisDb.Del(context.Background(), id)
 	}
+}
+
+func createDeviceStable(productId string) error {
+	err := global.TdDb.CreateStable(productId + "_" + entity.ATTRIBUTES_TSL)
+	if err != nil {
+		return err
+	}
+	err = global.TdDb.CreateStable(productId + "_" + entity.TELEMETRY_TSL)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func deleteDeviceStable(productId string) error {
+	err := global.TdDb.DropStable(productId + "_" + entity.ATTRIBUTES_TSL)
+	if err != nil {
+		return err
+	}
+	err = global.TdDb.DropStable(productId + "_" + entity.TELEMETRY_TSL)
+	if err != nil {
+		return err
+	}
+	return nil
 }
