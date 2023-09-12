@@ -1,6 +1,7 @@
 package global
 
 import (
+	"github.com/PandaXGO/PandaKit/cache"
 	"github.com/PandaXGO/PandaKit/rediscli"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -18,4 +19,5 @@ var (
 	Conf       *config.Config
 	MqttClient *mqtt.IothubMqttClient
 )
+var Cache = cache.NewTimedCache(cache.NoExpiration, cache.DefaultCleanupInterval)
 var EventEmitter = events.EventEmitter{}
