@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
+	ruleService "pandax/apps/rule/services"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine"
 	"pandax/pkg/rule_engine/message"
@@ -44,6 +46,9 @@ func (s *HookService) handleOne(msg *DeviceEventInfo) {
 			// 业务逻辑执行
 			// 获取规则链代码
 			chain := getRuleChain(etoken)
+			if chain == nil {
+				return
+			}
 			dataCode := chain.LfData.DataCode
 			code, err := json.Marshal(dataCode)
 			//新建规则链实体
@@ -96,11 +101,21 @@ func (s *HookService) handleOne(msg *DeviceEventInfo) {
 }
 
 func getRuleChain(etoken *tool.DeviceAuth) *ruleEntity.RuleDataJson {
+	defer func() {
+		if err := recover(); err != nil {
+			global.Log.Error(err)
+		}
+	}()
+	key := etoken.ProductId
+	get, err := global.Cache.ComputeIfAbsent(key, func(k any) (any, error) {
+		one := services.ProductModelDao.FindOne(k.(string))
+		rule := ruleService.RuleChainModelDao.FindOne(one.RuleChainId)
+		return rule.RuleDataJson, nil
+	})
 	ruleData := ruleEntity.RuleDataJson{}
-	err := global.RedisDb.Get(etoken.ProductId, &ruleData)
-	if err != nil {
-		return nil
-	}
+	biz.ErrIsNil(err, "缓存读取规则链失败")
+	err = tool.StringToStruct(get.(string), &ruleData)
+	biz.ErrIsNil(err, "规则链数据转化失败")
 	return &ruleData
 }
 

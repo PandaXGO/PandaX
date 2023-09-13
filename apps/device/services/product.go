@@ -5,10 +5,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"log"
 	"pandax/apps/device/entity"
-	ruleEntity "pandax/apps/rule/entity"
-	ruleService "pandax/apps/rule/services"
 	"pandax/pkg/global"
-	"time"
 )
 
 type (
@@ -41,21 +38,8 @@ func (m *productModelImpl) Insert(data entity.Product) *entity.Product {
 		tx.Rollback()
 		biz.ErrIsNil(err, "添加设备失败，超级表创建失败")
 	}
-	setProductRule(&data)
 	tx.Commit()
 	return &data
-}
-
-// 向redis中添加产品对应的规则链
-func setProductRule(data *entity.Product) {
-	var rule *ruleEntity.RuleChain
-	if data.RuleChainId == "" {
-		rule = ruleService.RuleChainModelDao.FindOneByRoot()
-	} else {
-		rule = ruleService.RuleChainModelDao.FindOne(data.RuleChainId)
-	}
-	data.RuleChainId = rule.Id
-	biz.ErrIsNil(global.RedisDb.Set(data.Id, rule.RuleDataJson, time.Hour*24*365), "Redis 存储失败")
 }
 
 func (m *productModelImpl) FindOne(id string) *entity.ProductRes {
@@ -141,7 +125,6 @@ func (m *productModelImpl) FindList(data entity.Product) *[]entity.ProductRes {
 }
 
 func (m *productModelImpl) Update(data entity.Product) *entity.Product {
-	setProductRule(&data)
 	// go的一些默认值 int 0 bool false  保存失败需要先转成map
 	err := global.Db.Table(m.table).Where("id = ?", data.Id).Updates(data).Error
 	log.Println("update", err)

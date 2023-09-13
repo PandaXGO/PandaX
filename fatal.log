@@ -99,3 +99,120 @@ main.main()
 2023-09-08 17:26:01--------------------------------
 
 2023-09-08 17:30:49--------------------------------
+
+2023-09-13 08:48:08--------------------------------
+
+2023-09-13 08:52:52--------------------------------
+
+2023-09-13 09:04:51--------------------------------
+
+2023-09-13 09:10:21--------------------------------
+
+2023-09-13 08:48:08--------------------------------
+
+2023-09-13 08:52:52--------------------------------
+
+2023-09-13 09:04:51--------------------------------
+
+2023-09-13 09:10:21--------------------------------
+
+2023-09-13 09:14:56--------------------------------
+
+2023-09-13 08:48:08--------------------------------
+
+2023-09-13 08:52:52--------------------------------
+
+2023-09-13 09:04:51--------------------------------
+
+2023-09-13 09:10:21--------------------------------
+
+2023-09-13 08:48:08--------------------------------
+
+2023-09-13 08:52:52--------------------------------
+
+2023-09-13 09:04:51--------------------------------
+
+2023-09-13 09:10:21--------------------------------
+
+2023-09-13 09:14:56--------------------------------
+
+2023-09-13 17:17:59--------------------------------
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal 0xc0000005 code=0x0 addr=0x10 pc=0x1dc3346]
+
+goroutine 187 [running]:
+pandax/iothub.(*HookService).handleOne.func1()
+	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:49 +0x266
+created by pandax/iothub.(*HookService).handleOne
+	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:33 +0xa5
+
+2023-09-13 17:21:46--------------------------------
+
+2023-09-13 17:23:20--------------------------------
+
+2023-09-13 17:25:58--------------------------------
+
+2023-09-13 17:27:25--------------------------------
+
+2023-09-13 17:28:07--------------------------------
+
+2023-09-13 17:28:58--------------------------------
+
+2023-09-13 17:30:52--------------------------------
+panic: interface conversion: interface {} is nil, not []interface {}
+
+goroutine 138 [running]:
+pandax/pkg/rule_engine/manifest.New({0xc0012ae010, 0x4, 0x8})
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/manifest/manifest.go:35 +0xa95
+pandax/pkg/rule_engine.NewRuleChainInstance({0xc0012ae010, 0x4, 0x8})
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/instance.go:19 +0x67
+pandax/iothub.(*HookService).handleOne.func1()
+	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:57 +0x2fe
+created by pandax/iothub.(*HookService).handleOne
+	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:34 +0xa5
+
+2023-09-13 17:33:28--------------------------------
+
+2023-09-13 17:35:28--------------------------------
+
+2023-09-13 17:41:15--------------------------------
+panic: interface conversion: interface {} is nil, not string
+
+goroutine 147 [running]:
+pandax/pkg/rule_engine/nodes.(*createAlarmNode).Handle(0xc0003a6ee0, 0xc001083560)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/action_create_alarm_node.go:39 +0x71b
+pandax/pkg/rule_engine/nodes.(*scriptFilterNode).Handle(0xc0010834a0, 0xc001083560)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/filter_script_node.go:35 +0x2cb
+pandax/pkg/rule_engine/nodes.(*saveTimeSeriesNode).Handle(0xc0010af8b0, 0xc001083560)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/action_save_timeseries_node.go:49 +0x319
+pandax/pkg/rule_engine/nodes.(*messageTypeSwitchNode).Handle(0xc0010af950, 0xc001083560)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/filter_message_type_switch_node.go:42 +0x256
+pandax/pkg/rule_engine/nodes.(*inputNode).Handle(0xc0010af7c0, 0xc001083560)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/input_node.go:31 +0x112
+pandax/pkg/rule_engine.(*ruleChainInstance).StartRuleChain(...)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/instance.go:46
+pandax/iothub.(*HookService).handleOne.func1()
+	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:63 +0x3f5
+created by pandax/iothub.(*HookService).handleOne
+	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:34 +0xa5
+
+2023-09-13 17:43:55--------------------------------
+panic: interface conversion: interface {} is nil, not string
+
+goroutine 160 [running]:
+pandax/pkg/rule_engine/nodes.(*createAlarmNode).Handle(0xc0003e0a80, 0xc0011e4240)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/action_create_alarm_node.go:39 +0x71b
+pandax/pkg/rule_engine/nodes.(*scriptFilterNode).Handle(0xc0011e4180, 0xc0011e4240)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/filter_script_node.go:35 +0x2cb
+pandax/pkg/rule_engine/nodes.(*saveTimeSeriesNode).Handle(0xc00067b630, 0xc0011e4240)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/action_save_timeseries_node.go:49 +0x319
+pandax/pkg/rule_engine/nodes.(*messageTypeSwitchNode).Handle(0xc00067b6d0, 0xc0011e4240)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/filter_message_type_switch_node.go:42 +0x256
+pandax/pkg/rule_engine/nodes.(*inputNode).Handle(0xc00067b540, 0xc0011e4240)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/input_node.go:31 +0x112
+pandax/pkg/rule_engine.(*ruleChainInstance).StartRuleChain(...)
+	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/instance.go:46
+pandax/iothub.(*HookService).handleOne.func1()
+	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:61 +0x37f
+created by pandax/iothub.(*HookService).handleOne
+	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:33 +0xa5

@@ -5,7 +5,6 @@ import (
 	"pandax/apps/device/services"
 	"pandax/pkg/events"
 	"pandax/pkg/global"
-	"time"
 )
 
 // 初始化事件监听
@@ -18,10 +17,7 @@ func InitEvents() {
 		})
 		if list != nil {
 			for _, product := range *list {
-				err := global.RedisDb.Set(product.Id, codeData, time.Hour*24*365)
-				if err != nil {
-					global.Log.Errorf("事件监听执行错误：%s", err.Error())
-				}
+				global.Cache.Put(product.Id, codeData)
 			}
 		}
 	})

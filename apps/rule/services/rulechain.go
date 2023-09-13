@@ -8,7 +8,6 @@ package services
 
 import (
 	"github.com/PandaXGO/PandaKit/biz"
-	"log"
 	"pandax/apps/rule/entity"
 	"pandax/pkg/events"
 	"pandax/pkg/global"
@@ -38,7 +37,6 @@ var RuleChainModelDao RuleChainModel = &ruleChainModelImpl{
 
 func (m *ruleChainModelImpl) Insert(data entity.RuleChain) *entity.RuleChain {
 	err := global.Db.Table(m.table).Create(&data).Error
-	log.Println(err)
 	biz.ErrIsNil(err, "添加规则链失败")
 	return &data
 }

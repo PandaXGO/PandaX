@@ -92,3 +92,11 @@ func InterfaceToStruct(m interface{}, s interface{}) error {
 
 	return nil
 }
+
+func StringToStruct(m string, s interface{}) error {
+	err := json.Unmarshal([]byte(m), s)
+	if err != nil {
+		return err
+	}
+	return nil
+}
