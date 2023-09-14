@@ -49,8 +49,8 @@ func (m *sysNoticeModelImpl) FindListPage(page, pageSize int, data entity.SysNot
 	if data.NoticeType != "" {
 		db = db.Where("notice_type = ?", data.NoticeType)
 	}
-	if len(data.DeptIds) > 0 {
-		db = db.Where("dept_id in (?)", data.DeptIds)
+	if len(data.OrganizationIds) > 0 {
+		db = db.Where("organization_id in (?)", data.OrganizationIds)
 	}
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error

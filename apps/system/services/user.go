@@ -72,8 +72,8 @@ func (m *sysUserModelImpl) FindOne(data entity.SysUser) *entity.SysUserView {
 	if data.RoleId != 0 {
 		db = db.Where("role_id = ?", data.RoleId)
 	}
-	if data.DeptId != 0 {
-		db = db.Where("dept_id = ?", data.DeptId)
+	if data.OrganizationId != 0 {
+		db = db.Where("organization_id = ?", data.OrganizationId)
 	}
 	if data.PostId != 0 {
 		db = db.Where("post_id = ?", data.PostId)
@@ -87,8 +87,8 @@ func (m *sysUserModelImpl) FindListPage(page, pageSize int, data entity.SysUser)
 	list := make([]entity.SysUserPage, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
-	db := global.Db.Table(m.table).Select("sys_users.*,sys_depts.dept_name")
-	db = db.Joins("left join sys_depts on sys_depts.dept_id = sys_users.dept_id")
+	db := global.Db.Table(m.table).Select("sys_users.*,sys_organizations.organization_name")
+	db = db.Joins("left join sys_organizations on sys_organizations.organization_id = sys_users.organization_id")
 	// 此处填写 where参数判断
 	if data.Username != "" {
 		db = db.Where("sys_users.username = ?", data.Username)
@@ -104,8 +104,8 @@ func (m *sysUserModelImpl) FindListPage(page, pageSize int, data entity.SysUser)
 	if data.Phone != "" {
 		db = db.Where("sys_users.phone like ?", "%"+data.Phone+"%")
 	}
-	if data.DeptId != 0 {
-		db = db.Where("sys_users.dept_id = ?", data.DeptId)
+	if data.OrganizationId != 0 {
+		db = db.Where("sys_users.organization_id = ?", data.OrganizationId)
 	}
 	db.Where("sys_users.delete_time IS NULL")
 	err := db.Count(&total).Error
@@ -131,21 +131,22 @@ func (m *sysUserModelImpl) FindList(data entity.SysUser) *[]entity.SysUserView {
 	}
 
 	if data.RoleId != 0 {
-		db = db.Where("role_id = ?", data.RoleId)
+		db = db.Where("sys_users.role_id = ?", data.RoleId)
 	}
 
-	if data.DeptId != 0 {
-		db = db.Where("dept_id = ?", data.DeptId)
+	if data.OrganizationId != 0 {
+		db = db.Where("sys_users.organization_id = ?", data.OrganizationId)
 	}
 
 	if data.PostId != 0 {
-		db = db.Where("post_id = ?", data.PostId)
+		db = db.Where("sys_users.post_id = ?", data.PostId)
 	}
 	if data.Status != "" {
-		db = db.Where("status = ?", data.Status)
+		db = db.Where("sys_users.status = ?", data.Status)
 	}
 	db.Where("sys_users.delete_time IS NULL")
-	biz.ErrIsNil(db.Find(&list).Error, "查询用户列表失败")
+
+	biz.ErrIsNilAppendErr(db.Find(&list).Error, "查询用户列表失败")
 
 	return &list
 }

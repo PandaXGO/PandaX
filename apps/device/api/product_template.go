@@ -31,7 +31,7 @@ func (p *ProductTemplateApi) GetProductTemplateList(rc *restfulx.ReqCtx) {
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }
@@ -57,6 +57,7 @@ func (p *ProductTemplateApi) InsertProductTemplate(rc *restfulx.ReqCtx) {
 	var data entity.ProductTemplate
 	restfulx.BindJsonAndValid(rc, &data)
 	data.Id = kgo.KStr.Uniqid("tm_")
+	data.OrgId = rc.LoginAccount.OrganizationId
 	p.ProductTemplateApp.Insert(data)
 	// 向超级表中添加字段
 	if data.Classify == entity.ATTRIBUTES_TSL {

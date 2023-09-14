@@ -77,7 +77,7 @@ func (m *productModelImpl) FindListPage(page, pageSize int, data entity.Product)
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
 	}
-	if data.OrgId != "" {
+	if data.OrgId != 0 {
 		db = db.Where("org_id = ?", data.OrgId)
 	}
 	if data.RuleChainId != "" {
@@ -114,7 +114,7 @@ func (m *productModelImpl) FindList(data entity.Product) *[]entity.ProductRes {
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
 	}
-	if data.OrgId != "" {
+	if data.OrgId != 0 {
 		db = db.Where("org_id = ?", data.OrgId)
 	}
 	if data.RuleChainId != "" {

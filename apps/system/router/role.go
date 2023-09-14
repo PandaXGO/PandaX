@@ -12,10 +12,11 @@ import (
 
 func InitRoleRouter(container *restful.Container) {
 	s := &api.RoleApi{
-		RoleApp:     services.SysRoleModelDao,
-		RoleMenuApp: services.SysRoleMenuModelDao,
-		RoleDeptApp: services.SysRoleDeptModelDao,
-		UserApp:     services.SysUserModelDao,
+		RoleApp:             services.SysRoleModelDao,
+		RoleMenuApp:         services.SysRoleMenuModelDao,
+		OrganizationApp:     services.SysOrganizationModelDao,
+		RoleOrganizationApp: services.SysRoleOrganizationModelDao,
+		UserApp:             services.SysUserModelDao,
 	}
 	ws := new(restful.WebService)
 	ws.Path("/system/role").Produces(restful.MIME_JSON)
@@ -66,9 +67,9 @@ func InitRoleRouter(container *restful.Container) {
 		Reads(entity.SysRole{}))
 
 	ws.Route(ws.PUT("/dataScope").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("修改角色部门权限").Handle(s.UpdateRoleDataScope)
+		restfulx.NewReqCtx(request, response).WithLog("修改角色组织权限").Handle(s.UpdateRoleDataScope)
 	}).
-		Doc("修改角色部门权限").
+		Doc("修改角色组织权限").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Reads(entity.SysRole{}))
 

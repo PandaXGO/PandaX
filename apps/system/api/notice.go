@@ -10,8 +10,8 @@ import (
 )
 
 type NoticeApi struct {
-	DeptApp   services.SysDeptModel
-	NoticeApp services.SysNoticeModel
+	OrganizationApp services.SysOrganizationModel
+	NoticeApp       services.SysNoticeModel
 }
 
 // GetNoticeList 通知列表数据
@@ -21,18 +21,18 @@ func (p *NoticeApi) GetNoticeList(rc *restfulx.ReqCtx) {
 	noticeType := restfulx.QueryParam(rc, "noticeType")
 	title := restfulx.QueryParam(rc, "title")
 
-	// 获取部门的子部门id
-	one := p.DeptApp.FindOne(rc.LoginAccount.DeptId)
-	split := strings.Split(strings.Trim(one.DeptPath, "/"), "/")
-	// 获取所有父部门id
-	ids := utils.DeptPCIds(split, rc.LoginAccount.DeptId, true)
-	notice := entity.SysNotice{NoticeType: noticeType, Title: title, DeptIds: ids}
+	// 获取组织的子组织id
+	one := p.OrganizationApp.FindOne(rc.LoginAccount.OrganizationId)
+	split := strings.Split(strings.Trim(one.OrganizationPath, "/"), "/")
+	// 获取所有父组织id
+	ids := utils.OrganizationPCIds(split, rc.LoginAccount.OrganizationId, true)
+	notice := entity.SysNotice{NoticeType: noticeType, Title: title, OrganizationIds: ids}
 	list, total := p.NoticeApp.FindListPage(pageNum, pageSize, notice)
 
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }

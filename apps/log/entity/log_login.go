@@ -20,5 +20,8 @@ type LogLogin struct {
 	Params        string    `json:"params" gorm:"-"`
 	Remark        string    `json:"remark" gorm:"type:varchar(255);"` //备注
 	Msg           string    `json:"msg" gorm:"type:varchar(255);"`
+	OrgId         int64     `json:"orgId" gorm:"type:int;"`
 	model.BaseModel
+
+	RoleId int64 `gorm:"-"` // 角色数据权限
 }

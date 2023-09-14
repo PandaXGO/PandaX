@@ -11,4 +11,6 @@ type JobLog struct {
 	TargetInvoke string `json:"targetInvoke" gorm:"type:varchar(128);comment:调用方法"`
 	LogInfo      string `json:"logInfo" gorm:"type:varchar(255);comment:日志信息"`
 	Status       string `json:"status" gorm:"type:varchar(1);comment:状态"`
+
+	RoleId int64 `gorm:"-"` // 角色数据权限
 }

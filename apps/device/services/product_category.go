@@ -132,17 +132,17 @@ func (m *productCategoryModelImpl) SelectProductCategoryLabel(data entity.Produc
 	list := m.FindList(data)
 
 	dl := make([]entity.ProductCategoryLabel, 0)
-	deptl := *list
-	for i := 0; i < len(deptl); i++ {
-		if deptl[i].Pid != "0" {
+	organizationl := *list
+	for i := 0; i < len(organizationl); i++ {
+		if organizationl[i].Pid != "0" {
 			continue
 		}
 		e := entity.ProductCategoryLabel{}
-		e.Id = deptl[i].Id
-		e.Name = deptl[i].Name
-		deptsInfo := DiGuiProductCategoryLabel(list, e)
+		e.Id = organizationl[i].Id
+		e.Name = organizationl[i].Name
+		organizationsInfo := DiGuiProductCategoryLabel(list, e)
 
-		dl = append(dl, deptsInfo)
+		dl = append(dl, organizationsInfo)
 	}
 	return dl
 }
@@ -170,12 +170,12 @@ func DiGuiProductCategory(sglist *[]entity.ProductCategory, menu entity.ProductC
 	menu.Children = min
 	return menu
 }
-func DiGuiProductCategoryLabel(sglist *[]entity.ProductCategory, dept entity.ProductCategoryLabel) entity.ProductCategoryLabel {
+func DiGuiProductCategoryLabel(sglist *[]entity.ProductCategory, organization entity.ProductCategoryLabel) entity.ProductCategoryLabel {
 	list := *sglist
 
 	min := make([]entity.ProductCategoryLabel, 0)
 	for j := 0; j < len(list); j++ {
-		if dept.Id != list[j].Pid {
+		if organization.Id != list[j].Pid {
 			continue
 		}
 		sg := entity.ProductCategoryLabel{}
@@ -185,6 +185,6 @@ func DiGuiProductCategoryLabel(sglist *[]entity.ProductCategory, dept entity.Pro
 		min = append(min, ms)
 
 	}
-	dept.Children = min
-	return dept
+	organization.Children = min
+	return organization
 }

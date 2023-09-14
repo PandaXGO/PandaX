@@ -14,10 +14,11 @@ import (
 )
 
 type RoleApi struct {
-	RoleApp     services.SysRoleModel
-	UserApp     services.SysUserModel
-	RoleMenuApp services.SysRoleMenuModel
-	RoleDeptApp services.SysRoleDeptModel
+	RoleApp             services.SysRoleModel
+	UserApp             services.SysUserModel
+	RoleMenuApp         services.SysRoleMenuModel
+	OrganizationApp     services.SysOrganizationModel
+	RoleOrganizationApp services.SysRoleOrganizationModel
 }
 
 // GetRoleList角色列表数据
@@ -33,7 +34,7 @@ func (r *RoleApi) GetRoleList(rc *restfulx.ReqCtx) {
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }
@@ -52,6 +53,10 @@ func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
 	restfulx.BindJsonAndValid(rc, &role)
 	role.CreateBy = rc.LoginAccount.UserName
+	if role.DataScope == "" {
+		role.DataScope = "0"
+	}
+	// 添加角色对应的菜单
 	insert := r.RoleApp.Insert(role)
 	role.RoleId = insert.RoleId
 	r.RoleMenuApp.Insert(insert.RoleId, role.MenuIds)
@@ -85,19 +90,38 @@ func (r *RoleApi) UpdateRoleStatus(rc *restfulx.ReqCtx) {
 	r.RoleApp.Update(role)
 }
 
-// UpdateRoleDataScope 修改用户角色部门
+// UpdateRoleDataScope 修改用户角色组织
 func (r *RoleApi) UpdateRoleDataScope(rc *restfulx.ReqCtx) {
 	var role entity.SysRole
 	restfulx.BindJsonAndValid(rc, &role)
 	role.UpdateBy = rc.LoginAccount.UserName
 	// 修改角色
 	update := r.RoleApp.Update(role)
-	if role.DataScope == "2" {
-		// 删除角色的部门绑定
-		r.RoleDeptApp.Delete(entity.SysRoleDept{RoleId: update.RoleId})
-		// 添加角色部门绑定
-		r.RoleDeptApp.Insert(role.RoleId, role.DeptIds)
-	}
+	go func() {
+		if role.DataScope != entity.SELFDATASCOPE {
+			organizationIds := make([]int64, 0)
+			if role.DataScope == entity.ALLDATASCOPE {
+				for _, organization := range *r.OrganizationApp.FindList(entity.SysOrganization{}) {
+					organizationIds = append(organizationIds, organization.OrganizationId)
+				}
+			}
+			if role.DataScope == entity.DIYDATASCOPE {
+				organizationIds = role.OrganizationIds
+			}
+			if role.DataScope == entity.ORGDATASCOPE {
+				organizationIds = append(organizationIds, rc.LoginAccount.OrganizationId)
+			}
+			if role.DataScope == entity.ORGALLDATASCOPE {
+				//organizationIds = append(organizationIds, rc.LoginAccount.OrganizationId)
+				organizationIds = r.OrganizationApp.SelectOrganizationIds(entity.SysOrganization{OrganizationId: rc.LoginAccount.OrganizationId})
+			}
+			// 删除角色的组织绑定
+			r.RoleOrganizationApp.Delete(entity.SysRoleOrganization{RoleId: update.RoleId})
+			// 添加角色组织绑定
+			r.RoleOrganizationApp.Insert(role.RoleId, organizationIds)
+		}
+	}()
+
 }
 
 // DeleteRole 删除用户角色

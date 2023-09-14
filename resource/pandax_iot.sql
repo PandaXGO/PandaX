@@ -44,10 +44,10 @@ INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/api/:id', 'GET', '', '
 INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/config/list', 'GET', '', '', '', 3792);
 INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/config/configKey', 'GET', '', '', '', 3793);
 INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/config/:configId', 'GET', '', '', '', 3794);
-INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/dept/list', 'GET', '', '', '', 3795);
-INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/dept/:deptId', 'GET', '', '', '', 3796);
-INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/dept/roleDeptTreeSelect/:roleId', 'GET', '', '', '', 3797);
-INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/dept/deptTree', 'GET', '', '', '', 3798);
+INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/organization/list', 'GET', '', '', '', 3795);
+INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/organization/:organizationId', 'GET', '', '', '', 3796);
+INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/organization/roleOrganizationTreeSelect/:roleId', 'GET', '', '', '', 3797);
+INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/organization/organizationTree', 'GET', '', '', '', 3798);
 INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/dict/type/list', 'GET', '', '', '', 3799);
 INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/dict/type/:dictId', 'GET', '', '', '', 3800);
 INSERT INTO `casbin_rule` VALUES ('p', 'manage', '/system/dict/data/list', 'GET', '', '', '', 3801);
@@ -99,13 +99,13 @@ INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/config/:configId', 'GET
 INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/config', 'POST', '', '', '', 8507);
 INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/config', 'PUT', '', '', '', 8508);
 INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/config/:configId', 'DELETE', '', '', '', 8509);
-INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/dept/list', 'GET', '', '', '', 8510);
-INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/dept/:deptId', 'GET', '', '', '', 8511);
-INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/dept/roleDeptTreeSelect/:roleId', 'GET', '', '', '', 8512);
-INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/dept/deptTree', 'GET', '', '', '', 8513);
-INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/dept', 'POST', '', '', '', 8514);
-INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/dept', 'PUT', '', '', '', 8515);
-INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/dept/:deptId', 'DELETE', '', '', '', 8516);
+INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/organization/list', 'GET', '', '', '', 8510);
+INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/organization/:organizationId', 'GET', '', '', '', 8511);
+INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/organization/roleOrganizationTreeSelect/:roleId', 'GET', '', '', '', 8512);
+INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/organization/organizationTree', 'GET', '', '', '', 8513);
+INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/organization', 'POST', '', '', '', 8514);
+INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/organization', 'PUT', '', '', '', 8515);
+INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/system/organization/:organizationId', 'DELETE', '', '', '', 8516);
 INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/device/group/list', 'GET', '', '', '', 8517);
 INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/device/group/list/all', 'GET', '', '', '', 8518);
 INSERT INTO `casbin_rule` VALUES ('p', 'admin', '/device/group/list/tree', 'GET', '', '', '', 8519);
@@ -914,8 +914,8 @@ CREATE TABLE `sys_apis`  (
 INSERT INTO `sys_apis` VALUES (1, '2021-12-09 09:21:04', '2021-12-09 09:21:04', NULL, '/system/user/list', '查询用户列表（分页）', 'user', 'GET');
 INSERT INTO `sys_apis` VALUES (2, '2021-12-09 09:29:36', '2021-12-09 09:29:36', NULL, '/system/user/changeStatus', '修改用户状态', 'user', 'PUT');
 INSERT INTO `sys_apis` VALUES (3, '2021-12-09 09:34:37', '2021-12-09 09:34:37', NULL, '/system/user/:userId', '删除用户信息', 'user', 'DELETE');
-INSERT INTO `sys_apis` VALUES (4, '2021-12-09 09:36:43', '2021-12-09 09:36:43', NULL, '/system/dept/list', '获取部门列表', 'dept', 'GET');
-INSERT INTO `sys_apis` VALUES (5, '2021-12-09 09:37:31', '2021-12-09 09:37:31', NULL, '/system/dept/:deptId', '获取部门信息', 'dept', 'GET');
+INSERT INTO `sys_apis` VALUES (4, '2021-12-09 09:36:43', '2021-12-09 09:36:43', NULL, '/system/organization/list', '获取组织列表', 'organization', 'GET');
+INSERT INTO `sys_apis` VALUES (5, '2021-12-09 09:37:31', '2021-12-09 09:37:31', NULL, '/system/organization/:organizationId', '获取组织信息', 'organization', 'GET');
 INSERT INTO `sys_apis` VALUES (6, '2021-12-09 18:20:32', '2021-12-09 18:20:32', NULL, '/system/user/avatar', '上传头像', 'user', 'POST');
 INSERT INTO `sys_apis` VALUES (7, '2021-12-09 18:21:10', '2021-12-09 18:21:10', NULL, '/system/user/pwd', '修改密码', 'user', 'PUT');
 INSERT INTO `sys_apis` VALUES (8, '2021-12-09 18:21:54', '2021-12-09 18:21:54', NULL, '/system/user/getById/:userId', '通过id获取用户信息', 'user', 'GET');
@@ -924,11 +924,11 @@ INSERT INTO `sys_apis` VALUES (10, '2021-12-09 18:59:43', '2021-12-09 18:59:43',
 INSERT INTO `sys_apis` VALUES (11, '2021-12-09 19:00:24', '2021-12-09 19:00:24', NULL, '/system/user', '添加用户信息', 'user', 'POST');
 INSERT INTO `sys_apis` VALUES (12, '2021-12-09 19:00:52', '2021-12-09 19:00:52', NULL, '/system/user', '修改用户信息', 'user', 'PUT');
 INSERT INTO `sys_apis` VALUES (13, '2021-12-09 19:02:30', '2021-12-09 19:02:30', NULL, '/system/user/export', '导出用户信息', 'user', 'GET');
-INSERT INTO `sys_apis` VALUES (14, '2021-12-09 19:04:04', '2021-12-09 19:04:04', NULL, '/system/dept/roleDeptTreeSelect/:roleId', '获取角色部门树', 'dept', 'GET');
-INSERT INTO `sys_apis` VALUES (15, '2021-12-09 19:04:48', '2021-12-09 19:04:48', NULL, '/system/dept/deptTree', '获取所有部门树', 'dept', 'GET');
-INSERT INTO `sys_apis` VALUES (16, '2021-12-09 19:07:37', '2021-12-09 19:07:37', NULL, '/system/dept', '添加部门信息', 'dept', 'POST');
-INSERT INTO `sys_apis` VALUES (17, '2021-12-09 19:08:14', '2021-12-09 19:08:14', NULL, '/system/dept', '修改部门信息', 'dept', 'PUT');
-INSERT INTO `sys_apis` VALUES (18, '2021-12-09 19:08:40', '2021-12-09 19:08:40', NULL, '/system/dept/:deptId', '删除部门信息', 'dept', 'DELETE');
+INSERT INTO `sys_apis` VALUES (14, '2021-12-09 19:04:04', '2021-12-09 19:04:04', NULL, '/system/organization/roleOrganizationTreeSelect/:roleId', '获取角色组织树', 'organization', 'GET');
+INSERT INTO `sys_apis` VALUES (15, '2021-12-09 19:04:48', '2021-12-09 19:04:48', NULL, '/system/organization/organizationTree', '获取所有组织树', 'organization', 'GET');
+INSERT INTO `sys_apis` VALUES (16, '2021-12-09 19:07:37', '2021-12-09 19:07:37', NULL, '/system/organization', '添加组织信息', 'organization', 'POST');
+INSERT INTO `sys_apis` VALUES (17, '2021-12-09 19:08:14', '2021-12-09 19:08:14', NULL, '/system/organization', '修改组织信息', 'organization', 'PUT');
+INSERT INTO `sys_apis` VALUES (18, '2021-12-09 19:08:40', '2021-12-09 19:08:40', NULL, '/system/organization/:organizationId', '删除组织信息', 'organization', 'DELETE');
 INSERT INTO `sys_apis` VALUES (19, '2021-12-09 19:09:41', '2021-12-09 19:09:41', NULL, '/system/config/list', '获取配置分页列表', 'config', 'GET');
 INSERT INTO `sys_apis` VALUES (20, '2021-12-09 19:10:11', '2021-12-09 19:10:11', NULL, '/system/config/configKey', '获取配置列表通过ConfigKey', 'config', 'GET');
 INSERT INTO `sys_apis` VALUES (21, '2021-12-09 19:10:45', '2021-12-09 19:10:45', NULL, '/system/config/:configId', '获取配置信息', 'config', 'GET');
@@ -967,7 +967,7 @@ INSERT INTO `sys_apis` VALUES (53, '2021-12-09 19:25:44', '2021-12-09 19:25:44',
 INSERT INTO `sys_apis` VALUES (54, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role', '修改角色信息', 'role', 'PUT');
 INSERT INTO `sys_apis` VALUES (55, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/:roleId', '删除角色信息', 'role', 'DELETE');
 INSERT INTO `sys_apis` VALUES (56, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/changeStatus', '修改角色状态', 'role', 'PUT');
-INSERT INTO `sys_apis` VALUES (57, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/dataScope', '修改角色部门权限', 'role', 'PUT');
+INSERT INTO `sys_apis` VALUES (57, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/dataScope', '修改角色组织权限', 'role', 'PUT');
 INSERT INTO `sys_apis` VALUES (58, '2021-12-09 19:25:44', '2021-12-09 19:25:44', NULL, '/system/role/export', '导出角色信息', 'role', 'GET');
 INSERT INTO `sys_apis` VALUES (59, '2021-12-09 19:50:57', '2022-01-19 08:58:20', NULL, '/system/api/list', '获取api分页列表1', 'api', 'GET');
 INSERT INTO `sys_apis` VALUES (60, '2021-12-09 19:51:26', '2021-12-09 19:51:26', NULL, '/system/api/all', '获取所有api', 'api', 'GET');
@@ -1111,14 +1111,14 @@ CREATE TABLE `sys_configs`  (
 INSERT INTO `sys_configs` VALUES (1, '账号初始密码', 'sys.user.initPassword', '123456', '0', '0', '初始密码', '2021-12-04 13:50:13', '2021-12-04 13:54:52', NULL);
 
 -- ----------------------------
--- Table structure for sys_depts
+-- Table structure for sys_organizations
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_depts`;
-CREATE TABLE `sys_depts`  (
-  `dept_id` bigint(0) NOT NULL AUTO_INCREMENT,
-  `parent_id` int(0) NULL DEFAULT NULL COMMENT '上级部门',
-  `dept_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '部门路径',
-  `dept_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '部门名称',
+DROP TABLE IF EXISTS `sys_organizations`;
+CREATE TABLE `sys_organizations`  (
+  `organization_id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(0) NULL DEFAULT NULL COMMENT '上级组织',
+  `organization_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组织路径',
+  `organization_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组织名称',
   `sort` int(0) NULL DEFAULT NULL COMMENT '排序',
   `leader` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人',
   `phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '手机',
@@ -1129,15 +1129,15 @@ CREATE TABLE `sys_depts`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
   `delete_time` datetime(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`dept_id`) USING BTREE
+  PRIMARY KEY (`organization_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of sys_depts
+-- Records of sys_organizations
 -- ----------------------------
-INSERT INTO `sys_depts` VALUES (2, 0, '/0/2', '熊猫科技', 0, 'xm', '18353366836', '342@qq.com', '0', 'admin', 'admin', '2021-12-01 17:31:53', '2021-12-02 08:56:19', NULL);
-INSERT INTO `sys_depts` VALUES (3, 2, '/0/2/3', '研发部', 1, 'panda', '18353366543', 'ewr@qq.com', '0', 'admin', 'admin', '2021-12-01 17:37:43', '2021-12-02 08:55:56', NULL);
-INSERT INTO `sys_depts` VALUES (7, 2, '/0/2/7', '营销部', 2, 'panda', '18353333333', '342@qq.com', '0', 'panda', 'panda', '2021-12-24 10:46:24', '2021-12-24 10:47:15', NULL);
+INSERT INTO `sys_organizations` VALUES (2, 0, '/0/2', '熊猫科技', 0, 'xm', '18353366836', '342@qq.com', '0', 'admin', 'admin', '2021-12-01 17:31:53', '2021-12-02 08:56:19', NULL);
+INSERT INTO `sys_organizations` VALUES (3, 2, '/0/2/3', '研发部', 1, 'panda', '18353366543', 'ewr@qq.com', '0', 'admin', 'admin', '2021-12-01 17:37:43', '2021-12-02 08:55:56', NULL);
+INSERT INTO `sys_organizations` VALUES (7, 2, '/0/2/7', '营销部', 2, 'panda', '18353333333', '342@qq.com', '0', 'panda', 'panda', '2021-12-24 10:46:24', '2021-12-24 10:47:15', NULL);
 
 -- ----------------------------
 -- Table structure for sys_dict_data
@@ -1287,7 +1287,7 @@ INSERT INTO `sys_menus` VALUES (4, '添加用户', '', 3, 1, '', '', '', '', '',
 INSERT INTO `sys_menus` VALUES (5, '编辑用户', '', 3, 1, '', '', '', '', '', 'F', '0', '', '', 'system:user:edit', '0', 'admin', '', '', '2021-12-03 13:48:13', '2021-12-03 13:48:13', NULL);
 INSERT INTO `sys_menus` VALUES (6, '角色管理', '', 1, 2, 'elementUserFilled', '/system/role', '/system/role/index', '1', '', 'C', '0', '1', '1', 'system:role:list', '0', '', 'panda', '', '2021-12-03 13:51:55', '2022-07-16 10:23:21', NULL);
 INSERT INTO `sys_menus` VALUES (7, '菜单管理', '', 1, 2, 'iconfont icon-juxingkaobei', '/system/menu', '/system/menu/index', '1', '', 'C', '0', '1', '1', 'system:menu:list', '0', 'admin', 'panda', '', '2021-12-03 13:54:44', '2021-12-28 13:33:19', NULL);
-INSERT INTO `sys_menus` VALUES (8, '组织管理', '', 1, 3, 'iconfont icon-jiliandongxuanzeqi', '/system/dept', '/system/dept/index', '1', '', 'C', '0', '1', '1', 'system:dept:list', '0', '', 'panda', '', '2021-12-03 13:58:36', '2023-05-30 16:34:36', NULL);
+INSERT INTO `sys_menus` VALUES (8, '组织管理', '', 1, 3, 'iconfont icon-jiliandongxuanzeqi', '/system/organization', '/system/organization/index', '1', '', 'C', '0', '1', '1', 'system:organization:list', '0', '', 'panda', '', '2021-12-03 13:58:36', '2023-05-30 16:34:36', NULL);
 INSERT INTO `sys_menus` VALUES (9, '岗位管理', '', 1, 4, 'iconfont icon-neiqianshujuchucun', '/system/post', '/system/post/index', '1', '', 'C', '0', '1', '1', 'system:post:list', '0', 'admin', 'panda', '', '2021-12-03 13:54:44', '2021-12-28 13:40:31', NULL);
 INSERT INTO `sys_menus` VALUES (10, '字典管理', '', 1, 5, 'elementCellphone', '/system/dict', '/system/dict/index', '1', '', 'C', '0', '1', '1', 'system:dict:list', '0', 'admin', 'panda', '', '2021-12-03 13:54:44', '2021-12-28 13:40:50', NULL);
 INSERT INTO `sys_menus` VALUES (11, '参数管理', '', 1, 6, 'elementDocumentCopy', '/system/config', '/system/config/index', '1', '', 'C', '0', '1', '1', 'system:config:list', '0', 'admin', 'panda', '', '2021-12-03 13:54:44', '2021-12-28 13:41:05', NULL);
@@ -1303,10 +1303,10 @@ INSERT INTO `sys_menus` VALUES (20, '导出角色', '', 6, 1, '', '', '', '', ''
 INSERT INTO `sys_menus` VALUES (21, '添加菜单', '', 7, 1, '', '', '', '', '', 'F', '', '', '', 'system:menu:add', '0', 'admin', '', '', '2021-12-06 17:46:01', '2021-12-06 17:46:01', NULL);
 INSERT INTO `sys_menus` VALUES (22, '修改菜单', '', 7, 1, '', '', '', '', '', 'F', '', '', '', 'system:menu:edit', '0', 'admin', '', '', '2021-12-06 17:46:24', '2021-12-06 17:46:24', NULL);
 INSERT INTO `sys_menus` VALUES (23, '删除菜单', '', 7, 1, '', '', '', '', '', 'F', '', '', '', 'system:menu:delete', '0', 'admin', '', '', '2021-12-06 17:46:47', '2021-12-06 17:46:47', NULL);
-INSERT INTO `sys_menus` VALUES (24, '添加部门', '', 8, 1, '', '', '', '', '', 'F', '', '', '', 'system:dept:add', '0', 'admin', '', '', '2021-12-07 09:33:58', '2021-12-07 09:33:58', NULL);
-INSERT INTO `sys_menus` VALUES (25, '编辑部门', '', 8, 1, '', '', '', '', '', 'F', '', '', '', 'system:dept:edit', '0', 'admin', '', '', '2021-12-07 09:34:39', '2021-12-07 09:34:39', NULL);
-INSERT INTO `sys_menus` VALUES (26, '删除部门', '', 8, 1, '', '', '', '', '', 'F', '', '', '', 'system:dept:delete', '0', 'admin', 'admin', '', '2021-12-07 09:35:09', '2021-12-07 09:36:26', NULL);
-INSERT INTO `sys_menus` VALUES (27, '导出部门', '', 8, 1, '', '', '', '', '', 'F', '', '', '', 'system:dept:export', '0', 'admin', '', '', '2021-12-07 09:35:51', '2021-12-07 09:35:51', '2021-12-07 09:36:37');
+INSERT INTO `sys_menus` VALUES (24, '添加组织', '', 8, 1, '', '', '', '', '', 'F', '', '', '', 'system:organization:add', '0', 'admin', '', '', '2021-12-07 09:33:58', '2021-12-07 09:33:58', NULL);
+INSERT INTO `sys_menus` VALUES (25, '编辑组织', '', 8, 1, '', '', '', '', '', 'F', '', '', '', 'system:organization:edit', '0', 'admin', '', '', '2021-12-07 09:34:39', '2021-12-07 09:34:39', NULL);
+INSERT INTO `sys_menus` VALUES (26, '删除组织', '', 8, 1, '', '', '', '', '', 'F', '', '', '', 'system:organization:delete', '0', 'admin', 'admin', '', '2021-12-07 09:35:09', '2021-12-07 09:36:26', NULL);
+INSERT INTO `sys_menus` VALUES (27, '导出组织', '', 8, 1, '', '', '', '', '', 'F', '', '', '', 'system:organization:export', '0', 'admin', '', '', '2021-12-07 09:35:51', '2021-12-07 09:35:51', '2021-12-07 09:36:37');
 INSERT INTO `sys_menus` VALUES (28, '添加岗位', '', 9, 1, '', '', '', '', '', 'F', '', '', '', 'system:post:add', '0', 'admin', '', '', '2021-12-07 09:35:09', '2021-12-07 09:35:09', NULL);
 INSERT INTO `sys_menus` VALUES (29, '编辑岗位', '', 9, 1, '', '', '', '', '', 'F', '', '', '', 'system:post:edit', '0', 'admin', '', '', '2021-12-07 09:35:09', '2021-12-07 09:35:09', NULL);
 INSERT INTO `sys_menus` VALUES (30, '删除岗位', '', 9, 1, '', '', '', '', '', 'F', '', '', '', 'system:post:delete', '0', 'admin', '', '', '2021-12-07 09:35:09', '2021-12-07 09:35:09', NULL);
@@ -1428,7 +1428,7 @@ CREATE TABLE `sys_notices`  (
   `title` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '标题',
   `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '标题',
   `notice_type` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '通知类型',
-  `dept_id` int(0) NULL DEFAULT NULL COMMENT '部门Id,部门及子部门',
+  `organization_id` int(0) NULL DEFAULT NULL COMMENT '组织Id,组织及子组织',
   `create_time` datetime(0) NULL DEFAULT NULL,
   `update_time` datetime(0) NULL DEFAULT NULL,
   `delete_time` datetime(0) NULL DEFAULT NULL,
@@ -1469,21 +1469,21 @@ INSERT INTO `sys_posts` VALUES (1, '首席执行官', 'CEO', 1, '0', '首席执�
 INSERT INTO `sys_posts` VALUES (4, '首席技术执行官', 'CTO', 2, '0', '', 'panda', '', '2021-12-02 09:21:44', '2022-07-16 17:37:42', NULL);
 
 -- ----------------------------
--- Table structure for sys_role_depts
+-- Table structure for sys_role_organizations
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_role_depts`;
-CREATE TABLE `sys_role_depts`  (
+DROP TABLE IF EXISTS `sys_role_organizations`;
+CREATE TABLE `sys_role_organizations`  (
   `role_id` int(0) NULL DEFAULT NULL,
-  `dept_id` int(0) NULL DEFAULT NULL,
+  `organization_id` int(0) NULL DEFAULT NULL,
   `id` bigint(0) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of sys_role_depts
+-- Records of sys_role_organizations
 -- ----------------------------
-INSERT INTO `sys_role_depts` VALUES (1, 2, 1);
-INSERT INTO `sys_role_depts` VALUES (1, 3, 2);
+INSERT INTO `sys_role_organizations` VALUES (1, 2, 1);
+INSERT INTO `sys_role_organizations` VALUES (1, 3, 2);
 
 -- ----------------------------
 -- Table structure for sys_role_menus
@@ -1721,7 +1721,7 @@ CREATE TABLE `sys_roles`  (
   `role_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色名称',
   `status` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '状态',
   `role_key` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色代码',
-  `data_scope` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）',
+  `data_scope` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据范围（1：全部数据权限 2：自定数据权限 3：本组织数据权限 4：本组织及以下数据权限）',
   `role_sort` int(0) NULL DEFAULT NULL COMMENT '角色排序',
   `create_by` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `update_by` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
@@ -1751,7 +1751,7 @@ CREATE TABLE `sys_users`  (
   `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `sex` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `dept_id` int(0) NULL DEFAULT NULL,
+  `organization_id` int(0) NULL DEFAULT NULL,
   `post_id` int(0) NULL DEFAULT NULL,
   `create_by` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `update_by` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,

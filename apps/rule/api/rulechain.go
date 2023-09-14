@@ -40,7 +40,7 @@ func (p *RuleChainApi) GetRuleChainList(rc *restfulx.ReqCtx) {
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }
@@ -64,6 +64,7 @@ func (p *RuleChainApi) InsertRuleChain(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &data)
 	data.Id = kgo.KStr.Uniqid("rule_")
 	data.Owner = rc.LoginAccount.UserName
+	data.OrgId = rc.LoginAccount.OrganizationId
 	p.RuleChainApp.Insert(data)
 }
 

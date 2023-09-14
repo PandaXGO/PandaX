@@ -277,7 +277,7 @@
 2023-09-08 08:27:48.509 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/list/all] : 获取Product分页列表 ->10ms
 2023-09-08 08:43:11.002 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/notice/list] [uid=1] [uname=panda] : 获取通知分页列表 ->14ms
 2023-09-08 10:06:04.902 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
-2023-09-08 10:06:04.910 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dept/list] : 获取部门列表 ->6ms
+2023-09-08 10:06:04.910 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/list] : 获取组织列表 ->6ms
 2023-09-08 13:55:41.046 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/list] [uid=1] [uname=panda] : 获取Device分页列表 ->40ms
 2023-09-08 13:55:41.046 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/list/all] : 获取Product分页列表 ->12ms
 2023-09-08 13:55:41.048 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/group/list/tree/label] [uid=1] [uname=panda] : 获取DeviceGroup树 ->3ms
@@ -816,3 +816,704 @@
 2023-09-13 17:44:02.393 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update"]
 2023-09-13 17:44:02.774 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$hw/events/device/s7-device/twin/update"]
 2023-09-13 17:44:03.091 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"v1/devices/me/rpc/request/+"]
+2023-09-14 08:57:51.223 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230901074047-e0e8e4bf2bed/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 08:57:51.228 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 08:57:51.231 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 08:57:51.231 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 08:57:51.239 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 08:57:51.239 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 08:57:51.240 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 08:57:51.245 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:83] : 2023-09-14 08:57:51 [INFO] JobCore start success.
+2023-09-14 08:57:51.246 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 08:57:51.248 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 08:58:22.357 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 08:58:22.362 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 08:58:23.072 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update"]
+2023-09-14 08:58:23.353 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$hw/events/device/s7-device/twin/update"]
+2023-09-14 08:58:23.615 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"v1/devices/me/rpc/request/+"]
+2023-09-14 09:10:41.275 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [POST=/system/user/login] : 登录 ->77ms
+2023-09-14 09:10:41.302 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/auth] : 认证信息 ->18ms
+2023-09-14 09:10:58.845 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 09:10:58.851 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/list] : 获取Product分页列表 ->16ms
+2023-09-14 09:10:58.852 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/product/category/list/tree/label] [uid=1] : 获取ProductCategory树 ->4ms
+2023-09-14 09:10:58.907 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/upload/get/d7432e83df771fad85aa4e74235b0591_20230819092625.png] : 获取图片 ->0ms
+2023-09-14 09:11:00.937 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/template/list] : 获取Template分页列表 ->34ms
+2023-09-14 09:29:52.387 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 09:29:57.008 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 09:29:57.012 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 09:29:57.033 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 09:52:27.030 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 09:52:31.992 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 09:52:31.995 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 09:52:32.014 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 10:01:32.003 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 10:01:36.997 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 10:01:37.000 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 10:01:37.014 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 10:10:37.008 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 10:10:42.006 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 10:10:42.010 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 10:10:42.035 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 10:22:42.021 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 10:22:47.009 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 10:22:47.012 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 10:22:47.028 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 10:36:27.720 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/user/auth] [uid=1] [uname=panda] : 认证信息 ->37ms
+2023-09-14 10:36:33.180 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->10ms
+2023-09-14 10:36:33.185 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 10:36:35.268 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/organization/roleDeptTreeSelect/1] [uid=1] [uname=panda] : 获取角色组织树 ->8ms
+2023-09-14 10:36:35.279 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/1] [uid=1] [uname=panda] : 获取角色信息 ->11ms
+2023-09-14 10:37:47.026 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 10:37:52.008 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 10:37:52.012 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 10:37:52.030 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 10:43:52.018 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 10:43:57.004 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 10:43:57.007 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 10:43:57.021 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 10:47:57.092 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 10:48:04.821 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230901074047-e0e8e4bf2bed/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 10:48:04.827 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 10:48:04.829 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 10:48:04.829 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 10:48:04.836 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 10:48:04.836 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 10:48:04.837 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 10:48:04.841 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:83] : 2023-09-14 10:48:04 [INFO] JobCore start success.
+2023-09-14 10:48:09.158 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 10:48:09.161 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 10:48:12.944 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->9ms
+2023-09-14 10:48:13.008 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/api/all] [uid=1] : 获取所有api ->8ms
+2023-09-14 10:48:34.605 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [POST=/system/role] [uid=1] [uname=panda] : 添加角色信息
+<-e errCode: 400, errMsg: 存在相同api,添加失败,请联系管理员
+2023-09-14 11:21:27.035 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 11:21:32.002 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 11:21:32.004 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 11:21:32.024 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 11:22:26.438 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 11:22:33.636 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230901074047-e0e8e4bf2bed/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 11:22:33.640 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 11:22:33.642 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 11:22:33.643 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 11:22:33.649 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 11:22:33.650 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 11:22:33.650 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 11:22:33.654 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:83] : 2023-09-14 11:22:33 [INFO] JobCore start success.
+2023-09-14 11:22:38.505 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 11:22:38.508 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 11:22:38.511 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 11:22:53.322 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->8ms
+2023-09-14 11:22:53.381 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/all] : 获取所有api ->4ms
+2023-09-14 11:23:28.638 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->29ms
+2023-09-14 11:23:28.653 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/all] : 获取所有api ->6ms
+2023-09-14 11:23:32.610 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/all] : 获取所有api ->6ms
+2023-09-14 11:23:32.622 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/menu/roleMenuTreeSelect/1] [uid=1] : 获取角色菜单树 ->11ms
+2023-09-14 11:23:32.626 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/1] [uid=1] [uname=panda] : 获取角色信息 ->8ms
+2023-09-14 11:23:32.683 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/api/getPolicyPathByRoleId] [uid=1] : 获取角色拥有的api权限 ->6ms
+2023-09-14 11:23:35.363 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->28ms
+2023-09-14 11:23:35.375 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/all] : 获取所有api ->9ms
+2023-09-14 11:24:07.860 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [POST=/system/role] [uid=1] [uname=panda] : 添加角色信息 ->609ms
+2023-09-14 11:24:07.895 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->7ms
+2023-09-14 11:25:48.777 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 11:25:57.333 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230901074047-e0e8e4bf2bed/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 11:25:57.338 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 11:25:57.340 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 11:25:57.340 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 11:25:57.350 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 11:25:57.350 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 11:25:57.350 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 11:25:57.355 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:83] : 2023-09-14 11:25:57 [INFO] JobCore start success.
+2023-09-14 11:26:00.846 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 11:26:00.848 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 11:26:00.850 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 11:26:35.528 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uid=1] [uname=panda] [DELETE=/system/role/4] : 删除角色信息
+<-e errCode: 400, errMsg: 查询用户列表失败
+2023-09-14 11:26:45.135 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->8ms
+2023-09-14 11:26:45.150 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->15ms
+2023-09-14 11:27:33.630 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uid=1] [uname=panda] [DELETE=/system/role/4] : 删除角色信息
+<-e errCode: 400, errMsg: 查询用户列表失败
+2023-09-14 11:28:09.493 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uname=panda] [DELETE=/system/role/4] [uid=1] : 删除角色信息
+<-e errCode: 400, errMsg: 查询用户列表失败
+2023-09-14 11:29:18.923 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 11:29:25.313 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230901074047-e0e8e4bf2bed/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 11:29:25.318 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 11:29:25.320 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 11:29:25.320 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 11:29:25.328 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 11:29:25.328 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 11:29:25.328 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 11:29:25.333 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:83] : 2023-09-14 11:29:25 [INFO] JobCore start success.
+2023-09-14 11:29:25.484 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 11:29:25.485 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 11:29:25.487 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 11:29:31.488 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uid=1] [uname=panda] [DELETE=/system/role/4] : 删除角色信息
+<-e errCode: 400, errMsg: 查询用户列表失败%!(EXTRA string=Error 1052 (23000): Column 'role_id' in where clause is ambiguous)
+2023-09-14 11:30:28.636 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uid=1] [uname=panda] [DELETE=/system/role/4] : 删除角色信息
+<-e errCode: 400, errMsg: 查询用户列表失败%!(EXTRA string=Error 1052 (23000): Column 'role_id' in where clause is ambiguous)
+2023-09-14 11:32:38.401 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 11:32:45.460 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230901074047-e0e8e4bf2bed/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 11:32:45.465 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 11:32:45.466 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 11:32:45.466 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 11:32:45.474 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 11:32:45.474 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 11:32:45.475 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 11:32:45.482 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:83] : 2023-09-14 11:32:45 [INFO] JobCore start success.
+2023-09-14 11:32:50.459 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 11:32:50.460 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 11:32:50.464 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 11:33:32.017 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 11:33:37.009 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 11:33:37.014 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 11:33:37.035 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 11:33:38.554 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [DELETE=/system/role/4] [uid=1] [uname=panda] : 删除角色信息 ->288ms
+2023-09-14 11:33:38.583 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->6ms
+2023-09-14 11:34:12.162 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->13ms
+2023-09-14 11:34:12.177 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/all] : 获取所有api ->13ms
+2023-09-14 11:34:44.642 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [POST=/system/role] : 添加角色信息 ->456ms
+2023-09-14 11:34:44.674 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/list] [uid=1] [uname=panda] : 获取角色分页列表 ->7ms
+2023-09-14 11:34:56.136 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/roleDeptTreeSelect/5] : 获取角色组织树 ->9ms
+2023-09-14 11:34:56.142 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/5] : 获取角色信息 ->7ms
+2023-09-14 11:36:02.955 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/list] [uid=1] [uname=panda] : 获取角色分页列表 ->12ms
+2023-09-14 11:36:02.960 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 11:36:08.718 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/roleDeptTreeSelect/5] : 获取角色组织树 ->12ms
+2023-09-14 11:36:08.724 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/5] [uid=1] : 获取角色信息 ->7ms
+2023-09-14 11:36:44.676 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/menu/roleMenuTreeSelect/5] : 获取角色菜单树 ->10ms
+2023-09-14 11:36:44.680 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/all] : 获取所有api ->5ms
+2023-09-14 11:36:44.690 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/5] : 获取角色信息 ->8ms
+2023-09-14 11:36:44.791 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/api/getPolicyPathByRoleId] [uid=1] [uname=panda] : 获取角色拥有的api权限 ->5ms
+2023-09-14 11:36:47.142 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->5ms
+2023-09-14 11:36:47.152 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/all] : 获取所有api ->9ms
+2023-09-14 11:37:21.478 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/list] [uid=1] : 获取组织列表 ->3ms
+2023-09-14 11:37:21.495 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->12ms
+2023-09-14 11:37:23.605 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 11:37:23.611 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/organizationTree] [uid=1] : 获取所有组织树 ->4ms
+2023-09-14 11:37:28.757 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/organization/list] [uid=1] [uname=panda] : 获取组织列表 ->2ms
+2023-09-14 11:42:37.021 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 11:42:42.021 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 11:42:42.024 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 11:42:42.038 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 11:50:35.350 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->14ms
+2023-09-14 11:50:35.355 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 11:50:37.002 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->8ms
+2023-09-14 11:50:37.013 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/api/all] [uid=1] [uname=panda] : 获取所有api ->6ms
+2023-09-14 11:50:52.553 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/list] : 得到用户分页列表 ->11ms
+2023-09-14 11:50:52.555 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->5ms
+2023-09-14 11:50:52.566 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 11:50:52.574 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 11:50:53.881 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->5ms
+2023-09-14 11:50:53.890 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 11:50:53.903 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->9ms
+2023-09-14 11:50:53.916 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/user/getInit] [uid=1] : 获取初始化角色岗位信息(添加用户初始化) ->12ms
+2023-09-14 11:51:33.054 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/list] : 获取角色分页列表 ->25ms
+2023-09-14 11:51:33.057 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->18ms
+2023-09-14 11:57:42.037 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 11:57:47.014 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 11:57:47.017 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 11:57:47.038 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : d_1928b99619910dae5a001fa7订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+"]
+2023-09-14 12:12:47.034 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 12:12:51.988 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号d_1928b99619910dae5a001fa7，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-14 12:12:51.991 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 12:14:21.994 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : d_1928b99619910dae5a001fa7断开连接
+2023-09-14 13:47:46.407 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/list] [uid=1] : 获取组织列表 ->6ms
+2023-09-14 13:47:46.417 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 13:48:06.814 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 13:48:06.825 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/list] : 获取角色分页列表 ->8ms
+2023-09-14 13:48:09.056 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/roleDeptTreeSelect/5] : 获取角色组织树 ->10ms
+2023-09-14 13:48:09.065 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/5] : 获取角色信息 ->10ms
+2023-09-14 13:54:56.982 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 14:01:33.423 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 14:01:33.429 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 14:01:33.431 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 14:01:33.431 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 14:01:33.439 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 14:01:33.439 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 14:01:33.440 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 14:01:33.445 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:83] : 2023-09-14 14:01:33 [INFO] JobCore start success.
+2023-09-14 14:01:33.446 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 14:01:33.449 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 14:02:08.829 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:02:08.832 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/list] [uid=1] [uname=panda] : 获取角色分页列表 ->8ms
+2023-09-14 14:03:11.980 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:03:11.995 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/list] : 获取角色分页列表 ->10ms
+2023-09-14 14:03:28.392 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->29ms
+2023-09-14 14:03:28.399 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->9ms
+2023-09-14 14:03:28.632 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->17ms
+2023-09-14 14:03:28.643 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->10ms
+2023-09-14 14:04:15.283 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/menu/list] : 获取菜单列表 ->6ms
+2023-09-14 14:04:15.324 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->37ms
+2023-09-14 14:04:15.335 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:04:15.354 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:04:21.040 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uid=1] [uname=panda] [GET=/system/organization/list] : 获取组织列表
+<-e errCode: 403, errMsg: 没有API接口访问权限，请联系管理员
+2023-09-14 14:04:21.056 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:04:46.727 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/menu/list] : 获取菜单列表 ->4ms
+2023-09-14 14:04:46.734 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 14:04:46.742 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:04:46.748 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:04:56.966 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->5ms
+2023-09-14 14:04:56.973 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 14:04:56.983 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:04:56.993 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:04:57.001 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:05:07.311 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [PUT=/system/menu] [uid=1] [uname=panda] : 修改菜单信息 ->290ms
+2023-09-14 14:05:07.358 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/list] [uid=1] [uname=panda] : 获取菜单列表 ->9ms
+2023-09-14 14:05:07.378 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/list] [uid=1] [uname=panda] : 获取菜单列表 ->8ms
+2023-09-14 14:05:15.336 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->6ms
+2023-09-14 14:05:15.343 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->10ms
+2023-09-14 14:05:15.353 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:05:15.362 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:05:15.370 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:05:20.576 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [PUT=/system/menu] [uid=1] : 修改菜单信息 ->276ms
+2023-09-14 14:05:20.615 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/menu/list] : 获取菜单列表 ->6ms
+2023-09-14 14:05:20.630 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/list] [uid=1] [uname=panda] : 获取菜单列表 ->4ms
+2023-09-14 14:05:23.972 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->6ms
+2023-09-14 14:05:23.978 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:05:23.989 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:05:23.996 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:05:24.006 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 14:05:26.341 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [PUT=/system/menu] : 修改菜单信息 ->124ms
+2023-09-14 14:05:26.377 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/list] [uid=1] [uname=panda] : 获取菜单列表 ->5ms
+2023-09-14 14:05:26.391 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/menu/list] : 获取菜单列表 ->6ms
+2023-09-14 14:05:29.881 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/menuTreeSelect] : 获取菜单树 ->4ms
+2023-09-14 14:05:29.892 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:05:29.900 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:05:29.911 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:05:29.919 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 14:05:32.349 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [PUT=/system/menu] : 修改菜单信息 ->128ms
+2023-09-14 14:05:32.384 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/menu/list] : 获取菜单列表 ->8ms
+2023-09-14 14:05:32.399 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/menu/list] : 获取菜单列表 ->7ms
+2023-09-14 14:05:35.612 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:05:35.623 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/api/list] [uid=1] [uname=panda] : 获取api分页列表 ->8ms
+2023-09-14 14:05:39.741 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/api/list] [uid=1] [uname=panda] : 获取api分页列表 ->10ms
+2023-09-14 14:05:42.553 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:05:53.900 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [PUT=/system/api] [uid=1] [uname=panda] : 修改api信息 ->642ms
+2023-09-14 14:05:53.934 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/list] : 获取api分页列表 ->12ms
+2023-09-14 14:05:57.866 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:06:06.213 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [PUT=/system/api] [uid=1] [uname=panda] : 修改api信息 ->376ms
+2023-09-14 14:06:06.248 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/api/list] [uid=1] : 获取api分页列表 ->9ms
+2023-09-14 14:06:09.137 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 14:06:35.062 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [PUT=/system/api] : 修改api信息 ->394ms
+2023-09-14 14:06:35.096 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/list] : 获取api分页列表 ->11ms
+2023-09-14 14:06:44.305 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:06:50.879 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [PUT=/system/api] [uid=1] : 修改api信息 ->267ms
+2023-09-14 14:06:50.914 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/api/list] [uid=1] [uname=panda] : 获取api分页列表 ->11ms
+2023-09-14 14:06:53.771 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 14:07:05.867 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [PUT=/system/api] [uid=1] [uname=panda] : 修改api信息 ->495ms
+2023-09-14 14:07:05.898 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/api/list] [uid=1] [uname=panda] : 获取api分页列表 ->8ms
+2023-09-14 14:07:08.252 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:07:17.856 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [PUT=/system/api] : 修改api信息 ->416ms
+2023-09-14 14:07:17.887 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/list] : 获取api分页列表 ->10ms
+2023-09-14 14:07:19.806 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 14:07:28.308 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [PUT=/system/api] : 修改api信息 ->367ms
+2023-09-14 14:07:28.412 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/api/list] [uid=1] [uname=panda] : 获取api分页列表 ->18ms
+2023-09-14 14:07:29.918 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->3ms
+2023-09-14 14:07:41.609 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [PUT=/system/api] [uid=1] [uname=panda] : 修改api信息 ->446ms
+2023-09-14 14:07:41.640 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/api/list] [uid=1] : 获取api分页列表 ->10ms
+2023-09-14 14:07:44.097 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/list] [uid=1] [uname=panda] : 获取角色分页列表 ->7ms
+2023-09-14 14:07:44.101 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->3ms
+2023-09-14 14:07:46.977 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/menu/roleMenuTreeSelect/1] : 获取角色菜单树 ->10ms
+2023-09-14 14:07:46.981 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/api/all] [uid=1] : 获取所有api ->5ms
+2023-09-14 14:07:46.993 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/1] [uid=1] [uname=panda] : 获取角色信息 ->10ms
+2023-09-14 14:07:47.104 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/getPolicyPathByRoleId] : 获取角色拥有的api权限 ->6ms
+2023-09-14 14:08:07.518 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [PUT=/system/role] [uid=1] [uname=panda] : 修改角色信息 ->931ms
+2023-09-14 14:08:07.553 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/list] [uid=1] [uname=panda] : 获取角色分页列表 ->7ms
+2023-09-14 14:08:23.610 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [POST=/system/user/login] : 登录 ->71ms
+2023-09-14 14:08:23.635 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/user/auth] [uid=1] : 认证信息 ->17ms
+2023-09-14 14:08:24.180 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/list] : 获取角色分页列表 ->10ms
+2023-09-14 14:08:24.193 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->16ms
+2023-09-14 14:08:30.826 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/list] [uid=1] [uname=panda] : 获取角色分页列表 ->21ms
+2023-09-14 14:08:30.830 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:08:38.252 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/list] [uid=1] [uname=panda] : 获取菜单列表 ->7ms
+2023-09-14 14:08:38.259 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->9ms
+2023-09-14 14:08:38.267 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:08:38.275 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:09:37.537 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/menu/list] : 获取菜单列表 ->15ms
+2023-09-14 14:09:37.563 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->27ms
+2023-09-14 14:09:37.582 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->13ms
+2023-09-14 14:09:37.597 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->11ms
+2023-09-14 14:09:41.609 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->9ms
+2023-09-14 14:09:41.614 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/list] [uid=1] : 获取组织列表 ->3ms
+2023-09-14 14:10:19.850 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uid=1] [uname=panda] [GET=/system/user/list] : 得到用户分页列表
+<-e errCode: 400, errMsg: 查询用户分页列表失败
+2023-09-14 14:10:19.862 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->9ms
+2023-09-14 14:10:19.871 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->6ms
+2023-09-14 14:10:19.941 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->54ms
+2023-09-14 14:10:24.854 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:10:24.868 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/list] : 获取角色分页列表 ->10ms
+2023-09-14 14:10:26.462 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->9ms
+2023-09-14 14:10:26.477 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uid=1] [uname=panda] [GET=/system/user/list] : 得到用户分页列表
+<-e errCode: 400, errMsg: 查询用户分页列表失败
+2023-09-14 14:10:26.488 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/organizationTree] [uid=1] : 获取所有组织树 ->5ms
+2023-09-14 14:10:26.504 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:10:49.691 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->8ms
+2023-09-14 14:10:49.695 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:10:50.743 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:10:50.753 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/list] : 得到用户分页列表 ->8ms
+2023-09-14 14:10:50.757 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->4ms
+2023-09-14 14:10:50.765 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:10:54.920 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/organization/organizationTree] [uid=1] [uname=panda] : 获取所有组织树 ->6ms
+2023-09-14 14:10:54.980 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->46ms
+2023-09-14 14:10:55.004 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/getInit] : 获取初始化角色岗位信息(添加用户初始化) ->17ms
+2023-09-14 14:10:55.006 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 14:11:42.173 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/log/logOper/list] [uid=1] : 获取操作日志列表 ->12ms
+2023-09-14 14:11:42.181 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:11:42.190 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:50:38.480 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/user/list] [uid=1] [uname=panda] : 得到用户分页列表 ->10ms
+2023-09-14 14:50:38.483 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/organization/organizationTree] [uid=1] [uname=panda] : 获取所有组织树 ->3ms
+2023-09-14 14:50:38.493 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:50:38.503 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 14:50:39.907 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/organizationTree] [uid=1] : 获取所有组织树 ->3ms
+2023-09-14 14:50:39.917 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:50:39.926 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:50:39.936 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/user/getInit] [uid=1] [uname=panda] : 获取初始化角色岗位信息(添加用户初始化) ->7ms
+2023-09-14 14:52:02.386 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/user/getInit] [uid=1] [uname=panda] : 获取初始化角色岗位信息(添加用户初始化) ->9ms
+2023-09-14 14:52:02.389 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->4ms
+2023-09-14 14:52:02.405 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:52:02.416 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 14:52:12.751 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/user/getInit] [uid=1] [uname=panda] : 获取初始化角色岗位信息(添加用户初始化) ->9ms
+2023-09-14 14:52:12.757 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:52:12.766 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:52:12.774 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/organizationTree] [uid=1] : 获取所有组织树 ->3ms
+2023-09-14 14:52:42.454 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/user/getInit] [uid=1] : 获取初始化角色岗位信息(添加用户初始化) ->12ms
+2023-09-14 14:52:42.457 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->7ms
+2023-09-14 14:52:42.474 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->10ms
+2023-09-14 14:52:42.484 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 14:54:21.066 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/getInit] : 获取初始化角色岗位信息(添加用户初始化) ->13ms
+2023-09-14 14:54:21.084 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->10ms
+2023-09-14 14:54:21.095 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->7ms
+2023-09-14 14:54:21.098 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->10ms
+2023-09-14 14:58:09.696 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/organizationTree] [uid=1] : 获取所有组织树 ->5ms
+2023-09-14 14:58:09.715 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/user/getInit] [uid=1] [uname=panda] : 获取初始化角色岗位信息(添加用户初始化) ->15ms
+2023-09-14 14:58:09.722 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->11ms
+2023-09-14 14:58:09.744 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->11ms
+2023-09-14 14:58:34.093 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/getInit] : 获取初始化角色岗位信息(添加用户初始化) ->11ms
+2023-09-14 14:58:34.094 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->3ms
+2023-09-14 14:58:34.106 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:58:34.112 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 14:58:50.495 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [POST=/system/user] : 添加用户信息 ->169ms
+2023-09-14 14:58:50.533 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/list] : 得到用户分页列表 ->12ms
+2023-09-14 14:58:59.858 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->6ms
+2023-09-14 14:58:59.864 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/user/getById/6] [uid=1] [uname=panda] : 获取用户信息 ->22ms
+2023-09-14 14:58:59.868 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:58:59.876 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 14:59:29.771 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->6ms
+2023-09-14 14:59:29.785 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:59:29.796 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:59:29.809 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/user/getById/6] [uid=1] [uname=panda] : 获取用户信息 ->20ms
+2023-09-14 14:59:36.625 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 14:59:36.641 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/user/list] [uid=1] [uname=panda] : 得到用户分页列表 ->12ms
+2023-09-14 14:59:36.645 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/organization/organizationTree] [uid=1] [uname=panda] : 获取所有组织树 ->4ms
+2023-09-14 14:59:36.665 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:59:40.966 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 14:59:40.976 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/organization/organizationTree] [uid=1] [uname=panda] : 获取所有组织树 ->5ms
+2023-09-14 14:59:40.985 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 14:59:41.013 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/getById/6] : 获取用户信息 ->23ms
+2023-09-14 15:00:11.944 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/getInit] : 获取初始化角色岗位信息(添加用户初始化) ->11ms
+2023-09-14 15:00:11.947 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->5ms
+2023-09-14 15:00:11.961 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->10ms
+2023-09-14 15:00:11.971 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 15:00:18.867 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/getInit] : 获取初始化角色岗位信息(添加用户初始化) ->10ms
+2023-09-14 15:00:18.881 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->4ms
+2023-09-14 15:00:18.894 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->10ms
+2023-09-14 15:00:18.900 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 15:00:30.598 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/organizationTree] [uid=1] : 获取所有组织树 ->5ms
+2023-09-14 15:00:30.609 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/user/getById/5] [uid=1] : 获取用户信息 ->29ms
+2023-09-14 15:00:30.609 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 15:00:30.618 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 15:00:35.031 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/organizationTree] [uid=1] : 获取所有组织树 ->4ms
+2023-09-14 15:00:35.052 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 15:00:35.062 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/getById/6] : 获取用户信息 ->27ms
+2023-09-14 15:00:35.063 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 15:15:05.642 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 15:15:13.713 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 15:15:13.723 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 15:15:13.726 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 15:15:13.726 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 15:15:13.737 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 15:15:13.737 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 15:15:13.739 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 15:15:13.745 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 15:15:13 [INFO] JobCore start success.
+2023-09-14 15:15:17.708 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 15:15:17.710 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 15:15:17.712 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 15:15:22.244 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/list] [uid=1] [uname=panda] : 获取角色分页列表 ->8ms
+2023-09-14 15:15:22.250 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 15:15:23.493 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 15:15:23.509 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/user/list] [uid=1] [uname=panda] : 得到用户分页列表 ->11ms
+2023-09-14 15:15:23.513 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->5ms
+2023-09-14 15:15:23.526 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 15:15:25.473 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 15:15:25.483 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/api/list] [uid=1] : 获取api分页列表 ->8ms
+2023-09-14 15:15:26.782 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 15:15:26.791 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/menu/list] [uid=1] [uname=panda] : 获取菜单列表 ->5ms
+2023-09-14 15:15:26.798 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 15:15:26.808 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 15:15:34.902 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/category/list/tree/label] : 获取ProductCategory树 ->4ms
+2023-09-14 15:15:34.904 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/list] : 获取Product分页列表 ->15ms
+2023-09-14 15:15:34.911 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 15:15:34.948 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/upload/get/d7432e83df771fad85aa4e74235b0591_20230819092625.png] : 获取图片 ->0ms
+2023-09-14 15:15:37.070 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->9ms
+2023-09-14 15:15:37.091 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/group/list/tree/label] : 获取DeviceGroup树 ->4ms
+2023-09-14 15:15:37.102 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/list] [uid=1] : 获取Device分页列表 ->26ms
+2023-09-14 15:15:37.110 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/product/list/all] [uid=1] : 获取Product分页列表 ->14ms
+2023-09-14 15:15:52.340 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [GET=/video/ys/device/list] [uid=1] [uname=panda] : 获取设备列表
+<-e errCode: 400, errMsg: 设备列表获取失败,可能萤石Token过期，请联系管理员。。
+2023-09-14 15:43:13.616 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 15:43:21.133 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 15:43:21.139 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 15:43:21.141 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 15:43:21.141 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 15:43:21.149 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 15:43:21.149 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 15:43:21.149 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 15:43:21.156 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 15:43:21 [INFO] JobCore start success.
+2023-09-14 15:43:25.691 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 15:43:25.694 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 15:43:53.323 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 15:43:53.328 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 15:43:53.331 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 15:43:53.331 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 15:43:53.338 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 15:43:53.338 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 15:43:53.339 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 15:43:53.343 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 15:43:53 [INFO] JobCore start success.
+2023-09-14 15:43:57.455 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 15:43:57.456 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 15:43:57.458 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 15:44:00.633 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/group/list/tree/label] [uid=1] [uname=panda] : 获取DeviceGroup树 ->4ms
+2023-09-14 15:44:00.655 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/list/all] : 获取Product分页列表 ->18ms
+2023-09-14 15:44:00.656 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 15:44:00.663 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/list] [uid=1] : 获取Device分页列表 ->42ms
+2023-09-14 15:45:37.406 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 15:45:44.187 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 15:45:44.193 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 15:45:44.196 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 15:45:44.196 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 15:45:44.203 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 15:45:44.203 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 15:45:44.204 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 15:45:44.208 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 15:45:44 [INFO] JobCore start success.
+2023-09-14 15:45:44.478 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 15:45:44.481 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 15:45:44.484 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 15:45:50.480 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/group/list] [uid=1] : 获取DeviceGroup列表 ->4ms
+2023-09-14 15:45:50.487 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 15:45:51.855 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->49ms
+2023-09-14 15:45:51.874 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/group/list/tree/label] [uid=1] [uname=panda] : 获取DeviceGroup树 ->5ms
+2023-09-14 15:45:51.888 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/product/list/all] [uid=1] [uname=panda] : 获取Product分页列表 ->10ms
+2023-09-14 15:45:51.897 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/list] : 获取Device分页列表 ->41ms
+2023-09-14 15:48:47.119 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 15:48:55.593 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 15:48:55.599 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 15:48:55.601 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 15:48:55.601 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 15:48:55.609 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 15:48:55.609 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 15:48:55.609 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 15:48:55.614 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 15:48:55 [INFO] JobCore start success.
+2023-09-14 15:48:59.181 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 15:48:59.183 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 15:48:59.186 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 15:49:04.182 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/group/list] [uid=1] [uname=panda] : 获取DeviceGroup列表 ->4ms
+2023-09-14 15:49:04.190 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-14 15:49:06.677 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 15:49:06.691 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/group/list/tree/label] : 获取DeviceGroup树 ->5ms
+2023-09-14 15:49:06.706 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/product/list/all] [uid=1] [uname=panda] : 获取Product分页列表 ->11ms
+2023-09-14 15:49:06.717 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/list] [uid=1] : 获取Device分页列表 ->39ms
+2023-09-14 15:51:32.201 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 15:51:40.675 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 15:51:40.681 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 15:51:40.683 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 15:51:40.683 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 15:51:40.692 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 15:51:40.692 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 15:51:40.692 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 15:51:40.698 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 15:51:40 [INFO] JobCore start success.
+2023-09-14 15:51:44.265 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 15:51:44.266 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 15:51:44.268 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 15:51:45.946 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 15:51:45.954 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/group/list] : 获取DeviceGroup列表 ->6ms
+2023-09-14 15:51:46.947 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 15:51:46.963 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/group/list/tree/label] [uid=1] : 获取DeviceGroup树 ->4ms
+2023-09-14 15:51:46.974 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/list] [uid=1] : 获取Device分页列表 ->23ms
+2023-09-14 15:51:46.980 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/list/all] : 获取Product分页列表 ->12ms
+2023-09-14 15:52:25.111 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 15:52:32.340 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 15:52:32.347 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 15:52:32.349 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 15:52:32.349 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 15:52:32.357 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 15:52:32.357 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 15:52:32.357 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 15:52:32.364 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 15:52:32 [INFO] JobCore start success.
+2023-09-14 15:52:37.197 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 15:52:37.199 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 15:52:37.201 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 15:52:38.906 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/group/list] : 获取DeviceGroup列表 ->7ms
+2023-09-14 15:52:38.941 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->22ms
+2023-09-14 15:52:41.267 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 15:52:41.283 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/group/list/tree/label] : 获取DeviceGroup树 ->3ms
+2023-09-14 15:52:41.297 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/product/list/all] [uid=1] [uname=panda] : 获取Product分页列表 ->11ms
+2023-09-14 15:52:41.297 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/list] [uid=1] [uname=panda] : 获取Device分页列表 ->28ms
+2023-09-14 16:06:33.620 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 16:06:33.625 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 16:06:33.627 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 16:06:33.627 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 16:06:33.636 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 16:06:33.636 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 16:06:33.637 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 16:06:33.642 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 16:06:33 [INFO] JobCore start success.
+2023-09-14 16:06:37.351 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 16:06:37.353 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 16:06:50.234 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 16:06:50.244 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/list] : 获取角色分页列表 ->8ms
+2023-09-14 16:06:53.427 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/roleOrganizationTreeSelect/1] : 获取角色组织树 ->10ms
+2023-09-14 16:06:53.435 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/1] [uid=1] [uname=panda] : 获取角色信息 ->9ms
+2023-09-14 16:06:59.109 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [PUT=/system/role/dataScope] : 修改角色组织权限 ->357ms
+2023-09-14 16:06:59.141 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/list] [uid=1] [uname=panda] : 获取角色分页列表 ->8ms
+2023-09-14 16:07:23.847 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/1] [uid=1] [uname=panda] : 获取角色信息 ->10ms
+2023-09-14 16:07:23.852 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/organization/roleOrganizationTreeSelect/1] [uid=1] [uname=panda] : 获取角色组织树 ->8ms
+2023-09-14 16:07:28.563 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [PUT=/system/role/dataScope] [uid=1] : 修改角色组织权限 ->208ms
+2023-09-14 16:07:28.599 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/list] : 获取角色分页列表 ->8ms
+2023-09-14 16:07:49.202 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/list] : 得到用户分页列表 ->9ms
+2023-09-14 16:07:49.206 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->4ms
+2023-09-14 16:07:49.218 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-14 16:07:49.229 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 16:07:52.144 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->4ms
+2023-09-14 16:07:52.156 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 16:07:52.166 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->8ms
+2023-09-14 16:07:52.190 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/user/getById/1] [uid=1] : 获取用户信息 ->19ms
+2023-09-14 16:08:11.843 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/organizationTree] : 获取所有组织树 ->5ms
+2023-09-14 16:08:11.847 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/getById/1] : 获取用户信息 ->19ms
+2023-09-14 16:08:11.856 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->9ms
+2023-09-14 16:08:11.866 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 16:13:19.610 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 16:13:58.901 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 16:13:58.908 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 16:13:58.910 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 16:13:58.910 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 16:13:58.919 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 16:13:58.919 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 16:13:58.919 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 16:13:58.925 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 16:13:58 [INFO] JobCore start success.
+2023-09-14 16:13:58.926 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 16:13:58.928 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 16:14:05.532 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/list] : 获取角色分页列表 ->20ms
+2023-09-14 16:14:05.536 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->9ms
+2023-09-14 16:14:07.364 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/1] [uid=1] : 获取角色信息 ->12ms
+2023-09-14 16:14:07.369 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/organization/roleOrganizationTreeSelect/1] : 获取角色组织树 ->7ms
+2023-09-14 16:14:10.704 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [PUT=/system/role/dataScope] : 修改角色组织权限 ->254ms
+2023-09-14 16:14:10.734 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->7ms
+2023-09-14 16:16:05.708 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 16:16:13.468 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 16:16:13.473 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 16:16:13.477 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 16:16:13.477 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 16:16:13.485 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 16:16:13.485 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 16:16:13.486 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 16:16:13.491 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 16:16:13 [INFO] JobCore start success.
+2023-09-14 16:16:16.027 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/roleOrganizationTreeSelect/1] [uid=1] : 获取角色组织树 ->9ms
+2023-09-14 16:16:16.036 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/1] : 获取角色信息 ->11ms
+2023-09-14 16:16:17.768 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 16:16:17.770 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 16:16:17.774 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 16:16:19.605 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [PUT=/system/role/dataScope] [uid=1] : 修改角色组织权限 ->210ms
+2023-09-14 16:16:19.640 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/role/list] [uid=1] [uname=panda] : 获取角色分页列表 ->7ms
+2023-09-14 16:20:58.936 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 16:21:06.504 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 16:21:06.509 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 16:21:06.511 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 16:21:06.511 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 16:21:06.520 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 16:21:06.521 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 16:21:06.521 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 16:21:06.525 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 16:21:06 [INFO] JobCore start success.
+2023-09-14 16:21:06.812 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/1] : 获取角色信息 ->8ms
+2023-09-14 16:21:06.819 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/organization/roleOrganizationTreeSelect/1] [uid=1] : 获取角色组织树 ->8ms
+2023-09-14 16:21:10.999 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 16:21:11.001 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 16:21:11.003 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 16:21:12.823 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [PUT=/system/role/dataScope] : 修改角色组织权限 ->206ms
+2023-09-14 16:21:12.856 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->12ms
+2023-09-14 16:44:20.457 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 16:45:25.494 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 16:45:25.499 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 16:45:25.501 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 16:45:25.501 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 16:45:25.509 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 16:45:25.509 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 16:45:25.509 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 16:45:25.515 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 16:45:25 [INFO] JobCore start success.
+2023-09-14 16:45:25.517 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 16:45:25.519 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 16:45:28.461 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/group/list/tree/label] : 获取DeviceGroup树 ->4ms
+2023-09-14 16:45:28.487 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/list/all] : 获取Product分页列表 ->10ms
+2023-09-14 16:45:28.489 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-14 16:45:28.495 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/list] : 获取Device分页列表 ->29ms
+2023-09-14 16:46:00.548 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/group/list] [uid=1] : 获取DeviceGroup列表 ->28ms
+2023-09-14 16:46:00.579 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->25ms
+2023-09-14 16:46:01.662 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-14 16:46:01.678 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/group/list/tree/label] [uid=1] [uname=panda] : 获取DeviceGroup树 ->5ms
+2023-09-14 16:46:01.692 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/list] [uid=1] : 获取Device分页列表 ->26ms
+2023-09-14 16:46:01.692 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/list/all] : 获取Product分页列表 ->12ms
+2023-09-14 17:03:46.773 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 17:03:46.779 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 17:03:46.781 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 17:03:46.781 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 17:03:46.789 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 17:03:46.790 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 17:03:46.790 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 17:03:46.795 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 17:03:46 [INFO] JobCore start success.
+2023-09-14 17:03:47.704 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 17:03:47.705 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 17:03:47.709 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 17:03:59.276 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/develop/code/table/list] : 获取表列表 ->13ms
+2023-09-14 17:09:36.880 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/develop/code/table/list] : 获取表列表 ->77ms
+2023-09-14 17:09:40.142 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uid=1] [uname=panda] [GET=/develop/code/gen/preview/3] : 获取生成代码视图
+<-e errCode: 400, errMsg: 该角色下未分配组织权限
+2023-09-14 17:09:50.087 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uname=panda] [GET=/develop/code/gen/preview/3] [uid=1] : 获取生成代码视图
+<-e errCode: 400, errMsg: 该角色下未分配组织权限
+2023-09-14 17:09:54.219 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/develop/code/table/info/5] [uid=1] : 获取表信息 ->22ms
+2023-09-14 17:09:54.221 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/type/list] : 获取字典类型分页列表 ->8ms
+2023-09-14 17:09:54.294 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/develop/code/table/tableTree] [uid=1] : 获取表树 ->89ms
+2023-09-14 17:10:39.724 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uid=1] [uname=panda] [GET=/develop/code/gen/preview/3] : 获取生成代码视图
+<-e errCode: 400, errMsg: 该角色下未分配组织权限
+2023-09-14 17:16:39.586 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 17:16:48.306 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 17:16:48.311 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 17:16:48.316 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 17:16:48.316 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 17:16:48.325 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 17:16:48.325 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 17:16:48.326 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 17:16:48.333 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 17:16:48 [INFO] JobCore start success.
+2023-09-14 17:16:51.649 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 17:16:51.653 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 17:16:51.658 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 17:19:35.990 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/develop/code/table/list] : 获取表列表 ->14ms
+2023-09-14 17:19:41.060 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/develop/code/table/list] [uid=1] : 获取表列表 ->22ms
+2023-09-14 17:19:43.711 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uname=panda] [GET=/develop/code/gen/preview/3] [uid=1] : 获取生成代码视图
+<-e errCode: 400, errMsg: 该角色下未分配组织权限
+2023-09-14 17:19:48.445 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [GET=/develop/code/gen/preview/5] [uid=1] [uname=panda] : 获取生成代码视图
+<-e errCode: 400, errMsg: 该角色下未分配组织权限
+2023-09-14 17:22:01.730 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+2023-09-14 17:22:08.815 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-14 17:22:08.821 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-14 17:22:08.823 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-14 17:22:08.823 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-14 17:22:08.831 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-14 17:22:08.831 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-14 17:22:08.832 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-14 17:22:08.838 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:85] : 2023-09-14 17:22:08 [INFO] JobCore start success.
+2023-09-14 17:22:13.792 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-14 17:22:13.793 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-14 17:22:13.795 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-14 17:22:33.206 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/develop/code/table/list] : 获取表列表 ->15ms
+2023-09-14 17:22:34.834 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/develop/code/gen/preview/3] : 获取生成代码视图 ->15ms
+2023-09-14 17:22:38.200 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/develop/code/gen/preview/5] : 获取生成代码视图 ->14ms
+2023-09-14 17:22:41.255 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/develop/code/table/info/7] : 获取表信息 ->9ms
+2023-09-14 17:22:41.260 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/type/list] : 获取字典类型分页列表 ->8ms
+2023-09-14 17:22:41.308 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/develop/code/table/tableTree] : 获取表树 ->46ms

@@ -25,10 +25,10 @@ type ChangePasswordStruct struct {
 }
 
 type UserSearch struct {
-	Username string `json:"username"` // 用户UUID
-	NickName string `json:"nickName"` // 角色ID
-	Status   int64  `json:"status"`   // 角色ID
-	Phone    string `json:"phone"`    // 角色ID
-	PostId   int64  `json:"postId"`   // 角色ID
-	DeptId   int64  `json:"deptId"`   // 角色ID
+	Username       string `json:"username"`       // 用户UUID
+	NickName       string `json:"nickName"`       // 角色ID
+	Status         int64  `json:"status"`         // 角色ID
+	Phone          string `json:"phone"`          // 角色ID
+	PostId         int64  `json:"postId"`         // 角色ID
+	OrganizationId int64  `json:"organizationId"` // 角色ID
 }

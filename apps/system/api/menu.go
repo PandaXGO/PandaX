@@ -10,8 +10,8 @@ import (
 )
 
 type MenuApi struct {
-	MenuApp services.SysMenuModel
-	DeptApp services.SysDeptModel
+	MenuApp         services.SysMenuModel
+	OrganizationApp services.SysOrganizationModel
 
 	RoleMenuApp services.SysRoleMenuModel
 	RoleApp     services.SysRoleModel

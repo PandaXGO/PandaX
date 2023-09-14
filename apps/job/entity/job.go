@@ -14,4 +14,6 @@ type SysJob struct {
 	MisfirePolicy  string `json:"misfirePolicy" gorm:"type:varchar(1);"`             // 执行策略
 	Status         string `json:"status" gorm:"type:varchar(1);"`                    // 状态
 	EntryId        int    `json:"entryId" gorm:"type:int;"`                          // job启动时返回的id
+
+	RoleId int64 `gorm:"-"` // 角色数据权限
 }

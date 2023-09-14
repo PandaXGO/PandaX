@@ -36,6 +36,7 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 	biz.IsTrue(list != nil && len(*list) == 0, "设备名称已经存在")
 	//2 创建认证TOKEN IOTHUB使用
 	etoken := getDeviceToken(&data)
+	// 子网关不需要设置token
 	if data.DeviceType != global.GATEWAYS {
 		data.Token = etoken.Token
 	}
@@ -56,6 +57,7 @@ func getDeviceToken(data *entity.Device) *tool.DeviceAuth {
 	now := time.Now()
 	etoken := &tool.DeviceAuth{
 		DeviceId:   data.Id,
+		OrgId:      data.OrgId,
 		User:       data.Owner,
 		Name:       data.Name,
 		DeviceType: data.DeviceType,
@@ -93,9 +95,6 @@ func (m *deviceModelImpl) FindListPage(page, pageSize int, data entity.Device) (
 	if data.Gid != "" {
 		db = db.Where("gid = ?", data.Gid)
 	}
-	if data.OrgId != "" {
-		db = db.Where("org_id = ?", data.OrgId)
-	}
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
 	}
@@ -114,6 +113,9 @@ func (m *deviceModelImpl) FindListPage(page, pageSize int, data entity.Device) (
 	if data.ParentId != "" {
 		db = db.Where("parent_id = ?", data.ParentId)
 	}
+	// 组织数据访问权限
+	tool.OrgAuthSet(db, data.RoleId)
+
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Preload("Product").Preload("DeviceGroup").Limit(pageSize).Offset(offset).Find(&list).Error
 	biz.ErrIsNil(err, "查询设备分页列表失败")
@@ -129,9 +131,6 @@ func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
 	}
 	if data.Gid != "" {
 		db = db.Where("gid = ?", data.Gid)
-	}
-	if data.OrgId != "" {
-		db = db.Where("org_id = ?", data.OrgId)
 	}
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
@@ -154,6 +153,7 @@ func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
 	if data.ParentId != "" {
 		db = db.Where("parent_id = ?", data.ParentId)
 	}
+	tool.OrgAuthSet(db, data.RoleId)
 	db.Preload("Product").Preload("DeviceGroup")
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询设备列表失败")
 	return &list

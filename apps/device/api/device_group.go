@@ -60,6 +60,7 @@ func (p *DeviceGroupApi) InsertDeviceGroup(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &data)
 	data.Id = kgo.KStr.Uniqid("dg_")
 	data.Owner = rc.LoginAccount.UserName
+	data.OrgId = rc.LoginAccount.OrganizationId
 	p.DeviceGroupApp.Insert(data)
 }
 

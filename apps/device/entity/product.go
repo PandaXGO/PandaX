@@ -49,6 +49,8 @@ type Product struct {
 	SelfLearn         bool   `json:"selfLearn" gorm:"default:0;comment:自学习开关"`
 	RuleChainId       string `json:"ruleChainId" gorm:"type:varchar(64);comment:规则链Id"` //可空，如果空就走根规则链
 	Status            string `gorm:"status;type:varchar(1);comment:状态" json:"status"`
+
+	RoleId int64 `gorm:"-"` // 角色数据权限
 }
 
 type ProductRes struct {

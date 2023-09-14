@@ -40,7 +40,7 @@ func (p *ProductApi) GetProductList(rc *restfulx.ReqCtx) {
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }
@@ -68,6 +68,7 @@ func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &data)
 	data.Id = kgo.KStr.Uniqid("p_")
 	data.Owner = rc.LoginAccount.UserName
+	data.OrgId = rc.LoginAccount.OrganizationId
 	p.ProductApp.Insert(data)
 }
 

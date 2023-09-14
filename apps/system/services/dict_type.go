@@ -9,11 +9,11 @@ import (
 type (
 	SysDictTypeModel interface {
 		Insert(data entity.SysDictType) *entity.SysDictType
-		FindOne(deptId int64) *entity.SysDictType
+		FindOne(organizationId int64) *entity.SysDictType
 		FindListPage(page, pageSize int, data entity.SysDictType) (*[]entity.SysDictType, int64)
 		FindList(data entity.SysDictType) *[]entity.SysDictType
 		Update(data entity.SysDictType) *entity.SysDictType
-		Delete(deptId []int64)
+		Delete(organizationId []int64)
 	}
 
 	sysDictTypeModelImpl struct {

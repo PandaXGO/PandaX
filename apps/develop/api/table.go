@@ -18,39 +18,44 @@ type GenTableApi struct {
 
 // GetDBTableList 分页列表数据 / page list data
 func (g *GenTableApi) GetDBTableList(rc *restfulx.ReqCtx) {
+	dbt := entity.DBTables{}
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
-	tableName := restfulx.QueryParam(rc, "tableName")
+	dbt.TableName = restfulx.QueryParam(rc, "tableName")
 
-	list, total := g.GenTableApp.FindDbTablesListPage(pageNum, pageSize, entity.DBTables{TableName: tableName})
+	list, total := g.GenTableApp.FindDbTablesListPage(pageNum, pageSize, dbt)
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }
 
 // GetTablePage 分页列表数据
 func (g *GenTableApi) GetTablePage(rc *restfulx.ReqCtx) {
+	dgt := entity.DevGenTable{}
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
-	tableName := restfulx.QueryParam(rc, "tableName")
-	tableComment := restfulx.QueryParam(rc, "tableComment")
+	dgt.TableName = restfulx.QueryParam(rc, "tableName")
+	dgt.TableComment = restfulx.QueryParam(rc, "tableComment")
+	dgt.RoleId = rc.LoginAccount.RoleId
 
-	list, total := g.GenTableApp.FindListPage(pageNum, pageSize, entity.DevGenTable{TableName: tableName, TableComment: tableComment})
+	list, total := g.GenTableApp.FindListPage(pageNum, pageSize, dgt)
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }
 
 // GetTableInfo 获取表信息
 func (g *GenTableApi) GetTableInfo(rc *restfulx.ReqCtx) {
-	tableId := restfulx.PathParamInt(rc, "tableId")
-	result := g.GenTableApp.FindOne(entity.DevGenTable{TableId: int64(tableId)}, true)
+	dgt := entity.DevGenTable{}
+	dgt.TableId = int64(restfulx.PathParamInt(rc, "tableId"))
+	dgt.RoleId = rc.LoginAccount.RoleId
+	result := g.GenTableApp.FindOne(dgt, true)
 	rc.ResData = vo.TableInfoVo{
 		List: result.Columns,
 		Info: *result,
@@ -59,8 +64,10 @@ func (g *GenTableApi) GetTableInfo(rc *restfulx.ReqCtx) {
 
 // GetTableInfoByName 获取表信息
 func (g *GenTableApi) GetTableInfoByName(rc *restfulx.ReqCtx) {
-	tableName := restfulx.QueryParam(rc, "tableName")
-	result := g.GenTableApp.FindOne(entity.DevGenTable{TableName: tableName}, true)
+	dgt := entity.DevGenTable{}
+	dgt.TableName = restfulx.QueryParam(rc, "tableName")
+	dgt.RoleId = rc.LoginAccount.RoleId
+	result := g.GenTableApp.FindOne(dgt, true)
 	rc.ResData = vo.TableInfoVo{
 		List: result.Columns,
 		Info: *result,
@@ -69,7 +76,9 @@ func (g *GenTableApi) GetTableInfoByName(rc *restfulx.ReqCtx) {
 
 // GetTableTree 获取树表信息
 func (g *GenTableApi) GetTableTree(rc *restfulx.ReqCtx) {
-	rc.ResData = g.GenTableApp.FindTree(entity.DevGenTable{})
+	dgt := entity.DevGenTable{}
+	dgt.RoleId = rc.LoginAccount.RoleId
+	rc.ResData = g.GenTableApp.FindTree(dgt)
 }
 
 // Insert 添加表结构
@@ -82,6 +91,7 @@ func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, index int) {
 			genTable := gen.ToolsGenTableColumn.GenTableInit(tablesList[index])
+			genTable.OrgId = rc.LoginAccount.OrganizationId
 			g.GenTableApp.Insert(genTable)
 			wg.Done()
 		}(&wg, index)

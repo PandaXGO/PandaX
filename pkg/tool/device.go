@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
+	"pandax/apps/system/services"
 	"pandax/pkg/global"
 	"strconv"
 	"strings"
@@ -12,6 +15,7 @@ import (
 
 type DeviceAuth struct {
 	User        string `json:"user"`
+	OrgId       int64  `json:"orgId"`
 	DeviceId    string `json:"device_id"`
 	DeviceType  string `json:"device_type"`
 	ProductId   string `json:"product_id"`
@@ -59,4 +63,12 @@ func (m *DeviceAuth) MarshalBinary() (data []byte, err error) {
 // 反序列化
 func (m *DeviceAuth) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, m)
+}
+
+func OrgAuthSet(tx *gorm.DB, roleId int64) {
+	// todo 使用缓存
+	ids, err := services.SysRoleOrganizationModelDao.FindOrganizationsByRoleId(roleId)
+	biz.ErrIsNil(err, "查询角色数据权限失败")
+	biz.IsTrue(len(ids) > 0, "该角色下未分配组织权限")
+	tx.Where("org_id in (?)", ids)
 }

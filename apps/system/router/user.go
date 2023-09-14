@@ -16,13 +16,13 @@ import (
 
 func InitUserRouter(container *restful.Container) {
 	s := &api.UserApi{
-		RoleApp:     services.SysRoleModelDao,
-		MenuApp:     services.SysMenuModelDao,
-		RoleMenuApp: services.SysRoleMenuModelDao,
-		UserApp:     services.SysUserModelDao,
-		LogLogin:    logServices.LogLoginModelDao,
-		DeptApp:     services.SysDeptModelDao,
-		PostApp:     services.SysPostModelDao,
+		RoleApp:         services.SysRoleModelDao,
+		MenuApp:         services.SysMenuModelDao,
+		RoleMenuApp:     services.SysRoleMenuModelDao,
+		UserApp:         services.SysUserModelDao,
+		LogLogin:        logServices.LogLoginModelDao,
+		OrganizationApp: services.SysOrganizationModelDao,
+		PostApp:         services.SysPostModelDao,
 	}
 	ws := new(restful.WebService)
 	ws.Path("/system/user").Produces(restful.MIME_JSON)

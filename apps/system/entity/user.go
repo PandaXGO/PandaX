@@ -12,21 +12,21 @@ type SysUserId struct {
 }
 
 type SysUserB struct {
-	NickName string `gorm:"type:varchar(128)" json:"nickName"` // 昵称
-	Phone    string `gorm:"type:varchar(11)" json:"phone"`     // 手机号
-	RoleId   int64  `gorm:"type:int" json:"roleId"`            // 角色编码
-	Salt     string `gorm:"type:varchar(255)" json:"salt"`     //盐
-	Avatar   string `gorm:"type:varchar(255)" json:"avatar"`   //头像
-	Sex      string `gorm:"type:varchar(255)" json:"sex"`      //性别
-	Email    string `gorm:"type:varchar(128)" json:"email"`    //邮箱
-	DeptId   int64  `gorm:"type:int" json:"deptId"`            //部门编码
-	PostId   int64  `gorm:"type:int" json:"postId"`            //职位编码
-	RoleIds  string `gorm:"type:varchar(255)" json:"roleIds"`  //多角色
-	PostIds  string `gorm:"type:varchar(255)" json:"postIds"`  // 多岗位
-	CreateBy string `gorm:"type:varchar(128)" json:"createBy"` //
-	UpdateBy string `gorm:"type:varchar(128)" json:"updateBy"` //
-	Remark   string `gorm:"type:varchar(255)" json:"remark"`   //备注
-	Status   string `gorm:"type:varchar(1);" json:"status"`
+	NickName       string `gorm:"type:varchar(128)" json:"nickName"` // 昵称
+	Phone          string `gorm:"type:varchar(11)" json:"phone"`     // 手机号
+	RoleId         int64  `gorm:"type:int" json:"roleId"`            // 角色编码
+	Salt           string `gorm:"type:varchar(255)" json:"salt"`     //盐
+	Avatar         string `gorm:"type:varchar(255)" json:"avatar"`   //头像
+	Sex            string `gorm:"type:varchar(255)" json:"sex"`      //性别
+	Email          string `gorm:"type:varchar(128)" json:"email"`    //邮箱
+	OrganizationId int64  `gorm:"type:int" json:"organizationId"`    //组织编码
+	PostId         int64  `gorm:"type:int" json:"postId"`            //职位编码
+	RoleIds        string `gorm:"type:varchar(255)" json:"roleIds"`  //多角色
+	PostIds        string `gorm:"type:varchar(255)" json:"postIds"`  // 多岗位
+	CreateBy       string `gorm:"type:varchar(128)" json:"createBy"` //
+	UpdateBy       string `gorm:"type:varchar(128)" json:"updateBy"` //
+	Remark         string `gorm:"type:varchar(255)" json:"remark"`   //备注
+	Status         string `gorm:"type:varchar(1);" json:"status"`
 	model.BaseModel
 }
 
@@ -45,7 +45,7 @@ type SysUserPage struct {
 	SysUserId
 	SysUserB
 	LoginM
-	DeptName string `gorm:"-" json:"deptName"`
+	OrganizationName string `gorm:"-" json:"organizationName"`
 }
 
 type Login struct {

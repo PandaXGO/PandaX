@@ -129,20 +129,20 @@ func (m *deviceGroupModelImpl) SelectDeviceGroup(data entity.DeviceGroup) []enti
 }
 
 func (m *deviceGroupModelImpl) SelectDeviceGroupLabel(data entity.DeviceGroup) []entity.DeviceGroupLabel {
-	deptlist := m.FindList(data)
+	organizationlist := m.FindList(data)
 
 	dl := make([]entity.DeviceGroupLabel, 0)
-	deptl := *deptlist
-	for i := 0; i < len(deptl); i++ {
-		if deptl[i].Pid != "0" {
+	organizationl := *organizationlist
+	for i := 0; i < len(organizationl); i++ {
+		if organizationl[i].Pid != "0" {
 			continue
 		}
 		e := entity.DeviceGroupLabel{}
-		e.Id = deptl[i].Id
-		e.Name = deptl[i].Name
-		deptsInfo := DiGuiDeviceGroupLabel(deptlist, e)
+		e.Id = organizationl[i].Id
+		e.Name = organizationl[i].Name
+		organizationsInfo := DiGuiDeviceGroupLabel(organizationlist, e)
 
-		dl = append(dl, deptsInfo)
+		dl = append(dl, organizationsInfo)
 	}
 	return dl
 }
@@ -170,12 +170,12 @@ func DiGuiDeviceGroup(sglist *[]entity.DeviceGroup, menu entity.DeviceGroup) ent
 	menu.Children = min
 	return menu
 }
-func DiGuiDeviceGroupLabel(sglist *[]entity.DeviceGroup, dept entity.DeviceGroupLabel) entity.DeviceGroupLabel {
+func DiGuiDeviceGroupLabel(sglist *[]entity.DeviceGroup, organization entity.DeviceGroupLabel) entity.DeviceGroupLabel {
 	list := *sglist
 
 	min := make([]entity.DeviceGroupLabel, 0)
 	for j := 0; j < len(list); j++ {
-		if dept.Id != list[j].Pid {
+		if organization.Id != list[j].Pid {
 			continue
 		}
 		sg := entity.DeviceGroupLabel{list[j].Id, list[j].Name, []entity.DeviceGroupLabel{}}
@@ -183,6 +183,6 @@ func DiGuiDeviceGroupLabel(sglist *[]entity.DeviceGroup, dept entity.DeviceGroup
 		min = append(min, ms)
 
 	}
-	dept.Children = min
-	return dept
+	organization.Children = min
+	return organization
 }

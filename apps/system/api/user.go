@@ -28,13 +28,13 @@ import (
 )
 
 type UserApi struct {
-	UserApp     services.SysUserModel
-	MenuApp     services.SysMenuModel
-	PostApp     services.SysPostModel
-	RoleApp     services.SysRoleModel
-	RoleMenuApp services.SysRoleMenuModel
-	DeptApp     services.SysDeptModel
-	LogLogin    logServices.LogLoginModel
+	UserApp         services.SysUserModel
+	MenuApp         services.SysMenuModel
+	PostApp         services.SysPostModel
+	RoleApp         services.SysRoleModel
+	RoleMenuApp     services.SysRoleMenuModel
+	OrganizationApp services.SysOrganizationModel
+	LogLogin        logServices.LogLoginModel
 }
 
 // GenerateCaptcha 获取验证码
@@ -66,12 +66,12 @@ func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 	role := u.RoleApp.FindOne(login.RoleId)
 	j := token.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
 	token, err := j.CreateToken(token.Claims{
-		UserId:   login.UserId,
-		UserName: login.Username,
-		RoleId:   login.RoleId,
-		RoleKey:  role.RoleKey,
-		DeptId:   login.DeptId,
-		PostId:   login.PostId,
+		UserId:         login.UserId,
+		UserName:       login.Username,
+		RoleId:         login.RoleId,
+		RoleKey:        role.RoleKey,
+		OrganizationId: login.OrganizationId,
+		PostId:         login.PostId,
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix() - 1000,                       // 签名生效时间
 			ExpiresAt: time.Now().Unix() + global.Conf.Jwt.ExpireTime, // 过期时间 7天  配置文件
@@ -90,6 +90,7 @@ func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 		loginLog.Ipaddr = rc.Request.Request.RemoteAddr
 		loginLog.LoginLocation = utils.GetRealAddressByIP(rc.Request.Request.RemoteAddr)
 		loginLog.LoginTime = time.Now()
+		loginLog.OrgId = login.OrganizationId
 		loginLog.Status = "0"
 		loginLog.Remark = rc.Request.Request.UserAgent()
 		browserName, browserVersion := ua.Browser()
@@ -130,6 +131,7 @@ func (u *UserApi) LogOut(rc *restfulx.ReqCtx) {
 	loginLog.Ipaddr = rc.Request.Request.RemoteAddr
 	loginLog.LoginTime = time.Now()
 	loginLog.Status = "0"
+	loginLog.OrgId = rc.LoginAccount.OrganizationId
 	loginLog.Remark = rc.Request.Request.UserAgent()
 	browserName, browserVersion := ua.Browser()
 	loginLog.Browser = browserName + " " + browserVersion
@@ -148,19 +150,19 @@ func (u *UserApi) GetSysUserList(rc *restfulx.ReqCtx) {
 	username := restfulx.QueryParam(rc, "username")
 	phone := restfulx.QueryParam(rc, "phone")
 
-	deptId := restfulx.QueryInt(rc, "deptId", 0)
+	organizationId := restfulx.QueryInt(rc, "organizationId", 0)
 	var user entity.SysUser
 	user.Status = status
 	user.Username = username
 	user.Phone = phone
-	user.DeptId = int64(deptId)
+	user.OrganizationId = int64(organizationId)
 
 	list, total := u.UserApp.FindListPage(pageNum, pageSize, user)
 
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }
@@ -176,8 +178,8 @@ func (u *UserApi) GetSysUserProfile(rc *restfulx.ReqCtx) {
 	roleList := u.RoleApp.FindList(entity.SysRole{RoleId: rc.LoginAccount.RoleId})
 	//岗位列表
 	postList := u.PostApp.FindList(entity.SysPost{PostId: rc.LoginAccount.PostId})
-	//获取部门列表
-	deptList := u.DeptApp.FindList(entity.SysDept{DeptId: rc.LoginAccount.DeptId})
+	//获取组织列表
+	organizationList := u.OrganizationApp.FindList(entity.SysOrganization{OrganizationId: rc.LoginAccount.OrganizationId})
 
 	postIds := make([]int64, 0)
 	postIds = append(postIds, rc.LoginAccount.PostId)
@@ -186,12 +188,12 @@ func (u *UserApi) GetSysUserProfile(rc *restfulx.ReqCtx) {
 	roleIds = append(roleIds, rc.LoginAccount.RoleId)
 
 	rc.ResData = vo.UserProfileVo{
-		Data:    user,
-		PostIds: postIds,
-		RoleIds: roleIds,
-		Roles:   *roleList,
-		Posts:   *postList,
-		Dept:    *deptList,
+		Data:         user,
+		PostIds:      postIds,
+		RoleIds:      roleIds,
+		Roles:        *roleList,
+		Posts:        *postList,
+		Organization: *organizationList,
 	}
 }
 
@@ -235,15 +237,15 @@ func (u *UserApi) GetSysUser(rc *restfulx.ReqCtx) {
 
 	var role entity.SysRole
 	var post entity.SysPost
-	var dept entity.SysDept
+	var organization entity.SysOrganization
 
 	rc.ResData = vo.UserVo{
-		Data:    result,
-		PostIds: result.PostIds,
-		RoleIds: result.RoleIds,
-		Roles:   *u.RoleApp.FindList(role),
-		Posts:   *u.PostApp.FindList(post),
-		Depts:   u.DeptApp.SelectDept(dept),
+		Data:          result,
+		PostIds:       result.PostIds,
+		RoleIds:       result.RoleIds,
+		Roles:         *u.RoleApp.FindList(role),
+		Posts:         *u.PostApp.FindList(post),
+		Organizations: u.OrganizationApp.SelectOrganization(organization),
 	}
 }
 

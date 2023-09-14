@@ -61,6 +61,7 @@ func (p *ProductCategoryApi) InsertProductCategory(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &data)
 	data.Id = kgo.KStr.Uniqid("pc_")
 	data.Owner = rc.LoginAccount.UserName
+	data.OrgId = rc.LoginAccount.OrganizationId
 	p.ProductCategoryApp.Insert(data)
 }
 

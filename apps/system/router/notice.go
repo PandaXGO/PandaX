@@ -12,8 +12,8 @@ import (
 
 func InitNoticeRouter(container *restful.Container) {
 	s := &api.NoticeApi{
-		DeptApp:   services.SysDeptModelDao,
-		NoticeApp: services.SysNoticeModelDao,
+		OrganizationApp: services.SysOrganizationModelDao,
+		NoticeApp:       services.SysNoticeModelDao,
 	}
 	ws := new(restful.WebService)
 	ws.Path("/system/notice").Produces(restful.MIME_JSON)

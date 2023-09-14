@@ -2,7 +2,8 @@ package entity
 
 type DevGenTableColumn struct {
 	ColumnId         int64  `gorm:"primaryKey;autoIncrement" json:"columnId"` // 编号
-	TableId          int64  `gorm:"table_id"          json:"tableId"`         // 归属表编号
+	OrgId            int64  `json:"orgId"  gorm:"type:int;comment:机构ID"`
+	TableId          int64  `gorm:"table_id"          json:"tableId"` // 归属表编号
 	TableName        string `gorm:"table_name" 		  json:"tableName"`
 	ColumnName       string `gorm:"column_name"       json:"columnName"`    // 列名称
 	ColumnComment    string `gorm:"column_comment"    json:"columnComment"` // 列描述
@@ -28,6 +29,8 @@ type DevGenTableColumn struct {
 	LinkTablePackage string `gorm:"link_table_package" json:"linkTablePackage"` // 关联表包名
 	LinkLabelId      string `gorm:"link_label_id"      json:"linkLabelId"`      // 关联表键名
 	LinkLabelName    string `gorm:"link_label_name"    json:"linkLabelName"`    // 关联表字段值
+
+	RoleId int64 `gorm:"-"` // 角色数据权限
 }
 
 type DBColumns struct {

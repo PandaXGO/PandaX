@@ -16,7 +16,7 @@ func InitTable() {
 		biz.ErrIsNil(
 			global.Db.AutoMigrate(
 				//casbin.CasbinRule{},
-				systemEntity.SysDept{},
+				systemEntity.SysOrganization{},
 				systemEntity.SysApi{},
 				systemEntity.SysConfig{},
 				systemEntity.SysDictType{},
@@ -27,7 +27,7 @@ func InitTable() {
 				systemEntity.SysMenu{},
 				systemEntity.SysPost{},
 				systemEntity.SysRoleMenu{},
-				systemEntity.SysRoleDept{},
+				systemEntity.SysRoleOrganization{},
 				systemEntity.SysNotice{},
 
 				logEntity.LogLogin{},

@@ -37,6 +37,7 @@ type JobCore struct {
 	InvokeTarget   string
 	Name           string
 	JobId          string
+	OrgId          int64
 	EntryId        int
 	CronExpression string // 任务表达式
 	MisfirePolicy  string
@@ -53,6 +54,7 @@ func (e *ExecJob) Run() {
 	startTime := time.Now()
 	jobLog := logEntity.JobLog{Name: e.Name, EntryId: e.EntryId, TargetInvoke: e.InvokeTarget, Status: "0"}
 	jobLog.Id = kgo.KStr.Uniqid("")
+	jobLog.OrgId = e.OrgId
 	var obj = jobList[e.InvokeTarget]
 
 	err := CallExec(obj.(JobsExec), e.Args, e.Content)

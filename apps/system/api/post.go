@@ -33,7 +33,7 @@ func (p *PostApi) GetPostList(rc *restfulx.ReqCtx) {
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }

@@ -9,6 +9,7 @@ import "time"
 // DeviceAlarm 设备告警表 需要更改告警状态不能存在时序数据库中
 type DeviceAlarm struct {
 	Id        string    `json:"id" gorm:"primary_key;"`
+	OrgId     int64     `json:"orgId"  gorm:"type:int;comment:机构ID"`
 	Time      time.Time `gorm:"comment:告警时间" json:"time"`
 	Name      string    `gorm:"type:varchar(64);comment:告警名称" json:"name"`
 	DeviceId  string    `gorm:"type:varchar(64);comment:所属设备" json:"deviceId"`
@@ -17,6 +18,8 @@ type DeviceAlarm struct {
 	Level     string    `gorm:"type:varchar(64);comment:告警级别" json:"level"` // 危险 重要 次要 警告 不确定
 	State     string    `gorm:"type:varchar(1);comment:告警状态" json:"state"`  // 告警中 0 已确认 1 已清除 2 已关闭 3
 	Details   string    `gorm:"type:varchar(255);comment:告警详情" json:"details"`
+
+	RoleId int64 `gorm:"-"` // 角色数据权限
 }
 
 type DeviceAlarmForm struct {

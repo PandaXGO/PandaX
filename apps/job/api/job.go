@@ -22,6 +22,7 @@ func (j *JobApi) CreateJob(rc *restfulx.ReqCtx) {
 	restfulx.BindQuery(rc, &job)
 	job.Id = kgo.KStr.Uniqid("")
 	job.Owner = rc.LoginAccount.UserName
+	job.OrgId = rc.LoginAccount.OrganizationId
 	j.JobApp.Insert(job)
 }
 
@@ -35,7 +36,7 @@ func (j *JobApi) GetJobList(rc *restfulx.ReqCtx) {
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }
@@ -78,6 +79,7 @@ func (l *JobApi) StartJobForService(rc *restfulx.ReqCtx) {
 	j.Name = job.JobName
 	j.Args = job.TargetArgs
 	j.MisfirePolicy = job.MisfirePolicy
+	j.OrgId = job.OrgId
 	job.EntryId, err = jobs.AddJob(jobs.Crontab, j)
 	log.Println(err)
 	biz.ErrIsNil(err, "添加JOB失败")

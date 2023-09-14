@@ -16,7 +16,7 @@ type (
 		Update(data entity.SysRole) *entity.SysRole
 		Delete(roleId []int64)
 		GetRoleMeunId(data entity.SysRole) []int64
-		GetRoleDeptId(data entity.SysRole) []int64
+		GetRoleOrganizationId(data entity.SysRole) []int64
 	}
 
 	sysRoleModel struct {
@@ -119,14 +119,14 @@ func (m *sysRoleModel) GetRoleMeunId(data entity.SysRole) []int64 {
 	return menuIds
 }
 
-func (m *sysRoleModel) GetRoleDeptId(data entity.SysRole) []int64 {
-	deptIds := make([]int64, 0)
-	deptList := make([]entity.DeptIdList, 0)
-	err := global.Db.Table("sys_role_depts").Select("sys_role_depts.dept_id").Joins("LEFT JOIN sys_depts on sys_depts.dept_id=sys_role_depts.dept_id").Where("role_id = ? ", data.RoleId).Where(" sys_role_depts.dept_id not in(select sys_depts.parent_id from sys_role_depts LEFT JOIN sys_depts on sys_depts.dept_id=sys_role_depts.dept_id where role_id =? )", data.RoleId).Find(&deptList).Error
-	biz.ErrIsNil(err, "查询角色部门列表失败")
+func (m *sysRoleModel) GetRoleOrganizationId(data entity.SysRole) []int64 {
+	organizationIds := make([]int64, 0)
+	organizationList := make([]entity.OrganizationIdList, 0)
+	err := global.Db.Table("sys_role_organizations").Select("sys_role_organizations.organization_id").Joins("LEFT JOIN sys_organizations on sys_organizations.organization_id=sys_role_organizations.organization_id").Where("role_id = ? ", data.RoleId).Where(" sys_role_organizations.organization_id not in(select sys_organizations.parent_id from sys_role_organizations LEFT JOIN sys_organizations on sys_organizations.organization_id=sys_role_organizations.organization_id where role_id =? )", data.RoleId).Find(&organizationList).Error
+	biz.ErrIsNil(err, "查询角色组织列表失败")
 
-	for i := 0; i < len(deptList); i++ {
-		deptIds = append(deptIds, deptList[i].DeptId)
+	for i := 0; i < len(organizationList); i++ {
+		organizationIds = append(organizationIds, organizationList[i].OrganizationId)
 	}
-	return deptIds
+	return organizationIds
 }

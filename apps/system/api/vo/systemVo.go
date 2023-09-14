@@ -8,9 +8,9 @@ import "pandax/apps/system/entity"
  * @Date 2022/8/4 15:25
  **/
 
-type DeptTreeVo struct {
-	Depts       []entity.DeptLable `json:"depts"`
-	CheckedKeys []int64            `json:"checkedKeys"`
+type OrganizationTreeVo struct {
+	Organizations []entity.OrganizationLable `json:"organizations"`
+	CheckedKeys   []int64                    `json:"checkedKeys"`
 }
 
 type MenuTreeVo struct {
@@ -41,21 +41,21 @@ type AuthVo struct {
 }
 
 type UserProfileVo struct {
-	Data    any              `json:"data"`
-	PostIds []int64          `json:"postIds"`
-	RoleIds []int64          `json:"roleIds"`
-	Roles   []entity.SysRole `json:"roles"`
-	Posts   []entity.SysPost `json:"posts"`
-	Dept    []entity.SysDept `json:"dept"`
+	Data         any                      `json:"data"`
+	PostIds      []int64                  `json:"postIds"`
+	RoleIds      []int64                  `json:"roleIds"`
+	Roles        []entity.SysRole         `json:"roles"`
+	Posts        []entity.SysPost         `json:"posts"`
+	Organization []entity.SysOrganization `json:"organization"`
 }
 
 type UserVo struct {
-	Data    any              `json:"data"`
-	PostIds string           `json:"postIds"`
-	RoleIds string           `json:"roleIds"`
-	Roles   []entity.SysRole `json:"roles"`
-	Posts   []entity.SysPost `json:"posts"`
-	Depts   []entity.SysDept `json:"depts"`
+	Data          any                      `json:"data"`
+	PostIds       string                   `json:"postIds"`
+	RoleIds       string                   `json:"roleIds"`
+	Roles         []entity.SysRole         `json:"roles"`
+	Posts         []entity.SysPost         `json:"posts"`
+	Organizations []entity.SysOrganization `json:"organizations"`
 }
 
 type UserRolePost struct {

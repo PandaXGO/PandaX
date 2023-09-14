@@ -125,6 +125,7 @@ func buildRuleMessage(etoken *tool.DeviceAuth, dei *DeviceEventInfo, msgType str
 		"deviceName": etoken.Name,
 		"deviceType": etoken.DeviceType,
 		"productId":  etoken.ProductId,
+		"orgId":      etoken.OrgId,
 	}
 	msgVals := make(map[string]interface{})
 	json.Unmarshal([]byte(dei.Datas), &msgVals)

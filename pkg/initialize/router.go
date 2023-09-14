@@ -35,7 +35,7 @@ func InitRouter() *transport.HttpServer {
 	// 设置路由组
 	{
 		sysRouter.InitSystemRouter(container)
-		sysRouter.InitDeptRouter(container)
+		sysRouter.InitOrganizationRouter(container)
 		sysRouter.InitConfigRouter(container)
 		sysRouter.InitApiRouter(container)
 		sysRouter.InitDictRouter(container)

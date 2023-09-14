@@ -40,6 +40,7 @@ func (n *logNode) Handle(msg *message.Message) error {
 		MessageId:  msg.Id,
 		MsgType:    msg.MsgType,
 		DeviceId:   msg.Metadata["deviceId"].(string),
+		OrgId:      msg.Metadata["orgId"].(int64),
 		DeviceName: msg.Metadata["deviceName"].(string),
 		Ts:         msg.Ts,
 		Content:    logMessage,

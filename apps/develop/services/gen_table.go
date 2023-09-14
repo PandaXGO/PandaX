@@ -6,6 +6,7 @@ import (
 	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/develop/entity"
 	"pandax/pkg/global"
+	"pandax/pkg/tool"
 )
 
 /**
@@ -94,7 +95,9 @@ func (m *devGenTableModelImpl) Insert(dgt entity.DevGenTable) {
 	biz.ErrIsNil(err, "新增生成代码表失败")
 	for i := 0; i < len(dgt.Columns); i++ {
 		dgt.Columns[i].TableId = dgt.TableId
-		DevTableColumnModelDao.Insert(dgt.Columns[i])
+		columns := dgt.Columns[i]
+		columns.OrgId = dgt.OrgId
+		DevTableColumnModelDao.Insert(columns)
 	}
 }
 
@@ -130,11 +133,14 @@ func (m *devGenTableModelImpl) FindTree(data entity.DevGenTable) *[]entity.DevGe
 	if data.TableComment != "" {
 		db = db.Where("table_comment = ?", data.TableComment)
 	}
+	// 组织数据访问权限
+	tool.OrgAuthSet(db, data.RoleId)
 	err := db.Find(&resData).Error
 	biz.ErrIsNil(err, "获取TableTree失败")
 	for i := 0; i < len(resData); i++ {
 		var col entity.DevGenTableColumn
 		col.TableId = resData[i].TableId
+		col.RoleId = data.RoleId
 		columns := DevTableColumnModelDao.FindList(col, false)
 		resData[i].Columns = *columns
 	}
@@ -154,6 +160,8 @@ func (m *devGenTableModelImpl) FindListPage(page, pageSize int, data entity.DevG
 	if data.TableComment != "" {
 		db = db.Where("table_comment = ?", data.TableComment)
 	}
+	// 组织数据访问权限
+	tool.OrgAuthSet(db, data.RoleId)
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
 	err = db.Limit(pageSize).Offset(offset).Find(&list).Error

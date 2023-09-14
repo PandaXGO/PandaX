@@ -20,6 +20,7 @@ func OperationHandler(rc *restfulx.ReqCtx) error {
 	go func() {
 		oper := entity.LogOper{
 			Title:        rc.LogInfo.Description,
+			OrgId:        rc.LoginAccount.OrganizationId,
 			BusinessType: "0",
 			Method:       c.Request.Method,
 			OperName:     rc.LoginAccount.UserName,

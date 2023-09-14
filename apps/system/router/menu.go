@@ -12,10 +12,10 @@ import (
 
 func InitMenuRouter(container *restful.Container) {
 	s := &api.MenuApi{
-		MenuApp:     services.SysMenuModelDao,
-		RoleApp:     services.SysRoleModelDao,
-		RoleMenuApp: services.SysRoleMenuModelDao,
-		DeptApp:     services.SysDeptModelDao,
+		MenuApp:         services.SysMenuModelDao,
+		RoleApp:         services.SysRoleModelDao,
+		RoleMenuApp:     services.SysRoleMenuModelDao,
+		OrganizationApp: services.SysOrganizationModelDao,
 	}
 	ws := new(restful.WebService)
 	ws.Path("/system/menu").Produces(restful.MIME_JSON)

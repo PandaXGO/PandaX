@@ -3,7 +3,7 @@ module pandax
 go 1.18
 
 require (
-	github.com/PandaXGO/PandaKit v0.0.0-20230901074047-e0e8e4bf2bed
+	github.com/PandaXGO/PandaKit v0.0.0-20230914055936-853aa978dda1
 	github.com/Shopify/sarama v1.38.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didip/tollbooth v4.0.2+incompatible
@@ -37,7 +37,6 @@ require (
 require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/StackExchange/wmi v0.0.0-20210224194228-fe8f1750fd46 // indirect
-	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b // indirect
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.0+incompatible // indirect
 	github.com/bluenviron/mediacommon v0.7.0 // indirect
 	github.com/brianvoe/gofakeit/v6 v6.0.2 // indirect

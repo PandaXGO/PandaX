@@ -39,13 +39,14 @@ func (p *DeviceApi) GetDeviceList(rc *restfulx.ReqCtx) {
 	data.DeviceType = restfulx.QueryParam(rc, "deviceType")
 	data.ParentId = restfulx.QueryParam(rc, "parentId")
 	data.LinkStatus = restfulx.QueryParam(rc, "linkStatus")
-
+	// 权限检查
+	data.RoleId = rc.LoginAccount.RoleId
 	list, total := p.DeviceApp.FindListPage(pageNum, pageSize, data)
 
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
-		PageSize: int64(pageNum),
+		PageSize: int64(pageSize),
 		Data:     list,
 	}
 }
@@ -135,6 +136,7 @@ func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	biz.IsTrue(!(list != nil && len(*list) > 0), fmt.Sprintf("名称%s已存在，设置其他命名", data.Name))
 	data.Id = kgo.KStr.Uniqid("d_")
 	data.Owner = rc.LoginAccount.UserName
+	data.OrgId = rc.LoginAccount.OrganizationId
 	data.LinkStatus = global.INACTIVE
 	data.LastAt = time.Now()
 	p.DeviceApp.Insert(data)
