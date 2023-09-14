@@ -2,7 +2,6 @@ package nodes
 
 import (
 	"github.com/sirupsen/logrus"
-	"log"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
 )
@@ -36,10 +35,7 @@ func (n *saveTimeSeriesNode) Handle(msg *message.Message) error {
 	}
 	//deviceId := msg.GetMetadata().GetValues()["deviceId"].(string)
 	deviceName := msg.Metadata["deviceName"].(string)
-	log.Println(msg.Msg)
-	log.Println(msg.Metadata)
 	err := global.TdDb.InsertDevice(deviceName+"_telemetry", msg.Msg)
-	log.Println(err)
 	if err != nil {
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
