@@ -3,6 +3,7 @@ package entity
 type DevGenTableColumn struct {
 	ColumnId         int64  `gorm:"primaryKey;autoIncrement" json:"columnId"` // 编号
 	OrgId            int64  `json:"orgId"  gorm:"type:int;comment:机构ID"`
+	Owner            string `json:"owner"  gorm:"type:varchar(64);comment:创建者,所有者"`
 	TableId          int64  `gorm:"table_id"          json:"tableId"` // 归属表编号
 	TableName        string `gorm:"table_name" 		  json:"tableName"`
 	ColumnName       string `gorm:"column_name"       json:"columnName"`    // 列名称

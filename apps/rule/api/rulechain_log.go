@@ -23,6 +23,10 @@ func (p *RuleChainMsgLogApi) GetRuleChainMsgLogList(rc *restfulx.ReqCtx) {
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 	data.DeviceName = restfulx.QueryParam(rc, "deviceName")
 	data.MsgType = restfulx.QueryParam(rc, "msgType")
+
+	data.RoleId = rc.LoginAccount.RoleId
+	data.Owner = rc.LoginAccount.UserName
+
 	list, total := p.RuleChainMsgLogApp.FindListPage(pageNum, pageSize, data)
 
 	rc.ResData = model.ResultPage{

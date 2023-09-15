@@ -40,6 +40,7 @@ func (g *GenTableApi) GetTablePage(rc *restfulx.ReqCtx) {
 	dgt.TableName = restfulx.QueryParam(rc, "tableName")
 	dgt.TableComment = restfulx.QueryParam(rc, "tableComment")
 	dgt.RoleId = rc.LoginAccount.RoleId
+	dgt.Owner = rc.LoginAccount.UserName
 
 	list, total := g.GenTableApp.FindListPage(pageNum, pageSize, dgt)
 	rc.ResData = model.ResultPage{
@@ -78,6 +79,7 @@ func (g *GenTableApi) GetTableInfoByName(rc *restfulx.ReqCtx) {
 func (g *GenTableApi) GetTableTree(rc *restfulx.ReqCtx) {
 	dgt := entity.DevGenTable{}
 	dgt.RoleId = rc.LoginAccount.RoleId
+	dgt.Owner = rc.LoginAccount.UserName
 	rc.ResData = g.GenTableApp.FindTree(dgt)
 }
 
@@ -92,6 +94,7 @@ func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
 		go func(wg *sync.WaitGroup, index int) {
 			genTable := gen.ToolsGenTableColumn.GenTableInit(tablesList[index])
 			genTable.OrgId = rc.LoginAccount.OrganizationId
+			genTable.Owner = rc.LoginAccount.UserName
 			g.GenTableApp.Insert(genTable)
 			wg.Done()
 		}(&wg, index)

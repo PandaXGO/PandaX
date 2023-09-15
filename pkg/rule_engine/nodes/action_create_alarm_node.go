@@ -61,6 +61,7 @@ func (n *createAlarmNode) Handle(msg *message.Message) error {
 		alarm.Type = n.AlarmType
 		alarm.Time = time.Now()
 		alarm.OrgId = msg.Metadata.GetValue("orgId").(int64)
+		alarm.Owner = msg.Metadata.GetValue("owner").(string)
 		marshal, _ := json.Marshal(msg.Msg)
 		alarm.Details = string(marshal)
 		err := services.DeviceAlarmModelDao.Insert(*alarm)

@@ -17,6 +17,7 @@ type (
 		Delete(roleId []int64)
 		GetRoleMeunId(data entity.SysRole) []int64
 		GetRoleOrganizationId(data entity.SysRole) []int64
+		FindOrganizationsByRoleId(roleId int64) (entity.SysRole, error)
 	}
 
 	sysRoleModel struct {
@@ -129,4 +130,15 @@ func (m *sysRoleModel) GetRoleOrganizationId(data entity.SysRole) []int64 {
 		organizationIds = append(organizationIds, organizationList[i].OrganizationId)
 	}
 	return organizationIds
+}
+
+func (m *sysRoleModel) FindOrganizationsByRoleId(roleId int64) (entity.SysRole, error) {
+	var roleData entity.SysRole
+	err := global.Db.Table(m.table).
+		Select("sys_roles.data_scope, GROUP_CONCAT(sys_role_organizations.organization_id) as org").
+		Joins("LEFT JOIN sys_role_organizations ON sys_roles.role_id = sys_role_organizations.role_id").
+		Where("sys_roles.role_id = ?", roleId).
+		Group("sys_roles.role_id").
+		First(&roleData).Error
+	return roleData, err
 }

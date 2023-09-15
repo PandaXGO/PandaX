@@ -27,12 +27,16 @@ func (j *JobApi) CreateJob(rc *restfulx.ReqCtx) {
 }
 
 func (j *JobApi) GetJobList(rc *restfulx.ReqCtx) {
+	job := entity.SysJob{}
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
-	jobName := restfulx.QueryParam(rc, "jobName")
-	status := restfulx.QueryParam(rc, "status")
+	job.JobName = restfulx.QueryParam(rc, "jobName")
+	job.Status = restfulx.QueryParam(rc, "status")
 
-	list, total := j.JobApp.FindListPage(pageNum, pageSize, entity.SysJob{JobName: jobName, Status: status})
+	job.RoleId = rc.LoginAccount.RoleId
+	job.Owner = rc.LoginAccount.UserName
+
+	list, total := j.JobApp.FindListPage(pageNum, pageSize, job)
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -80,6 +84,7 @@ func (l *JobApi) StartJobForService(rc *restfulx.ReqCtx) {
 	j.Args = job.TargetArgs
 	j.MisfirePolicy = job.MisfirePolicy
 	j.OrgId = job.OrgId
+	j.Owner = job.Owner
 	job.EntryId, err = jobs.AddJob(jobs.Crontab, j)
 	log.Println(err)
 	biz.ErrIsNil(err, "添加JOB失败")

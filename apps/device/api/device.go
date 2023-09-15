@@ -39,8 +39,9 @@ func (p *DeviceApi) GetDeviceList(rc *restfulx.ReqCtx) {
 	data.DeviceType = restfulx.QueryParam(rc, "deviceType")
 	data.ParentId = restfulx.QueryParam(rc, "parentId")
 	data.LinkStatus = restfulx.QueryParam(rc, "linkStatus")
-	// 权限检查
+
 	data.RoleId = rc.LoginAccount.RoleId
+	data.Owner = rc.LoginAccount.UserName
 	list, total := p.DeviceApp.FindListPage(pageNum, pageSize, data)
 
 	rc.ResData = model.ResultPage{

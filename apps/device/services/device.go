@@ -58,7 +58,7 @@ func getDeviceToken(data *entity.Device) *tool.DeviceAuth {
 	etoken := &tool.DeviceAuth{
 		DeviceId:   data.Id,
 		OrgId:      data.OrgId,
-		User:       data.Owner,
+		Owner:      data.Owner,
 		Name:       data.Name,
 		DeviceType: data.DeviceType,
 		ProductId:  data.Pid,
@@ -114,7 +114,7 @@ func (m *deviceModelImpl) FindListPage(page, pageSize int, data entity.Device) (
 		db = db.Where("parent_id = ?", data.ParentId)
 	}
 	// 组织数据访问权限
-	tool.OrgAuthSet(db, data.RoleId)
+	tool.OrgAuthSet(db, data.RoleId, data.Owner)
 
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Preload("Product").Preload("DeviceGroup").Limit(pageSize).Offset(offset).Find(&list).Error
@@ -153,7 +153,7 @@ func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
 	if data.ParentId != "" {
 		db = db.Where("parent_id = ?", data.ParentId)
 	}
-	tool.OrgAuthSet(db, data.RoleId)
+	tool.OrgAuthSet(db, data.RoleId, data.Owner)
 	db.Preload("Product").Preload("DeviceGroup")
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询设备列表失败")
 	return &list

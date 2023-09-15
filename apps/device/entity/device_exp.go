@@ -10,6 +10,7 @@ import "time"
 type DeviceAlarm struct {
 	Id        string    `json:"id" gorm:"primary_key;"`
 	OrgId     int64     `json:"orgId"  gorm:"type:int;comment:机构ID"`
+	Owner     string    `json:"owner"  gorm:"type:varchar(64);comment:创建者,所有者"`
 	Time      time.Time `gorm:"comment:告警时间" json:"time"`
 	Name      string    `gorm:"type:varchar(64);comment:告警名称" json:"name"`
 	DeviceId  string    `gorm:"type:varchar(64);comment:所属设备" json:"deviceId"`

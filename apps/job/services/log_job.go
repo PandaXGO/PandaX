@@ -4,6 +4,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/job/entity"
 	"pandax/pkg/global"
+	"pandax/pkg/tool"
 )
 
 type (
@@ -40,6 +41,10 @@ func (m *JobLogModelImpl) FindListPage(page, pageSize int, data entity.JobLog) (
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
 	}
+
+	// 组织数据访问权限
+	tool.OrgAuthSet(db, data.RoleId, data.Owner)
+
 	err := db.Count(&total).Error
 	err = db.Order("create_time desc").Limit(pageSize).Offset(offset).Find(&list).Error
 

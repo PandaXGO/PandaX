@@ -18,14 +18,20 @@ func (p *DeviceGroupApi) GetDeviceGroupTree(rc *restfulx.ReqCtx) {
 	status := restfulx.QueryParam(rc, "status")
 	id := restfulx.QueryParam(rc, "id")
 
-	sg := entity.DeviceGroup{Name: name, Status: status}
-	sg.Id = id
-	rc.ResData = p.DeviceGroupApp.SelectDeviceGroup(sg)
+	vsg := entity.DeviceGroup{Name: name, Status: status}
+	vsg.Id = id
+	vsg.RoleId = rc.LoginAccount.RoleId
+	vsg.Owner = rc.LoginAccount.UserName
+
+	rc.ResData = p.DeviceGroupApp.SelectDeviceGroup(vsg)
 }
 
 func (p *DeviceGroupApi) GetDeviceGroupTreeLabel(rc *restfulx.ReqCtx) {
-	sg := entity.DeviceGroup{}
-	rc.ResData = p.DeviceGroupApp.SelectDeviceGroupLabel(sg)
+	vsg := entity.DeviceGroup{}
+	vsg.RoleId = rc.LoginAccount.RoleId
+	vsg.Owner = rc.LoginAccount.UserName
+
+	rc.ResData = p.DeviceGroupApp.SelectDeviceGroupLabel(vsg)
 }
 
 func (p *DeviceGroupApi) GetDeviceGroupList(rc *restfulx.ReqCtx) {
@@ -33,18 +39,24 @@ func (p *DeviceGroupApi) GetDeviceGroupList(rc *restfulx.ReqCtx) {
 	status := restfulx.QueryParam(rc, "status")
 	id := restfulx.QueryParam(rc, "id")
 
-	sg := entity.DeviceGroup{Name: name, Status: status}
-	sg.Id = id
-	if sg.Name == "" {
-		rc.ResData = p.DeviceGroupApp.SelectDeviceGroup(sg)
+	vsg := entity.DeviceGroup{Name: name, Status: status}
+	vsg.Id = id
+
+	vsg.RoleId = rc.LoginAccount.RoleId
+	vsg.Owner = rc.LoginAccount.UserName
+	if vsg.Name == "" {
+		rc.ResData = p.DeviceGroupApp.SelectDeviceGroup(vsg)
 	} else {
-		rc.ResData = p.DeviceGroupApp.FindList(sg)
+		rc.ResData = p.DeviceGroupApp.FindList(vsg)
 	}
 }
 
 // GetDeviceGroupAllList 查询所有
 func (p *DeviceGroupApi) GetDeviceGroupAllList(rc *restfulx.ReqCtx) {
 	var vsg entity.DeviceGroup
+	vsg.RoleId = rc.LoginAccount.RoleId
+	vsg.Owner = rc.LoginAccount.UserName
+
 	rc.ResData = p.DeviceGroupApp.FindList(vsg)
 }
 

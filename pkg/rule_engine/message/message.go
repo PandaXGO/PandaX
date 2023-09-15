@@ -32,17 +32,17 @@ type Message struct {
 	Id       string    //uuid     消息Id
 	Ts       time.Time //时间戳
 	MsgType  string    //消息类型，   attributes（参数），telemetry（遥测），Connect连接事件
-	UserId   string    //客户Id  UUID  设备发布人
+	User     string    //客户  设备发布人 设备所有者
 	Msg      Msg       //数据		数据结构JSON  设备原始数据 msg
 	Metadata Metadata  //消息的元数据		包括设备Id，设备类型，产品ID等
 }
 
 // NewMessage ...
-func NewMessage(userId, messageType string, msg Msg, metadata Metadata) *Message {
+func NewMessage(user, messageType string, msg Msg, metadata Metadata) *Message {
 	return &Message{
 		Id:       uuid.New().String(),
 		Ts:       time.Now(),
-		UserId:   userId,
+		User:     user,
 		MsgType:  messageType,
 		Msg:      msg,
 		Metadata: metadata,

@@ -90,7 +90,6 @@ func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 		loginLog.Ipaddr = rc.Request.Request.RemoteAddr
 		loginLog.LoginLocation = utils.GetRealAddressByIP(rc.Request.Request.RemoteAddr)
 		loginLog.LoginTime = time.Now()
-		loginLog.OrgId = login.OrganizationId
 		loginLog.Status = "0"
 		loginLog.Remark = rc.Request.Request.UserAgent()
 		browserName, browserVersion := ua.Browser()
@@ -131,7 +130,6 @@ func (u *UserApi) LogOut(rc *restfulx.ReqCtx) {
 	loginLog.Ipaddr = rc.Request.Request.RemoteAddr
 	loginLog.LoginTime = time.Now()
 	loginLog.Status = "0"
-	loginLog.OrgId = rc.LoginAccount.OrganizationId
 	loginLog.Remark = rc.Request.Request.UserAgent()
 	browserName, browserVersion := ua.Browser()
 	loginLog.Browser = browserName + " " + browserVersion

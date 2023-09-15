@@ -26,6 +26,9 @@ func (p *DeviceAlarmApi) GetDeviceAlarmList(rc *restfulx.ReqCtx) {
 	data.StartTime = restfulx.QueryParam(rc, "startTime")
 	data.EndTime = restfulx.QueryParam(rc, "endTime")
 
+	data.RoleId = rc.LoginAccount.RoleId
+	data.Owner = rc.LoginAccount.UserName
+
 	list, total := p.DeviceAlarmApp.FindListPage(pageNum, pageSize, data)
 
 	rc.ResData = model.ResultPage{

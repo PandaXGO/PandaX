@@ -62,9 +62,6 @@ func (m *productModelImpl) FindListPage(page, pageSize int, data entity.Product)
 	if data.DeviceType != "" {
 		db = db.Where("device_type = ?", data.DeviceType)
 	}
-	if data.Id != "" {
-		db = db.Where("id = ?", data.Id)
-	}
 	if data.ProductCategoryId != "" {
 		db = db.Where("product_category_id = ?", data.ProductCategoryId)
 	}
@@ -76,9 +73,6 @@ func (m *productModelImpl) FindListPage(page, pageSize int, data entity.Product)
 	}
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
-	}
-	if data.OrgId != 0 {
-		db = db.Where("org_id = ?", data.OrgId)
 	}
 	if data.RuleChainId != "" {
 		db = db.Where("rule_chain_id = ?", data.RuleChainId)
@@ -99,9 +93,6 @@ func (m *productModelImpl) FindList(data entity.Product) *[]entity.ProductRes {
 	if data.DeviceType != "" {
 		db = db.Where("device_type = ?", data.DeviceType)
 	}
-	if data.Id != "" {
-		db = db.Where("id = ?", data.Id)
-	}
 	if data.ProductCategoryId != "" {
 		db = db.Where("product_category_id = ?", data.ProductCategoryId)
 	}
@@ -113,9 +104,6 @@ func (m *productModelImpl) FindList(data entity.Product) *[]entity.ProductRes {
 	}
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
-	}
-	if data.OrgId != 0 {
-		db = db.Where("org_id = ?", data.OrgId)
 	}
 	if data.RuleChainId != "" {
 		db = db.Where("rule_chain_id = ?", data.RuleChainId)

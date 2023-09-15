@@ -35,6 +35,10 @@ func (p *RuleChainApi) GetRuleChainList(rc *restfulx.ReqCtx) {
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 	data.RuleName = restfulx.QueryParam(rc, "ruleName")
+
+	data.RoleId = rc.LoginAccount.RoleId
+	data.Owner = rc.LoginAccount.UserName
+
 	list, total := p.RuleChainApp.FindListPage(pageNum, pageSize, data)
 
 	rc.ResData = model.ResultPage{

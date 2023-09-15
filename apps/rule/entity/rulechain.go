@@ -33,6 +33,7 @@ func (RuleChain) TableName() string {
 type RuleChainMsgLog struct {
 	MessageId  string    `gorm:"message_id;type:varchar(64);comment:消息Id" json:"messageId"`
 	OrgId      int64     `json:"orgId"  gorm:"type:int;comment:机构ID"`
+	Owner      string    `json:"owner"  gorm:"type:varchar(64);comment:创建者,所有者"`
 	MsgType    string    `gorm:"msg_type;type:varchar(64);comment:消息类型" json:"msgType"`
 	DeviceId   string    `gorm:"device_id;type:varchar(64);comment:设备ID" json:"deviceId"`
 	DeviceName string    `gorm:"device_name;type:varchar(255);comment:设备名称" json:"deviceName"`

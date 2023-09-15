@@ -27,6 +27,8 @@ type SysRole struct {
 	ApiIds          []casbin.CasbinRule `json:"apiIds" gorm:"-"`
 	MenuIds         []int64             `json:"menuIds" gorm:"-"`
 	OrganizationIds []int64             `json:"organizationIds" gorm:"-"`
+
+	Org string `json:"org" gorm:"column:org"`
 }
 
 type MenuIdList struct {

@@ -5,6 +5,7 @@ import "github.com/PandaXGO/PandaKit/model"
 type DevGenTable struct {
 	TableId        int64               `gorm:"primaryKey;autoIncrement"   json:"tableId"` // 编号
 	OrgId          int64               `json:"orgId"  gorm:"type:int;comment:机构ID"`
+	Owner          string              `json:"owner"  gorm:"type:varchar(64);comment:创建者,所有者"`
 	TableName      string              `gorm:"table_name"         json:"tableName"`      // 表名称
 	TableComment   string              `gorm:"table_comment"      json:"tableComment"`   // 表描述
 	ClassName      string              `gorm:"class_name"         json:"className"`      // 实体类名称

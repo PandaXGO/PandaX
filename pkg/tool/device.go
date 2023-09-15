@@ -7,6 +7,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
 	"pandax/pkg/global"
 	"strconv"
@@ -14,7 +15,7 @@ import (
 )
 
 type DeviceAuth struct {
-	User        string `json:"user"`
+	Owner       string `json:"owner"`
 	OrgId       int64  `json:"orgId"`
 	DeviceId    string `json:"device_id"`
 	DeviceType  string `json:"device_type"`
@@ -65,10 +66,15 @@ func (m *DeviceAuth) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, m)
 }
 
-func OrgAuthSet(tx *gorm.DB, roleId int64) {
-	// todo 使用缓存
-	ids, err := services.SysRoleOrganizationModelDao.FindOrganizationsByRoleId(roleId)
+func OrgAuthSet(tx *gorm.DB, roleId int64, owner string) {
+	//TODO 使用缓存
+	role, err := services.SysRoleModelDao.FindOrganizationsByRoleId(roleId)
 	biz.ErrIsNil(err, "查询角色数据权限失败")
-	biz.IsTrue(len(ids) > 0, "该角色下未分配组织权限")
-	tx.Where("org_id in (?)", ids)
+	if role.DataScope != entity.SELFDATASCOPE {
+		biz.IsTrue(len(role.Org) > 0, "该角色下未分配组织权限")
+		tx.Where("org_id in (?)", strings.Split(role.Org, ","))
+	} else {
+		tx.Where("owner = ?", owner)
+	}
+
 }

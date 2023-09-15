@@ -97,6 +97,7 @@ func (m *devGenTableModelImpl) Insert(dgt entity.DevGenTable) {
 		dgt.Columns[i].TableId = dgt.TableId
 		columns := dgt.Columns[i]
 		columns.OrgId = dgt.OrgId
+		columns.Owner = dgt.Owner
 		DevTableColumnModelDao.Insert(columns)
 	}
 }
@@ -134,7 +135,7 @@ func (m *devGenTableModelImpl) FindTree(data entity.DevGenTable) *[]entity.DevGe
 		db = db.Where("table_comment = ?", data.TableComment)
 	}
 	// 组织数据访问权限
-	tool.OrgAuthSet(db, data.RoleId)
+	tool.OrgAuthSet(db, data.RoleId, data.Owner)
 	err := db.Find(&resData).Error
 	biz.ErrIsNil(err, "获取TableTree失败")
 	for i := 0; i < len(resData); i++ {
@@ -161,7 +162,7 @@ func (m *devGenTableModelImpl) FindListPage(page, pageSize int, data entity.DevG
 		db = db.Where("table_comment = ?", data.TableComment)
 	}
 	// 组织数据访问权限
-	tool.OrgAuthSet(db, data.RoleId)
+	tool.OrgAuthSet(db, data.RoleId, data.Owner)
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
 	err = db.Limit(pageSize).Offset(offset).Find(&list).Error

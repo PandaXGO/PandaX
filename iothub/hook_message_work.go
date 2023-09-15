@@ -126,10 +126,11 @@ func buildRuleMessage(etoken *tool.DeviceAuth, dei *DeviceEventInfo, msgType str
 		"deviceType": etoken.DeviceType,
 		"productId":  etoken.ProductId,
 		"orgId":      etoken.OrgId,
+		"owner":      etoken.Owner,
 	}
 	msgVals := make(map[string]interface{})
 	json.Unmarshal([]byte(dei.Datas), &msgVals)
-	return message.NewMessage(etoken.User, msgType, msgVals, metadataVals)
+	return message.NewMessage(etoken.Owner, msgType, msgVals, metadataVals)
 }
 
 func SendZtWebsocket(deviceId, message string) {

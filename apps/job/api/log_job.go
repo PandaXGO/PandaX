@@ -14,12 +14,16 @@ type JobLogApi struct {
 
 // GetJobLogList Job日志列表
 func (l *JobLogApi) GetJobLogList(rc *restfulx.ReqCtx) {
+	job := entity.JobLog{}
 	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
-	name := restfulx.QueryParam(rc, "name")
-	status := restfulx.QueryParam(rc, "status")
+	job.Name = restfulx.QueryParam(rc, "name")
+	job.Status = restfulx.QueryParam(rc, "status")
 
-	list, total := l.JobLogApp.FindListPage(pageNum, pageSize, entity.JobLog{Name: name, Status: status})
+	job.RoleId = rc.LoginAccount.RoleId
+	job.Owner = rc.LoginAccount.UserName
+
+	list, total := l.JobLogApp.FindListPage(pageNum, pageSize, job)
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
