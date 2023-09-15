@@ -67,6 +67,9 @@ func (m *DeviceAuth) UnmarshalBinary(data []byte) error {
 }
 
 func OrgAuthSet(tx *gorm.DB, roleId int64, owner string) {
+	if roleId == 0 {
+		return
+	}
 	//TODO 使用缓存
 	role, err := services.SysRoleModelDao.FindOrganizationsByRoleId(roleId)
 	biz.ErrIsNil(err, "查询角色数据权限失败")

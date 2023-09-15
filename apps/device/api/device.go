@@ -59,6 +59,8 @@ func (p *DeviceApi) GetDeviceListAll(rc *restfulx.ReqCtx) {
 	data.Status = restfulx.QueryParam(rc, "status")
 	data.Pid = restfulx.QueryParam(rc, "pid")
 	data.DeviceType = restfulx.QueryParam(rc, "deviceType")
+	data.RoleId = rc.LoginAccount.RoleId
+	data.Owner = rc.LoginAccount.UserName
 
 	list := p.DeviceApp.FindList(data)
 	rc.ResData = list
@@ -133,11 +135,11 @@ func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
 func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	var data entity.Device
 	restfulx.BindJsonAndValid(rc, &data)
+	data.Owner = rc.LoginAccount.UserName
+	data.OrgId = rc.LoginAccount.OrganizationId
 	list := p.DeviceApp.FindList(entity.Device{Name: data.Name})
 	biz.IsTrue(!(list != nil && len(*list) > 0), fmt.Sprintf("名称%s已存在，设置其他命名", data.Name))
 	data.Id = kgo.KStr.Uniqid("d_")
-	data.Owner = rc.LoginAccount.UserName
-	data.OrgId = rc.LoginAccount.OrganizationId
 	data.LinkStatus = global.INACTIVE
 	data.LastAt = time.Now()
 	p.DeviceApp.Insert(data)
@@ -193,7 +195,9 @@ func (p *DeviceApi) ScreenTwinData(rc *restfulx.ReqCtx) {
 		}
 		rc.ResData = vp
 	} else {
-		findList, _ := p.DeviceApp.FindListPage(pageNum, pageSize, entity.Device{Pid: classId})
+		device := entity.Device{Pid: classId, RoleId: rc.LoginAccount.RoleId}
+		device.Owner = rc.LoginAccount.UserName
+		findList, _ := p.DeviceApp.FindListPage(pageNum, pageSize, device)
 		vt := make([]entity.VisualTwin, 0)
 		for _, device := range *findList {
 			vt = append(vt, entity.VisualTwin{
@@ -203,4 +207,15 @@ func (p *DeviceApi) ScreenTwinData(rc *restfulx.ReqCtx) {
 		}
 		rc.ResData = vt
 	}
+}
+
+func (p *DeviceApi) DeviceAllotOrg(rc *restfulx.ReqCtx) {
+	id := restfulx.PathParam(rc, "id")
+	orgId := restfulx.QueryInt(rc, "orgId", 0)
+	biz.IsTrue(orgId != 0, "请选择组织")
+
+	device := entity.Device{}
+	device.Id = id
+	device.OrgId = int64(orgId)
+	p.DeviceApp.Update(device)
 }

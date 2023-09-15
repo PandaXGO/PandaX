@@ -122,5 +122,12 @@ func InitDeviceRouter(container *restful.Container) {
 		Writes([]entity.VisualClass{}). // on the response
 		Returns(200, "OK", []entity.VisualClass{}))
 
+	ws.Route(ws.GET("/{id}/allot/org").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("分配组织").Handle(s.DeviceAllotOrg)
+	}).
+		Doc("分配组织").
+		Metadata(restfulspec.KeyOpenAPITags, tags). // on the response
+		Returns(200, "OK", ""))
+
 	container.Add(ws)
 }
