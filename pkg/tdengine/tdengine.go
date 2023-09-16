@@ -47,9 +47,11 @@ func (s *TdEngine) GetTdEngineAllDb() (data []string, err error) {
 	return
 }
 
-// GetListTableByDatabases 获取指定数据库下所有的表列表
-func (s *TdEngine) GetListTableByDatabases() (data []*TDEngineTablesList, err error) {
-	rows, err := s.db.Query("SELECT table_name AS tableName, db_name AS dbName, create_time AS createTime, stable_name AS stableName FROM information_schema.ins_tables WHERE db_name = '" + s.dbName + "'")
+// GetListTableByStableName 获取指定超级表下所有的子表
+func (s *TdEngine) GetListTableByStableName(stableName string) (data []*TDEngineTablesList, err error) {
+	sql := `SELECT table_name AS tableName, db_name AS dbName, create_time AS createTime, stable_name AS stableName FROM information_schema.ins_tables WHERE db_name = ? and stable_name = ?`
+
+	rows, err := s.db.Query(sql, s.db, stableName)
 	if err != nil {
 		return
 	}

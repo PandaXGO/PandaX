@@ -5,7 +5,6 @@ import (
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"github.com/kakuilan/kgo"
-	"log"
 	"pandax/pkg/global"
 	"strings"
 
@@ -58,21 +57,37 @@ func (p *ProductTemplateApi) InsertProductTemplate(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &data)
 	data.Id = kgo.KStr.Uniqid("tm_")
 	data.OrgId = rc.LoginAccount.OrganizationId
-	p.ProductTemplateApp.Insert(data)
-	// 向超级表中添加字段
+	// 向超级表及子表中添加字段
+	stable := ""
+	len := 0
 	if data.Classify == entity.ATTRIBUTES_TSL {
-		err := global.TdDb.AddSTableField(data.Pid+"_"+entity.ATTRIBUTES_TSL, data.Key, data.Type, 0)
+		stable = data.Pid + "_" + entity.ATTRIBUTES_TSL
+		err := global.TdDb.AddSTableField(stable, data.Key, data.Type, len)
 		biz.ErrIsNil(err, "添加字段失败")
-	}
-	if data.Classify == entity.TELEMETRY_TSL {
-		len := 0
+	} else if data.Classify == entity.TELEMETRY_TSL {
+		stable = data.Pid + "_" + entity.TELEMETRY_TSL
 		if data.Type == "string" {
 			len = int(data.Define["length"].(int64))
 		}
-		err := global.TdDb.AddSTableField(data.Pid+"_"+entity.TELEMETRY_TSL, data.Key, data.Type, len)
+		err := global.TdDb.AddSTableField(stable, data.Key, data.Type, len)
 		biz.ErrIsNil(err, "添加字段失败")
+	} else {
+		return
 	}
-	// todo 已经创建的表，超级表字段更新时，需要同步设备表字段
+	// 向子表中添加字段
+	go func() {
+		tables, err := global.TdDb.GetListTableByStableName(stable)
+		if err != nil {
+			global.Log.Error(err)
+			return
+		}
+		for _, table := range tables {
+			err = global.TdDb.AddTableField(table.TableName, data.Key, data.Type, 0)
+			global.Log.Error(err)
+		}
+	}()
+
+	p.ProductTemplateApp.Insert(data)
 }
 
 // UpdateProductTemplate 修改Template
@@ -80,40 +95,70 @@ func (p *ProductTemplateApi) UpdateProductTemplate(rc *restfulx.ReqCtx) {
 	var data entity.ProductTemplate
 	restfulx.BindJsonAndValid(rc, &data)
 	one := p.ProductTemplateApp.FindOne(data.Id)
+	stable := ""
+	len := 0
 	if data.Classify == entity.ATTRIBUTES_TSL {
+		stable = data.Pid + "_" + entity.ATTRIBUTES_TSL
 		// 删除原来的key
-		global.TdDb.DelSTableField(data.Pid+"_"+entity.ATTRIBUTES_TSL, one.Key)
+		global.TdDb.DelSTableField(stable, one.Key)
 		// 添加修改完成的key
-		err := global.TdDb.AddSTableField(data.Pid+"_"+entity.ATTRIBUTES_TSL, data.Key, data.Type, 0)
+		err := global.TdDb.AddSTableField(stable, data.Key, data.Type, len)
 		biz.ErrIsNil(err, "添加字段失败")
 	}
 	if data.Classify == entity.TELEMETRY_TSL {
-		len := 0
+		stable = data.Pid + "_" + entity.TELEMETRY_TSL
 		if data.Type == "string" {
 			len = int(data.Define["length"].(int64))
 		}
-		global.TdDb.DelSTableField(data.Pid+"_"+entity.TELEMETRY_TSL, one.Key)
-		err := global.TdDb.AddSTableField(data.Pid+"_"+entity.TELEMETRY_TSL, data.Key, data.Type, len)
-		log.Println(err)
+		global.TdDb.DelSTableField(stable, one.Key)
+		err := global.TdDb.AddSTableField(stable, data.Key, data.Type, len)
 		biz.ErrIsNil(err, "添加字段失败")
 	}
-
+	// 向子表中添加字段
+	go func() {
+		tables, err := global.TdDb.GetListTableByStableName(stable)
+		if err != nil {
+			global.Log.Error(err)
+			return
+		}
+		for _, table := range tables {
+			global.TdDb.DelTableField(table.TableName, data.Key)
+			err = global.TdDb.AddTableField(table.TableName, data.Key, data.Type, len)
+			global.Log.Error(err)
+		}
+	}()
 	p.ProductTemplateApp.Update(data)
+
 }
 
 // DeleteProductTemplate 删除Template
 func (p *ProductTemplateApi) DeleteProductTemplate(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	data := p.ProductTemplateApp.FindOne(id)
-	// 向超级表中添加字段
+	// 向超级表中删除字段
+	stable := ""
 	if data.Classify == entity.ATTRIBUTES_TSL {
-		err := global.TdDb.DelSTableField(data.Pid+"_"+entity.ATTRIBUTES_TSL, data.Key)
+		stable = data.Pid + "_" + entity.ATTRIBUTES_TSL
+		err := global.TdDb.DelSTableField(stable, data.Key)
 		biz.ErrIsNil(err, "删除字段失败")
 	}
 	if data.Classify == entity.TELEMETRY_TSL {
+		stable = data.Pid + "_" + entity.TELEMETRY_TSL
 		err := global.TdDb.DelSTableField(data.Pid+"_"+entity.TELEMETRY_TSL, data.Key)
 		biz.ErrIsNil(err, "删除字段失败")
 	}
+	// 删除子表
+	go func() {
+		tables, err := global.TdDb.GetListTableByStableName(stable)
+		if err != nil {
+			global.Log.Error(err)
+			return
+		}
+		for _, table := range tables {
+			global.TdDb.DelTableField(table.TableName, data.Key)
+			global.Log.Error(err)
+		}
+	}()
 	ids := strings.Split(id, ",")
 	p.ProductTemplateApp.Delete(ids)
 }
