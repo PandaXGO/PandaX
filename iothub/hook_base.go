@@ -2,6 +2,7 @@ package iothub
 
 import (
 	"encoding/json"
+	"pandax/apps/device/services"
 	exhook "pandax/iothub/protobuf"
 	"pandax/pkg/global"
 	"pandax/pkg/tool"
@@ -16,7 +17,22 @@ func (s *HookService) auth(username, password string) bool {
 		return true
 	}
 	etoken := &tool.DeviceAuth{}
-	err := global.RedisDb.Get(username, etoken)
+	// redis 中有就查询，没有就添加
+	exists, err := global.RedisDb.Exists(global.RedisDb.Context(), username).Result()
+	if exists == 1 {
+		err = global.RedisDb.Get(username, etoken)
+	} else {
+		device, err := services.DeviceModelDao.FindOneByToken(password)
+		if err != nil {
+			global.Log.Infof("设备 %s 不存在", username)
+			return false
+		}
+		etoken, err = services.GetDeviceToken(device)
+		if err != nil {
+			global.Log.Infof("设备%s添加缓存失败", username)
+			return false
+		}
+	}
 	if err != nil {
 		global.Log.Infof("invalid username %s", username)
 		return false

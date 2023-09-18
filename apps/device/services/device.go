@@ -12,6 +12,7 @@ import (
 type (
 	DeviceModel interface {
 		Insert(data entity.Device) *entity.Device
+		FindOneByToken(token string) (*entity.Device, error)
 		FindOne(id string) *entity.DeviceRes
 		FindListPage(page, pageSize int, data entity.Device) (*[]entity.DeviceRes, int64)
 		FindList(data entity.Device) *[]entity.DeviceRes
@@ -35,13 +36,14 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 	list := m.FindList(entity.Device{Name: data.Name})
 	biz.IsTrue(list != nil && len(*list) == 0, "设备名称已经存在")
 	//2 创建认证TOKEN IOTHUB使用
-	etoken := getDeviceToken(&data)
+	etoken, err := GetDeviceToken(&data)
+	biz.ErrIsNil(err, "设备缓存失败")
 	// 子网关不需要设置token
 	if data.DeviceType != global.GATEWAYS {
 		data.Token = etoken.Token
 	}
 	//3 添加设备
-	err := tx.Table(m.table).Create(&data).Error
+	err = tx.Table(m.table).Create(&data).Error
 	biz.ErrIsNil(err, "添加设备失败")
 	// 创建超级表 失败就
 	err = createDeviceTable(data.Pid, data.Name)
@@ -53,34 +55,19 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 	return &data
 }
 
-func getDeviceToken(data *entity.Device) *tool.DeviceAuth {
-	now := time.Now()
-	etoken := &tool.DeviceAuth{
-		DeviceId:   data.Id,
-		OrgId:      data.OrgId,
-		Owner:      data.Owner,
-		Name:       data.Name,
-		DeviceType: data.DeviceType,
-		ProductId:  data.Pid,
-	}
-	//设备有效期360天
-	etoken.CreatedAt = now.Unix()
-	etoken.ExpiredAt = now.Add(time.Hour * 24 * 365).Unix()
-	if data.Token == "" {
-		etoken.Token = etoken.MD5ID()
-	} else {
-		etoken.Token = data.Token
-	}
-	biz.ErrIsNil(global.RedisDb.Set(data.Id, etoken.GetMarshal(), time.Hour*24*365), "Redis 存储失败")
-	return etoken
-}
-
 func (m *deviceModelImpl) FindOne(id string) *entity.DeviceRes {
 	resData := new(entity.DeviceRes)
 	db := global.Db.Table(m.table).Where("id = ?", id)
 	err := db.First(resData).Preload("Product").Preload("DeviceGroup").Error
 	biz.ErrIsNil(err, "查询设备失败")
 	return resData
+}
+
+func (m *deviceModelImpl) FindOneByToken(token string) (*entity.Device, error) {
+	resData := new(entity.Device)
+	db := global.Db.Table(m.table).Where("token = ?", token)
+	err := db.First(resData).Error
+	return resData, err
 }
 
 func (m *deviceModelImpl) FindListPage(page, pageSize int, data entity.Device) (*[]entity.DeviceRes, int64) {
@@ -160,7 +147,8 @@ func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
 }
 
 func (m *deviceModelImpl) Update(data entity.Device) *entity.Device {
-	getDeviceToken(&data)
+	_, err := GetDeviceToken(&data)
+	biz.ErrIsNil(err, "设备更改缓存失败")
 	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改设备失败")
 	return &data
 }
@@ -204,4 +192,26 @@ func deleteDeviceTable(device string) error {
 		return err
 	}
 	return nil
+}
+
+func GetDeviceToken(data *entity.Device) (*tool.DeviceAuth, error) {
+	now := time.Now()
+	etoken := &tool.DeviceAuth{
+		DeviceId:   data.Id,
+		OrgId:      data.OrgId,
+		Owner:      data.Owner,
+		Name:       data.Name,
+		DeviceType: data.DeviceType,
+		ProductId:  data.Pid,
+	}
+	//设备有效期360天
+	etoken.CreatedAt = now.Unix()
+	etoken.ExpiredAt = now.Add(time.Hour * 24 * 365).Unix()
+	if data.Token == "" {
+		etoken.Token = etoken.MD5ID()
+	} else {
+		etoken.Token = data.Token
+	}
+	err := etoken.CreateDeviceToken(data.Id)
+	return etoken, err
 }

@@ -12,6 +12,7 @@ import (
 	"pandax/pkg/global"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type DeviceAuth struct {
@@ -27,9 +28,8 @@ type DeviceAuth struct {
 	ExpiredAt   int64  `json:"expired_at"`
 }
 
-func (entity *DeviceAuth) CreateDeviceToken() (err error) {
-
-	return nil
+func (entity *DeviceAuth) CreateDeviceToken(key string) (err error) {
+	return global.RedisDb.Set(key, entity.GetMarshal(), time.Hour*24*365)
 }
 
 func (entity *DeviceAuth) GetDeviceToken(key string) error {
