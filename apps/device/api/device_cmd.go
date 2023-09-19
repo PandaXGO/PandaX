@@ -5,9 +5,9 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/kakuilan/kgo"
 	"pandax/pkg/global"
 	"pandax/pkg/mqtt"
+	"pandax/pkg/tool"
 	"strings"
 	"time"
 
@@ -42,7 +42,7 @@ func (p *DeviceCmdLogApi) GetDeviceCmdLogList(rc *restfulx.ReqCtx) {
 func (p *DeviceCmdLogApi) InsertDeviceCmdLog(rc *restfulx.ReqCtx) {
 	var data entity.DeviceCmdLog
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = kgo.KStr.Uniqid("cmd_")
+	data.Id = tool.GenerateID()
 	data.State = "2"
 	data.RequestTime = time.Now().Format("2006-01-02 15:04:05")
 	err := p.DeviceCmdLogApp.Insert(data)

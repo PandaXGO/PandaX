@@ -2,9 +2,9 @@ package api
 
 import (
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/kakuilan/kgo"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	"pandax/pkg/tool"
 	"strings"
 )
 
@@ -70,7 +70,7 @@ func (p *DeviceGroupApi) GetDeviceGroup(rc *restfulx.ReqCtx) {
 func (p *DeviceGroupApi) InsertDeviceGroup(rc *restfulx.ReqCtx) {
 	var data entity.DeviceGroup
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = kgo.KStr.Uniqid("dg_")
+	data.Id = tool.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	p.DeviceGroupApp.Insert(data)

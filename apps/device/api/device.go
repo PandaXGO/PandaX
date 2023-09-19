@@ -11,9 +11,9 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/kakuilan/kgo"
 	"pandax/pkg/global"
 	"pandax/pkg/mqtt"
+	"pandax/pkg/tool"
 	"strings"
 	"time"
 
@@ -139,7 +139,7 @@ func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	data.OrgId = rc.LoginAccount.OrganizationId
 	list := p.DeviceApp.FindList(entity.Device{Name: data.Name})
 	biz.IsTrue(!(list != nil && len(*list) > 0), fmt.Sprintf("名称%s已存在，设置其他命名", data.Name))
-	data.Id = kgo.KStr.Uniqid("d_")
+	data.Id = tool.GenerateID()
 	data.LinkStatus = global.INACTIVE
 	data.LastAt = time.Now()
 	p.DeviceApp.Insert(data)

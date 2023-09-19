@@ -10,7 +10,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/kakuilan/kgo"
+	"pandax/pkg/tool"
 	"strings"
 
 	"pandax/apps/device/entity"
@@ -66,7 +66,7 @@ func (p *ProductApi) GetProduct(rc *restfulx.ReqCtx) {
 func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 	var data entity.Product
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = kgo.KStr.Uniqid("p_")
+	data.Id = tool.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	p.ProductApp.Insert(data)

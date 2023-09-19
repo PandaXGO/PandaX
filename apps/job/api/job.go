@@ -4,12 +4,12 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/kakuilan/kgo"
 	"log"
 	"pandax/apps/job/api/from"
 	"pandax/apps/job/entity"
 	"pandax/apps/job/jobs"
 	"pandax/apps/job/services"
+	"pandax/pkg/tool"
 	"strings"
 )
 
@@ -20,7 +20,7 @@ type JobApi struct {
 func (j *JobApi) CreateJob(rc *restfulx.ReqCtx) {
 	var job entity.SysJob
 	restfulx.BindQuery(rc, &job)
-	job.Id = kgo.KStr.Uniqid("")
+	job.Id = tool.GenerateID()
 	job.Owner = rc.LoginAccount.UserName
 	job.OrgId = rc.LoginAccount.OrganizationId
 	j.JobApp.Insert(job)

@@ -4,7 +4,7 @@ package api
 import (
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/kakuilan/kgo"
+	"pandax/pkg/tool"
 	"strings"
 
 	"pandax/apps/device/entity"
@@ -43,7 +43,7 @@ func (p *ProductOtaApi) GetProductOta(rc *restfulx.ReqCtx) {
 func (p *ProductOtaApi) InsertProductOta(rc *restfulx.ReqCtx) {
 	var data entity.ProductOta
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = kgo.KStr.Uniqid("ota_")
+	data.Id = tool.GenerateID()
 	p.ProductOtaApp.Insert(data)
 }
 

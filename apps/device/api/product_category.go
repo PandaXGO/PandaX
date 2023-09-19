@@ -2,9 +2,9 @@ package api
 
 import (
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/kakuilan/kgo"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	"pandax/pkg/tool"
 	"strings"
 )
 
@@ -59,7 +59,7 @@ func (p *ProductCategoryApi) GetProductCategory(rc *restfulx.ReqCtx) {
 func (p *ProductCategoryApi) InsertProductCategory(rc *restfulx.ReqCtx) {
 	var data entity.ProductCategory
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = kgo.KStr.Uniqid("pc_")
+	data.Id = tool.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	p.ProductCategoryApp.Insert(data)

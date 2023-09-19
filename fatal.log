@@ -306,3 +306,55 @@ created by pandax/iothub.(*HookService).handleOne
 2023-09-15 14:45:53--------------------------------
 
 2023-09-15 14:52:47--------------------------------
+
+2023-09-16 10:02:42--------------------------------
+
+2023-09-19 10:13:20--------------------------------
+panic: (*logrus.Entry) 0xc0002540e0
+
+goroutine 1 [running]:
+github.com/sirupsen/logrus.(*Entry).log(0xc000254000, 0x0, {0xc0005320e0, 0x6d})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:260 +0x4a7
+github.com/sirupsen/logrus.(*Entry).Log(0xc000254000, 0x0, {0xc0004c6ba0?, 0x0?, 0x1a59720?})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:304 +0x4f
+github.com/sirupsen/logrus.(*Logger).Log(0xc000438780, 0x0, {0xc0004c6ba0, 0x1, 0x1})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:204 +0x65
+github.com/sirupsen/logrus.(*Logger).Panic(...)
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:253
+pandax/pkg/initialize.InitTable()
+	D:/workspace/go/project/PandaX/PandaX/pkg/initialize/table.go:43 +0x831
+main.glob..func1(0x34ca040?, {0x1d4ab4d?, 0x0?, 0x0?})
+	D:/workspace/go/project/PandaX/PandaX/main.go:61 +0x538
+github.com/spf13/cobra.(*Command).execute(0x34ca040, {0xc000078240, 0x0, 0x0})
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:861 +0x5e3
+github.com/spf13/cobra.(*Command).ExecuteC(0x34ca040)
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:990 +0x3bd
+github.com/spf13/cobra.(*Command).Execute(...)
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:918
+main.main()
+	D:/workspace/go/project/PandaX/PandaX/main.go:106 +0x25
+
+2023-09-19 10:14:35--------------------------------
+panic: (*logrus.Entry) 0xc000460690
+
+goroutine 1 [running]:
+github.com/sirupsen/logrus.(*Entry).log(0xc000460230, 0x0, {0xc000532000, 0x6d})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:260 +0x4a7
+github.com/sirupsen/logrus.(*Entry).Log(0xc000460230, 0x0, {0xc00051cba0?, 0x0?, 0x1459720?})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:304 +0x4f
+github.com/sirupsen/logrus.(*Logger).Log(0xc000134880, 0x0, {0xc00051cba0, 0x1, 0x1})
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:204 +0x65
+github.com/sirupsen/logrus.(*Logger).Panic(...)
+	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:253
+pandax/pkg/initialize.InitTable()
+	D:/workspace/go/project/PandaX/PandaX/pkg/initialize/table.go:43 +0x831
+main.glob..func1(0x2eca040?, {0x174ab4d?, 0x0?, 0x0?})
+	D:/workspace/go/project/PandaX/PandaX/main.go:61 +0x538
+github.com/spf13/cobra.(*Command).execute(0x2eca040, {0xc000078240, 0x0, 0x0})
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:861 +0x5e3
+github.com/spf13/cobra.(*Command).ExecuteC(0x2eca040)
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:990 +0x3bd
+github.com/spf13/cobra.(*Command).Execute(...)
+	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:918
+main.main()
+	D:/workspace/go/project/PandaX/PandaX/main.go:106 +0x25

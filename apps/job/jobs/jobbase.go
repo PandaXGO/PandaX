@@ -2,10 +2,10 @@ package jobs
 
 import (
 	"fmt"
-	"github.com/kakuilan/kgo"
 	"pandax/apps/job/entity"
 	"pandax/apps/job/services"
 	"pandax/pkg/global"
+	"pandax/pkg/tool"
 
 	logEntity "pandax/apps/job/entity"
 	logServices "pandax/apps/job/services"
@@ -54,7 +54,7 @@ type ExecJob struct {
 func (e *ExecJob) Run() {
 	startTime := time.Now()
 	jobLog := logEntity.JobLog{Name: e.Name, EntryId: e.EntryId, TargetInvoke: e.InvokeTarget, Status: "0"}
-	jobLog.Id = kgo.KStr.Uniqid("")
+	jobLog.Id = tool.GenerateID()
 	jobLog.OrgId = e.OrgId
 	jobLog.Owner = e.Owner
 	var obj = jobList[e.InvokeTarget]

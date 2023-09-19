@@ -4,8 +4,8 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/kakuilan/kgo"
 	"pandax/pkg/global"
+	"pandax/pkg/tool"
 	"strings"
 
 	"pandax/apps/device/entity"
@@ -55,7 +55,7 @@ func (p *ProductTemplateApi) GetProductTemplate(rc *restfulx.ReqCtx) {
 func (p *ProductTemplateApi) InsertProductTemplate(rc *restfulx.ReqCtx) {
 	var data entity.ProductTemplate
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = kgo.KStr.Uniqid("tm_")
+	data.Id = tool.GenerateID()
 	data.OrgId = rc.LoginAccount.OrganizationId
 	// 向超级表及子表中添加字段
 	stable := ""
