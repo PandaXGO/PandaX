@@ -85,9 +85,6 @@ func (m *deviceModelImpl) FindListPage(page, pageSize int, data entity.Device) (
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
 	}
-	if data.Owner != "" {
-		db = db.Where("owner = ?", data.Owner)
-	}
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
 	}
@@ -121,9 +118,6 @@ func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
 	}
 	if data.Name != "" {
 		db = db.Where("name like ?", "%"+data.Name+"%")
-	}
-	if data.Owner != "" {
-		db = db.Where("owner = ?", data.Owner)
 	}
 	if data.DeviceType != "" {
 		db = db.Where("device_type = ?", data.DeviceType)

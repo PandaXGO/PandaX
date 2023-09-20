@@ -65,9 +65,6 @@ func (m *productModelImpl) FindListPage(page, pageSize int, data entity.Product)
 	if data.ProductCategoryId != "" {
 		db = db.Where("product_category_id = ?", data.ProductCategoryId)
 	}
-	if data.Owner != "" {
-		db = db.Where("owner = ?", data.Owner)
-	}
 	if data.ProtocolName != "" {
 		db = db.Where("protocol_name like ?", "%"+data.ProtocolName+"%")
 	}
@@ -95,9 +92,6 @@ func (m *productModelImpl) FindList(data entity.Product) *[]entity.ProductRes {
 	}
 	if data.ProductCategoryId != "" {
 		db = db.Where("product_category_id = ?", data.ProductCategoryId)
-	}
-	if data.Owner != "" {
-		db = db.Where("owner = ?", data.Owner)
 	}
 	if data.ProtocolName != "" {
 		db = db.Where("protocol_name like ?", "%"+data.ProtocolName+"%")

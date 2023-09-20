@@ -70,9 +70,6 @@ func (m *ruleChainModelImpl) FindListPage(page, pageSize int, data entity.RuleCh
 	offset := pageSize * (page - 1)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	if data.Owner != "" {
-		db = db.Where("owner = ?", data.Owner)
-	}
 	if data.RuleName != "" {
 		db = db.Where("rule_name like ?", "%"+data.RuleName+"%")
 	}
@@ -91,9 +88,6 @@ func (m *ruleChainModelImpl) FindList(data entity.RuleChain) *[]entity.RuleChain
 	list := make([]entity.RuleChain, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	if data.Owner != "" {
-		db = db.Where("owner = ?", data.Owner)
-	}
 	if data.RuleName != "" {
 		db = db.Where("rule_name like ?", "%"+data.RuleName+"%")
 	}
@@ -110,9 +104,6 @@ func (m *ruleChainModelImpl) FindListBaseLabel(data entity.RuleChain) *[]entity.
 	list := make([]entity.RuleChainBaseLabel, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
-	if data.Owner != "" {
-		db = db.Where("owner = ?", data.Owner)
-	}
 	if data.RuleName != "" {
 		db = db.Where("rule_name like ?", "%"+data.RuleName+"%")
 	}
