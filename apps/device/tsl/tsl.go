@@ -26,9 +26,9 @@ type DefineBase struct {
 
 	MaxLength *int `json:"maxLength"` // 最大长度,字符类型:string
 
-	DefineBool []DefineBool   `json:"boolDefine"`
-	Enums      []DefineEnum   `json:"enumDefine"`    // 枚举类型:enum
-	Struct     []DefineStruct `json:"structDefine" ` // 对象类型:Struct
+	DefineBool []DefineBool `json:"boolDefine"`
+	Enums      []DefineEnum `json:"enumDefine"`    // 枚举类型:enum
+	Struct     any          `json:"structDefine" ` // 对象类型:Struct
 }
 
 type DefineBool struct {
@@ -50,17 +50,17 @@ type DefineStruct struct {
 }
 
 type ValueType struct {
-	Type       string `json:"type" dc:"数据类型" v:"required#请选择数据类型"` // 类型
+	Type       string `json:"type"` // 类型
 	DefineBase        // 参数
 }
 
 // DefineCommands 命令
 type DefineCommands struct {
-	Key    string                `json:"key" dc:"功能标识" v:"required|regex:^[A-Za-z_]+[\\w]*$#请输入功能标识|标识由字母、数字和下划线组成,且不能以数字开头"`
-	Name   string                `json:"name" dc:"功能名称" v:"required#请输入功能名称"` // 功能名称
-	Inputs []DefineCommandsInput `json:"inputs" dc:"输入参数"`                    // 输入参数
-	Output ValueType             `json:"output" dc:"输出参数"`                    // 输出参数
-	Desc   string                `json:"desc" dc:"描述"`                        // 描述
+	Key    string                `json:"key" `
+	Name   string                `json:"name"`   // 功能名称
+	Inputs []DefineCommandsInput `json:"inputs"` // 输入参数
+	Output ValueType             `json:"output"` // 输出参数
+	Desc   string                `json:"desc"`   // 描述
 }
 
 // DefineCommandsInput 命令:输入参数

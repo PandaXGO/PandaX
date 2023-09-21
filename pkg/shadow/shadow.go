@@ -29,9 +29,6 @@ type DeviceShadow interface {
 	SetOnline(deviceName string) (err error)
 	SetOffline(deviceName string) (err error)
 
-	// MayBeOffline 可能离线事件（60秒内超过3次判定离线）
-	MayBeOffline(deviceName string) (err error)
-
 	SetOnlineChangeCallback(handlerFunc OnlineChangeCallback)
 
 	// StopStatusListener 停止设备状态监听
@@ -48,13 +45,15 @@ type deviceShadow struct {
 	ttl         int
 }
 
-func NewDeviceShadow() DeviceShadow {
+var DeviceShadowInstance DeviceShadow
+
+func init() {
 	shadow := &deviceShadow{
 		m:      &sync.Map{},
 		ticker: time.NewTicker(time.Second),
 	}
 	go shadow.checkOnOff()
-	return shadow
+	DeviceShadowInstance = shadow
 }
 
 func (d *deviceShadow) AddDevice(device Device) (err error) {
@@ -86,7 +85,6 @@ func (d *deviceShadow) SetDevicePoint(deviceName, pointType, pointName string, v
 	device := deviceAny.(Device)
 	// update point value
 	device.updatedAt = time.Now()
-	device.disconnectTimes = 0
 
 	if pointType == PointAttributesType {
 		device.AttributesPoints[pointName] = NewDevicePoint(pointName, value)
@@ -146,7 +144,6 @@ func (d *deviceShadow) changeOnOff(deviceName string, online bool) (err error) {
 		if device.online != online {
 			device.online = online
 			device.updatedAt = time.Now()
-			device.disconnectTimes = 0
 			d.m.Store(deviceName, device)
 			d.handlerCallback(deviceName, online)
 		}
@@ -175,24 +172,6 @@ func (d *deviceShadow) SetOffline(deviceName string) (err error) {
 
 func (d *deviceShadow) SetOnlineChangeCallback(handlerFunc OnlineChangeCallback) {
 	d.handlerFunc = handlerFunc
-}
-
-func (d *deviceShadow) MayBeOffline(deviceName string) (err error) {
-	if deviceAny, ok := d.m.Load(deviceName); ok {
-		device := deviceAny.(Device)
-		if device.online == false {
-			return
-		}
-		device.disconnectTimes++
-		if time.Now().Sub(device.updatedAt).Seconds() > 60 && device.disconnectTimes >= 3 {
-			return d.SetOffline(deviceName)
-		}
-		// 更新设备信息
-		d.m.Store(deviceName, device)
-		return
-	} else {
-		return UnknownDeviceErr
-	}
 }
 
 func (d *deviceShadow) StopStatusListener() {

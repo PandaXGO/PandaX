@@ -26,6 +26,7 @@ type RpcPayload struct {
 	Params any    `json:"params"`
 }
 
+// RequestAttributes 下发指令
 func (rpc RpcRequest) RequestCmd(rpcPayload RpcPayload) (respPayload string, err error) {
 	topic := fmt.Sprintf(RpcReqTopic, rpc.RequestId)
 	payload, err := json.Marshal(rpcPayload)
@@ -66,6 +67,7 @@ func (rpc RpcRequest) RequestCmd(rpcPayload RpcPayload) (respPayload string, err
 	}
 }
 
+// RequestAttributes rpc 下发属性
 func (rpc RpcRequest) RequestAttributes(rpcPayload RpcPayload) error {
 	topic := fmt.Sprintf(RpcReqTopic, rpc.RequestId)
 	if rpcPayload.Method == "" {
@@ -86,7 +88,8 @@ func (rpc RpcRequest) RequestAttributes(rpcPayload RpcPayload) error {
 // RespondTpc 处理设备端请求服务端方法
 func (rpc RpcRequest) RespondTpc(reqPayload RpcPayload) error {
 	topic := fmt.Sprintf(RpcRespTopic, rpc.RequestId)
-	// 此处处理设备的请求参数逻辑
+	//TODO 此处处理设备的请求参数逻辑
+	//自己定义请求逻辑
 	if reqPayload.Params == "getCurrentTime" {
 		unix := time.Now().Unix()
 		msg := fmt.Sprintf("%d", unix)

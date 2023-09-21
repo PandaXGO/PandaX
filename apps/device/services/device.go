@@ -66,7 +66,7 @@ func (m *deviceModelImpl) FindOne(id string) *entity.DeviceRes {
 func (m *deviceModelImpl) FindOneByToken(token string) (*entity.Device, error) {
 	resData := new(entity.Device)
 	db := global.Db.Table(m.table).Where("token = ?", token)
-	err := db.First(resData).Error
+	err := db.Preload("Product").First(resData).Error
 	return resData, err
 }
 

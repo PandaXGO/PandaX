@@ -11,3 +11,8 @@ func TestGenerateID(t *testing.T) {
 	id := GenerateID()
 	t.Log(id)
 }
+
+func TestGetInterfaceType(t *testing.T) {
+	id := GetInterfaceType(`{"aa": 23}`)
+	t.Log(id)
+}

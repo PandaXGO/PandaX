@@ -14,7 +14,6 @@ type Device struct {
 	AttributesPoints map[string]DevicePoint // 设备属性点位列表 key 作为属性
 	TelemetryPoints  map[string]DevicePoint // 设备遥测点位列表 key 作为属性
 	online           bool                   // 在线状态
-	disconnectTimes  int                    // 断开连接次数，60秒内超过3次判定离线
 	updatedAt        time.Time              // 更新时间
 }
 

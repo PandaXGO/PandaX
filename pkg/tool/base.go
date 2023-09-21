@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"log"
 	"reflect"
 	"regexp"
 	"strings"
@@ -71,7 +70,6 @@ func CheckInterfaceIsArray(data interface{}) (bool, []map[string]interface{}) {
 	if valueType.Kind() == reflect.Slice || valueType.Kind() == reflect.Array {
 		var maps []map[string]interface{}
 		for _, item := range data.([]interface{}) {
-			log.Println("item", item)
 			if m, ok := item.(map[string]interface{}); ok {
 				maps = append(maps, m)
 			}
@@ -79,4 +77,9 @@ func CheckInterfaceIsArray(data interface{}) (bool, []map[string]interface{}) {
 		return true, maps
 	}
 	return false, nil
+}
+
+func GetInterfaceType(v interface{}) string {
+	interfaceType := reflect.TypeOf(v)
+	return interfaceType.String()
 }

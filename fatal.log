@@ -1,360 +1,166 @@
 
-2023-09-02 12:17:06--------------------------------
-panic: runtime error: index out of range [0] with length 0
-
-goroutine 101 [running]:
-m7s.live/plugin/gb28181/v4.(*GB28181Config).OnEvent(0x3b53c20, {0x2177be0?, 0xc00127c4e0?})
-	D:/workspace/go/pkg/mod/m7s.live/plugin/gb28181/v4@v4.3.9/main.go:83 +0x61d
-m7s.live/engine/v4.(*Plugin).run(0xc0002fe7e0)
-	D:/workspace/go/pkg/mod/m7s.live/engine/v4@v4.13.8/plugin.go:170 +0x13b
-m7s.live/engine/v4.(*Plugin).assign(0xc0002fe7e0)
-	D:/workspace/go/pkg/mod/m7s.live/engine/v4@v4.13.8/plugin.go:154 +0x4db
-m7s.live/engine/v4.Run({0x2c43a38?, 0xc000044050}, {0x23cd9d6, 0xa})
-	D:/workspace/go/pkg/mod/m7s.live/engine/v4@v4.13.8/main.go:135 +0x1197
-created by main.glob..func2
-	D:/workspace/go/project/PandaX/PandaX/main.go:81 +0x2e5
-
-2023-09-02 12:19:16--------------------------------
-
-2023-09-04 11:15:17--------------------------------
-
-2023-09-05 08:33:55--------------------------------
-
-2023-09-05 08:34:49--------------------------------
-
-2023-09-05 08:35:41--------------------------------
-panic: (*logrus.Entry) 0xc0005604d0
-
-goroutine 1 [running]:
-github.com/sirupsen/logrus.(*Entry).log(0xc0005602a0, 0x0, {0xc0003e41c0, 0x69})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:260 +0x4a7
-github.com/sirupsen/logrus.(*Entry).Log(0xc0005602a0, 0x0, {0xc000725a80?, 0x1?, 0x1?})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:304 +0x4f
-github.com/sirupsen/logrus.(*Entry).Logf(0xc0005602a0, 0x0, {0x1a02c73?, 0xc000725ae0?}, {0xc000725b70?, 0x10?, 0x16c1fa0?})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:349 +0x85
-github.com/sirupsen/logrus.(*Logger).Logf(0xc000134800, 0x0, {0x1a02c73, 0x17}, {0xc000725b70, 0x1, 0x1})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:154 +0x85
-github.com/sirupsen/logrus.(*Logger).Panicf(...)
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:195
-github.com/PandaXGO/PandaKit/starter.(*DbGorm).GormMysql(0xc000725cd0)
-	D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230901074047-e0e8e4bf2bed/starter/gorm.go:48 +0x279
-github.com/PandaXGO/PandaKit/starter.(*DbGorm).GormInit(0xc000705420?)
-	D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230901074047-e0e8e4bf2bed/starter/gorm.go:28 +0x39
-main.glob..func1(0x312cf80?, {0x19b20c5?, 0x0?, 0x0?})
-	D:/workspace/go/project/PandaX/PandaX/main.go:45 +0x2de
-github.com/spf13/cobra.(*Command).execute(0x312cf80, {0xc000078240, 0x0, 0x0})
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:861 +0x5e3
-github.com/spf13/cobra.(*Command).ExecuteC(0x312cf80)
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:990 +0x3bd
-github.com/spf13/cobra.(*Command).Execute(...)
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:918
-main.main()
-	D:/workspace/go/project/PandaX/PandaX/main.go:106 +0x25
-
-2023-09-05 08:36:19--------------------------------
-panic: (*logrus.Entry) 0xc0004ac930
-
-goroutine 1 [running]:
-github.com/sirupsen/logrus.(*Entry).log(0xc0004ac620, 0x0, {0xc0004a4a98, 0x11})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:260 +0x4a7
-github.com/sirupsen/logrus.(*Entry).Log(0xc0004ac620, 0x0, {0xc000e37ca0?, 0xc0002e22f0?, 0x17c1660?})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:304 +0x4f
-github.com/sirupsen/logrus.(*Logger).Log(0xc0001a8780, 0x0, {0xc000e37ca0, 0x1, 0x1})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:204 +0x65
-github.com/sirupsen/logrus.(*Logger).Panic(...)
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:253
-main.glob..func1(0x322cf80?, {0x1ab20c5?, 0x0?, 0x0?})
-	D:/workspace/go/project/PandaX/PandaX/main.go:49 +0x3e5
-github.com/spf13/cobra.(*Command).execute(0x322cf80, {0xc000078240, 0x0, 0x0})
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:861 +0x5e3
-github.com/spf13/cobra.(*Command).ExecuteC(0x322cf80)
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:990 +0x3bd
-github.com/spf13/cobra.(*Command).Execute(...)
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:918
-main.main()
-	D:/workspace/go/project/PandaX/PandaX/main.go:106 +0x25
-
-2023-09-05 08:38:22--------------------------------
-
-2023-09-05 08:47:20--------------------------------
-
-2023-09-06 14:30:10--------------------------------
-
-2023-09-06 14:56:27--------------------------------
-
-2023-09-06 15:18:30--------------------------------
-
-2023-09-06 15:38:46--------------------------------
-
-2023-09-06 15:46:36--------------------------------
-
-2023-09-06 16:01:19--------------------------------
-
-2023-09-06 16:04:52--------------------------------
-
-2023-09-08 15:31:06--------------------------------
-
-2023-09-08 17:25:24--------------------------------
-
-2023-09-08 17:26:01--------------------------------
-
-2023-09-08 17:30:49--------------------------------
-
-2023-09-13 08:48:08--------------------------------
-
-2023-09-13 08:52:52--------------------------------
-
-2023-09-13 09:04:51--------------------------------
-
-2023-09-13 09:10:21--------------------------------
-
-2023-09-13 08:48:08--------------------------------
-
-2023-09-13 08:52:52--------------------------------
-
-2023-09-13 09:04:51--------------------------------
-
-2023-09-13 09:10:21--------------------------------
-
-2023-09-13 09:14:56--------------------------------
-
-2023-09-13 08:48:08--------------------------------
-
-2023-09-13 08:52:52--------------------------------
-
-2023-09-13 09:04:51--------------------------------
-
-2023-09-13 09:10:21--------------------------------
-
-2023-09-13 08:48:08--------------------------------
-
-2023-09-13 08:52:52--------------------------------
-
-2023-09-13 09:04:51--------------------------------
-
-2023-09-13 09:10:21--------------------------------
-
-2023-09-13 09:14:56--------------------------------
-
-2023-09-13 17:17:59--------------------------------
-panic: runtime error: invalid memory address or nil pointer dereference
-[signal 0xc0000005 code=0x0 addr=0x10 pc=0x1dc3346]
-
-goroutine 187 [running]:
-pandax/iothub.(*HookService).handleOne.func1()
-	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:49 +0x266
-created by pandax/iothub.(*HookService).handleOne
-	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:33 +0xa5
-
-2023-09-13 17:21:46--------------------------------
-
-2023-09-13 17:23:20--------------------------------
-
-2023-09-13 17:25:58--------------------------------
-
-2023-09-13 17:27:25--------------------------------
-
-2023-09-13 17:28:07--------------------------------
-
-2023-09-13 17:28:58--------------------------------
-
-2023-09-13 17:30:52--------------------------------
-panic: interface conversion: interface {} is nil, not []interface {}
-
-goroutine 138 [running]:
-pandax/pkg/rule_engine/manifest.New({0xc0012ae010, 0x4, 0x8})
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/manifest/manifest.go:35 +0xa95
-pandax/pkg/rule_engine.NewRuleChainInstance({0xc0012ae010, 0x4, 0x8})
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/instance.go:19 +0x67
-pandax/iothub.(*HookService).handleOne.func1()
-	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:57 +0x2fe
-created by pandax/iothub.(*HookService).handleOne
-	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:34 +0xa5
-
-2023-09-13 17:33:28--------------------------------
-
-2023-09-13 17:35:28--------------------------------
-
-2023-09-13 17:41:15--------------------------------
-panic: interface conversion: interface {} is nil, not string
-
-goroutine 147 [running]:
-pandax/pkg/rule_engine/nodes.(*createAlarmNode).Handle(0xc0003a6ee0, 0xc001083560)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/action_create_alarm_node.go:39 +0x71b
-pandax/pkg/rule_engine/nodes.(*scriptFilterNode).Handle(0xc0010834a0, 0xc001083560)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/filter_script_node.go:35 +0x2cb
-pandax/pkg/rule_engine/nodes.(*saveTimeSeriesNode).Handle(0xc0010af8b0, 0xc001083560)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/action_save_timeseries_node.go:49 +0x319
-pandax/pkg/rule_engine/nodes.(*messageTypeSwitchNode).Handle(0xc0010af950, 0xc001083560)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/filter_message_type_switch_node.go:42 +0x256
-pandax/pkg/rule_engine/nodes.(*inputNode).Handle(0xc0010af7c0, 0xc001083560)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/input_node.go:31 +0x112
-pandax/pkg/rule_engine.(*ruleChainInstance).StartRuleChain(...)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/instance.go:46
-pandax/iothub.(*HookService).handleOne.func1()
-	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:63 +0x3f5
-created by pandax/iothub.(*HookService).handleOne
-	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:34 +0xa5
-
-2023-09-13 17:43:55--------------------------------
-panic: interface conversion: interface {} is nil, not string
-
-goroutine 160 [running]:
-pandax/pkg/rule_engine/nodes.(*createAlarmNode).Handle(0xc0003e0a80, 0xc0011e4240)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/action_create_alarm_node.go:39 +0x71b
-pandax/pkg/rule_engine/nodes.(*scriptFilterNode).Handle(0xc0011e4180, 0xc0011e4240)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/filter_script_node.go:35 +0x2cb
-pandax/pkg/rule_engine/nodes.(*saveTimeSeriesNode).Handle(0xc00067b630, 0xc0011e4240)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/action_save_timeseries_node.go:49 +0x319
-pandax/pkg/rule_engine/nodes.(*messageTypeSwitchNode).Handle(0xc00067b6d0, 0xc0011e4240)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/filter_message_type_switch_node.go:42 +0x256
-pandax/pkg/rule_engine/nodes.(*inputNode).Handle(0xc00067b540, 0xc0011e4240)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/nodes/input_node.go:31 +0x112
-pandax/pkg/rule_engine.(*ruleChainInstance).StartRuleChain(...)
-	D:/workspace/go/project/PandaX/PandaX/pkg/rule_engine/instance.go:46
-pandax/iothub.(*HookService).handleOne.func1()
-	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:61 +0x37f
-created by pandax/iothub.(*HookService).handleOne
-	D:/workspace/go/project/PandaX/PandaX/iothub/hook_message_work.go:33 +0xa5
-
-2023-09-14 08:57:51--------------------------------
-
-2023-09-14 10:48:04--------------------------------
-
-2023-09-14 11:22:33--------------------------------
-
-2023-09-14 11:25:57--------------------------------
-
-2023-09-14 11:29:25--------------------------------
-
-2023-09-14 11:32:45--------------------------------
-
-2023-09-14 14:01:33--------------------------------
-
-2023-09-14 15:15:13--------------------------------
-
-2023-09-14 15:43:21--------------------------------
-
-2023-09-14 15:43:53--------------------------------
-
-2023-09-14 15:45:44--------------------------------
-
-2023-09-14 15:48:55--------------------------------
-
-2023-09-14 15:51:40--------------------------------
-
-2023-09-14 15:52:32--------------------------------
-
-2023-09-14 16:06:33--------------------------------
-
-2023-09-14 16:13:58--------------------------------
-
-2023-09-14 16:16:13--------------------------------
-
-2023-09-14 16:21:06--------------------------------
-
-2023-09-14 16:45:25--------------------------------
-
-2023-09-14 17:03:46--------------------------------
-
-2023-09-14 17:16:48--------------------------------
-
-2023-09-14 17:22:08--------------------------------
-
-2023-09-15 08:46:35--------------------------------
-
-2023-09-15 08:47:33--------------------------------
-
-2023-09-15 08:49:55--------------------------------
-
-2023-09-15 08:51:36--------------------------------
-
-2023-09-15 08:57:24--------------------------------
-
-2023-09-15 08:59:11--------------------------------
-
-2023-09-15 09:00:14--------------------------------
-
-2023-09-15 09:02:06--------------------------------
-
-2023-09-15 09:04:31--------------------------------
-
-2023-09-15 09:06:29--------------------------------
-
-2023-09-15 09:09:13--------------------------------
-
-2023-09-15 09:11:32--------------------------------
-
-2023-09-15 09:13:46--------------------------------
-
-2023-09-15 09:14:22--------------------------------
-
-2023-09-15 09:41:31--------------------------------
-
-2023-09-15 09:43:12--------------------------------
-
-2023-09-15 09:43:57--------------------------------
-
-2023-09-15 09:46:00--------------------------------
-
-2023-09-15 09:46:49--------------------------------
-
-2023-09-15 09:47:19--------------------------------
-
-2023-09-15 10:38:48--------------------------------
-
-2023-09-15 14:45:53--------------------------------
-
-2023-09-15 14:52:47--------------------------------
-
-2023-09-16 10:02:42--------------------------------
-
-2023-09-19 10:13:20--------------------------------
-panic: (*logrus.Entry) 0xc0002540e0
-
-goroutine 1 [running]:
-github.com/sirupsen/logrus.(*Entry).log(0xc000254000, 0x0, {0xc0005320e0, 0x6d})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:260 +0x4a7
-github.com/sirupsen/logrus.(*Entry).Log(0xc000254000, 0x0, {0xc0004c6ba0?, 0x0?, 0x1a59720?})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:304 +0x4f
-github.com/sirupsen/logrus.(*Logger).Log(0xc000438780, 0x0, {0xc0004c6ba0, 0x1, 0x1})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:204 +0x65
-github.com/sirupsen/logrus.(*Logger).Panic(...)
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:253
-pandax/pkg/initialize.InitTable()
-	D:/workspace/go/project/PandaX/PandaX/pkg/initialize/table.go:43 +0x831
-main.glob..func1(0x34ca040?, {0x1d4ab4d?, 0x0?, 0x0?})
-	D:/workspace/go/project/PandaX/PandaX/main.go:61 +0x538
-github.com/spf13/cobra.(*Command).execute(0x34ca040, {0xc000078240, 0x0, 0x0})
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:861 +0x5e3
-github.com/spf13/cobra.(*Command).ExecuteC(0x34ca040)
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:990 +0x3bd
-github.com/spf13/cobra.(*Command).Execute(...)
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:918
-main.main()
-	D:/workspace/go/project/PandaX/PandaX/main.go:106 +0x25
-
-2023-09-19 10:14:35--------------------------------
-panic: (*logrus.Entry) 0xc000460690
-
-goroutine 1 [running]:
-github.com/sirupsen/logrus.(*Entry).log(0xc000460230, 0x0, {0xc000532000, 0x6d})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:260 +0x4a7
-github.com/sirupsen/logrus.(*Entry).Log(0xc000460230, 0x0, {0xc00051cba0?, 0x0?, 0x1459720?})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/entry.go:304 +0x4f
-github.com/sirupsen/logrus.(*Logger).Log(0xc000134880, 0x0, {0xc00051cba0, 0x1, 0x1})
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:204 +0x65
-github.com/sirupsen/logrus.(*Logger).Panic(...)
-	D:/workspace/go/pkg/mod/github.com/sirupsen/logrus@v1.9.0/logger.go:253
-pandax/pkg/initialize.InitTable()
-	D:/workspace/go/project/PandaX/PandaX/pkg/initialize/table.go:43 +0x831
-main.glob..func1(0x2eca040?, {0x174ab4d?, 0x0?, 0x0?})
-	D:/workspace/go/project/PandaX/PandaX/main.go:61 +0x538
-github.com/spf13/cobra.(*Command).execute(0x2eca040, {0xc000078240, 0x0, 0x0})
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:861 +0x5e3
-github.com/spf13/cobra.(*Command).ExecuteC(0x2eca040)
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:990 +0x3bd
-github.com/spf13/cobra.(*Command).Execute(...)
-	D:/workspace/go/pkg/mod/github.com/spf13/cobra@v1.5.0/command.go:918
-main.main()
-	D:/workspace/go/project/PandaX/PandaX/main.go:106 +0x25
+2023-09-20 15:39:30--------------------------------
+2023-09-20 15:39:30.789 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-20 15:39:30.796 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-20 15:39:30.798 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-20 15:39:30.798 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-20 15:39:30.805 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-20 15:39:30.805 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-20 15:39:30.807 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-20 15:39:30.811 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-20 15:39:30 [INFO] JobCore start success.
+2023-09-20 15:39:35.245 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-20 15:39:35.247 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-20 15:39:35.249 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+
+2023-09-20 15:40:25--------------------------------
+2023-09-20 15:40:25.796 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-20 15:40:25.802 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-20 15:40:25.804 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-20 15:40:25.804 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-20 15:40:25.812 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-20 15:40:25.812 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-20 15:40:25.813 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-20 15:40:25.818 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-20 15:40:25 [INFO] JobCore start success.
+2023-09-20 15:40:28.694 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-20 15:40:28.695 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-20 15:40:28.697 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+
+2023-09-20 15:41:28--------------------------------
+2023-09-20 15:41:28.275 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-20 15:41:28.280 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-20 15:41:28.282 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-20 15:41:28.282 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-20 15:41:28.290 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-20 15:41:28.290 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-20 15:41:28.291 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-20 15:41:28.295 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-20 15:41:28 [INFO] JobCore start success.
+2023-09-20 15:41:31.918 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-20 15:41:31.920 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-20 15:41:31.922 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+
+2023-09-20 15:41:58--------------------------------
+2023-09-20 15:41:58.949 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-20 15:41:58.971 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-20 15:41:58.982 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-20 15:41:58.982 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-20 15:41:59.055 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-20 15:41:59.055 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-20 15:41:59.056 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-20 15:41:59.152 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-20 15:41:59 [INFO] JobCore start success.
+2023-09-20 15:42:02.805 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-20 15:42:02.807 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-20 15:42:02.809 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+
+2023-09-20 15:42:34--------------------------------
+2023-09-20 15:42:34.575 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-20 15:42:34.581 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-20 15:42:34.583 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-20 15:42:34.583 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-20 15:42:34.591 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-20 15:42:34.591 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-20 15:42:34.591 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-20 15:42:34.597 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-20 15:42:34 [INFO] JobCore start success.
+2023-09-20 15:42:38.734 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-20 15:42:38.736 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-20 15:42:38.738 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+
+2023-09-20 15:43:42--------------------------------
+2023-09-20 15:43:42.873 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-20 15:43:42.881 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-20 15:43:42.883 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-20 15:43:42.883 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-20 15:43:42.891 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-20 15:43:42.891 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-20 15:43:42.892 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-20 15:43:42.899 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-20 15:43:42 [INFO] JobCore start success.
+2023-09-20 15:43:47.088 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-20 15:43:47.089 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-20 15:43:47.091 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 16:02:15.552 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=admin] [GET=/system/user/auth] [uid=4] : 认证信息 ->37ms
+2023-09-20 16:02:20.428 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=4] [uname=admin] [GET=/device/product/list/all] : 获取Product分页列表 ->11ms
+2023-09-20 16:02:20.441 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=admin] [GET=/device/group/list/tree/label] [uid=4] : 获取DeviceGroup树 ->10ms
+2023-09-20 16:02:20.445 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=4] [uname=admin] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-20 16:02:20.451 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=4] [uname=admin] [GET=/device/list] : 获取Device分页列表 ->27ms
+2023-09-20 16:02:52.671 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 16:02:52.681 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 16:02:53.455 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update"]
+2023-09-20 16:02:53.784 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$hw/events/device/s7-device/twin/update"]
+2023-09-20 16:02:54.055 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"v1/devices/me/rpc/request/+"]
+2023-09-20 16:03:27.335 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=4] [uname=admin] [GET=/device/product/category/list/tree/label] : 获取ProductCategory树 ->7ms
+2023-09-20 16:03:27.355 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=4] [uname=admin] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->5ms
+2023-09-20 16:03:27.358 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/product/list] [uid=4] [uname=admin] : 获取Product分页列表 ->19ms
+2023-09-20 16:03:27.401 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/upload/get/d7432e83df771fad85aa4e74235b0591_20230819092625.png] : 获取图片 ->1ms
+2023-09-20 16:03:29.306 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=admin] [GET=/device/template/list] [uid=4] : 获取Template分页列表 ->9ms
+2023-09-20 16:04:11.167 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"v1/devices/me/telemetry"]
+2023-09-20 16:04:25.641 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"v1/devices/me/telemetry"]
+2023-09-20 16:55:22.718 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 16:55:27.758 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 16:55:27.761 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 16:55:27.780 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 17:02:57.773 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 17:03:02.751 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 17:03:02.755 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 17:03:02.771 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 17:15:02.765 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 17:15:07.745 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 17:15:07.749 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 17:15:07.771 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 17:33:07.766 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 17:33:12.746 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 17:33:12.749 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 17:33:12.764 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 17:54:12.766 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 17:54:17.708 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 17:54:17.712 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 17:54:17.728 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 18:09:17.725 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 18:09:22.696 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 18:09:22.700 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 18:09:22.712 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 18:15:22.708 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 18:15:27.714 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 18:15:27.718 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 18:15:27.731 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 18:22:57.725 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 18:23:02.694 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 18:23:02.698 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 18:23:02.710 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 18:50:02.719 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 18:50:07.700 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 18:50:07.703 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 18:50:07.714 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 18:59:07.710 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 18:59:12.713 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 18:59:12.716 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 18:59:12.728 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 19:08:12.725 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 19:08:17.691 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 19:08:17.694 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 19:08:17.707 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:178] : 9GOIPOI6GQ订阅了[name:"$dz/events/device/s7-device/data/update" name:"$hw/events/device/s7-device/twin/update" name:"v1/devices/me/rpc/request/+" name:"v1/devices/me/telemetry"]
+2023-09-20 19:20:17.705 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-20 19:20:22.694 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号9GOIPOI6GQ，密码YWRlMTA0MmYtMzc2MS0zZTljLThjNjAtMzNhMzg4ZjdkOGQ3,开始认证
+2023-09-20 19:20:22.698 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-20 19:21:52.703 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : 9GOIPOI6GQ断开连接
+2023-09-21 13:56:51.024 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [POST=/system/user/login] : 登录 ->93ms
+2023-09-21 13:56:51.058 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/auth] : 认证信息 ->22ms
+2023-09-21 13:56:57.593 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/group/list/tree/label] : 获取DeviceGroup树 ->14ms
+2023-09-21 13:56:57.600 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/list/all] : 获取Product分页列表 ->9ms
+2023-09-21 13:56:57.601 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/list] [uid=1] [uname=panda] : 获取Device分页列表 ->33ms
+2023-09-21 13:56:57.605 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-21 13:56:59.595 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->7ms
+2023-09-21 13:56:59.633 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/category/list/tree/label] : 获取ProductCategory树 ->4ms
+2023-09-21 13:56:59.633 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/list] : 获取Product分页列表 ->36ms
+2023-09-21 13:56:59.683 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/upload/get/d7432e83df771fad85aa4e74235b0591_20230819092625.png] : 获取图片 ->2ms
+2023-09-21 13:57:00.678 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/category/list/tree/label] : 获取ProductCategory树 ->4ms
+2023-09-21 13:57:00.692 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/dict/data/type] [uid=1] [uname=panda] : 获取字典数据列表通过字典类型 ->10ms
+2023-09-21 13:57:00.709 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/rule/chain/list/label] [uid=1] [uname=panda] : 获取规则引擎Label列表 ->14ms
+2023-09-21 15:27:52.071 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/template/list] : 获取Template分页列表 ->13ms
+2023-09-21 15:28:05.168 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/template/list] : 获取Template分页列表 ->11ms
+2023-09-21 15:28:51.926 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/template/list] : 获取Template分页列表 ->31ms
+2023-09-21 16:06:49.857 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/template/list] [uid=1] : 获取Template分页列表 ->11ms
+2023-09-21 16:06:50.661 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/template/list] : 获取Template分页列表 ->43ms
+2023-09-21 16:07:00.221 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/template/list] [uid=1] : 获取Template分页列表 ->11ms
+2023-09-21 16:07:01.057 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/template/list] [uid=1] : 获取Template分页列表 ->29ms
+2023-09-21 16:40:11.523 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/product/category/list/tree/label] : 获取ProductCategory树 ->4ms
+2023-09-21 16:40:11.540 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/rule/chain/list/label] : 获取规则引擎Label列表 ->13ms
+2023-09-21 16:40:11.548 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->5ms

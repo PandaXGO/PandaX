@@ -30,8 +30,6 @@ func (t ValueType) ConvertValue(v interface{}) interface{} {
 		transfer = TDate(t.DefineBase)
 	case TypeEnum:
 		transfer = TEnum(t.DefineBase)
-	case TypeStruct:
-		transfer = TStruct(t.DefineBase)
 	default:
 		return nil
 	}
@@ -140,29 +138,9 @@ func (tEnum TEnum) Convert(v interface{}) interface{} {
 		return ""
 	}
 	for _, node := range tEnum.Enums {
-		if node.Value == tE {
-			return node.Key
+		if node.Key == tE {
+			return node.Value
 		}
 	}
 	return ""
-}
-
-type TStruct DefineBase
-
-func (tStruct TStruct) Convert(v interface{}) interface{} {
-	m, ok := v.(map[string]interface{})
-	if !ok {
-		return nil
-	}
-	result := make(map[string]interface{})
-	if tStruct.Struct != nil {
-		for k, value := range m {
-			for _, t := range tStruct.Struct {
-				if t.Name == k {
-					result[t.Name] = t.ValueType.ConvertValue(value)
-				}
-			}
-		}
-	}
-	return result
 }
