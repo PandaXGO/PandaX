@@ -18,9 +18,9 @@ type DeviceShadow interface {
 	AddDevice(device Device) (err error)
 	GetDevice(deviceName string) (device Device, err error)
 
-	SetDevicePoint(deviceName, pointName string, value interface{}) (err error)
-	GetDevicePoint(deviceName, pointName string) (value interface{}, err error)
-	GetDevicePoints(deviceName string) (points map[string]any, err error)
+	SetDevicePoint(deviceName, pointType, pointName string, value interface{}) (err error)
+	GetDevicePoint(deviceName, pointType, pointName string) (value DevicePoint, err error)
+	GetDevicePoints(deviceName, pointType string) (points map[string]DevicePoint, err error)
 
 	GetDeviceUpdateAt(deviceName string) (time.Time, error)
 
@@ -78,39 +78,55 @@ func (d *deviceShadow) GetDevice(deviceName string) (device Device, err error) {
 	}
 }
 
-func (d *deviceShadow) SetDevicePoint(deviceName, pointName string, value interface{}) (err error) {
+func (d *deviceShadow) SetDevicePoint(deviceName, pointType, pointName string, value interface{}) (err error) {
 	deviceAny, ok := d.m.Load(deviceName)
 	if !ok {
 		return UnknownDeviceErr
 	}
 	device := deviceAny.(Device)
-	if device.Points == nil {
-		device.Points = make(map[string]any)
-	}
 	// update point value
 	device.updatedAt = time.Now()
 	device.disconnectTimes = 0
-	device.Points[pointName] = value
+
+	if pointType == PointAttributesType {
+		device.AttributesPoints[pointName] = NewDevicePoint(pointName, value)
+	} else if pointType == PointTelemetryType {
+		device.TelemetryPoints[pointName] = NewDevicePoint(pointName, value)
+	} else {
+		return errors.New("设备属性类型错误")
+	}
 	// update
 	d.m.Store(deviceName, device)
 	return
 }
 
-func (d *deviceShadow) GetDevicePoint(deviceName, pointName string) (value interface{}, err error) {
+func (d *deviceShadow) GetDevicePoint(deviceName, pointType, pointName string) (value DevicePoint, err error) {
 	if deviceAny, ok := d.m.Load(deviceName); ok {
 		device := deviceAny.(Device)
 		if device.online == false || time.Now().Sub(device.updatedAt) > time.Duration(d.ttl)*time.Second {
 			return
 		}
-		return device.Points[pointName], nil
+		if pointType == PointAttributesType {
+			return device.AttributesPoints[pointName], nil
+		} else if pointType == PointTelemetryType {
+			return device.TelemetryPoints[pointName], nil
+		} else {
+			return value, errors.New("设备属性类型错误")
+		}
 	} else {
-		return nil, UnknownDeviceErr
+		return value, UnknownDeviceErr
 	}
 }
 
-func (d *deviceShadow) GetDevicePoints(deviceName string) (points map[string]any, err error) {
+func (d *deviceShadow) GetDevicePoints(deviceName, pointType string) (points map[string]DevicePoint, err error) {
 	if deviceAny, ok := d.m.Load(deviceName); ok {
-		return deviceAny.(Device).Points, nil
+		if pointType == PointAttributesType {
+			return deviceAny.(Device).AttributesPoints, nil
+		} else if pointType == PointTelemetryType {
+			return deviceAny.(Device).TelemetryPoints, nil
+		} else {
+			return points, errors.New("设备属性类型错误")
+		}
 	} else {
 		return nil, UnknownDeviceErr
 	}
