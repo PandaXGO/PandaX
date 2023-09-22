@@ -1,5 +1,11 @@
 package global
 
+const (
+	TslAttributesType = "attributes"
+	TslTelemetryType  = "telemetry"
+	TslCommandsType   = "commands"
+)
+
 // 告警等级
 const (
 	CRITICAL      = "CRITICAL"      // 危险

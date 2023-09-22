@@ -3,6 +3,7 @@ package shadow
 import (
 	"errors"
 	"fmt"
+	"pandax/pkg/global"
 	"sync"
 	"time"
 )
@@ -86,9 +87,9 @@ func (d *deviceShadow) SetDevicePoint(deviceName, pointType, pointName string, v
 	// update point value
 	device.updatedAt = time.Now()
 
-	if pointType == PointAttributesType {
+	if pointType == global.TslAttributesType {
 		device.AttributesPoints[pointName] = NewDevicePoint(pointName, value)
-	} else if pointType == PointTelemetryType {
+	} else if pointType == global.TslTelemetryType {
 		device.TelemetryPoints[pointName] = NewDevicePoint(pointName, value)
 	} else {
 		return errors.New("设备属性类型错误")
@@ -104,9 +105,9 @@ func (d *deviceShadow) GetDevicePoint(deviceName, pointType, pointName string) (
 		if device.online == false || time.Now().Sub(device.updatedAt) > time.Duration(d.ttl)*time.Second {
 			return
 		}
-		if pointType == PointAttributesType {
+		if pointType == global.TslAttributesType {
 			return device.AttributesPoints[pointName], nil
-		} else if pointType == PointTelemetryType {
+		} else if pointType == global.TslTelemetryType {
 			return device.TelemetryPoints[pointName], nil
 		} else {
 			return value, errors.New("设备属性类型错误")
@@ -118,9 +119,9 @@ func (d *deviceShadow) GetDevicePoint(deviceName, pointType, pointName string) (
 
 func (d *deviceShadow) GetDevicePoints(deviceName, pointType string) (points map[string]DevicePoint, err error) {
 	if deviceAny, ok := d.m.Load(deviceName); ok {
-		if pointType == PointAttributesType {
+		if pointType == global.TslAttributesType {
 			return deviceAny.(Device).AttributesPoints, nil
-		} else if pointType == PointTelemetryType {
+		} else if pointType == global.TslTelemetryType {
 			return deviceAny.(Device).TelemetryPoints, nil
 		} else {
 			return points, errors.New("设备属性类型错误")

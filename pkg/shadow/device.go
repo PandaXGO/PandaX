@@ -1,10 +1,7 @@
 package shadow
 
-import "time"
-
-const (
-	PointAttributesType = "Attributes"
-	PointTelemetryType  = "Telemetry"
+import (
+	"time"
 )
 
 // Device 设备结构
@@ -19,8 +16,9 @@ type Device struct {
 
 // DevicePoint 设备点位结构
 type DevicePoint struct {
-	Name  string      // 点位名称
-	Value interface{} // 点位值
+	Name      string      // 点位名称
+	Value     interface{} // 点位值
+	UpdatedAt time.Time
 }
 
 func NewDevice(deviceName string, productName string, attributes, telemetry map[string]DevicePoint) Device {
@@ -35,7 +33,20 @@ func NewDevice(deviceName string, productName string, attributes, telemetry map[
 
 func NewDevicePoint(pointName string, value interface{}) DevicePoint {
 	return DevicePoint{
-		Name:  pointName,
-		Value: value,
+		Name:      pointName,
+		Value:     value,
+		UpdatedAt: time.Now(),
 	}
+}
+
+func InitDeviceShadow(deviceName, ProductId string) Device {
+	device, err := DeviceShadowInstance.GetDevice(deviceName)
+	if err == UnknownDeviceErr {
+		attributes := make(map[string]DevicePoint)
+		telemetry := make(map[string]DevicePoint)
+		device = NewDevice(deviceName, ProductId, attributes, telemetry)
+		DeviceShadowInstance.AddDevice(device)
+		//shadow.DeviceShadowInstance.SetDeviceTTL()
+	}
+	return device
 }

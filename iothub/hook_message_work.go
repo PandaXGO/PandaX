@@ -76,7 +76,7 @@ func (s *HookService) handleOne(msg *DeviceEventInfo) {
 		case message.DisConnectMes, message.ConnectMes:
 			//检测设备影子并修改设备影子状态
 			if msg.Type == message.ConnectMes {
-				InitDeviceShadow(etoken)
+				shadow.InitDeviceShadow(etoken.Name, etoken.ProductId)
 				shadow.DeviceShadowInstance.SetOnline(etoken.Name)
 			} else {
 				shadow.DeviceShadowInstance.SetOffline(etoken.Name)
@@ -149,18 +149,6 @@ func SendZtWebsocket(deviceId, message string) {
 	}
 }
 
-// InitDeviceShadow 初始化设备影子
-func InitDeviceShadow(etoken *tool.DeviceAuth) {
-	_, err := shadow.DeviceShadowInstance.GetDevice(etoken.Name)
-	if err == shadow.UnknownDeviceErr {
-		attributes := make(map[string]shadow.DevicePoint)
-		telemetry := make(map[string]shadow.DevicePoint)
-		newDevice := shadow.NewDevice(etoken.Name, etoken.ProductId, attributes, telemetry)
-		shadow.DeviceShadowInstance.AddDevice(newDevice)
-		//shadow.DeviceShadowInstance.SetDeviceTTL()
-	}
-}
-
 // SetDeviceShadow 设置设备点
 func SetDeviceShadow(etoken *tool.DeviceAuth, msgVals map[string]interface{}, msgType string) {
 	defer func() {
@@ -174,11 +162,11 @@ func SetDeviceShadow(etoken *tool.DeviceAuth, msgVals map[string]interface{}, ms
 			continue
 		}
 		if message.AttributesMes == msgType {
-			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, shadow.PointAttributesType, tel.Key, msgVals[tel.Key])
+			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslAttributesType, tel.Key, msgVals[tel.Key])
 			biz.ErrIsNil(err, "设置设备影子点失败")
 		}
 		if message.TelemetryMes == msgType {
-			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, shadow.PointTelemetryType, tel.Key, msgVals[tel.Key])
+			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslTelemetryType, tel.Key, msgVals[tel.Key])
 			biz.ErrIsNil(err, "设置设备影子点失败")
 		}
 	}

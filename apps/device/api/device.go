@@ -13,6 +13,7 @@ import (
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/pkg/global"
 	"pandax/pkg/mqtt"
+	"pandax/pkg/shadow"
 	"pandax/pkg/tool"
 	"strings"
 	"time"
@@ -80,20 +81,30 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	template := p.ProductTemplateApp.FindList(entity.ProductTemplate{Classify: classify, Pid: device.Pid})
 
 	res := make([]entity.DeviceStatusVo, 0)
-	rs, err := global.TdDb.GetOne(fmt.Sprintf(`select * from %s_%s ORDER BY ts DESC LIMIT 1`, device.Name, classify))
-	biz.ErrIsNil(err, "查询设备状态信息失败")
+	getDevice := shadow.InitDeviceShadow(device.Name, device.Pid)
+	rs := make(map[string]shadow.DevicePoint)
+	if classify == global.TslAttributesType {
+		rs = getDevice.AttributesPoints
+	}
+	if classify == global.TslTelemetryType {
+		rs = getDevice.TelemetryPoints
+	}
 	for _, tel := range *template {
 		sdv := entity.DeviceStatusVo{
 			Name:   tel.Name,
 			Key:    tel.Key,
 			Type:   tel.Type,
 			Define: tel.Define,
-			Time:   rs["ts"],
 		}
 		if v, ok := rs[strings.ToLower(tel.Key)]; ok {
-			sdv.Value = v
+			sdv.Value = v.Value
+			sdv.Time = v.UpdatedAt
 		} else {
-			sdv.Value = tel.Define["default_value"]
+			if classify == global.TslAttributesType {
+				if value, ok := tel.Define["default_value"]; ok {
+					sdv.Value = value
+				}
+			}
 		}
 		res = append(res, sdv)
 	}
