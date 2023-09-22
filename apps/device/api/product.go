@@ -10,6 +10,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
+	"pandax/pkg/global"
 	"pandax/pkg/tool"
 	"strings"
 
@@ -54,6 +55,39 @@ func (p *ProductApi) GetProductListAll(rc *restfulx.ReqCtx) {
 	data.Name = restfulx.QueryParam(rc, "name")
 
 	rc.ResData = p.ProductApp.FindList(data)
+}
+
+// GetProductTsl Template列表数据
+func (p *ProductApi) GetProductTsl(rc *restfulx.ReqCtx) {
+	data := entity.ProductTemplate{}
+	data.Pid = restfulx.PathParam(rc, "id")
+	templates := p.TemplateApp.FindList(data)
+	attributes := make([]map[string]interface{}, 0)
+	telemetry := make([]map[string]interface{}, 0)
+	commands := make([]map[string]interface{}, 0)
+	for _, template := range *templates {
+		tslData := map[string]interface{}{
+			"name":       template.Name,
+			"identifier": template.Key,
+			"type":       template.Type,
+			"define":     template.Define,
+		}
+		if template.Classify == global.TslAttributesType {
+			attributes = append(attributes, tslData)
+		}
+		if template.Classify == global.TslTelemetryType {
+			telemetry = append(telemetry, tslData)
+		}
+		if template.Classify == global.TslCommandsType {
+			commands = append(commands, tslData)
+		}
+	}
+
+	rc.ResData = map[string]interface{}{
+		"attributes": attributes,
+		"telemetry":  telemetry,
+		"commands":   commands,
+	}
 }
 
 // GetProduct 获取Product

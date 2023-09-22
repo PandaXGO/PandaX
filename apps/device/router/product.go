@@ -61,6 +61,15 @@ func InitProductRouter(container *restful.Container) {
 		Returns(200, "OK", entity.Product{}).
 		Returns(404, "Not Found", nil))
 
+	ws.Route(ws.GET("/{id}/tsl").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取Product的TSL信息").Handle(s.GetProductTsl)
+	}).
+		Doc("获取Product的TSL信息").
+		Param(ws.PathParameter("id", "Id").DataType("string")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", map[string]interface{}{}).
+		Returns(404, "Not Found", nil))
+
 	ws.Route(ws.POST("").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("添加Product信息").Handle(s.InsertProduct)
 	}).
