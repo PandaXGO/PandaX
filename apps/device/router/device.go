@@ -14,6 +14,7 @@ import (
 func InitDeviceRouter(container *restful.Container) {
 	s := &api.DeviceApi{
 		DeviceApp:          services.DeviceModelDao,
+		DeviceAlarmApp:     services.DeviceAlarmModelDao,
 		ProductApp:         services.ProductModelDao,
 		ProductTemplateApp: services.ProductTemplateModelDao,
 	}
@@ -21,6 +22,14 @@ func InitDeviceRouter(container *restful.Container) {
 	ws := new(restful.WebService)
 	ws.Path("/device").Produces(restful.MIME_JSON)
 	tags := []string{"device"}
+
+	ws.Route(ws.GET("/panel").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取DevicePanel").Handle(s.GetDevicePanel)
+	}).
+		Doc("获取DevicePanel").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes(entity.DeviceTotalOutput{}).
+		Returns(200, "OK", entity.DeviceTotalOutput{}))
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取Device分页列表").Handle(s.GetDeviceList)

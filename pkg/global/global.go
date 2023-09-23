@@ -9,6 +9,7 @@ import (
 	"pandax/pkg/events"
 	"pandax/pkg/mqtt"
 	"pandax/pkg/tdengine"
+	"time"
 )
 
 var (
@@ -19,5 +20,7 @@ var (
 	Conf       *config.Config
 	MqttClient *mqtt.IothubMqttClient
 )
-var Cache = cache.NewTimedCache(cache.NoExpiration, cache.DefaultCleanupInterval)
 var EventEmitter = events.EventEmitter{}
+
+// Cache 默认10分钟
+var Cache = cache.NewTimedCache(cache.NoExpiration, 600*time.Second)

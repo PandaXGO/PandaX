@@ -19,6 +19,9 @@ type (
 		Update(data entity.Device) *entity.Device
 		UpdateStatus(id, linkStatus string)
 		Delete(ids []string)
+		FindDeviceCount() entity.DeviceCount
+		FindDeviceCountGroupByLinkStatus() []entity.DeviceCountLinkStatus
+		FindDeviceCountGroupByType() []entity.DeviceCountType
 	}
 
 	deviceModelImpl struct {
@@ -208,4 +211,27 @@ func GetDeviceToken(data *entity.Device) (*tool.DeviceAuth, error) {
 	}
 	err := etoken.CreateDeviceToken(data.Id)
 	return etoken, err
+}
+
+// 获取设备数量统计
+func (m *deviceModelImpl) FindDeviceCount() (result entity.DeviceCount) {
+	sql := `SELECT COUNT(*) AS total, (SELECT COUNT(*) FROM devices WHERE DATE(create_time) = CURDATE()) AS today  FROM devices`
+	err := global.Db.Raw(sql).Scan(&result).Error
+	biz.ErrIsNil(err, "获取设备统计总数失败")
+	return result
+}
+
+// 获取设备类型数量统计
+func (m *deviceModelImpl) FindDeviceCountGroupByLinkStatus() (count []entity.DeviceCountLinkStatus) {
+	sql := `SELECT link_status, COUNT(*) AS total  FROM devices GROUP BY link_status`
+	err := global.Db.Raw(sql, m.table).Scan(&count).Error
+	biz.ErrIsNil(err, "获取通过设备在线状态的设备统计总数失败")
+	return
+}
+
+func (m *deviceModelImpl) FindDeviceCountGroupByType() (count []entity.DeviceCountType) {
+	sql := `SELECT device_type, COUNT(*) AS total  FROM devices GROUP BY device_type`
+	err := global.Db.Raw(sql, m.table).Scan(&count).Error
+	biz.ErrIsNil(err, "获取通过设备类型的设备统计总数失败")
+	return
 }

@@ -50,3 +50,18 @@ func (DeviceCmdLog) TableName() string {
 type DeviceStatistics struct {
 	Time time.Time `gorm:"comment:时间" json:"time"`
 }
+
+type DeviceCount struct {
+	Total int64 `json:"total"`
+	Today int64 `json:"todayAdd"`
+}
+
+type DeviceCountLinkStatus struct {
+	Total      int64  `json:"deviceTotal"`
+	LinkStatus string `json:"linkStatus"`
+}
+
+type DeviceCountType struct {
+	Total      int64  `json:"deviceTotal"`
+	DeviceType string `json:"deviceType"`
+}

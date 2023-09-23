@@ -1,5 +1,13 @@
 package entity
 
+type DeviceTotalOutput struct {
+	DeviceInfo           DeviceCount             `json:"deviceInfo"`
+	DeviceLinkStatusInfo []DeviceCountLinkStatus `json:"deviceLinkStatusInfo"`
+	DeviceCountType      []DeviceCountType       `json:"deviceCountType"`
+	ProductInfo          DeviceCount             `json:"productInfo"`
+	AlarmInfo            DeviceCount             `json:"alarmInfo"`
+}
+
 type DeviceStatusVo struct {
 	Name   string `json:"name"`
 	Key    string `json:"key"`

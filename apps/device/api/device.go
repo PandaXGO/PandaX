@@ -24,8 +24,23 @@ import (
 
 type DeviceApi struct {
 	DeviceApp          services.DeviceModel
+	DeviceAlarmApp     services.DeviceAlarmModel
 	ProductApp         services.ProductModel
 	ProductTemplateApp services.ProductTemplateModel
+}
+
+func (p *DeviceApi) GetDevicePanel(rc *restfulx.ReqCtx) {
+	get, err := global.Cache.ComputeIfAbsent("panel", func(k any) (any, error) {
+		var data entity.DeviceTotalOutput
+		data.DeviceInfo = p.DeviceApp.FindDeviceCount()
+		data.DeviceLinkStatusInfo = p.DeviceApp.FindDeviceCountGroupByLinkStatus()
+		data.DeviceCountType = p.DeviceApp.FindDeviceCountGroupByType()
+		data.AlarmInfo = p.DeviceAlarmApp.FindAlarmCount()
+		data.ProductInfo = p.ProductApp.FindProductCount()
+		return data, nil
+	})
+	biz.ErrIsNil(err, "获取面板数据失败")
+	rc.ResData = get
 }
 
 // GetDeviceList Device列表数据

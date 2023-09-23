@@ -15,6 +15,7 @@ type (
 		FindListPage(page, pageSize int, data entity.DeviceAlarmForm) (*[]entity.DeviceAlarm, int64)
 		Update(data entity.DeviceAlarm) error
 		Delete(ids []string)
+		FindAlarmCount() entity.DeviceCount
 	}
 
 	alarmModelImpl struct {
@@ -92,4 +93,12 @@ func (m *alarmModelImpl) Update(data entity.DeviceAlarm) error {
 
 func (m *alarmModelImpl) Delete(id []string) {
 	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.DeviceAlarm{}, "id in (?)", id).Error, "删除设备告警失败")
+}
+
+// 获取告警数量统计
+func (m *alarmModelImpl) FindAlarmCount() (count entity.DeviceCount) {
+	sql := `SELECT COUNT(*) AS total, (SELECT COUNT(*) FROM device_alarms WHERE DATE(time) = CURDATE()) AS today  FROM device_alarms`
+	err := global.Db.Raw(sql).Scan(&count).Error
+	biz.ErrIsNil(err, "获取告警统计总数失败")
+	return
 }
