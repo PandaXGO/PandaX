@@ -733,3 +733,191 @@
 2023-09-23 14:59:32.808 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
 2023-09-23 14:59:32.808 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
 2023-09-23 14:59:32.813 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-23 14:59:32 [INFO] JobCore start success.
+
+2023-09-23 14:59:45--------------------------------
+2023-09-23 14:59:45.268 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-23 14:59:45.273 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-23 14:59:45.276 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-23 14:59:45.276 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-23 14:59:45.283 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-23 14:59:45.283 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-23 14:59:45.283 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-23 14:59:45.287 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-23 14:59:45 [INFO] JobCore start success.
+2023-09-23 14:59:45.298 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-23 14:59:45.298 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-23 14:59:45.300 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-23 14:59:45.302 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.5 Connected 
+2023-09-23 15:00:44.610 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/panel] [uid=1] [uname=panda] : 获取DevicePanel ->23ms
+2023-09-23 15:23:55.527 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 15:24:09.850 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 15:24:26.529 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 15:24:30.498 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 15:24:36.042 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 15:25:27.923 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 15:39:36.476 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 15:44:20.572 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-23 15:45:25.271 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-23 16:00:53.034 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:01:24.146 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-23 16:02:02.805 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:02:43.649 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:11:11.649 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/panel] [uid=1] [uname=panda] : 获取DevicePanel ->0ms
+2023-09-23 16:13:03.670 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/panel] [uid=1] [uname=panda] : 获取DevicePanel ->0ms
+2023-09-23 16:13:59.916 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/panel] [uid=1] [uname=panda] : 获取DevicePanel ->0ms
+2023-09-23 16:14:30.015 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:16:22.870 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-23 16:26:34.470 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:33:40.818 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/panel] [uid=1] [uname=panda] : 获取DevicePanel ->0ms
+2023-09-23 16:34:27.962 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:36:08.405 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:36:15.839 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/panel] [uid=1] [uname=panda] : 获取DevicePanel ->0ms
+2023-09-23 16:37:11.913 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:37:39.238 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:44:36.429 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-23 16:44:42.064 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:48:56.348 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-23 16:54:39.063 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/panel] [uid=1] [uname=panda] : 获取DevicePanel ->0ms
+2023-09-23 16:54:39.111 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:56:13.721 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/alarm/list] [uid=1] [uname=panda] : 获取告警分页列表 ->16ms
+2023-09-23 16:56:17.822 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:56:21.251 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/list] [uid=1] : 获取告警分页列表 ->19ms
+2023-09-23 16:56:22.313 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/panel] [uid=1] [uname=panda] : 获取DevicePanel ->0ms
+2023-09-23 16:56:33.906 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/list] [uid=1] : 获取告警分页列表 ->15ms
+2023-09-23 16:56:37.855 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-23 16:57:57.465 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/list] [uid=1] : 获取告警分页列表 ->18ms
+
+2023-09-25 10:01:40--------------------------------
+2023-09-25 10:01:40.219 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-25 10:01:40.226 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-25 10:01:40.228 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-25 10:01:40.228 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-25 10:01:40.465 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-25 10:01:40.465 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-25 10:01:40.466 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-25 10:01:40.491 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-25 10:01:40 [INFO] JobCore start success.
+2023-09-25 10:13:11.175 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [POST=/system/user/login] : 登录
+<-e errCode: 400, errMsg: 验证码认证失败
+2023-09-25 10:13:23.932 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [POST=/system/user/login] : 登录 ->295ms
+2023-09-25 10:13:24.066 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/user/auth] : 认证信息 ->125ms
+2023-09-25 10:13:25.609 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:31] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组
+<-e errCode: 403, errMsg: 没有API接口访问权限，请联系管理员
+2023-09-25 10:13:25.813 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->196ms
+2023-09-25 10:13:30.560 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/role/list] [uid=1] : 获取角色分页列表 ->12ms
+2023-09-25 10:13:30.726 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->165ms
+2023-09-25 10:13:31.847 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->4ms
+2023-09-25 10:13:31.869 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/api/list] [uid=1] [uname=panda] : 获取api分页列表 ->34ms
+2023-09-25 10:13:36.121 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/api/list] [uid=1] : 获取api分页列表 ->7ms
+2023-09-25 10:13:41.564 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/dict/data/type] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-25 10:13:59.714 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [POST=/system/api] : 添加api信息 ->307ms
+2023-09-25 10:13:59.750 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/list] : 获取api分页列表 ->11ms
+2023-09-25 10:14:01.368 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/list] : 获取角色分页列表 ->8ms
+2023-09-25 10:14:01.374 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/dict/data/type] [uid=1] : 获取字典数据列表通过字典类型 ->6ms
+2023-09-25 10:14:04.951 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/system/menu/roleMenuTreeSelect/1] [uid=1] : 获取角色菜单树 ->9ms
+2023-09-25 10:14:04.954 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/all] : 获取所有api ->4ms
+2023-09-25 10:14:04.966 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/1] : 获取角色信息 ->8ms
+2023-09-25 10:14:05.081 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/api/getPolicyPathByRoleId] : 获取角色拥有的api权限 ->7ms
+2023-09-25 10:14:11.287 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [PUT=/system/role] [uid=1] : 修改角色信息 ->1078ms
+2023-09-25 10:14:11.321 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/system/role/list] : 获取角色分页列表 ->8ms
+2023-09-25 10:14:46.231 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:14:46.380 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->139ms
+2023-09-25 10:15:26.429 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:15:26.611 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->359ms
+2023-09-25 10:16:51.390 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:16:51.452 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->44ms
+2023-09-25 10:18:56.367 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-25 10:18:56.388 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/alarm/panel] [uid=1] [uname=panda] : 获取面板告警分组 ->13ms
+2023-09-25 10:29:22.016 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:29:22.090 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/alarm/panel] [uid=1] [uname=panda] : 获取面板告警分组 ->85ms
+2023-09-25 10:30:18.402 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:30:18.769 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->426ms
+2023-09-25 10:31:17.121 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:31:17.137 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/alarm/panel] [uid=1] [uname=panda] : 获取面板告警分组 ->48ms
+2023-09-25 10:31:37.771 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-25 10:31:37.781 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->19ms
+2023-09-25 10:32:07.836 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:32:07.864 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->14ms
+2023-09-25 10:32:54.763 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:32:54.799 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->24ms
+2023-09-25 10:33:14.991 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+
+2023-09-25 10:33:22--------------------------------
+2023-09-25 10:33:22.953 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-25 10:33:22.958 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-25 10:33:22.960 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-25 10:33:22.960 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-25 10:33:22.967 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-25 10:33:22.967 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-25 10:33:22.967 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-25 10:33:22.972 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-25 10:33:22 [INFO] JobCore start success.
+2023-09-25 10:33:22.972 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-25 10:33:22.975 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-25 10:34:04.344 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->6ms
+2023-09-25 10:34:04.381 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->34ms
+2023-09-25 10:36:22.952 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+
+2023-09-25 10:36:31--------------------------------
+2023-09-25 10:36:31.282 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-25 10:36:31.287 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-25 10:36:31.290 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-25 10:36:31.290 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-25 10:36:31.297 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-25 10:36:31.297 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-25 10:36:31.297 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-25 10:36:31.301 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-25 10:36:31 [INFO] JobCore start success.
+2023-09-25 10:36:35.002 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-25 10:36:35.004 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-25 10:36:35.006 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-25 10:37:49.995 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/alarm/panel] [uid=1] [uname=panda] : 获取面板告警分组 ->6ms
+2023-09-25 10:37:50.033 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->34ms
+2023-09-25 10:40:23.731 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-25 10:40:23.750 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->6ms
+2023-09-25 10:40:37.809 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:40:37.822 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->5ms
+2023-09-25 10:40:55.415 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->8ms
+2023-09-25 10:40:55.421 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-25 10:41:39.819 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->5ms
+2023-09-25 10:41:39.828 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-25 10:41:50.195 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/alarm/panel] [uid=1] [uname=panda] : 获取面板告警分组 ->13ms
+2023-09-25 10:41:50.205 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:41:56.747 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/system/notice/list] [uid=1] [uname=panda] : 获取通知分页列表 ->147ms
+2023-09-25 10:42:21.564 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:42:21.584 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->5ms
+2023-09-25 10:43:33.367 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:43:33.387 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->8ms
+2023-09-25 10:44:10.955 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->5ms
+2023-09-25 10:44:10.957 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-25 10:44:40.888 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:44:40.923 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/alarm/panel] [uid=1] [uname=panda] : 获取面板告警分组 ->9ms
+2023-09-25 10:44:44.887 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->6ms
+2023-09-25 10:44:44.890 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-25 10:44:48.447 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:44:48.465 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->5ms
+2023-09-25 10:46:56.387 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/panel] [uid=1] : 获取DevicePanel ->0ms
+2023-09-25 10:46:56.406 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->10ms
+2023-09-25 10:54:12.444 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/alarm/panel] [uid=1] [uname=panda] : 获取面板告警分组 ->17ms
+2023-09-25 10:54:12.449 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:57:59.207 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 10:57:59.248 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->25ms
+2023-09-25 11:10:29.993 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 11:10:30.032 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->4ms
+2023-09-25 11:12:05.485 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->7ms
+2023-09-25 11:12:05.495 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/panel] [uid=1] [uname=panda] : 获取DevicePanel ->0ms
+2023-09-25 11:12:19.384 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/panel] : 获取DevicePanel ->0ms
+2023-09-25 11:12:19.496 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [GET=/device/alarm/panel] [uid=1] : 获取面板告警分组 ->18ms
+2023-09-25 11:12:51.776 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed
+
+2023-09-25 11:13:03--------------------------------
+2023-09-25 11:13:03.260 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20230914055936-853aa978dda1/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-09-25 11:13:03.264 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:46] : mysql连接成功
+2023-09-25 11:13:03.266 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:51] : Redis连接成功
+2023-09-25 11:13:03.266 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:58] : Tdengine连接成功
+2023-09-25 11:13:03.275 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:76] : 路由初始化完成
+2023-09-25 11:13:03.275 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-09-25 11:13:03.276 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:37] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-09-25 11:13:03.280 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:87] : 2023-09-25 11:13:03 [INFO] JobCore start success.
+2023-09-25 11:13:03.878 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:124] : pandax断开连接
+2023-09-25 11:13:03.880 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:153] : 账号pandax，密码pandax,开始认证
+2023-09-25 11:13:03.882 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/hook.go:96] : Client emqx@172.17.0.4 Connected 
+2023-09-25 11:13:46.835 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/alarm/panel] : 获取面板告警分组 ->8ms
+2023-09-25 11:13:46.867 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/panel] [uid=1] [uname=panda] : 获取DevicePanel ->28ms
+2023-09-25 11:37:46.272 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:41] : error http serve: http: Server closed

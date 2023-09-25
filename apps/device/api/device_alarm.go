@@ -14,6 +14,11 @@ type DeviceAlarmApi struct {
 	DeviceAlarmApp services.DeviceAlarmModel
 }
 
+func (p *DeviceAlarmApi) GetDeviceAlarmPanel(rc *restfulx.ReqCtx) {
+	panel := p.DeviceAlarmApp.FindAlarmPanel()
+	rc.ResData = panel
+}
+
 // GetDeviceAlarmList 告警列表数据
 func (p *DeviceAlarmApi) GetDeviceAlarmList(rc *restfulx.ReqCtx) {
 	data := entity.DeviceAlarmForm{}

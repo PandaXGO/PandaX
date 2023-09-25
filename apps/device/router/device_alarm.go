@@ -20,6 +20,14 @@ func InitDeviceAlarmRouter(container *restful.Container) {
 	ws.Path("/device/alarm").Produces(restful.MIME_JSON)
 	tags := []string{"alarm"}
 
+	ws.Route(ws.GET("/panel").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取面板告警分组").Handle(s.GetDeviceAlarmPanel)
+	}).
+		Doc("获取面板告警分组").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes(entity.DeviceAlarmCount{}).
+		Returns(200, "OK", entity.DeviceAlarmCount{}))
+
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取告警分页列表").Handle(s.GetDeviceAlarmList)
 	}).

@@ -16,6 +16,7 @@ type (
 		Update(data entity.DeviceAlarm) error
 		Delete(ids []string)
 		FindAlarmCount() entity.DeviceCount
+		FindAlarmPanel() []entity.DeviceAlarmCount
 	}
 
 	alarmModelImpl struct {
@@ -100,5 +101,11 @@ func (m *alarmModelImpl) FindAlarmCount() (count entity.DeviceCount) {
 	sql := `SELECT COUNT(*) AS total, (SELECT COUNT(*) FROM device_alarms WHERE DATE(time) = CURDATE()) AS today  FROM device_alarms`
 	err := global.Db.Raw(sql).Scan(&count).Error
 	biz.ErrIsNil(err, "获取告警统计总数失败")
+	return
+}
+func (m *alarmModelImpl) FindAlarmPanel() (count []entity.DeviceAlarmCount) {
+	sql := `SELECT CAST(time AS DATE) AS date, COUNT(*) AS count FROM device_alarms WHERE time >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY CAST(time AS DATE)`
+	err := global.Db.Raw(sql).Scan(&count).Error
+	biz.ErrIsNil(err, "获取告警统计列表失败")
 	return
 }
