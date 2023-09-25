@@ -1,62 +1,52 @@
-package iothub
+package emqxserver
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
-	exhook "pandax/iothub/protobuf"
+	"pandax/iothub/hook_message_work"
+	"pandax/iothub/netbase"
+	exhook2 "pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/global"
 	"pandax/pkg/mqtt"
 	"pandax/pkg/rule_engine/message"
 	"pandax/pkg/tdengine"
 	"pandax/pkg/tool"
 	"strconv"
-	"sync"
 	"time"
 )
 
 // 创建设备 设备需要一个账号密码 账号使用 namespace.devicename
 // 需要创建一个应用事件表? 例如边缘kuiper掉线事件记录或设备事件  type 事件分类
 
-type HookService struct {
-	exhook.UnimplementedHookProviderServer
-	cache     sync.Map
-	wg        sync.WaitGroup //  优雅关闭
-	ch        chan struct{}  //  并发限制
-	messageCh chan *DeviceEventInfo
+type HookGrpcService struct {
+	exhook2.UnimplementedHookProviderServer
+	HookService *hook_message_work.HookService
 }
 
-func InitEmqxHook(addr string) *HookService {
+func InitEmqxHook(addr string, hs *hook_message_work.HookService) {
 	s := NewServer(addr)
-	service := NewHookService()
-	exhook.RegisterHookProviderServer(s.GetServe(), service)
+	hgs := NewHookGrpcService(hs)
+	exhook2.RegisterHookProviderServer(s.GetServe(), hgs)
 	err := s.Start(context.TODO())
 	if err != nil {
 		global.Log.Panic("grpc服务启动错误", err)
 	} else {
 		global.Log.Infof("IOTHUB HOOK Start SUCCESS,Grpc Server listen: %s", addr)
 	}
-	// 开启线程处理消息
-	go service.MessageWork()
 	// 初始化 MQTT客户端
 	global.MqttClient = mqtt.InitMqtt(global.Conf.Mqtt.Broker, global.Conf.Mqtt.Username, global.Conf.Mqtt.Password)
-	return service
 }
 
-func NewHookService() *HookService {
-	hs := &HookService{
-		cache:     sync.Map{},
-		messageCh: make(chan *DeviceEventInfo),
+func NewHookGrpcService(hs *hook_message_work.HookService) *HookGrpcService {
+	hgs := &HookGrpcService{
+		HookService: hs,
 	}
-	// 并发限制，代表服务器处理能力
-	if global.Conf.Queue.Enable && global.Conf.Queue.Num > 0 {
-		hs.ch = make(chan struct{}, global.Conf.Queue.Num)
-	}
-	return hs
+	return hgs
 }
 
-func (s *HookService) OnProviderLoaded(ctx context.Context, in *exhook.ProviderLoadedRequest) (*exhook.LoadedResponse, error) {
-	hooks := []*exhook.HookSpec{
+func (s *HookGrpcService) OnProviderLoaded(ctx context.Context, in *exhook2.ProviderLoadedRequest) (*exhook2.LoadedResponse, error) {
+	hooks := []*exhook2.HookSpec{
 		{Name: "client.connect"},
 		{Name: "client.connack"},
 		{Name: "client.connected"},
@@ -77,25 +67,25 @@ func (s *HookService) OnProviderLoaded(ctx context.Context, in *exhook.ProviderL
 		{Name: "message.acked"},
 		{Name: "message.dropped"},
 	}
-	return &exhook.LoadedResponse{Hooks: hooks}, nil
+	return &exhook2.LoadedResponse{Hooks: hooks}, nil
 }
 
-func (s *HookService) OnProviderUnloaded(ctx context.Context, in *exhook.ProviderUnloadedRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnProviderUnloaded(ctx context.Context, in *exhook2.ProviderUnloadedRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnClientConnect(ctx context.Context, in *exhook.ClientConnectRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnClientConnect(ctx context.Context, in *exhook2.ClientConnectRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnClientConnack(ctx context.Context, in *exhook.ClientConnackRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnClientConnack(ctx context.Context, in *exhook2.ClientConnackRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnClientConnected(ctx context.Context, in *exhook.ClientConnectedRequest) (*exhook.EmptySuccess, error) {
+func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.ClientConnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("Client %s Connected ", in.Clientinfo.GetNode()))
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
-	username := GetUserName(in.Clientinfo)
+	username := netbase.GetUserName(in.Clientinfo)
 	ci := &tdengine.ConnectInfo{
 		ClientID:   in.Clientinfo.Clientid,
 		DeviceId:   username,
@@ -105,24 +95,24 @@ func (s *HookService) OnClientConnected(ctx context.Context, in *exhook.ClientCo
 		Type:       message.ConnectMes,
 		Ts:         ts,
 	}
-	v, err := EncodeData(*ci)
+	v, err := netbase.EncodeData(*ci)
 	if err != nil {
 		return nil, err
 	}
 	// 添加设备上线记录
-	data := &DeviceEventInfo{
+	data := &netbase.DeviceEventInfo{
 		DeviceId: username,
 		Datas:    string(v),
 		Type:     message.ConnectMes,
 	}
-	s.messageCh <- data
+	s.HookService.MessageCh <- data
 
-	return &exhook.EmptySuccess{}, nil
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnClientDisconnected(ctx context.Context, in *exhook.ClientDisconnectedRequest) (*exhook.EmptySuccess, error) {
+func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.ClientDisconnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("%s断开连接", in.Clientinfo.Username))
-	devicename := GetUserName(in.Clientinfo)
+	devicename := netbase.GetUserName(in.Clientinfo)
 
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
 	ci := &tdengine.ConnectInfo{
@@ -134,99 +124,99 @@ func (s *HookService) OnClientDisconnected(ctx context.Context, in *exhook.Clien
 		Type:       message.DisConnectMes,
 		Ts:         ts,
 	}
-	v, err := EncodeData(*ci)
+	v, err := netbase.EncodeData(*ci)
 	if err != nil {
 		return nil, err
 	}
 
 	// 添加设备下线记录
-	data := &DeviceEventInfo{
+	data := &netbase.DeviceEventInfo{
 		DeviceId: devicename,
 		Datas:    string(v),
 		Type:     message.DisConnectMes,
 	}
-	s.messageCh <- data
-	return &exhook.EmptySuccess{}, nil
+	s.HookService.MessageCh <- data
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnClientAuthenticate(ctx context.Context, in *exhook.ClientAuthenticateRequest) (*exhook.ValuedResponse, error) {
+func (s *HookGrpcService) OnClientAuthenticate(ctx context.Context, in *exhook2.ClientAuthenticateRequest) (*exhook2.ValuedResponse, error) {
 	global.Log.Info(fmt.Sprintf("账号%s，密码%s,开始认证", in.Clientinfo.Username, in.Clientinfo.Password))
-	res := &exhook.ValuedResponse{}
-	res.Type = exhook.ValuedResponse_STOP_AND_RETURN
-	res.Value = &exhook.ValuedResponse_BoolResult{BoolResult: false}
+	res := &exhook2.ValuedResponse{}
+	res.Type = exhook2.ValuedResponse_STOP_AND_RETURN
+	res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: false}
 
-	username := GetUserName(in.Clientinfo)
-	pw := GetPassword(in.Clientinfo)
+	username := netbase.GetUserName(in.Clientinfo)
+	pw := netbase.GetPassword(in.Clientinfo)
 	if username == "" || pw == "" {
 		global.Log.Warn(fmt.Sprintf("invalid username %s or password %s", username, pw))
 		return res, nil
 	}
-	authRes := s.auth(username, pw)
-	res.Value = &exhook.ValuedResponse_BoolResult{BoolResult: authRes}
+	authRes := netbase.Auth(username, pw)
+	res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: authRes}
 
 	return res, nil
 }
 
-func (s *HookService) OnClientAuthorize(ctx context.Context, in *exhook.ClientAuthorizeRequest) (*exhook.ValuedResponse, error) {
-	reply := &exhook.ValuedResponse{}
-	reply.Type = exhook.ValuedResponse_STOP_AND_RETURN
-	reply.Value = &exhook.ValuedResponse_BoolResult{BoolResult: true}
+func (s *HookGrpcService) OnClientAuthorize(ctx context.Context, in *exhook2.ClientAuthorizeRequest) (*exhook2.ValuedResponse, error) {
+	reply := &exhook2.ValuedResponse{}
+	reply.Type = exhook2.ValuedResponse_STOP_AND_RETURN
+	reply.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: true}
 	return reply, nil
 }
 
-func (s *HookService) OnClientSubscribe(ctx context.Context, in *exhook.ClientSubscribeRequest) (*exhook.EmptySuccess, error) {
+func (s *HookGrpcService) OnClientSubscribe(ctx context.Context, in *exhook2.ClientSubscribeRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("%s订阅了%v", in.Clientinfo.Username, in.TopicFilters))
 	// 验证topic 是否是规定的topic，可做topic白名单
-	return &exhook.EmptySuccess{}, nil
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnClientUnsubscribe(ctx context.Context, in *exhook.ClientUnsubscribeRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnClientUnsubscribe(ctx context.Context, in *exhook2.ClientUnsubscribeRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnSessionCreated(ctx context.Context, in *exhook.SessionCreatedRequest) (*exhook.EmptySuccess, error) {
+func (s *HookGrpcService) OnSessionCreated(ctx context.Context, in *exhook2.SessionCreatedRequest) (*exhook2.EmptySuccess, error) {
 
-	return &exhook.EmptySuccess{}, nil
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnSessionSubscribed(ctx context.Context, in *exhook.SessionSubscribedRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnSessionSubscribed(ctx context.Context, in *exhook2.SessionSubscribedRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnSessionUnsubscribed(ctx context.Context, in *exhook.SessionUnsubscribedRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnSessionUnsubscribed(ctx context.Context, in *exhook2.SessionUnsubscribedRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnSessionResumed(ctx context.Context, in *exhook.SessionResumedRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnSessionResumed(ctx context.Context, in *exhook2.SessionResumedRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnSessionDiscarded(ctx context.Context, in *exhook.SessionDiscardedRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnSessionDiscarded(ctx context.Context, in *exhook2.SessionDiscardedRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnSessionTakenover(ctx context.Context, in *exhook.SessionTakenoverRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnSessionTakenover(ctx context.Context, in *exhook2.SessionTakenoverRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnSessionTerminated(ctx context.Context, in *exhook.SessionTerminatedRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnSessionTerminated(ctx context.Context, in *exhook2.SessionTerminatedRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnMessagePublish(ctx context.Context, in *exhook.MessagePublishRequest) (*exhook.ValuedResponse, error) {
-	res := &exhook.ValuedResponse{}
-	res.Type = exhook.ValuedResponse_STOP_AND_RETURN
-	res.Value = &exhook.ValuedResponse_BoolResult{BoolResult: false}
+func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.MessagePublishRequest) (*exhook2.ValuedResponse, error) {
+	res := &exhook2.ValuedResponse{}
+	res.Type = exhook2.ValuedResponse_STOP_AND_RETURN
+	res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: false}
 
 	if in.Message.From == mqtt.DefaultDownStreamClientId {
-		res.Value = &exhook.ValuedResponse_BoolResult{BoolResult: true}
+		res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: true}
 		return res, nil
 	}
 	// 获取topic类型
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
 	eventType := IotHubTopic.GetMessageType(in.Message.Topic)
 	datas := string(in.GetMessage().GetPayload())
-	data := &DeviceEventInfo{
+	data := &netbase.DeviceEventInfo{
 		Type:     eventType,
 		Datas:    datas,
 		DeviceId: in.Message.Headers["username"],
@@ -237,7 +227,7 @@ func (s *HookService) OnMessagePublish(ctx context.Context, in *exhook.MessagePu
 		err := json.Unmarshal(in.GetMessage().GetPayload(), &subData)
 		if err != nil {
 			global.Log.Warn(fmt.Sprintf("子网关上报数据格式错误"))
-			res.Value = &exhook.ValuedResponse_BoolResult{BoolResult: false}
+			res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: false}
 			return res, nil
 		}
 		// key就是deviceId
@@ -252,14 +242,14 @@ func (s *HookService) OnMessagePublish(ctx context.Context, in *exhook.MessagePu
 			if in.Message.Topic == AttributesGatewayTopic {
 				data.Type = message.AttributesMes
 				marshal, _ := json.Marshal(value)
-				attributesData := updateDeviceAttributesData(string(marshal))
+				attributesData := netbase.UpdateDeviceAttributesData(string(marshal))
 				if attributesData == nil {
 					continue
 				}
 				bytes, _ := json.Marshal(attributesData)
 				data.Datas = string(bytes)
 				// 子设备发送到队列里
-				s.messageCh <- data
+				s.HookService.MessageCh <- data
 			}
 			if in.Message.Topic == TelemetryGatewayTopic {
 				data.Type = message.TelemetryMes
@@ -274,14 +264,14 @@ func (s *HookService) OnMessagePublish(ctx context.Context, in *exhook.MessagePu
 				}
 				for _, da := range telData {
 					td, _ := json.Marshal(da)
-					telemetryData := updateDeviceTelemetryData(string(td))
+					telemetryData := netbase.UpdateDeviceTelemetryData(string(td))
 					if telemetryData == nil {
 						continue
 					}
 					bytes, _ := json.Marshal(telemetryData)
 					data.Datas = string(bytes)
 					// 子设备发送到队列里
-					s.messageCh <- data
+					s.HookService.MessageCh <- data
 				}
 			}
 			if in.Message.Topic == ConnectGatewayTopic {
@@ -294,10 +284,10 @@ func (s *HookService) OnMessagePublish(ctx context.Context, in *exhook.MessagePu
 					Type:     message.ConnectMes,
 					Ts:       ts,
 				}
-				v, _ := EncodeData(*ci)
+				v, _ := netbase.EncodeData(*ci)
 				data.Datas = string(v)
 				// 子设备发送到队列里
-				s.messageCh <- data
+				s.HookService.MessageCh <- data
 			}
 			if in.Message.Topic == DisconnectGatewayTopic {
 				data.Type = message.DisConnectMes
@@ -309,13 +299,13 @@ func (s *HookService) OnMessagePublish(ctx context.Context, in *exhook.MessagePu
 					Type:     message.DisConnectMes,
 					Ts:       ts,
 				}
-				v, _ := EncodeData(*ci)
+				v, _ := netbase.EncodeData(*ci)
 				data.Datas = string(v)
 				// 子设备发送到队列里
-				s.messageCh <- data
+				s.HookService.MessageCh <- data
 			}
 		}
-		res.Value = &exhook.ValuedResponse_Message{Message: in.Message}
+		res.Value = &exhook2.ValuedResponse_Message{Message: in.Message}
 		return res, nil
 	}
 
@@ -323,7 +313,7 @@ func (s *HookService) OnMessagePublish(ctx context.Context, in *exhook.MessagePu
 	case message.RowMes:
 		data.Datas = fmt.Sprintf(`{"ts": "%s","rowdata": "%s"}`, ts, data.Datas)
 	case message.AttributesMes:
-		attributesData := updateDeviceAttributesData(data.Datas)
+		attributesData := netbase.UpdateDeviceAttributesData(data.Datas)
 		if attributesData == nil {
 			return res, nil
 		}
@@ -331,7 +321,7 @@ func (s *HookService) OnMessagePublish(ctx context.Context, in *exhook.MessagePu
 		data.Datas = string(bytes)
 	case message.TelemetryMes:
 		// 数据处理 如果上传的数据没有时间戳 添加时间戳更改格式化
-		telemetryData := updateDeviceTelemetryData(data.Datas)
+		telemetryData := netbase.UpdateDeviceTelemetryData(data.Datas)
 		if telemetryData == nil {
 			return res, nil
 		}
@@ -339,28 +329,25 @@ func (s *HookService) OnMessagePublish(ctx context.Context, in *exhook.MessagePu
 		data.Datas = string(bytes)
 	case message.RpcRequestMes:
 		// 获取请求id
-		id := getRequestIdFromTopic(RpcReqReg, in.Message.Topic)
+		id := netbase.GetRequestIdFromTopic(RpcReqReg, in.Message.Topic)
 		data.RequestId = id
 	}
 
 	//TODO 如果设备消息；量过大，推荐采用NATS队列处理
-	s.messageCh <- data
+	s.HookService.MessageCh <- data
 
-	res.Value = &exhook.ValuedResponse_Message{Message: in.Message}
+	res.Value = &exhook2.ValuedResponse_Message{Message: in.Message}
 	return res, nil
 }
 
-func (s *HookService) OnMessageDelivered(ctx context.Context, in *exhook.MessageDeliveredRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnMessageDelivered(ctx context.Context, in *exhook2.MessageDeliveredRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnMessageDropped(ctx context.Context, in *exhook.MessageDroppedRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
+func (s *HookGrpcService) OnMessageDropped(ctx context.Context, in *exhook2.MessageDroppedRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }
 
-func (s *HookService) OnMessageAcked(ctx context.Context, in *exhook.MessageAckedRequest) (*exhook.EmptySuccess, error) {
-	return &exhook.EmptySuccess{}, nil
-}
-func (s *HookService) Stop() {
-	s.wg.Wait()
+func (s *HookGrpcService) OnMessageAcked(ctx context.Context, in *exhook2.MessageAckedRequest) (*exhook2.EmptySuccess, error) {
+	return &exhook2.EmptySuccess{}, nil
 }

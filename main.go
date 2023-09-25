@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/PandaXGO/PandaKit/logger"
 	"github.com/PandaXGO/PandaKit/rediscli"
 	"github.com/PandaXGO/PandaKit/restfulx"
@@ -76,13 +75,13 @@ var rootCmd = &cobra.Command{
 		global.Log.Info("路由初始化完成")
 		app.Start(context.TODO())
 		//开启IOTHUB
-		hs := iothub.InitEmqxHook(fmt.Sprintf(":%d", global.Conf.Server.GrpcPort))
+		iothub.InitIothub()
+		//emqxserver.InitEmqxHook(fmt.Sprintf(":%d", global.Conf.Server.GrpcPort))
 		//开启视频服务
 		go engine.Run(context.Background(), "config.yml")
 		stop := make(chan os.Signal, 1)
 		signal.Notify(stop, syscall.SIGTERM, os.Interrupt)
 		<-stop
-		hs.Stop()
 		if err := app.Stop(context.TODO()); err != nil {
 			log.Fatalf("fatal app stop: %s", err)
 			os.Exit(-3)

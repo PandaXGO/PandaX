@@ -1,9 +1,9 @@
-package iothub
+package netbase
 
 import (
 	"encoding/json"
 	"pandax/apps/device/services"
-	exhook "pandax/iothub/protobuf"
+	"pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/global"
 	"pandax/pkg/tool"
 	"regexp"
@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func (s *HookService) auth(username, password string) bool {
+func Auth(username, password string) bool {
 	// 根据token，去查设备Id以及设备类型
 	if username == "pandax" && password == "pandax" {
 		return true
@@ -50,7 +50,7 @@ func (s *HookService) auth(username, password string) bool {
 }
 
 // 解析遥测数据类型 返回标准带时间戳格式
-func updateDeviceTelemetryData(data string) map[string]interface{} {
+func UpdateDeviceTelemetryData(data string) map[string]interface{} {
 	tel := make(map[string]interface{})
 	err := json.Unmarshal([]byte(data), &tel)
 	if err != nil {
@@ -74,7 +74,7 @@ func updateDeviceTelemetryData(data string) map[string]interface{} {
 	return tel
 }
 
-func updateDeviceAttributesData(data string) map[string]interface{} {
+func UpdateDeviceAttributesData(data string) map[string]interface{} {
 	tel := make(map[string]interface{})
 	err := json.Unmarshal([]byte(data), &tel)
 	if err != nil {
@@ -127,7 +127,7 @@ func EncodeData(jsonData interface{}) ([]byte, error) {
 	return byteData, nil
 }
 
-func getRequestIdFromTopic(reg, topic string) (requestId string) {
+func GetRequestIdFromTopic(reg, topic string) (requestId string) {
 	re := regexp.MustCompile(reg)
 	res := re.FindStringSubmatch(topic)
 	if len(res) > 1 {

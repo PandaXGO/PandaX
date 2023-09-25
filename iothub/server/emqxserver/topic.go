@@ -1,4 +1,4 @@
-package iothub
+package emqxserver
 
 import (
 	"pandax/pkg/rule_engine/message"

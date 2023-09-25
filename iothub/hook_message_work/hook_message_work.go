@@ -1,4 +1,4 @@
-package iothub
+package hook_message_work
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
 	ruleService "pandax/apps/rule/services"
+	"pandax/iothub/netbase"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine"
 	"pandax/pkg/rule_engine/message"
@@ -22,19 +23,19 @@ import (
 func (s *HookService) MessageWork() {
 	for {
 		select {
-		case msg := <-s.messageCh:
+		case msg := <-s.MessageCh:
 			s.handleOne(msg) // 处理消息
 		}
 	}
 }
 
-func (s *HookService) handleOne(msg *DeviceEventInfo) {
-	if s.ch != nil { // 用于并发限制
-		s.ch <- struct{}{}
+func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
+	if s.Ch != nil { // 用于并发限制
+		s.Ch <- struct{}{}
 	}
-	s.wg.Add(1)
+	s.Wg.Add(1)
 	go func() {
-		defer s.wg.Done()
+		defer s.Wg.Done()
 		etoken := &tool.DeviceAuth{}
 		err := global.RedisDb.Get(msg.DeviceId, etoken)
 		if err != nil {

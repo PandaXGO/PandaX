@@ -1,4 +1,4 @@
-package iothub
+package netbase
 
 type DeviceEventInfo struct {
 	DeviceId  string `json:"deviceId"`
