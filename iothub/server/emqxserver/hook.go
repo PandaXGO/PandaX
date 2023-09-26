@@ -85,10 +85,12 @@ func (s *HookGrpcService) OnClientConnack(ctx context.Context, in *exhook2.Clien
 func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.ClientConnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("Client %s Connected ", in.Clientinfo.GetNode()))
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
-	username := netbase.GetUserName(in.Clientinfo)
+	token := netbase.GetUserName(in.Clientinfo)
+	etoken := &tool.DeviceAuth{}
+	etoken.GetDeviceToken(token)
 	ci := &tdengine.ConnectInfo{
 		ClientID:   in.Clientinfo.Clientid,
-		DeviceId:   username,
+		DeviceId:   etoken.DeviceId,
 		PeerHost:   in.Clientinfo.Peerhost,
 		Protocol:   in.Clientinfo.Protocol,
 		SocketPort: strconv.Itoa(int(in.Clientinfo.Sockport)),
@@ -101,7 +103,7 @@ func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.Cli
 	}
 	// 添加设备上线记录
 	data := &netbase.DeviceEventInfo{
-		DeviceId: username,
+		DeviceId: etoken.DeviceId,
 		Datas:    string(v),
 		Type:     message.ConnectMes,
 	}
@@ -112,12 +114,17 @@ func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.Cli
 
 func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.ClientDisconnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("%s断开连接", in.Clientinfo.Username))
-	devicename := netbase.GetUserName(in.Clientinfo)
+	token := netbase.GetUserName(in.Clientinfo)
 
+	etoken := &tool.DeviceAuth{}
+	err := etoken.GetDeviceToken(token)
+	if err != nil {
+		return nil, err
+	}
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
 	ci := &tdengine.ConnectInfo{
 		ClientID:   in.Clientinfo.Clientid,
-		DeviceId:   devicename,
+		DeviceId:   etoken.DeviceId,
 		PeerHost:   in.Clientinfo.Peerhost,
 		Protocol:   in.Clientinfo.Protocol,
 		SocketPort: strconv.Itoa(int(in.Clientinfo.Sockport)),
@@ -131,7 +138,7 @@ func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.
 
 	// 添加设备下线记录
 	data := &netbase.DeviceEventInfo{
-		DeviceId: devicename,
+		DeviceId: etoken.DeviceId,
 		Datas:    string(v),
 		Type:     message.DisConnectMes,
 	}
@@ -140,18 +147,17 @@ func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.
 }
 
 func (s *HookGrpcService) OnClientAuthenticate(ctx context.Context, in *exhook2.ClientAuthenticateRequest) (*exhook2.ValuedResponse, error) {
-	global.Log.Info(fmt.Sprintf("账号%s，密码%s,开始认证", in.Clientinfo.Username, in.Clientinfo.Password))
+	global.Log.Info(fmt.Sprintf("账号%s,开始认证", in.Clientinfo.Username))
 	res := &exhook2.ValuedResponse{}
 	res.Type = exhook2.ValuedResponse_STOP_AND_RETURN
 	res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: false}
 
-	username := netbase.GetUserName(in.Clientinfo)
-	pw := netbase.GetPassword(in.Clientinfo)
-	if username == "" || pw == "" {
-		global.Log.Warn(fmt.Sprintf("invalid username %s or password %s", username, pw))
+	token := netbase.GetUserName(in.Clientinfo)
+	if token == "" {
+		global.Log.Warn(fmt.Sprintf("invalid username %s", token))
 		return res, nil
 	}
-	authRes := netbase.Auth(username, pw)
+	authRes := netbase.Auth(token)
 	res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: authRes}
 
 	return res, nil
@@ -212,6 +218,8 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 		res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: true}
 		return res, nil
 	}
+	etoken := &tool.DeviceAuth{}
+	etoken.GetDeviceToken(in.Message.Headers["username"])
 	// 获取topic类型
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
 	eventType := IotHubTopic.GetMessageType(in.Message.Topic)
@@ -219,7 +227,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 	data := &netbase.DeviceEventInfo{
 		Type:     eventType,
 		Datas:    datas,
-		DeviceId: in.Message.Headers["username"],
+		DeviceId: etoken.DeviceId,
 	}
 	// 如果是网关子设备单独处理
 	if eventType == message.GATEWAY {

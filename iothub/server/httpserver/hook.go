@@ -2,23 +2,35 @@ package httpserver
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/emicklei/go-restful/v3"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"pandax/iothub/hook_message_work"
+	"pandax/iothub/netbase"
 	"pandax/pkg/global"
-	"strings"
+	"pandax/pkg/rule_engine/message"
+	"pandax/pkg/tdengine"
+	"pandax/pkg/tool"
+	"sync"
+	"time"
 )
 
 type HookHttpService struct {
 	HookService *hook_message_work.HookService
 }
 
+var (
+	activeConnections sync.Map
+)
+
 func InitHttpHook(addr string, hs *hook_message_work.HookService) {
 	server := NewHttpServer(addr)
-	service := NewHookHttpService(hs)
+	service := &HookHttpService{
+		HookService: hs,
+	}
 	container := server.Container
 	ws := new(restful.WebService)
 	ws.Path("/api/v1").Produces(restful.MIME_JSON)
@@ -26,41 +38,123 @@ func InitHttpHook(addr string, hs *hook_message_work.HookService) {
 	container.Add(ws)
 
 	server.srv.ConnState = func(conn net.Conn, state http.ConnState) {
+		// 断开连接
 		switch state {
-		case http.StateNew:
-			log.Println("New connection", conn.RemoteAddr())
-		case http.StateActive:
-			log.Println("Connection active", conn.RemoteAddr())
-		case http.StateIdle:
-			log.Println("Connection idle", conn.RemoteAddr())
 		case http.StateHijacked, http.StateClosed:
-			log.Println("Connection closed", conn.RemoteAddr())
+			ts := time.Now().Format("2006-01-02 15:04:05.000")
+			deviceId, _ := activeConnections.Load(conn.RemoteAddr())
+			ci := &tdengine.ConnectInfo{
+				ClientID: conn.RemoteAddr().String(),
+				DeviceId: deviceId.(string),
+				PeerHost: conn.RemoteAddr().String(),
+				Protocol: "http",
+				Type:     message.ConnectMes,
+				Ts:       ts,
+			}
+			v, err := netbase.EncodeData(*ci)
+			if err != nil {
+				return
+			}
+			// 添加设备上线记录
+			data := &netbase.DeviceEventInfo{
+				DeviceId: deviceId.(string),
+				Datas:    string(v),
+				Type:     message.ConnectMes,
+			}
+			service.HookService.MessageCh <- data
+			activeConnections.Delete(conn.RemoteAddr())
 		}
 	}
 	err := server.Start(context.TODO())
 	if err != nil {
 		global.Log.Error("IOTHUB HTTP服务启动错误", err)
 	} else {
-		global.Log.Infof("IOTHUB HOOK Start SUCCESS,Grpc Server listen: %s", addr)
+		global.Log.Infof("HTTP IOTHUB HOOK Start SUCCESS,Server listen: %s", addr)
 	}
-}
-
-func NewHookHttpService(hs *hook_message_work.HookService) *HookHttpService {
-	hhs := &HookHttpService{
-		HookService: hs,
-	}
-	return hhs
 }
 
 // 获取token进行认证
 func basicAuthenticate(req *restful.Request, resp *restful.Response, chain *restful.FilterChain) {
-	path := req.Request.URL.Path
-	log.Println(path)
-	split := strings.Split(path, "/")
-	log.Println(split)
+	token := req.PathParameter("token")
+	auth := netbase.Auth(token)
+	if !auth {
+		resp.Write([]byte("认证错误"))
+		return
+	}
 	chain.ProcessFilter(req, resp)
 }
 
 func (hhs *HookHttpService) hook(req *restful.Request, resp *restful.Response) {
-	io.WriteString(resp, "42")
+	token := req.PathParameter("token")
+	pathType := req.PathParameter("pathType")
+	if token == "" || pathType == "" {
+		resp.Write([]byte("路径未识别token，或上报类型"))
+		return
+	}
+	var upData map[string]interface{}
+	err := req.ReadEntity(&upData)
+	if err != nil {
+		resp.Write([]byte("解析上报参数失败"))
+		return
+	}
+	etoken := &tool.DeviceAuth{}
+	etoken.GetDeviceToken(token)
+	ts := time.Now().Format("2006-01-02 15:04:05.000")
+	_, ok := activeConnections.Load(req.Request.RemoteAddr)
+	// 是否需要添加设备上线通知
+	if !ok {
+		activeConnections.Store(req.Request.RemoteAddr, etoken.DeviceId)
+		ci := &tdengine.ConnectInfo{
+			ClientID: req.Request.RemoteAddr,
+			DeviceId: etoken.DeviceId,
+			PeerHost: req.Request.RemoteAddr,
+			Protocol: "http",
+			Type:     message.ConnectMes,
+			Ts:       ts,
+		}
+		v, err := netbase.EncodeData(*ci)
+		if err != nil {
+			return
+		}
+		// 添加设备上线记录
+		data := &netbase.DeviceEventInfo{
+			DeviceId: etoken.DeviceId,
+			Datas:    string(v),
+			Type:     message.ConnectMes,
+		}
+		hhs.HookService.MessageCh <- data
+	}
+	marshal, _ := json.Marshal(upData)
+	data := &netbase.DeviceEventInfo{
+		Datas:    string(marshal),
+		DeviceId: etoken.DeviceId,
+	}
+	switch pathType {
+	case Row:
+		data.Type = message.RowMes
+		data.Datas = fmt.Sprintf(`{"ts": "%s","rowdata": "%s"}`, ts, data.Datas)
+	case Telemetry:
+		telemetryData := netbase.UpdateDeviceTelemetryData(data.Datas)
+		if telemetryData == nil {
+			resp.Write([]byte("解析遥测失败"))
+			return
+		}
+		bytes, _ := json.Marshal(telemetryData)
+		data.Type = message.TelemetryMes
+		data.Datas = string(bytes)
+	case Attributes:
+		attributesData := netbase.UpdateDeviceAttributesData(data.Datas)
+		if attributesData == nil {
+			resp.Write([]byte("解析属性失败"))
+			return
+		}
+		bytes, _ := json.Marshal(attributesData)
+		data.Datas = string(bytes)
+		data.Type = message.AttributesMes
+	default:
+		resp.Write([]byte("路径上报类型错误"))
+		return
+	}
+	hhs.HookService.MessageCh <- data
+	io.WriteString(resp, "ok")
 }

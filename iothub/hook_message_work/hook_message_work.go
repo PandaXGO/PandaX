@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PandaXGO/PandaKit/biz"
+	"log"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
@@ -24,6 +25,7 @@ func (s *HookService) MessageWork() {
 	for {
 		select {
 		case msg := <-s.MessageCh:
+			log.Println("一条记录", msg)
 			s.handleOne(msg) // 处理消息
 		}
 	}

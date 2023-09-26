@@ -69,7 +69,7 @@ func (m *deviceModelImpl) FindOne(id string) *entity.DeviceRes {
 func (m *deviceModelImpl) FindOneByToken(token string) (*entity.Device, error) {
 	resData := new(entity.Device)
 	db := global.Db.Table(m.table).Where("token = ?", token)
-	err := db.Preload("Product").First(resData).Error
+	err := db.First(resData).Error
 	return resData, err
 }
 
@@ -209,7 +209,7 @@ func GetDeviceToken(data *entity.Device) (*tool.DeviceAuth, error) {
 	} else {
 		etoken.Token = data.Token
 	}
-	err := etoken.CreateDeviceToken(data.Id)
+	err := etoken.CreateDeviceToken(etoken.Token)
 	return etoken, err
 }
 

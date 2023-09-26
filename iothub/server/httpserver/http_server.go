@@ -40,19 +40,15 @@ func (s *HttpServer) Type() string {
 }
 
 func (s *HttpServer) Start(ctx context.Context) error {
-	go func() {
-		if global.Conf.Server.Tls.Enable {
-			global.Log.Infof("HTTPS Server listen: %s", s.Addr)
-			if err := s.srv.ListenAndServeTLS(global.Conf.Server.Tls.CertFile, global.Conf.Server.Tls.KeyFile); err != nil {
-				global.Log.Errorf("error http serve: %s", err)
-			}
-		} else {
-			global.Log.Infof("HTTP Server listen: %s", s.Addr)
-			if err := s.srv.ListenAndServe(); err != nil {
-				global.Log.Errorf("error http serve: %s", err)
-			}
+	if global.Conf.Server.Tls.Enable {
+		if err := s.srv.ListenAndServeTLS(global.Conf.Server.Tls.CertFile, global.Conf.Server.Tls.KeyFile); err != nil {
+			global.Log.Errorf("error http serve: %s", err)
 		}
-	}()
+	} else {
+		if err := s.srv.ListenAndServe(); err != nil {
+			global.Log.Errorf("error http serve: %s", err)
+		}
+	}
 	return nil
 }
 

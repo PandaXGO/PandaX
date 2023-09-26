@@ -2,6 +2,7 @@ package netbase
 
 import (
 	"encoding/json"
+	"log"
 	"pandax/apps/device/services"
 	"pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/global"
@@ -11,39 +12,36 @@ import (
 	"time"
 )
 
-func Auth(username, password string) bool {
+func Auth(authToken string) bool {
 	// 根据token，去查设备Id以及设备类型
-	if username == "pandax" && password == "pandax" {
+	if authToken == "pandax" {
 		return true
 	}
 	etoken := &tool.DeviceAuth{}
 	// redis 中有就查询，没有就添加
-	exists, err := global.RedisDb.Exists(global.RedisDb.Context(), username).Result()
+	exists, err := global.RedisDb.Exists(global.RedisDb.Context(), authToken).Result()
 	if exists == 1 {
-		err = global.RedisDb.Get(username, etoken)
+		err = global.RedisDb.Get(authToken, etoken)
 	} else {
-		device, err := services.DeviceModelDao.FindOneByToken(password)
+		device, err := services.DeviceModelDao.FindOneByToken(authToken)
+		log.Println(err)
 		if err != nil {
-			global.Log.Infof("设备 %s 不存在", username)
+			global.Log.Infof("设备token %s 不存在", authToken)
 			return false
 		}
 		etoken, err = services.GetDeviceToken(device)
 		if err != nil {
-			global.Log.Infof("设备%s添加缓存失败", username)
+			global.Log.Infof("设备TOKEN %s添加缓存失败", authToken)
 			return false
 		}
 	}
 	if err != nil {
-		global.Log.Infof("invalid username %s", username)
+		global.Log.Infof("invalid authToken %s", authToken)
 		return false
 	}
 	// 判断token是否过期了, 设备过期
 	if etoken.ExpiredAt < time.Now().Unix() {
-		global.Log.Infof("设备%s: Token失效", username)
-		return false
-	}
-	if etoken.Token != password {
-		global.Log.Infof("invalid password %s", password)
+		global.Log.Infof("设备authToken %s 失效", authToken)
 		return false
 	}
 	return true
@@ -105,17 +103,6 @@ func SplitLwm2mClientID(lwm2mClientID string, index int) string {
 		return ""
 	}
 	return idArray[index]
-}
-
-func GetPassword(Clientinfo *exhook.ClientInfo) string {
-	protocol := Clientinfo.GetProtocol()
-	var pw string
-	if protocol == "lwm2m" {
-		pw = SplitLwm2mClientID(Clientinfo.GetClientid(), 1)
-	} else {
-		pw = Clientinfo.GetPassword()
-	}
-	return pw
 }
 
 // encode data
