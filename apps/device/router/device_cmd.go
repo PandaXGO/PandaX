@@ -14,6 +14,7 @@ import (
 func InitDeviceCmdLogRouter(container *restful.Container) {
 	s := &api.DeviceCmdLogApi{
 		DeviceCmdLogApp: services.DeviceCmdLogModelDao,
+		DeviceApp:       services.DeviceModelDao,
 	}
 
 	ws := new(restful.WebService)

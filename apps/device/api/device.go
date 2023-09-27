@@ -11,8 +11,9 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
+	"pandax/iothub/client/mqttclient"
+	"pandax/iothub/client/tcpclient"
 	"pandax/pkg/global"
-	"pandax/pkg/mqtt"
 	"pandax/pkg/shadow"
 	"pandax/pkg/tool"
 	"strings"
@@ -143,18 +144,25 @@ func (p *DeviceApi) GetDeviceTelemetryHistory(rc *restfulx.ReqCtx) {
 
 // 下发设备属性
 func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
-	//id := restfulx.PathParam(rc, "id")
+	id := restfulx.PathParam(rc, "id")
 	key := restfulx.QueryParam(rc, "key")
 	value := restfulx.QueryParam(rc, "value")
-	// 下发指令
-	contentMap := map[string]interface{}{
-		key: value,
+	one := p.DeviceApp.FindOne(id)
+	if one.Product.ProtocolName == global.TCPProtocol {
+		err := tcpclient.Send(id, value)
+		biz.ErrIsNil(err, "属性下发失败")
 	}
-	content, _ := json.Marshal(contentMap)
-	var rpc = &mqtt.RpcRequest{Client: global.MqttClient, Mode: "single"}
-	rpc.GetRequestId()
-	err := rpc.RequestAttributes(mqtt.RpcPayload{Params: string(content)})
-	biz.ErrIsNil(err, "属性下发失败")
+	if one.Product.ProtocolName == global.MQTTProtocol {
+		// 下发指令
+		contentMap := map[string]interface{}{
+			key: value,
+		}
+		content, _ := json.Marshal(contentMap)
+		var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "single"}
+		rpc.GetRequestId()
+		err := rpc.RequestAttributes(mqttclient.RpcPayload{Params: string(content)})
+		biz.ErrIsNil(err, "属性下发失败")
+	}
 }
 
 // InsertDevice 添加Device

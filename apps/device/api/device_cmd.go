@@ -5,8 +5,9 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
+	"pandax/iothub/client/mqttclient"
+	"pandax/iothub/client/tcpclient"
 	"pandax/pkg/global"
-	"pandax/pkg/mqtt"
 	"pandax/pkg/tool"
 	"strings"
 	"time"
@@ -17,6 +18,7 @@ import (
 
 type DeviceCmdLogApi struct {
 	DeviceCmdLogApp services.DeviceCmdLogModel
+	DeviceApp       services.DeviceModel
 }
 
 // GetDeviceCmdLogList 告警列表数据
@@ -45,15 +47,22 @@ func (p *DeviceCmdLogApi) InsertDeviceCmdLog(rc *restfulx.ReqCtx) {
 	data.Id = tool.GenerateID()
 	data.State = "2"
 	data.RequestTime = time.Now().Format("2006-01-02 15:04:05")
+	one := p.DeviceApp.FindOne(data.DeviceId)
+	if one.Product.ProtocolName == global.TCPProtocol {
+		err := tcpclient.Send(data.DeviceId, data.CmdContent)
+		biz.ErrIsNil(err, "指令下发失败")
+		data.State = "0"
+	}
+	if one.Product.ProtocolName == global.MQTTProtocol {
+		// 下发指令
+		var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "single"}
+		rpc.GetRequestId()
+		_, err := rpc.RequestCmd(mqttclient.RpcPayload{Method: data.CmdName, Params: data.CmdContent})
+		biz.ErrIsNil(err, "指令下发失败")
+		data.State = "0"
+	}
 	err := p.DeviceCmdLogApp.Insert(data)
 	biz.ErrIsNil(err, "添加指令记录失败")
-	// 下发指令
-	var rpc = &mqtt.RpcRequest{Client: global.MqttClient, Mode: "single"}
-	rpc.GetRequestId()
-	_, err = rpc.RequestCmd(mqtt.RpcPayload{Method: data.CmdName, Params: data.CmdContent})
-	if err != nil {
-		global.Log.Error("指令下发失败")
-	}
 }
 
 // DeleteDeviceCmdLog 删除告警

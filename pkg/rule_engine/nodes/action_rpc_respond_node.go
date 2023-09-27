@@ -1,8 +1,7 @@
 package nodes
 
 import (
-	"pandax/pkg/global"
-	"pandax/pkg/mqtt"
+	"pandax/iothub/client/mqttclient"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -30,11 +29,11 @@ func (n *rpcRespondNode) Handle(msg *message.Message) error {
 	if RequestId == 0 {
 		RequestId = int(msg.Metadata.GetValue("requestId").(float64))
 	}
-	var datas = mqtt.RpcPayload{
+	var datas = mqttclient.RpcPayload{
 		Method: msg.Msg.GetValue("method").(string),
 		Params: msg.Msg.GetValue("params"),
 	}
-	rpc := &mqtt.RpcRequest{Client: global.MqttClient, RequestId: RequestId}
+	rpc := &mqttclient.RpcRequest{Client: mqttclient.MqttClient, RequestId: RequestId}
 	err := rpc.RespondTpc(datas)
 	if err != nil {
 		if failureLableNode != nil {

@@ -1,15 +1,14 @@
 package nodes
 
 import (
-	"pandax/pkg/global"
-	"pandax/pkg/mqtt"
+	"pandax/iothub/client/mqttclient"
 	"pandax/pkg/rule_engine/message"
 )
 
 type rpcRequestNode struct {
 	bareNode
-	Timeout int             `json:"timeout"`
-	Payload mqtt.RpcPayload `json:"payload"`
+	Timeout int                   `json:"timeout"`
+	Payload mqttclient.RpcPayload `json:"payload"`
 }
 
 type rpcRequestNodeFactory struct{}
@@ -28,7 +27,7 @@ func (n *rpcRequestNode) Handle(msg *message.Message) error {
 	successLableNode := n.GetLinkedNode("Success")
 	failureLableNode := n.GetLinkedNode("Failure")
 
-	var rpc = &mqtt.RpcRequest{Client: global.MqttClient, Mode: "double", Timeout: n.Timeout}
+	var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "double", Timeout: n.Timeout}
 	rpc.GetRequestId()
 	respPayload, err := rpc.RequestCmd(n.Payload)
 	if err != nil {

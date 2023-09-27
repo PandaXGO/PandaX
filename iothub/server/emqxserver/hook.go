@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"pandax/iothub/client/mqttclient"
 	"pandax/iothub/hook_message_work"
 	"pandax/iothub/netbase"
 	exhook2 "pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/global"
-	"pandax/pkg/mqtt"
 	"pandax/pkg/rule_engine/message"
 	"pandax/pkg/tool"
 	"time"
@@ -33,7 +33,7 @@ func InitEmqxHook(addr string, hs *hook_message_work.HookService) {
 		global.Log.Infof("IOTHUB HOOK Start SUCCESS,Grpc Server listen: %s", addr)
 	}
 	// 初始化 MQTT客户端
-	global.MqttClient = mqtt.InitMqtt(global.Conf.Mqtt.Broker, global.Conf.Mqtt.Username, global.Conf.Mqtt.Password)
+	mqttclient.InitMqtt(global.Conf.Mqtt.Broker, global.Conf.Mqtt.Username, global.Conf.Mqtt.Password)
 }
 
 func NewHookGrpcService(hs *hook_message_work.HookService) *HookGrpcService {
@@ -83,7 +83,7 @@ func (s *HookGrpcService) OnClientConnack(ctx context.Context, in *exhook2.Clien
 func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.ClientConnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("Client %s Connected ", in.Clientinfo.GetNode()))
 
-	if in.Clientinfo.Clientid == mqtt.DefaultDownStreamClientId {
+	if in.Clientinfo.Clientid == mqttclient.DefaultDownStreamClientId {
 		return &exhook2.EmptySuccess{}, nil
 	}
 	token := netbase.GetUserName(in.Clientinfo)
@@ -97,7 +97,7 @@ func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.Cli
 func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.ClientDisconnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("%s断开连接", in.Clientinfo.Username))
 	token := netbase.GetUserName(in.Clientinfo)
-	if in.Clientinfo.Clientid == mqtt.DefaultDownStreamClientId {
+	if in.Clientinfo.Clientid == mqttclient.DefaultDownStreamClientId {
 		return &exhook2.EmptySuccess{}, nil
 	}
 	etoken := &tool.DeviceAuth{}
@@ -178,7 +178,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 	res.Type = exhook2.ValuedResponse_STOP_AND_RETURN
 	res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: false}
 
-	if in.Message.From == mqtt.DefaultDownStreamClientId {
+	if in.Message.From == mqttclient.DefaultDownStreamClientId {
 		res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: true}
 		return res, nil
 	}

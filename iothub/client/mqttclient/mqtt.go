@@ -1,4 +1,4 @@
-package mqtt
+package mqttclient
 
 import (
 	"errors"
@@ -9,6 +9,8 @@ import (
 )
 
 const DefaultDownStreamClientId = `@panda.iothub.internal.clientId`
+
+var MqttClient *IothubMqttClient
 
 type IothubMqttClient struct {
 	Client mqtt.Client
@@ -22,10 +24,10 @@ var connectLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, err
 	logrus.Infof("Connect lost: %v", err)
 }
 
-func InitMqtt(broker, username, password string) *IothubMqttClient {
+func InitMqtt(broker, username, password string) {
 	server := fmt.Sprintf("tcp://%s", broker)
 	client := GetMqttClinent(server, username, password)
-	return &IothubMqttClient{
+	MqttClient = &IothubMqttClient{
 		Client: client,
 	}
 }

@@ -61,7 +61,7 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 func (m *deviceModelImpl) FindOne(id string) *entity.DeviceRes {
 	resData := new(entity.DeviceRes)
 	db := global.Db.Table(m.table).Where("id = ?", id)
-	err := db.First(resData).Preload("Product").Preload("DeviceGroup").Error
+	err := db.Preload("Product").Preload("DeviceGroup").First(resData).Error
 	biz.ErrIsNil(err, "查询设备失败")
 	return resData
 }

@@ -6,8 +6,8 @@ import (
 	"github.com/gorilla/websocket"
 	"net/http"
 	"pandax/apps/device/entity"
+	"pandax/iothub/client/mqttclient"
 	"pandax/pkg/global"
-	"pandax/pkg/mqtt"
 	"strings"
 )
 
@@ -67,9 +67,9 @@ func OnMessage(ws *Websocket, message string) {
 		//2. 根据设备下发属性更改
 		//topic := fmt.Sprintf(global.AttributesTopic, vtsa.TwinId)
 		content, _ := json.Marshal(vtsa.Attrs)
-		var rpc = &mqtt.RpcRequest{Client: global.MqttClient, Mode: "single"}
+		var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "single"}
 		rpc.GetRequestId()
-		err = rpc.RequestAttributes(mqtt.RpcPayload{Params: string(content)})
+		err = rpc.RequestAttributes(mqttclient.RpcPayload{Params: string(content)})
 		if err != nil {
 			global.Log.Error("属性下发失败", err)
 			sendMessages("02", "下发失败", screenId)

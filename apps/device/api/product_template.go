@@ -57,36 +57,30 @@ func (p *ProductTemplateApi) InsertProductTemplate(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &data)
 	data.Id = tool.GenerateID()
 	data.OrgId = rc.LoginAccount.OrganizationId
-	// 向超级表及子表中添加字段
-	stable := ""
-	len := 0
-	if data.Classify == entity.ATTRIBUTES_TSL {
-		stable = data.Pid + "_" + entity.ATTRIBUTES_TSL
-		err := global.TdDb.AddSTableField(stable, data.Key, data.Type, len)
-		biz.ErrIsNil(err, "添加字段失败")
-	} else if data.Classify == entity.TELEMETRY_TSL {
-		stable = data.Pid + "_" + entity.TELEMETRY_TSL
-		if data.Type == "string" {
-			len = int(data.Define["length"].(int64))
+	if data.Classify == entity.ATTRIBUTES_TSL || data.Classify == entity.TELEMETRY_TSL {
+		// 向超级表及子表中添加字段
+		len := 0
+		stable := data.Pid + "_" + data.Classify
+		if data.Classify == entity.TELEMETRY_TSL {
+			if data.Type == "string" {
+				len = int(data.Define["length"].(int64))
+			}
 		}
 		err := global.TdDb.AddSTableField(stable, data.Key, data.Type, len)
 		biz.ErrIsNil(err, "添加字段失败")
-	} else {
-		return
+		// 向子表中添加字段
+		go func() {
+			tables, err := global.TdDb.GetListTableByStableName(stable)
+			if err != nil {
+				global.Log.Error(err)
+				return
+			}
+			for _, table := range tables {
+				err = global.TdDb.AddTableField(table.TableName, data.Key, data.Type, 0)
+				global.Log.Error(err)
+			}
+		}()
 	}
-	// 向子表中添加字段
-	go func() {
-		tables, err := global.TdDb.GetListTableByStableName(stable)
-		if err != nil {
-			global.Log.Error(err)
-			return
-		}
-		for _, table := range tables {
-			err = global.TdDb.AddTableField(table.TableName, data.Key, data.Type, 0)
-			global.Log.Error(err)
-		}
-	}()
-
 	p.ProductTemplateApp.Insert(data)
 }
 

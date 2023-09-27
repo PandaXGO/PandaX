@@ -1,4 +1,4 @@
-package mqtt
+package mqttclient
 
 import (
 	"encoding/json"
@@ -26,7 +26,7 @@ type RpcPayload struct {
 	Params any    `json:"params"`
 }
 
-// RequestAttributes 下发指令
+// RequestCmd 下发指令
 func (rpc RpcRequest) RequestCmd(rpcPayload RpcPayload) (respPayload string, err error) {
 	topic := fmt.Sprintf(RpcReqTopic, rpc.RequestId)
 	payload, err := json.Marshal(rpcPayload)

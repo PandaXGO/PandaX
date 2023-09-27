@@ -7,18 +7,16 @@ import (
 	"gorm.io/gorm"
 	"pandax/pkg/config"
 	"pandax/pkg/events"
-	"pandax/pkg/mqtt"
 	"pandax/pkg/tdengine"
 	"time"
 )
 
 var (
-	Log        *logrus.Logger // 日志
-	Db         *gorm.DB       // gorm
-	RedisDb    *rediscli.RedisDB
-	TdDb       *tdengine.TdEngine
-	Conf       *config.Config
-	MqttClient *mqtt.IothubMqttClient
+	Log     *logrus.Logger // 日志
+	Db      *gorm.DB       // gorm
+	RedisDb *rediscli.RedisDB
+	TdDb    *tdengine.TdEngine
+	Conf    *config.Config
 )
 var EventEmitter = events.EventEmitter{}
 

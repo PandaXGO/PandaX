@@ -43,3 +43,11 @@ const (
 	CMDFAIL    = "1" //执行失败
 	CMDRUNNING = "2" // 执行中
 )
+
+const (
+	MQTTProtocol  = "MQTT"
+	CoAPProtocol  = "CoAP"
+	TCPProtocol   = "TCP"
+	HTTPProtocol  = "HTTP"
+	LwM2MProtocol = "LwM2M"
+)

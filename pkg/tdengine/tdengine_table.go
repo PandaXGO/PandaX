@@ -87,49 +87,49 @@ func (s *TdEngine) column(dataType, key, name string, maxLength int) string {
 
 // 删除超级表
 func (s *TdEngine) DropStable(table string) (err error) {
-	sql := fmt.Sprintf("DROP STABLE IF EXISTS %s.%s", s.dbName, table)
+	sql := fmt.Sprintf("DROP STABLE IF EXISTS %s.%s", s.dbName, strings.ToLower(table))
 	_, err = s.db.Exec(sql)
 	return
 }
 
 // 删除子表
 func (s *TdEngine) DropTable(table string) (err error) {
-	sql := fmt.Sprintf("DROP TABLE IF EXISTS %s.%s", s.dbName, table)
+	sql := fmt.Sprintf("DROP TABLE IF EXISTS %s.%s", s.dbName, strings.ToLower(table))
 	_, err = s.db.Exec(sql)
 	return
 }
 
 // AddSTableField 添加数据库超级表字段
 func (s *TdEngine) AddSTableField(tableName, fieldName string, dataType string, len int) (err error) {
-	sql := fmt.Sprintf("ALTER STABLE %s.%s ADD COLUMN %s", s.dbName, tableName, s.column(dataType, fieldName, "", len))
+	sql := fmt.Sprintf("ALTER STABLE %s.%s ADD COLUMN %s", s.dbName, strings.ToLower(tableName), s.column(dataType, fieldName, "", len))
 	_, err = s.db.Exec(sql)
 	return
 }
 
 // AddTableField 添加数据库表字段
 func (s *TdEngine) AddTableField(tableName, fieldName string, dataType string, len int) (err error) {
-	sql := fmt.Sprintf("ALTER TABLE %s.%s ADD COLUMN %s", s.dbName, tableName, s.column(dataType, fieldName, "", len))
+	sql := fmt.Sprintf("ALTER TABLE %s.%s ADD COLUMN %s", s.dbName, strings.ToLower(tableName), s.column(dataType, fieldName, "", len))
 	_, err = s.db.Exec(sql)
 	return
 }
 
 // DelTableField 删除数据库表字段
 func (s *TdEngine) DelTableField(tableName, fieldName string) (err error) {
-	sql := fmt.Sprintf("ALTER TABLE %s.%s DROP COLUMN %s", s.dbName, tableName, fieldName)
+	sql := fmt.Sprintf("ALTER TABLE %s.%s DROP COLUMN %s", s.dbName, strings.ToLower(tableName), fieldName)
 	_, err = s.db.Exec(sql)
 	return
 }
 
 // DelSTableField 删除数据库超级表字段
 func (s *TdEngine) DelSTableField(tableName, fieldName string) (err error) {
-	sql := fmt.Sprintf("ALTER STABLE %s.%s DROP COLUMN %s", s.dbName, tableName, fieldName)
+	sql := fmt.Sprintf("ALTER STABLE %s.%s DROP COLUMN %s", s.dbName, strings.ToLower(tableName), fieldName)
 	_, err = s.db.Exec(sql)
 	return
 }
 
 // ModifyDatabaseField 修改数据库指定字段长度
 func (s *TdEngine) ModifyDatabaseField(tableName, fieldName string, dataType string, len int) (err error) {
-	sql := fmt.Sprintf("ALTER STABLE %s.%s MODIFY COLUMN %s", s.dbName, tableName, s.column(dataType, fieldName, "", len))
+	sql := fmt.Sprintf("ALTER STABLE %s.%s MODIFY COLUMN %s", s.dbName, strings.ToLower(tableName), s.column(dataType, fieldName, "", len))
 	_, err = s.db.Exec(sql)
 	if err != nil {
 		err = errors.New("设置字段长度失败,长度只能增大不能缩小")
