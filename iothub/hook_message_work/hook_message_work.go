@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PandaXGO/PandaKit/biz"
-	"log"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
@@ -25,7 +24,6 @@ func (s *HookService) MessageWork() {
 	for {
 		select {
 		case msg := <-s.MessageCh:
-			log.Println("一条记录", msg)
 			s.handleOne(msg) // 处理消息
 		}
 	}
@@ -38,15 +36,10 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 	s.Wg.Add(1)
 	go func() {
 		defer s.Wg.Done()
-		etoken := &tool.DeviceAuth{}
-		err := global.RedisDb.Get(msg.DeviceId, etoken)
-		if err != nil {
-			return
-		}
 		switch msg.Type {
 		case message.RowMes, message.AttributesMes, message.TelemetryMes, message.RpcRequestMes:
 			msgVals := make(map[string]interface{})
-			err = json.Unmarshal([]byte(msg.Datas), &msgVals)
+			err := json.Unmarshal([]byte(msg.Datas), &msgVals)
 			if err != nil {
 				global.Log.Error("数据结构解析错误", err)
 				return
@@ -55,11 +48,8 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 			if msg.Type == message.TelemetryMes {
 				go SendZtWebsocket(msg.DeviceId, msg.Datas)
 			}
-			if msg.Type != message.RpcRequestMes {
-				SetDeviceShadow(etoken, msgVals, msg.Type)
-			}
 			// 获取规则链代码
-			chain := getRuleChain(etoken)
+			chain := getRuleChain(msg.DeviceAuth)
 			if chain == nil {
 				return
 			}
@@ -71,18 +61,22 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 				global.Log.Error("规则链初始化失败", errs[0])
 				return
 			}
-			ruleMessage := buildRuleMessage(etoken, msgVals, msg.Type)
+			ruleMessage := buildRuleMessage(msg.DeviceAuth, msgVals, msg.Type)
 			err = instance.StartRuleChain(context.Background(), ruleMessage)
 			if err != nil {
 				global.Log.Error("规则链执行失败", errs)
 			}
+			// 保存设备影子
+			if msg.Type != message.RpcRequestMes {
+				SetDeviceShadow(msg.DeviceAuth, ruleMessage.Msg, msg.Type)
+			}
 		case message.DisConnectMes, message.ConnectMes:
 			//检测设备影子并修改设备影子状态
 			if msg.Type == message.ConnectMes {
-				shadow.InitDeviceShadow(etoken.Name, etoken.ProductId)
-				shadow.DeviceShadowInstance.SetOnline(etoken.Name)
+				shadow.InitDeviceShadow(msg.DeviceAuth.Name, msg.DeviceAuth.ProductId)
+				shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
 			} else {
-				shadow.DeviceShadowInstance.SetOffline(etoken.Name)
+				shadow.DeviceShadowInstance.SetOffline(msg.DeviceAuth.Name)
 			}
 			// 更改设备在线状态
 			if msg.Type == message.ConnectMes {
@@ -159,6 +153,10 @@ func SetDeviceShadow(etoken *tool.DeviceAuth, msgVals map[string]interface{}, ms
 			global.Log.Error(err)
 		}
 	}()
+
+	if msgType == message.RowMes {
+		msgType = message.TelemetryMes
+	}
 	template := services.ProductTemplateModelDao.FindList(entity.ProductTemplate{Classify: strings.ToLower(msgType), Pid: etoken.ProductId})
 	for _, tel := range *template {
 		if _, ok := msgVals[tel.Key]; !ok {

@@ -10,9 +10,7 @@ import (
 	"pandax/pkg/global"
 	"pandax/pkg/mqtt"
 	"pandax/pkg/rule_engine/message"
-	"pandax/pkg/tdengine"
 	"pandax/pkg/tool"
-	"strconv"
 	"time"
 )
 
@@ -84,64 +82,30 @@ func (s *HookGrpcService) OnClientConnack(ctx context.Context, in *exhook2.Clien
 
 func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.ClientConnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("Client %s Connected ", in.Clientinfo.GetNode()))
-	ts := time.Now().Format("2006-01-02 15:04:05.000")
+
+	if in.Clientinfo.Clientid == mqtt.DefaultDownStreamClientId {
+		return &exhook2.EmptySuccess{}, nil
+	}
 	token := netbase.GetUserName(in.Clientinfo)
 	etoken := &tool.DeviceAuth{}
 	etoken.GetDeviceToken(token)
-	ci := &tdengine.ConnectInfo{
-		ClientID:   in.Clientinfo.Clientid,
-		DeviceId:   etoken.DeviceId,
-		PeerHost:   in.Clientinfo.Peerhost,
-		Protocol:   in.Clientinfo.Protocol,
-		SocketPort: strconv.Itoa(int(in.Clientinfo.Sockport)),
-		Type:       message.ConnectMes,
-		Ts:         ts,
-	}
-	v, err := netbase.EncodeData(*ci)
-	if err != nil {
-		return nil, err
-	}
-	// 添加设备上线记录
-	data := &netbase.DeviceEventInfo{
-		DeviceId: etoken.DeviceId,
-		Datas:    string(v),
-		Type:     message.ConnectMes,
-	}
+	data := netbase.CreateConnectionInfo(message.ConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
 	s.HookService.MessageCh <- data
-
 	return &exhook2.EmptySuccess{}, nil
 }
 
 func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.ClientDisconnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("%s断开连接", in.Clientinfo.Username))
 	token := netbase.GetUserName(in.Clientinfo)
-
+	if in.Clientinfo.Clientid == mqtt.DefaultDownStreamClientId {
+		return &exhook2.EmptySuccess{}, nil
+	}
 	etoken := &tool.DeviceAuth{}
 	err := etoken.GetDeviceToken(token)
 	if err != nil {
 		return nil, err
 	}
-	ts := time.Now().Format("2006-01-02 15:04:05.000")
-	ci := &tdengine.ConnectInfo{
-		ClientID:   in.Clientinfo.Clientid,
-		DeviceId:   etoken.DeviceId,
-		PeerHost:   in.Clientinfo.Peerhost,
-		Protocol:   in.Clientinfo.Protocol,
-		SocketPort: strconv.Itoa(int(in.Clientinfo.Sockport)),
-		Type:       message.DisConnectMes,
-		Ts:         ts,
-	}
-	v, err := netbase.EncodeData(*ci)
-	if err != nil {
-		return nil, err
-	}
-
-	// 添加设备下线记录
-	data := &netbase.DeviceEventInfo{
-		DeviceId: etoken.DeviceId,
-		Datas:    string(v),
-		Type:     message.DisConnectMes,
-	}
+	data := netbase.CreateConnectionInfo(message.DisConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
 	s.HookService.MessageCh <- data
 	return &exhook2.EmptySuccess{}, nil
 }
@@ -225,9 +189,10 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 	eventType := IotHubTopic.GetMessageType(in.Message.Topic)
 	datas := string(in.GetMessage().GetPayload())
 	data := &netbase.DeviceEventInfo{
-		Type:     eventType,
-		Datas:    datas,
-		DeviceId: etoken.DeviceId,
+		Type:       eventType,
+		Datas:      datas,
+		DeviceId:   etoken.DeviceId,
+		DeviceAuth: etoken,
 	}
 	// 如果是网关子设备单独处理
 	if eventType == message.GATEWAY {
@@ -283,32 +248,12 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 				}
 			}
 			if in.Message.Topic == ConnectGatewayTopic {
-				data.Type = message.ConnectMes
-				ci := &tdengine.ConnectInfo{
-					ClientID: in.Message.From,
-					Protocol: in.Message.Headers["protocol"],
-					PeerHost: in.Message.Headers["peerhost"],
-					DeviceId: key,
-					Type:     message.ConnectMes,
-					Ts:       ts,
-				}
-				v, _ := netbase.EncodeData(*ci)
-				data.Datas = string(v)
+				data = netbase.CreateConnectionInfo(message.ConnectMes, "mqtt", in.Message.From, in.Message.Headers["peerhost"], etoken)
 				// 子设备发送到队列里
 				s.HookService.MessageCh <- data
 			}
 			if in.Message.Topic == DisconnectGatewayTopic {
-				data.Type = message.DisConnectMes
-				ci := &tdengine.ConnectInfo{
-					ClientID: in.Message.From,
-					DeviceId: key,
-					Protocol: in.Message.Headers["protocol"],
-					PeerHost: in.Message.Headers["peerhost"],
-					Type:     message.DisConnectMes,
-					Ts:       ts,
-				}
-				v, _ := netbase.EncodeData(*ci)
-				data.Datas = string(v)
+				data = netbase.CreateConnectionInfo(message.DisConnectMes, "mqtt", in.Message.From, in.Message.Headers["peerhost"], etoken)
 				// 子设备发送到队列里
 				s.HookService.MessageCh <- data
 			}
@@ -319,6 +264,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 
 	switch eventType {
 	case message.RowMes:
+		data.Type = message.RowMes
 		data.Datas = fmt.Sprintf(`{"ts": "%s","rowdata": "%s"}`, ts, data.Datas)
 	case message.AttributesMes:
 		attributesData := netbase.UpdateDeviceAttributesData(data.Datas)

@@ -136,7 +136,7 @@ func (p *DeviceApi) GetDeviceTelemetryHistory(rc *restfulx.ReqCtx) {
 	limit := restfulx.QueryInt(rc, "limit", 1000)
 	device := p.DeviceApp.FindOne(id)
 	sql := `select ts,? from ? where ts > '?' and ts < '?' and ? is not null ORDER BY ts DESC LIMIT ? `
-	rs, err := global.TdDb.GetAll(sql, key, fmt.Sprintf("%s_telemetry", device.Name), startTime, endTime, key, limit)
+	rs, err := global.TdDb.GetAll(sql, key, fmt.Sprintf("%s_telemetry", strings.ToLower(device.Name)), startTime, endTime, key, limit)
 	biz.ErrIsNilAppendErr(err, "查询设备属性的遥测历史失败")
 	rc.ResData = rs
 }

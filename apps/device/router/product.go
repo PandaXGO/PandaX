@@ -6,6 +6,7 @@ import (
 	"pandax/apps/device/api"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	ruleService "pandax/apps/rule/services"
 
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
@@ -17,6 +18,7 @@ func InitProductRouter(container *restful.Container) {
 		DeviceApp:   services.DeviceModelDao,
 		TemplateApp: services.ProductTemplateModelDao,
 		OtaAPP:      services.ProductOtaModelDao,
+		RuleApp:     ruleService.RuleChainModelDao,
 	}
 
 	ws := new(restful.WebService)

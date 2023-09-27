@@ -76,7 +76,6 @@ func (p *RuleChainApi) InsertRuleChain(rc *restfulx.ReqCtx) {
 func (p *RuleChainApi) UpdateRuleChain(rc *restfulx.ReqCtx) {
 	var data entity.RuleChain
 	restfulx.BindJsonAndValid(rc, &data)
-
 	p.RuleChainApp.Update(data)
 }
 

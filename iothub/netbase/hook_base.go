@@ -6,6 +6,7 @@ import (
 	"pandax/apps/device/services"
 	"pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/global"
+	"pandax/pkg/tdengine"
 	"pandax/pkg/tool"
 	"regexp"
 	"strings"
@@ -121,4 +122,27 @@ func GetRequestIdFromTopic(reg, topic string) (requestId string) {
 		return res[1]
 	}
 	return ""
+}
+
+func CreateConnectionInfo(msgType, protocol, clientID, peerHost string, deviceAuth *tool.DeviceAuth) *DeviceEventInfo {
+	ts := time.Now().Format("2006-01-02 15:04:05.000")
+	ci := &tdengine.ConnectInfo{
+		ClientID: clientID,
+		DeviceId: deviceAuth.DeviceId,
+		PeerHost: peerHost,
+		Protocol: protocol,
+		Type:     msgType,
+		Ts:       ts,
+	}
+	v, err := EncodeData(*ci)
+	if err != nil {
+		return nil
+	}
+	// 添加设备上线记录
+	return &DeviceEventInfo{
+		DeviceId:   deviceAuth.DeviceId,
+		DeviceAuth: deviceAuth,
+		Datas:      string(v),
+		Type:       msgType,
+	}
 }

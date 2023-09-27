@@ -16,6 +16,7 @@ import (
 
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	ruleService "pandax/apps/rule/services"
 )
 
 type ProductApi struct {
@@ -23,6 +24,7 @@ type ProductApi struct {
 	DeviceApp   services.DeviceModel
 	TemplateApp services.ProductTemplateModel
 	OtaAPP      services.ProductOtaModel
+	RuleApp     ruleService.RuleChainModel
 }
 
 // GetProductList Product列表数据
@@ -103,6 +105,12 @@ func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 	data.Id = tool.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
+	// 如果未设置规则链，默认为主链
+	if data.RuleChainId == "" {
+		root := p.RuleApp.FindOneByRoot()
+		data.RuleChainId = root.Id
+	}
+
 	p.ProductApp.Insert(data)
 }
 

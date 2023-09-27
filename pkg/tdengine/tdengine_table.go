@@ -30,7 +30,7 @@ func (s *TdEngine) InsertDevice(deviceKey string, data map[string]any) (err erro
 	}
 
 	sql := "INSERT INTO ? (?) VALUES (?)"
-	_, err = s.db.Exec(sql, deviceKey, strings.Join(field, ","), strings.Join(value, ","))
+	_, err = s.db.Exec(sql, strings.ToLower(deviceKey), strings.Join(field, ","), strings.Join(value, ","))
 
 	return
 }

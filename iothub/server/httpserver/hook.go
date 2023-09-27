@@ -12,7 +12,6 @@ import (
 	"pandax/iothub/netbase"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
-	"pandax/pkg/tdengine"
 	"pandax/pkg/tool"
 	"sync"
 	"time"
@@ -41,26 +40,8 @@ func InitHttpHook(addr string, hs *hook_message_work.HookService) {
 		// 断开连接
 		switch state {
 		case http.StateHijacked, http.StateClosed:
-			ts := time.Now().Format("2006-01-02 15:04:05.000")
-			deviceId, _ := activeConnections.Load(conn.RemoteAddr())
-			ci := &tdengine.ConnectInfo{
-				ClientID: conn.RemoteAddr().String(),
-				DeviceId: deviceId.(string),
-				PeerHost: conn.RemoteAddr().String(),
-				Protocol: "http",
-				Type:     message.ConnectMes,
-				Ts:       ts,
-			}
-			v, err := netbase.EncodeData(*ci)
-			if err != nil {
-				return
-			}
-			// 添加设备上线记录
-			data := &netbase.DeviceEventInfo{
-				DeviceId: deviceId.(string),
-				Datas:    string(v),
-				Type:     message.ConnectMes,
-			}
+			etoken, _ := activeConnections.Load(conn.RemoteAddr())
+			data := netbase.CreateConnectionInfo(message.DisConnectMes, "http", conn.RemoteAddr().String(), conn.RemoteAddr().String(), etoken.(*tool.DeviceAuth))
 			service.HookService.MessageCh <- data
 			activeConnections.Delete(conn.RemoteAddr())
 		}
@@ -99,38 +80,22 @@ func (hhs *HookHttpService) hook(req *restful.Request, resp *restful.Response) {
 	}
 	etoken := &tool.DeviceAuth{}
 	etoken.GetDeviceToken(token)
-	ts := time.Now().Format("2006-01-02 15:04:05.000")
 	_, ok := activeConnections.Load(req.Request.RemoteAddr)
 	// 是否需要添加设备上线通知
 	if !ok {
-		activeConnections.Store(req.Request.RemoteAddr, etoken.DeviceId)
-		ci := &tdengine.ConnectInfo{
-			ClientID: req.Request.RemoteAddr,
-			DeviceId: etoken.DeviceId,
-			PeerHost: req.Request.RemoteAddr,
-			Protocol: "http",
-			Type:     message.ConnectMes,
-			Ts:       ts,
-		}
-		v, err := netbase.EncodeData(*ci)
-		if err != nil {
-			return
-		}
-		// 添加设备上线记录
-		data := &netbase.DeviceEventInfo{
-			DeviceId: etoken.DeviceId,
-			Datas:    string(v),
-			Type:     message.ConnectMes,
-		}
+		activeConnections.Store(req.Request.RemoteAddr, etoken)
+		data := netbase.CreateConnectionInfo(message.ConnectMes, "http", req.Request.RemoteAddr, req.Request.RemoteAddr, etoken)
 		hhs.HookService.MessageCh <- data
 	}
 	marshal, _ := json.Marshal(upData)
 	data := &netbase.DeviceEventInfo{
-		Datas:    string(marshal),
-		DeviceId: etoken.DeviceId,
+		Datas:      string(marshal),
+		DeviceAuth: etoken,
+		DeviceId:   etoken.DeviceId,
 	}
 	switch pathType {
 	case Row:
+		ts := time.Now().Format("2006-01-02 15:04:05.000")
 		data.Type = message.RowMes
 		data.Datas = fmt.Sprintf(`{"ts": "%s","rowdata": "%s"}`, ts, data.Datas)
 	case Telemetry:

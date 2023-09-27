@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/taosdata/driver-go/v3/taosRestful"
+	"strings"
 	"time"
 )
 
@@ -51,7 +52,7 @@ func (s *TdEngine) GetTdEngineAllDb() (data []string, err error) {
 func (s *TdEngine) GetListTableByStableName(stableName string) (data []*TDEngineTablesList, err error) {
 	sql := `SELECT table_name AS tableName, db_name AS dbName, create_time AS createTime, stable_name AS stableName FROM information_schema.ins_tables WHERE db_name = ? and stable_name = ?`
 
-	rows, err := s.db.Query(sql, s.db, stableName)
+	rows, err := s.db.Query(sql, s.db, strings.ToLower(stableName))
 	if err != nil {
 		return
 	}
@@ -76,7 +77,7 @@ func (s *TdEngine) GetListTableByStableName(stableName string) (data []*TDEngine
 
 // GetTdEngineTableInfoByTable 获取指定数据表结构信息
 func (s *TdEngine) GetTdEngineTableInfoByTable(tableName string) (data []*TDEngineTableInfo, err error) {
-	rows, err := s.db.Query("DESCRIBE " + s.dbName + "." + tableName + ";")
+	rows, err := s.db.Query("DESCRIBE " + s.dbName + "." + strings.ToLower(tableName) + ";")
 	if err != nil {
 		return
 	}
@@ -97,7 +98,7 @@ func (s *TdEngine) GetTdEngineTableInfoByTable(tableName string) (data []*TDEngi
 func (s *TdEngine) GetTdEngineTableDataByTable(tableName string) (data *TableDataInfo, err error) {
 	data = new(TableDataInfo)
 
-	rows, err := s.db.Query("SELECT * FROM " + tableName)
+	rows, err := s.db.Query("SELECT * FROM " + strings.ToLower(tableName))
 	if err != nil {
 		return
 	}

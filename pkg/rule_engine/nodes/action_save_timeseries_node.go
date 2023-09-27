@@ -26,13 +26,13 @@ func (n *saveTimeSeriesNode) Handle(msg *message.Message) error {
 	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
-	if msg.MsgType != message.TelemetryMes {
+	/*	if msg.MsgType != message.TelemetryMes && msg.MsgType != message.RowMes{
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
 		} else {
 			return nil
 		}
-	}
+	}*/
 	//deviceId := msg.GetMetadata().GetValues()["deviceId"].(string)
 	deviceName := msg.Metadata["deviceName"].(string)
 	err := global.TdDb.InsertDevice(deviceName+"_telemetry", msg.Msg)
