@@ -17,7 +17,7 @@ func InitEvents() {
 		})
 		if list != nil {
 			for _, product := range *list {
-				global.Cache.Put(product.Id, codeData)
+				global.ProductCache.Put(product.Id, codeData)
 			}
 		}
 	})

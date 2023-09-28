@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PandaXGO/PandaKit/biz"
+	"log"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
@@ -67,6 +68,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 				global.Log.Error("规则链执行失败", errs)
 			}
 			// 保存设备影子
+			log.Println(ruleMessage.Msg, msg.Type, msg.DeviceAuth)
 			if msg.Type != message.RpcRequestMes {
 				SetDeviceShadow(msg.DeviceAuth, ruleMessage.Msg, msg.Type)
 			}
@@ -106,7 +108,7 @@ func getRuleChain(etoken *tool.DeviceAuth) *ruleEntity.RuleDataJson {
 		}
 	}()
 	key := etoken.ProductId
-	get, err := global.Cache.ComputeIfAbsent(key, func(k any) (any, error) {
+	get, err := global.ProductCache.ComputeIfAbsent(key, func(k any) (any, error) {
 		one := services.ProductModelDao.FindOne(k.(string))
 		rule := ruleService.RuleChainModelDao.FindOne(one.RuleChainId)
 		return rule.RuleDataJson, nil

@@ -203,15 +203,15 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 			res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: false}
 			return res, nil
 		}
-		// key就是deviceId
+		// key就是device name
 		for key, value := range subData {
-			etoken := &tool.DeviceAuth{}
-			err = global.RedisDb.Get(key, etoken)
-			if err != nil {
-				global.Log.Infof("%s设备不存在", key)
+			auth, isSub := netbase.SubAuth(key)
+			if !isSub {
+				global.Log.Infof("子设备%s 标识不存在，请先创建设备标识", key)
 				continue
 			}
-			data.DeviceId = key
+			data.DeviceAuth = auth
+			data.DeviceId = auth.DeviceId
 			if in.Message.Topic == AttributesGatewayTopic {
 				data.Type = message.AttributesMes
 				marshal, _ := json.Marshal(value)
@@ -227,35 +227,27 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 			if in.Message.Topic == TelemetryGatewayTopic {
 				data.Type = message.TelemetryMes
 				// 数据处理 如果上传的数据没有时间戳 添加时间戳更改格式化
-				telData := make([]map[string]interface{}, 0)
-				// 解析子设备遥测数据结构
-				marshal, _ := json.Marshal(value)
-				err := json.Unmarshal(marshal, &telData)
-				if err != nil {
-					global.Log.Infof("%s子设备遥测数据结构错误", key)
+				td, _ := json.Marshal(value)
+				telemetryData := netbase.UpdateDeviceTelemetryData(string(td))
+				if telemetryData == nil {
 					continue
 				}
-				for _, da := range telData {
-					td, _ := json.Marshal(da)
-					telemetryData := netbase.UpdateDeviceTelemetryData(string(td))
-					if telemetryData == nil {
-						continue
+				bytes, _ := json.Marshal(telemetryData)
+				data.Datas = string(bytes)
+				// 子设备发送到队列里
+				s.HookService.MessageCh <- data
+			}
+			if in.Message.Topic == ConnectGatewayTopic {
+				if val, ok := value.(string); ok {
+					if val == "online" {
+						data = netbase.CreateConnectionInfo(message.ConnectMes, "mqtt", in.Message.From, in.Message.Headers["peerhost"], auth)
 					}
-					bytes, _ := json.Marshal(telemetryData)
-					data.Datas = string(bytes)
+					if val == "offline" {
+						data = netbase.CreateConnectionInfo(message.DisConnectMes, "mqtt", in.Message.From, in.Message.Headers["peerhost"], auth)
+					}
 					// 子设备发送到队列里
 					s.HookService.MessageCh <- data
 				}
-			}
-			if in.Message.Topic == ConnectGatewayTopic {
-				data = netbase.CreateConnectionInfo(message.ConnectMes, "mqtt", in.Message.From, in.Message.Headers["peerhost"], etoken)
-				// 子设备发送到队列里
-				s.HookService.MessageCh <- data
-			}
-			if in.Message.Topic == DisconnectGatewayTopic {
-				data = netbase.CreateConnectionInfo(message.DisConnectMes, "mqtt", in.Message.From, in.Message.Headers["peerhost"], etoken)
-				// 子设备发送到队列里
-				s.HookService.MessageCh <- data
 			}
 		}
 		res.Value = &exhook2.ValuedResponse_Message{Message: in.Message}

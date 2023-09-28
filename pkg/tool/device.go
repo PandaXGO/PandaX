@@ -24,7 +24,6 @@ type DeviceAuth struct {
 	ProductId   string `json:"product_id"`
 	RuleChainId string `json:"rule_chain_id"`
 	Name        string `json:"name"`
-	Token       string `json:"token"`
 	CreatedAt   int64  `json:"created_at"`
 	ExpiredAt   int64  `json:"expired_at"`
 }

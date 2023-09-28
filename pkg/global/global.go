@@ -21,4 +21,6 @@ var (
 var EventEmitter = events.EventEmitter{}
 
 // Cache 默认10分钟
-var Cache = cache.NewTimedCache(cache.NoExpiration, 600*time.Second)
+var ProductCache = cache.NewTimedCache(cache.NoExpiration, 24*time.Hour)
+var SubDeviceCache = cache.NewTimedCache(cache.NoExpiration, 24*time.Hour)
+var PanelCache = cache.NewTimedCache(cache.NoExpiration, 600*time.Second)

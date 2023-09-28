@@ -31,7 +31,7 @@ type DeviceApi struct {
 }
 
 func (p *DeviceApi) GetDevicePanel(rc *restfulx.ReqCtx) {
-	get, err := global.Cache.ComputeIfAbsent("panel", func(k any) (any, error) {
+	get, err := global.PanelCache.ComputeIfAbsent("panel", func(k any) (any, error) {
 		var data entity.DeviceTotalOutput
 		data.DeviceInfo = p.DeviceApp.FindDeviceCount()
 		data.DeviceLinkStatusInfo = p.DeviceApp.FindDeviceCountGroupByLinkStatus()

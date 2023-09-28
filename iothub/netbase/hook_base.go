@@ -2,7 +2,6 @@ package netbase
 
 import (
 	"encoding/json"
-	"log"
 	"pandax/apps/device/services"
 	"pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/global"
@@ -25,7 +24,6 @@ func Auth(authToken string) bool {
 		err = global.RedisDb.Get(authToken, etoken)
 	} else {
 		device, err := services.DeviceModelDao.FindOneByToken(authToken)
-		log.Println(err)
 		if err != nil {
 			global.Log.Infof("设备token %s 不存在", authToken)
 			return false
@@ -46,6 +44,32 @@ func Auth(authToken string) bool {
 		return false
 	}
 	return true
+}
+
+func SubAuth(name string) (*tool.DeviceAuth, bool) {
+	etoken := &tool.DeviceAuth{}
+	// redis 中有就查询，没有就添加
+	exists, err := global.RedisDb.Exists(global.RedisDb.Context(), name).Result()
+	if exists == 1 {
+		err = etoken.GetDeviceToken(name)
+	} else {
+		device, err := services.DeviceModelDao.FindOneByName(name)
+		// 没有设备就要创建设备
+		if err != nil {
+			global.Log.Infof("设备标识 %s 不存在", name)
+			return nil, false
+		}
+		etoken, err = services.GetDeviceToken(device)
+		if err != nil {
+			global.Log.Infof("设备标识 %s添加缓存失败", name)
+			return nil, false
+		}
+	}
+	if err != nil {
+		global.Log.Infof("无效设备标识 %s", name)
+		return nil, false
+	}
+	return etoken, true
 }
 
 // 解析遥测数据类型 返回标准带时间戳格式

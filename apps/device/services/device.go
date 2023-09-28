@@ -13,6 +13,7 @@ type (
 	DeviceModel interface {
 		Insert(data entity.Device) *entity.Device
 		FindOneByToken(token string) (*entity.Device, error)
+		FindOneByName(name string) (*entity.Device, error)
 		FindOne(id string) *entity.DeviceRes
 		FindListPage(page, pageSize int, data entity.Device) (*[]entity.DeviceRes, int64)
 		FindList(data entity.Device) *[]entity.DeviceRes
@@ -39,11 +40,11 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 	list := m.FindList(entity.Device{Name: data.Name})
 	biz.IsTrue(list != nil && len(*list) == 0, "设备名称已经存在")
 	//2 创建认证TOKEN IOTHUB使用
-	etoken, err := GetDeviceToken(&data)
+	_, err := GetDeviceToken(&data)
 	biz.ErrIsNil(err, "设备缓存失败")
 	// 子网关不需要设置token
-	if data.DeviceType != global.GATEWAYS {
-		data.Token = etoken.Token
+	if data.DeviceType == global.GATEWAYS {
+		data.Token = ""
 	}
 	//3 添加设备
 	err = tx.Table(m.table).Create(&data).Error
@@ -64,6 +65,13 @@ func (m *deviceModelImpl) FindOne(id string) *entity.DeviceRes {
 	err := db.Preload("Product").Preload("DeviceGroup").First(resData).Error
 	biz.ErrIsNil(err, "查询设备失败")
 	return resData
+}
+
+func (m *deviceModelImpl) FindOneByName(token string) (*entity.Device, error) {
+	resData := new(entity.Device)
+	db := global.Db.Table(m.table).Where("name = ?", token)
+	err := db.First(resData).Error
+	return resData, err
 }
 
 func (m *deviceModelImpl) FindOneByToken(token string) (*entity.Device, error) {
@@ -205,11 +213,9 @@ func GetDeviceToken(data *entity.Device) (*tool.DeviceAuth, error) {
 	etoken.CreatedAt = now.Unix()
 	etoken.ExpiredAt = now.Add(time.Hour * 24 * 365).Unix()
 	if data.Token == "" {
-		etoken.Token = etoken.MD5ID()
-	} else {
-		etoken.Token = data.Token
+		data.Token = etoken.MD5ID()
 	}
-	err := etoken.CreateDeviceToken(etoken.Token)
+	err := etoken.CreateDeviceToken(data.Token)
 	return etoken, err
 }
 

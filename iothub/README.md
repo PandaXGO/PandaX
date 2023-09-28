@@ -47,7 +47,7 @@ return {msg: msg, metadata: metadata, msgType: msgType};
 ```
 
 ## 网关子设备属性上报格式
-devA 为设备ID
+devA 为设备标识
 ```json
 {
   "devA": {
@@ -62,18 +62,25 @@ devA 为设备ID
 ```
 
 ## 网关子设备遥测上报格式
-devA 为设备ID
+devA 为设备标识
 ```json
 {
-  "devA": [
-    {
+  "devA": {
       "ts": 1689837909000,
       "values": {
         "telemetry1": "value1",
         "telemetry2": 0
       }
     }
-  ]
+}
+```
+或者
+```json
+{
+  "devA": {
+    "telemetry1": "value1",
+    "telemetry2": 0
+    }
 }
 ```
 
@@ -84,13 +91,11 @@ devA 为设备ID
   "devB": "offline"
 }
 ```
-## 命令下发格式
-下发的ID和相应的ID相同
+## 命令下发,设备请求格式,
 ```json
 {
-   "id": "2343",
-   "cmd": "restart",
-   "content": {
+   "method": "restart",
+   "params": {
       "firmware_address": "http://xxx.yyy.com",
       "version": "latest",
       "secret": "****",
@@ -98,14 +103,13 @@ devA 为设备ID
    }
 }
 ```
+属性下发 method: 'setAttributes'
 
 ## 命令响应的格式
-success 返回结果必传 content代表输出参数可选
 ```json
 {
-  "id": "2343",
-  "success": true,
-  "content": {
+  "method": "2343",
+  "params": {
      "aa": "2"
    }
 }

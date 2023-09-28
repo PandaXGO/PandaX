@@ -15,7 +15,6 @@ const (
 	AttributesGatewayTopic = "v1/gateway/attributes"
 	TelemetryGatewayTopic  = "v1/gateway/telemetry"
 	ConnectGatewayTopic    = "v1/gateway/connect"
-	DisconnectGatewayTopic = "v1/gateway/disconnect"
 
 	RpcReqReg = `v1/devices/me/rpc/request/(.*?)$`
 )
@@ -33,7 +32,6 @@ func NewIotHubTopic() TopicMeg {
 		AttributesGatewayTopic: message.GATEWAY,
 		TelemetryGatewayTopic:  message.GATEWAY,
 		ConnectGatewayTopic:    message.GATEWAY,
-		DisconnectGatewayTopic: message.GATEWAY,
 	}
 }
 
