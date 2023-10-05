@@ -30,9 +30,9 @@ func InitUploadRouter(container *restful.Container) {
 		Returns(200, "OK", map[string]string{}))
 
 	ws.Route(ws.GET("/get/{subpath}").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithNeedToken(false).WithNeedCasbin(false).WithLog("获取图片").Handle(s.GetImage)
+		restfulx.NewReqCtx(request, response).WithNeedToken(false).WithNeedCasbin(false).WithLog("获取文件").Handle(s.GetImage)
 	}).
-		Doc("获取图片").
+		Doc("获取文件").
 		Param(ws.PathParameter("subpath", "文件名")).
 		Metadata(restfulspec.KeyOpenAPITags, tags))
 

@@ -75,6 +75,7 @@ type ProductOta struct {
 	Version     string `json:"version" gorm:"type:varchar(64);comment:固件版本" validate:"required"`
 	IsLatest    bool   `json:"isLatest" gorm:"comment:是最新固件"`
 	Url         string `json:"url" gorm:"type:varchar(128);comment:下载地址" validate:"required"`
+	Check       string `json:"check" gorm:"type:varchar(128);comment:md5校验值"`
 	Description string `json:"description"  gorm:"type:varchar(255);comment:说明"`
 }
 

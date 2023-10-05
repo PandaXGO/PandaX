@@ -2,9 +2,11 @@ package api
 
 // ==========================================================================
 import (
+	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/pkg/tool"
+	"path"
 	"strings"
 
 	"pandax/apps/device/entity"
@@ -14,6 +16,8 @@ import (
 type ProductOtaApi struct {
 	ProductOtaApp services.ProductOtaModel
 }
+
+const filePath = "uploads/file"
 
 // GetProductOtaList Ota列表数据
 func (p *ProductOtaApi) GetProductOtaList(rc *restfulx.ReqCtx) {
@@ -43,7 +47,11 @@ func (p *ProductOtaApi) GetProductOta(rc *restfulx.ReqCtx) {
 func (p *ProductOtaApi) InsertProductOta(rc *restfulx.ReqCtx) {
 	var data entity.ProductOta
 	restfulx.BindJsonAndValid(rc, &data)
+	// 生成文件MD5值
+	md5, err := tool.GetFileMd5(path.Join(filePath, data.Url))
+	biz.ErrIsNil(err, "读取文件md5校验值错误")
 	data.Id = tool.GenerateID()
+	data.Check = md5
 	p.ProductOtaApp.Insert(data)
 }
 
@@ -51,7 +59,9 @@ func (p *ProductOtaApi) InsertProductOta(rc *restfulx.ReqCtx) {
 func (p *ProductOtaApi) UpdateProductOta(rc *restfulx.ReqCtx) {
 	var data entity.ProductOta
 	restfulx.BindJsonAndValid(rc, &data)
-
+	md5, err := tool.GetFileMd5(path.Join(filePath, data.Url))
+	biz.ErrIsNil(err, "读取文件md5校验值错误")
+	data.Check = md5
 	p.ProductOtaApp.Update(data)
 }
 
