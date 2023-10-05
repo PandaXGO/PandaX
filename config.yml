@@ -75,6 +75,7 @@ gen:
 
 # 视频服务器使用的全局配置
 global:
+  loglevel: info
   http:
     listenaddr: :8801 # 网关地址，用于访问API
     listenaddrtls: :8443  # 用于HTTPS方式访问API的端口配置
@@ -88,6 +89,10 @@ gb28181:
   #sip服务器端口
   port:
     sip: tcp:5060
+
+jessica:
+  http:
+    listenaddr: :8801 # 网关地址，用于访问API
 
 # 萤石摄像头token
 ys:
