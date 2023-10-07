@@ -5,6 +5,7 @@ import (
 	"pandax/iothub/server/emqxserver"
 	"pandax/iothub/server/httpserver"
 	"pandax/iothub/server/tcpserver"
+	updserver "pandax/iothub/server/udpserver"
 )
 
 func InitIothub() {
@@ -15,6 +16,8 @@ func InitIothub() {
 	go httpserver.InitHttpHook("", service)
 	//初始化TCP
 	go tcpserver.InitTcpHook("", service)
+
+	go updserver.InitUdpHook("", service)
 	// 开启线程处理消息
 	go service.MessageWork()
 }

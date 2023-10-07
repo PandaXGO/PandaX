@@ -23,7 +23,7 @@ func InitTcpHook(addr string, hs *hook_message_work.HookService) {
 	server := NewTcpServer(addr)
 	err := server.Start(context.TODO())
 	if err != nil {
-		global.Log.Error("IOTHUB HTTP服务启动错误", err)
+		global.Log.Error("IOTHUB TCP服务启动错误", err)
 		return
 	} else {
 		global.Log.Infof("TCP IOTHUB HOOK Start SUCCESS, Server listen: %s", addr)
