@@ -90,10 +90,6 @@ gb28181:
   port:
     sip: tcp:5060
 
-jessica:
-  http:
-    listenaddr: :8801 # 网关地址，用于访问API
-
 # 萤石摄像头token
 ys:
   appKey: ""

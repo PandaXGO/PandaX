@@ -1,8 +1,8 @@
 resources:
-- namespace.yaml
-- rbac.yaml
-- service.yaml
-- deployment.yaml
+- pandax/pandax-deployment-service.yaml
+- pandax/pandaxweb-deployment-service.yaml
+- pandax/pandaxrule-deployment-service.yaml
+- pandax/pandaxscreen-deployment-service.yaml
 
 commonLabels:
   app.kubernetes.io/version: 1.0.0

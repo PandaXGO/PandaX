@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: emqx
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 1883
+      targetPort: 1883
+      protocol: TCP
+    - port: 8083
+      targetPort: 8083
+      protocol: TCP
+    - port: 8084
+      targetPort: 8084
+      protocol: TCP
+    - port: 8883
+      targetPort: 8883
+      protocol: TCP
+    - port: 18083
+      targetPort: 18083
+      protocol: TCP
+  selector:
+    app: emqx
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: emqx
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: emqx
+    spec:
+      containers:
+        - image: emqx/emqx:5.1.0
+          name: emqx
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 1883
+              protocol: TCP
+            - containerPort: 8083
+              protocol: TCP
+            - containerPort: 8084
+              protocol: TCP
+            - containerPort: 8883
+              protocol: TCP
+            - containerPort: 18083
+              protocol: TCP

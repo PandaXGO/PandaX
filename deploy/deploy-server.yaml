@@ -1,0 +1,268 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/name: pandax
+    app.kubernetes.io/version: 1.0.0
+  name: pandax
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/name: pandax
+    app.kubernetes.io/version: 1.0.0
+  name: pandax
+  namespace: pandax
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: pandax
+    app.kubernetes.io/version: 1.0.0
+  name: pandax-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: pandax
+  namespace: pandax
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: emqx
+  namespace: pandax
+spec:
+  ports:
+  - port: 1883
+    protocol: TCP
+    targetPort: 1883
+  - port: 8083
+    protocol: TCP
+    targetPort: 8083
+  - port: 8084
+    protocol: TCP
+    targetPort: 8084
+  - port: 8883
+    protocol: TCP
+    targetPort: 8883
+  - port: 18083
+    protocol: TCP
+    targetPort: 18083
+  selector:
+    app: emqx
+    app.kubernetes.io/version: 1.0.0
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: mysql
+  namespace: pandax
+spec:
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: mysql
+  selector:
+    app: mysql
+    app.kubernetes.io/version: 1.0.0
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: redis
+  namespace: pandax
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: redis
+  selector:
+    app: redis
+    app.kubernetes.io/version: 1.0.0
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: tdengine
+  namespace: pandax
+spec:
+  ports:
+  - port: 6030
+    protocol: TCP
+    targetPort: 6030
+  - port: 6041
+    protocol: TCP
+    targetPort: 6041
+  selector:
+    app: tdengine
+    app.kubernetes.io/version: 1.0.0
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: emqx
+  namespace: pandax
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: emqx
+      app.kubernetes.io/version: 1.0.0
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: emqx
+        app.kubernetes.io/version: 1.0.0
+    spec:
+      containers:
+      - image: emqx/emqx:5.1.0
+        imagePullPolicy: IfNotPresent
+        name: emqx
+        ports:
+        - containerPort: 1883
+          protocol: TCP
+        - containerPort: 8083
+          protocol: TCP
+        - containerPort: 8084
+          protocol: TCP
+        - containerPort: 8883
+          protocol: TCP
+        - containerPort: 18083
+          protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: mysql
+  namespace: pandax
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+      app.kubernetes.io/version: 1.0.0
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+        app.kubernetes.io/version: 1.0.0
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: pandax
+        image: mysql:8.0.23
+        imagePullPolicy: IfNotPresent
+        name: mysql
+        ports:
+        - containerPort: 3306
+          name: mysql
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-data
+      volumes:
+      - hostPath:
+          name: mysql-data
+          path: ./mysql/data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: redis
+  namespace: pandax
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+      app.kubernetes.io/version: 1.0.0
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redis
+        app.kubernetes.io/version: 1.0.0
+    spec:
+      containers:
+      - env:
+        - name: requirepass
+          value: pandax
+        image: redis:7.0.12
+        imagePullPolicy: IfNotPresent
+        name: redis
+        ports:
+        - containerPort: 3306
+          name: redis
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data
+          name: redis-data
+        - mountPath: /logs
+          name: mysql-log
+      volumes:
+      - hostPath:
+          name: redis-data
+          path: ./redis/data
+      - hostPath:
+          name: redis-log
+          path: ./redis/logs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: tdengine
+  namespace: pandax
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tdengine
+      app.kubernetes.io/version: 1.0.0
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tdengine
+        app.kubernetes.io/version: 1.0.0
+    spec:
+      containers:
+      - image: tdengine/tdengine:3.0.4.2
+        imagePullPolicy: IfNotPresent
+        name: tdengine
+        ports:
+        - containerPort: 6030
+          protocol: TCP
+        - containerPort: 6041
+          protocol: TCP

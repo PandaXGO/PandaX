@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tdengine
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 6030
+      targetPort: 6030
+      protocol: TCP
+    - port: 6041
+      targetPort: 6041
+      protocol: TCP
+  selector:
+    app: tdengine
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tdengine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tdengine
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tdengine
+    spec:
+      containers:
+        - image: tdengine/tdengine:3.0.4.2
+          name: tdengine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6030
+              protocol: TCP
+            - containerPort: 6041
+              protocol: TCP

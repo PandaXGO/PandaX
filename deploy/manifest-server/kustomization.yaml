@@ -1,0 +1,11 @@
+resources:
+- namespace.yaml
+- rbac.yaml
+- mysql/deployment-service.yaml
+- redis/deployment-service.yaml
+- emqx/deployment-service.yaml
+- tdengine/deployment-service.yaml
+
+commonLabels:
+  app.kubernetes.io/version: 1.0.0
+namespace: pandax

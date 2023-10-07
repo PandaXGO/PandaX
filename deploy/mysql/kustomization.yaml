@@ -1,8 +1,0 @@
-resources:
-- namespace.yaml
-- mysql-pv.yaml
-- deployment-service.yaml
-
-commonLabels:
-  app.kubernetes.io/version: 1.0.0
-namespace: pandax-db

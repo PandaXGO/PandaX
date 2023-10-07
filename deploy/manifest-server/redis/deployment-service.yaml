@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 6379
+      targetPort: redis
+      protocol: TCP
+  selector:
+    app: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - image: redis:7.0.12
+          name: redis
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: requirepass
+              value: pandax
+          ports:
+            - containerPort: 3306
+              name: redis
+              protocol: TCP
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+            - name: mysql-log
+              mountPath: /logs
+      volumes:
+        - hostPath:
+            path: ./redis/data
+            name: redis-data
+        - hostPath:
+            path: ./redis/logs
+            name: redis-log
