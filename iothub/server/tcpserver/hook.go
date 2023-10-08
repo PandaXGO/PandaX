@@ -80,15 +80,17 @@ func (hhs *HookTcpService) hook() {
 				hhs.Send("fail")
 			}
 		} else {
-			hexData := hex.EncodeToString(buf[:n])
-			global.Log.Infof("TCP协议 设备%s, 接受消息%s", etoken.DeviceId, hexData)
-			ts := time.Now().Format("2006-01-02 15:04:05.000")
 			data := &netbase.DeviceEventInfo{
 				DeviceId:   etoken.DeviceId,
 				DeviceAuth: etoken,
-				Type:       message.RowMes,
 			}
+
+			hexData := hex.EncodeToString(buf[:n])
+			global.Log.Infof("TCP协议 设备%s, 接受消息%s", etoken.DeviceId, hexData)
+			ts := time.Now().Format("2006-01-02 15:04:05.000")
+			data.Type = message.RowMes
 			data.Datas = fmt.Sprintf(`{"ts": "%s","rowdata": "%s"}`, ts, hexData)
+
 			// etoken中添加设备标识
 			hhs.HookService.MessageCh <- data
 		}
@@ -120,4 +122,9 @@ func (hhs *HookTcpService) SendBytes(msg []byte) error {
 		hhs.HookService.MessageCh <- data
 	}
 	return err
+}
+
+func isHex(str string) bool {
+	_, err := hex.DecodeString(str)
+	return err == nil
 }
