@@ -120,5 +120,5 @@
 
 #### 💌 支持作者
 
-如果觉得框架不错，或者已经在使用了，希望你可以去 <a target="_blank" href="https://github.com/PandaGoAdmin/PandaX">PandaX</a> 或者
-<a target="_blank" href="https://github.com/PandaGoAdmin/PandaUi">PandaUi</a> 帮我点个 ⭐ Star，这将是对我极大的鼓励与支持。
+如果觉得框架不错，或者已经在使用了，希望你可以去 <a target="_blank" href="https://gitee.com/XM-GO/PandaX">PandaX</a> 或者
+<a target="_blank" href="https://gitee.com/XM-GO/PandaUi">PandaUi</a> 帮我点个 ⭐ Star，这将是对我极大的鼓励与支持。
