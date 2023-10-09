@@ -75,8 +75,7 @@ var rootCmd = &cobra.Command{
 		global.Log.Info("路由初始化完成")
 		app.Start(context.TODO())
 		//开启IOTHUB
-		iothub.InitIothub()
-		//emqxserver.InitEmqxHook(fmt.Sprintf(":%d", global.Conf.Server.GrpcPort))
+		go iothub.InitIothub()
 		//开启视频服务
 		go engine.Run(context.Background(), "config.yml")
 		stop := make(chan os.Signal, 1)
