@@ -35,6 +35,7 @@ type DeviceCmdLog struct {
 	CmdName         string `gorm:"type:varchar(64);comment:命令名称" json:"cmdName"`
 	CmdContent      string `gorm:"type:longtext;comment:命令内容" json:"cmdContent"`
 	State           string `gorm:"type:varchar(1);comment:命令状态" json:"state"`
+	Mode            string `gorm:"type:varchar(64);comment:下发模式" json:"mode"`
 	Type            string `gorm:"type:varchar(1);comment:命令类型" json:"type"` // 0 自定义 1 命令
 	ResponseContent string `gorm:"type:longtext;comment:响应内容" json:"responseContent"`
 	RequestTime     string `gorm:"comment:命令下发时间" json:"requestTime"`

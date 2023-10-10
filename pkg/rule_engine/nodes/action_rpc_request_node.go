@@ -29,7 +29,7 @@ func (n *rpcRequestNode) Handle(msg *message.Message) error {
 
 	var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "double", Timeout: n.Timeout}
 	rpc.GetRequestId()
-	respPayload, err := rpc.RequestCmd(n.Payload)
+	err := rpc.RespondTpc(n.Payload)
 	if err != nil {
 		if failureLableNode != nil {
 			return failureLableNode.Handle(msg)
@@ -37,9 +37,6 @@ func (n *rpcRequestNode) Handle(msg *message.Message) error {
 			return err
 		}
 	}
-	msgM := msg.Msg
-	msgM["payload"] = respPayload
-	msg.Msg = msgM
 	if successLableNode != nil {
 		return successLableNode.Handle(msg)
 	}

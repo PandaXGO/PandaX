@@ -148,6 +148,7 @@ func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
 	key := restfulx.QueryParam(rc, "key")
 	value := restfulx.QueryParam(rc, "value")
 	one := p.DeviceApp.FindOne(id)
+	biz.IsTrue(one.LinkStatus == global.ONLINE, "设备不在线无法设置属性")
 	if one.Product.ProtocolName == global.TCPProtocol {
 		err := tcpclient.Send(id, value)
 		biz.ErrIsNil(err, "属性下发失败")

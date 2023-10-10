@@ -14,6 +14,11 @@ const (
 	RpcReqTopic  = `v1/devices/me/rpc/request/%d`
 )
 
+const (
+	SingleMode = "single"
+	DoubleMode = "double"
+)
+
 type RpcRequest struct {
 	Client    *IothubMqttClient
 	RequestId int
@@ -37,7 +42,7 @@ func (rpc RpcRequest) RequestCmd(rpcPayload RpcPayload) (respPayload string, err
 	if err != nil {
 		return "", err
 	}
-	if rpc.Mode == "single" {
+	if rpc.Mode == "" || rpc.Mode == SingleMode {
 		return "", nil
 	}
 	// 双向才会执行
@@ -79,11 +84,6 @@ func (rpc RpcRequest) RequestAttributes(rpcPayload RpcPayload) error {
 	}
 	return rpc.Client.Pub(topic, 0, string(payload))
 }
-
-// 响应数据处理
-/*var mqMessagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
-	//log.Println(fmt.Sprintf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic()))
-}*/
 
 // RespondTpc 处理设备端请求服务端方法
 func (rpc RpcRequest) RespondTpc(reqPayload RpcPayload) error {

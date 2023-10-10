@@ -48,18 +48,22 @@ func (p *DeviceCmdLogApi) InsertDeviceCmdLog(rc *restfulx.ReqCtx) {
 	data.State = "2"
 	data.RequestTime = time.Now().Format("2006-01-02 15:04:05")
 	one := p.DeviceApp.FindOne(data.DeviceId)
+	biz.IsTrue(one.LinkStatus == global.ONLINE, "设备不在线无法下发指令")
 	if one.Product.ProtocolName == global.TCPProtocol {
 		err := tcpclient.Send(data.DeviceId, data.CmdContent)
 		biz.ErrIsNil(err, "指令下发失败")
 		data.State = "0"
+		data.ResponseTime = time.Now().Format("2006-01-02 15:04:05.000")
 	}
 	if one.Product.ProtocolName == global.MQTTProtocol {
 		// 下发指令
-		var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "single"}
+		var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: data.Mode}
 		rpc.GetRequestId()
-		_, err := rpc.RequestCmd(mqttclient.RpcPayload{Method: data.CmdName, Params: data.CmdContent})
+		res, err := rpc.RequestCmd(mqttclient.RpcPayload{Method: data.CmdName, Params: data.CmdContent})
 		biz.ErrIsNil(err, "指令下发失败")
 		data.State = "0"
+		data.ResponseTime = time.Now().Format("2006-01-02 15:04:05.000")
+		data.CmdContent = res
 	}
 	err := p.DeviceCmdLogApp.Insert(data)
 	biz.ErrIsNil(err, "添加指令记录失败")
