@@ -112,7 +112,7 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 			Type:   tel.Type,
 			Define: tel.Define,
 		}
-		if v, ok := rs[strings.ToLower(tel.Key)]; ok {
+		if v, ok := rs[tel.Key]; ok {
 			sdv.Value = v.Value
 			sdv.Time = v.UpdatedAt
 		} else {

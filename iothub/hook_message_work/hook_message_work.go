@@ -74,7 +74,6 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 				global.Log.Error("规则链执行失败", errs)
 			}
 			// 保存设备影子
-			log.Println(ruleMessage.Msg, msg.Type, msg.DeviceAuth)
 			if msg.Type != message.RpcRequestMes {
 				SetDeviceShadow(msg.DeviceAuth, ruleMessage.Msg, msg.Type)
 			}
@@ -172,11 +171,12 @@ func SetDeviceShadow(etoken *tool.DeviceAuth, msgVals map[string]interface{}, ms
 		}
 		if message.AttributesMes == msgType {
 			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslAttributesType, tel.Key, msgVals[tel.Key])
-			biz.ErrIsNil(err, "设置设备影子点失败")
+			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
 		}
 		if message.TelemetryMes == msgType {
+			log.Println(etoken.Name, global.TslTelemetryType, tel.Key, msgVals[tel.Key])
 			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslTelemetryType, tel.Key, msgVals[tel.Key])
-			biz.ErrIsNil(err, "设置设备影子点失败")
+			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
 		}
 	}
 }
