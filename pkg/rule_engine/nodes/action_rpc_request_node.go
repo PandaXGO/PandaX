@@ -1,14 +1,14 @@
 package nodes
 
 import (
-	"errors"
 	"pandax/iothub/client/mqttclient"
 	"pandax/pkg/rule_engine/message"
 )
 
 type rpcRequestNode struct {
 	bareNode
-	RequestId int `json:"requestId"`
+	Timeout int                   `json:"timeout"`
+	Payload mqttclient.RpcPayload `json:"payload"`
 }
 
 type rpcRequestNodeFactory struct{}
@@ -26,20 +26,10 @@ func (f rpcRequestNodeFactory) Create(id string, meta Metadata) (Node, error) {
 func (n *rpcRequestNode) Handle(msg *message.Message) error {
 	successLableNode := n.GetLinkedNode("Success")
 	failureLableNode := n.GetLinkedNode("Failure")
-	RequestId := n.RequestId
-	if RequestId == 0 {
-		RequestId = int(msg.Metadata.GetValue("requestId").(float64))
-	}
-	if msg.Msg.GetValue("method") == nil || msg.Msg.GetValue("params") == nil {
-		return errors.New("请求响应格式不正确")
-	}
-	var datas = mqttclient.RpcPayload{
-		Method: msg.Msg.GetValue("method").(string),
-		Params: msg.Msg.GetValue("params"),
-	}
-	var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "single"}
+
+	var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "single", Timeout: n.Timeout}
 	rpc.GetRequestId()
-	err := rpc.RespondTpc(datas)
+	respPayload, err := rpc.RequestCmd(n.Payload)
 	if err != nil {
 		if failureLableNode != nil {
 			return failureLableNode.Handle(msg)
@@ -47,6 +37,9 @@ func (n *rpcRequestNode) Handle(msg *message.Message) error {
 			return err
 		}
 	}
+	msgM := msg.Msg
+	msgM["payload"] = respPayload
+	msg.Msg = msgM
 	if successLableNode != nil {
 		return successLableNode.Handle(msg)
 	}

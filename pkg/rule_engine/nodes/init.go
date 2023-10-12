@@ -28,5 +28,6 @@ func init() {
 	RegisterFactory(externalSendEmailNodeFactory{})
 	RegisterFactory(externalSendSmsNodeFactory{})
 	RegisterFactory(externalRuleChainNodeFactory{})
+	RegisterFactory(rpcRespondFactory{})
 	RegisterFactory(rpcRequestNodeFactory{})
 }

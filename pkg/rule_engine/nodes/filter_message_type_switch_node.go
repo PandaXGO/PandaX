@@ -18,6 +18,7 @@ func (f messageTypeSwitchNodeFactory) Labels() []string {
 		message.AttributesMes,
 		message.TelemetryMes,
 		message.RpcRequestMes,
+		message.RpcRequestServerMes,
 		message.AlarmMes,
 		message.UpEventMes,
 		message.ConnectMes,

@@ -8,14 +8,15 @@ import (
 
 // 消息类型
 const (
-	ConnectMes    = "Connect"
-	DisConnectMes = "Disconnect"
-	RpcRequestMes = "RpcRequest"
-	UpEventMes    = "Event"
-	AlarmMes      = "Alarm"
-	RowMes        = "Row"
-	TelemetryMes  = "Telemetry"
-	AttributesMes = "Attributes"
+	ConnectMes          = "Connect"
+	DisConnectMes       = "Disconnect"
+	RpcRequestMes       = "RpcRequestFromDevice"
+	RpcRequestServerMes = "RpcRequestFromServer"
+	UpEventMes          = "Event"
+	AlarmMes            = "Alarm"
+	RowMes              = "Row"
+	TelemetryMes        = "Telemetry"
+	AttributesMes       = "Attributes"
 )
 
 // 数据类型Originator
