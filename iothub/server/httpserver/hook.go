@@ -41,9 +41,11 @@ func InitHttpHook(addr string, hs *hook_message_work.HookService) {
 		switch state {
 		case http.StateHijacked, http.StateClosed:
 			etoken, _ := activeConnections.Load(conn.RemoteAddr().String())
-			data := netbase.CreateConnectionInfo(message.DisConnectMes, "http", conn.RemoteAddr().String(), conn.RemoteAddr().String(), etoken.(*tool.DeviceAuth))
-			activeConnections.Delete(conn.RemoteAddr().String())
-			service.HookService.MessageCh <- data
+			if etoken != nil {
+				data := netbase.CreateConnectionInfo(message.DisConnectMes, "http", conn.RemoteAddr().String(), conn.RemoteAddr().String(), etoken.(*tool.DeviceAuth))
+				activeConnections.Delete(conn.RemoteAddr().String())
+				service.HookService.MessageCh <- data
+			}
 		}
 	}
 	err := server.Start(context.TODO())
