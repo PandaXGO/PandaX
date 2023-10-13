@@ -7,6 +7,8 @@ github.com/Masterminds/semver/v3 v3.1.1 h1:hLg3sBzpNErnxhQtUy/mmLR2I9foDujNK030I
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
 github.com/PandaXGO/PandaKit v0.0.0-20230914055936-853aa978dda1 h1:LfDtQriNZcP4Ksx/d2d5kLC4C/SemkMSxQuQZOVuiFw=
 github.com/PandaXGO/PandaKit v0.0.0-20230914055936-853aa978dda1/go.mod h1:/H1PTodkWhRyVqE/1tROVJEO2nwqwE6el7ZzwSebLxY=
+github.com/PandaXGO/PandaKit v0.0.0-20231013022859-bcaa3c1cd20b h1:W4avR/i7mBU7pkbyMULaCHGv2BhhHCfSiSt9pF0rbgI=
+github.com/PandaXGO/PandaKit v0.0.0-20231013022859-bcaa3c1cd20b/go.mod h1:/H1PTodkWhRyVqE/1tROVJEO2nwqwE6el7ZzwSebLxY=
 github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=
 github.com/Shopify/sarama v1.38.1 h1:lqqPUPQZ7zPqYlWpTh+LQ9bhYNu2xJL6k1SJN4WVe2A=

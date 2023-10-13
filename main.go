@@ -33,7 +33,6 @@ var rootCmd = &cobra.Command{
 	PreRun: func(cmd *cobra.Command, args []string) {
 		if configFile != "" {
 			global.Conf = config.InitConfig(configFile)
-			log.Println(global.Conf.Log.Level)
 			global.Log = logger.InitLog(global.Conf.Log.File.GetFilename(), global.Conf.Log.Level)
 			dbGorm := starter.DbGorm{Type: global.Conf.Server.DbType}
 			if global.Conf.Server.DbType == "mysql" {
@@ -43,7 +42,7 @@ var rootCmd = &cobra.Command{
 			}
 			global.Db = dbGorm.GormInit()
 			global.Log.Infof("%s连接成功", global.Conf.Server.DbType)
-			client, err := rediscli.NewRedisClient(global.Conf.Redis.Host, global.Conf.Redis.Password, global.Conf.Redis.Port)
+			client, err := rediscli.NewRedisClient(global.Conf.Redis.Host, global.Conf.Redis.Password, global.Conf.Redis.Port, global.Conf.Redis.Db)
 			if err != nil {
 				global.Log.Panic("Redis连接错误")
 			} else {
