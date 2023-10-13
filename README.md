@@ -77,8 +77,8 @@
 - <span class="tag done-tag">✔</span> **`设备管理`** - _设备的管理_
 
 ## 🛠 以后可能会有什么NB功能？
-- <span class="tag wip-tag">开发中</span> **`3D组态`** - _根据2d组态自动生成3D组态_
-- <span class="tag wip-tag">开发中</span> **`数字孪生编辑器`** - _web直接构建数字孪生模型_
+- <span class="tag wip-tag">开发中</span> **`3D组态(2023-Q4)`** - _根据2d组态自动生成3D组态_
+- <span class="tag wip-tag">开发中</span> **`报表设计器（2024-Q1）`** - _excel的低代码报表设计_
 
 ---
 前端工程结构
