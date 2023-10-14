@@ -6,9 +6,8 @@ import (
 	"github.com/gorilla/websocket"
 	"net/http"
 	"pandax/apps/device/entity"
-	"pandax/iothub/client/mqttclient"
+	"pandax/apps/device/util"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
 	"strings"
 )
 
@@ -40,18 +39,18 @@ func NewWebsocket(writer http.ResponseWriter, r *http.Request, header http.Heade
 
 // OnMessage 消息
 // 发送消息消息类型 01:发送的设备数据  02:收到指令回复  03: 心跳回复
-func OnMessage(ws *Websocket, message string) {
-	if message != "" && strings.Index(message, "ONLINE") != -1 {
-		screenId := strings.Split(message, "ONLINE")[0]
+func OnMessage(ws *Websocket, msg string) {
+	if msg != "" && strings.Index(msg, "ONLINE") != -1 {
+		screenId := strings.Split(msg, "ONLINE")[0]
 		AddWebSocketByScreenId(screenId, ws)
 	}
 	//画布离开
-	if message != "" && strings.Index(message, "LEAVE") != -1 {
-		RemoveWebSocket(strings.Split(message, "LEAVE")[0])
+	if msg != "" && strings.Index(msg, "LEAVE") != -1 {
+		RemoveWebSocket(strings.Split(msg, "LEAVE")[0])
 	}
 	//客户端传来了控制命令 格式   场景控制代码CONTROLCMD控制命令CONTROLCMD传感器id
-	if message != "" && strings.Index(message, "CONTROLCMD") != -1 {
-		split := strings.Split(message, "CONTROLCMD")
+	if msg != "" && strings.Index(msg, "CONTROLCMD") != -1 {
+		split := strings.Split(msg, "CONTROLCMD")
 		if len(split) < 2 {
 			return
 		}
@@ -62,25 +61,24 @@ func OnMessage(ws *Websocket, message string) {
 		err := json.Unmarshal([]byte(controlCMD), vtsa)
 		if err != nil {
 			global.Log.Error("设备参数下发，孪生体参数解析失败", err)
-			sendMessages("02", "下发失败", screenId)
+			sendMessages("02", "下发失败,设备参数结构错误", screenId)
 			return
 		}
 		//2. 根据设备下发属性更改
-		//topic := fmt.Sprintf(global.AttributesTopic, vtsa.TwinId)
-		content, _ := json.Marshal(vtsa.Attrs)
-		var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "single"}
-		rpc.GetRequestId()
-		err = rpc.RequestAttributes(global_model.RpcPayload{Params: string(content)})
+		err = util.BuildRunDeviceRpc(vtsa.TwinId, "single", map[string]interface{}{
+			"method": "setAttributes",
+			"params": vtsa.Attrs,
+		})
 		if err != nil {
-			global.Log.Error("属性下发失败", err)
-			sendMessages("02", "下发失败", screenId)
-			return
+			global.Log.Error("命令发送失败", err)
+			sendMessages("02", "命令发送失败", screenId)
+		} else {
+			sendMessages("02", "命令发送成功", screenId)
 		}
-		sendMessages("02", "命令发送成功", screenId)
 	}
 	//心跳处理
-	if message != "" && strings.Index(message, "HEARTCMD") != -1 {
-		split := strings.Split(message, "HEARTCMD")
+	if msg != "" && strings.Index(msg, "HEARTCMD") != -1 {
+		split := strings.Split(msg, "HEARTCMD")
 		if len(split) < 1 {
 			return
 		}

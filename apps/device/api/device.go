@@ -6,13 +6,11 @@ package api
 // 生成人：panda
 // ==========================================================================
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"pandax/iothub/client/mqttclient"
-	"pandax/iothub/client/tcpclient"
+	"pandax/apps/device/util"
 	"pandax/pkg/global"
 	"pandax/pkg/global_model"
 	"pandax/pkg/shadow"
@@ -147,23 +145,13 @@ func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	key := restfulx.QueryParam(rc, "key")
 	value := restfulx.QueryParam(rc, "value")
-	one := p.DeviceApp.FindOne(id)
-	biz.IsTrue(one.LinkStatus == global.ONLINE, "设备不在线无法设置属性")
-	if one.Product.ProtocolName == global.TCPProtocol {
-		err := tcpclient.Send(id, value)
-		biz.ErrIsNil(err, "属性下发失败")
-	}
-	if one.Product.ProtocolName == global.MQTTProtocol {
-		// 下发指令
-		contentMap := map[string]interface{}{
+	err := util.BuildRunDeviceRpc(id, "single", map[string]interface{}{
+		"method": "setAttributes",
+		"params": map[string]interface{}{
 			key: value,
-		}
-		content, _ := json.Marshal(contentMap)
-		var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "single"}
-		rpc.GetRequestId()
-		err := rpc.RequestAttributes(global_model.RpcPayload{Params: string(content)})
-		biz.ErrIsNil(err, "属性下发失败")
-	}
+		},
+	})
+	biz.ErrIsNilAppendErr(err, "下发失败:")
 }
 
 // InsertDevice 添加Device
