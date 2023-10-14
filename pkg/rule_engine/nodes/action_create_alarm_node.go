@@ -6,8 +6,8 @@ import (
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	"pandax/pkg/global"
+	"pandax/pkg/global_model"
 	"pandax/pkg/rule_engine/message"
-	"pandax/pkg/tool"
 	"time"
 )
 
@@ -52,7 +52,7 @@ func (n *createAlarmNode) Handle(msg *message.Message) error {
 		}
 	} else {
 		alarm = &entity.DeviceAlarm{}
-		alarm.Id = tool.GenerateID()
+		alarm.Id = global_model.GenerateID()
 		alarm.DeviceId = msg.Metadata.GetValue("deviceId").(string)
 		alarm.ProductId = msg.Metadata.GetValue("productId").(string)
 		alarm.Name = msg.Metadata.GetValue("deviceName").(string)

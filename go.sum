@@ -9,6 +9,8 @@ github.com/PandaXGO/PandaKit v0.0.0-20230914055936-853aa978dda1 h1:LfDtQriNZcP4K
 github.com/PandaXGO/PandaKit v0.0.0-20230914055936-853aa978dda1/go.mod h1:/H1PTodkWhRyVqE/1tROVJEO2nwqwE6el7ZzwSebLxY=
 github.com/PandaXGO/PandaKit v0.0.0-20231013022859-bcaa3c1cd20b h1:W4avR/i7mBU7pkbyMULaCHGv2BhhHCfSiSt9pF0rbgI=
 github.com/PandaXGO/PandaKit v0.0.0-20231013022859-bcaa3c1cd20b/go.mod h1:/H1PTodkWhRyVqE/1tROVJEO2nwqwE6el7ZzwSebLxY=
+github.com/PandaXGO/PandaKit v0.0.0-20231014010146-3a169666cab5 h1:vV2y9A70rSAdVNB+moACcYf9Q9dup3bz9KZgH07iFiU=
+github.com/PandaXGO/PandaKit v0.0.0-20231014010146-3a169666cab5/go.mod h1:VsTIkY1oxUoOoady/U6evOB24BHhv2O7ELH4WukqIXo=
 github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=
 github.com/Shopify/sarama v1.38.1 h1:lqqPUPQZ7zPqYlWpTh+LQ9bhYNu2xJL6k1SJN4WVe2A=

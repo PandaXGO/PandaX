@@ -10,7 +10,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/rule/entity"
 	"pandax/pkg/global"
-	"pandax/pkg/tool"
+	"pandax/pkg/global_model"
 )
 
 type (
@@ -51,7 +51,7 @@ func (m *ruleChainLogModelImpl) FindListPage(page, pageSize int, data entity.Rul
 		db = db.Where("msg_type = ?", data.MsgType)
 	}
 	// 组织数据访问权限
-	tool.OrgAuthSet(db, data.RoleId, data.Owner)
+	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
 	err := db.Count(&total).Error
 	err = db.Order("create_at").Limit(pageSize).Offset(offset).Find(&list).Error
 	biz.ErrIsNil(err, "查询规则链分页列表失败")

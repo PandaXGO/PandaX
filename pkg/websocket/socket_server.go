@@ -8,6 +8,7 @@ import (
 	"pandax/apps/device/entity"
 	"pandax/iothub/client/mqttclient"
 	"pandax/pkg/global"
+	"pandax/pkg/global_model"
 	"strings"
 )
 
@@ -69,7 +70,7 @@ func OnMessage(ws *Websocket, message string) {
 		content, _ := json.Marshal(vtsa.Attrs)
 		var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "single"}
 		rpc.GetRequestId()
-		err = rpc.RequestAttributes(mqttclient.RpcPayload{Params: string(content)})
+		err = rpc.RequestAttributes(global_model.RpcPayload{Params: string(content)})
 		if err != nil {
 			global.Log.Error("属性下发失败", err)
 			sendMessages("02", "下发失败", screenId)

@@ -4,7 +4,7 @@ import (
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
-	"pandax/pkg/tool"
+	"pandax/pkg/global_model"
 	"strings"
 )
 
@@ -70,7 +70,7 @@ func (p *DeviceGroupApi) GetDeviceGroup(rc *restfulx.ReqCtx) {
 func (p *DeviceGroupApi) InsertDeviceGroup(rc *restfulx.ReqCtx) {
 	var data entity.DeviceGroup
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = tool.GenerateID()
+	data.Id = global_model.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	p.DeviceGroupApp.Insert(data)

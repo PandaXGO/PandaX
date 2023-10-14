@@ -5,20 +5,20 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/entity"
 	"pandax/pkg/global"
-	"pandax/pkg/tool"
+	"pandax/pkg/global_model"
 	"time"
 )
 
 type (
 	DeviceModel interface {
 		Insert(data entity.Device) *entity.Device
-		FindOneByToken(token string) (*entity.Device, error)
-		FindOneByName(name string) (*entity.Device, error)
+		FindOneByToken(token string) (*entity.DeviceRes, error)
+		FindOneByName(name string) (*entity.DeviceRes, error)
 		FindOne(id string) *entity.DeviceRes
 		FindListPage(page, pageSize int, data entity.Device) (*[]entity.DeviceRes, int64)
 		FindList(data entity.Device) *[]entity.DeviceRes
 		Update(data entity.Device) *entity.Device
-		UpdateStatus(id, linkStatus string)
+		UpdateStatus(id, linkStatus string) error
 		Delete(ids []string)
 		FindDeviceCount() entity.DeviceCount
 		FindDeviceCountGroupByLinkStatus() []entity.DeviceCountLinkStatus
@@ -40,7 +40,8 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 	list := m.FindList(entity.Device{Name: data.Name})
 	biz.IsTrue(list != nil && len(*list) == 0, "设备名称已经存在")
 	//2 创建认证TOKEN IOTHUB使用
-	_, err := GetDeviceToken(&data)
+	token := GetDeviceToken(&data)
+	err := global.RedisDb.Set(data.Token, token.GetMarshal(), time.Hour*24*365)
 	biz.ErrIsNil(err, "设备缓存失败")
 	// 子网关不需要设置token
 	if data.DeviceType == global.GATEWAYS {
@@ -67,16 +68,16 @@ func (m *deviceModelImpl) FindOne(id string) *entity.DeviceRes {
 	return resData
 }
 
-func (m *deviceModelImpl) FindOneByName(token string) (*entity.Device, error) {
-	resData := new(entity.Device)
-	db := global.Db.Table(m.table).Where("name = ?", token)
+func (m *deviceModelImpl) FindOneByName(name string) (*entity.DeviceRes, error) {
+	resData := new(entity.DeviceRes)
+	db := global.Db.Table(m.table).Where("name = ?", name)
 	err := db.First(resData).Error
 	return resData, err
 }
 
-func (m *deviceModelImpl) FindOneByToken(token string) (*entity.Device, error) {
-	resData := new(entity.Device)
-	db := global.Db.Table(m.table).Where("token = ?", token)
+func (m *deviceModelImpl) FindOneByToken(token string) (*entity.DeviceRes, error) {
+	resData := new(entity.DeviceRes)
+	db := global.Db.Table(m.table).Preload("Product").Where("token = ?", token)
 	err := db.First(resData).Error
 	return resData, err
 }
@@ -109,7 +110,7 @@ func (m *deviceModelImpl) FindListPage(page, pageSize int, data entity.Device) (
 		db = db.Where("parent_id = ?", data.ParentId)
 	}
 	// 组织数据访问权限
-	tool.OrgAuthSet(db, data.RoleId, data.Owner)
+	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
 
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Preload("Product").Preload("DeviceGroup").Limit(pageSize).Offset(offset).Find(&list).Error
@@ -145,20 +146,25 @@ func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
 	if data.ParentId != "" {
 		db = db.Where("parent_id = ?", data.ParentId)
 	}
-	tool.OrgAuthSet(db, data.RoleId, data.Owner)
+	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
 	db.Preload("Product").Preload("DeviceGroup")
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询设备列表失败")
 	return &list
 }
 
 func (m *deviceModelImpl) Update(data entity.Device) *entity.Device {
-	_, err := GetDeviceToken(&data)
-	biz.ErrIsNil(err, "设备更改缓存失败")
+	if data.DeviceType == global.GATEWAYS {
+		data.Token = ""
+	} else {
+		token := GetDeviceToken(&data)
+		err := global.RedisDb.Set(data.Token, token.GetMarshal(), time.Hour*24*365)
+		biz.ErrIsNil(err, "设备更改缓存失败")
+	}
 	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改设备失败")
 	return &data
 }
-func (m *deviceModelImpl) UpdateStatus(id, linkStatus string) {
-	global.Db.Table(m.table).Where("id", id).Update("link_status", linkStatus).Update("last_time", time.Now())
+func (m *deviceModelImpl) UpdateStatus(id, linkStatus string) error {
+	return global.Db.Table(m.table).Where("id", id).Update("link_status", linkStatus).Update("last_time", time.Now()).Error
 }
 
 func (m *deviceModelImpl) Delete(ids []string) {
@@ -199,9 +205,9 @@ func deleteDeviceTable(device string) error {
 	return nil
 }
 
-func GetDeviceToken(data *entity.Device) (*tool.DeviceAuth, error) {
+func GetDeviceToken(data *entity.Device) *global_model.DeviceAuth {
 	now := time.Now()
-	etoken := &tool.DeviceAuth{
+	etoken := &global_model.DeviceAuth{
 		DeviceId:   data.Id,
 		OrgId:      data.OrgId,
 		Owner:      data.Owner,
@@ -215,8 +221,7 @@ func GetDeviceToken(data *entity.Device) (*tool.DeviceAuth, error) {
 	if data.Token == "" {
 		data.Token = etoken.MD5ID()
 	}
-	err := etoken.CreateDeviceToken(data.Token)
-	return etoken, err
+	return etoken
 }
 
 // 获取设备数量统计

@@ -5,7 +5,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/entity"
 	"pandax/pkg/global"
-	"pandax/pkg/tool"
+	"pandax/pkg/global_model"
 )
 
 type (
@@ -69,7 +69,7 @@ func (m *deviceGroupModelImpl) FindListPage(page, pageSize int, data entity.Devi
 		db = db.Where("status = ?", data.Status)
 	}
 	// 组织数据访问权限
-	tool.OrgAuthSet(db, data.RoleId, data.Owner)
+	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
 
 	err := db.Count(&total).Error
 	err = db.Order("sort").Limit(pageSize).Offset(offset).Find(&list).Error
@@ -91,7 +91,7 @@ func (m *deviceGroupModelImpl) FindList(data entity.DeviceGroup) *[]entity.Devic
 		db = db.Where("status = ?", data.Status)
 	}
 	// 组织数据访问权限
-	tool.OrgAuthSet(db, data.RoleId, data.Owner)
+	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
 	biz.ErrIsNil(db.Order("sort").Find(&list).Error, "查询设备分组列表失败")
 	return &list
 }

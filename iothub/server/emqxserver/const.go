@@ -16,7 +16,7 @@ const (
 	TelemetryGatewayTopic  = "v1/gateway/telemetry"
 	ConnectGatewayTopic    = "v1/gateway/connect"
 
-	RpcReqReg = `v1/devices/me/rpc/request/(.*?)$`
+	RpcReq = `v1/devices/me/rpc/request/(.*?)$`
 )
 
 var IotHubTopic = NewIotHubTopic()
@@ -40,7 +40,7 @@ func (iht TopicMeg) GetMessageType(topic string) string {
 		return meg
 	}
 	if strings.Contains(topic, "v1/devices/me/rpc/request") {
-		return message.RpcRequestMes
+		return message.RpcRequestFromDevice
 	}
 	return ""
 }

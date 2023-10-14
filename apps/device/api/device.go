@@ -14,8 +14,8 @@ import (
 	"pandax/iothub/client/mqttclient"
 	"pandax/iothub/client/tcpclient"
 	"pandax/pkg/global"
+	"pandax/pkg/global_model"
 	"pandax/pkg/shadow"
-	"pandax/pkg/tool"
 	"strings"
 	"time"
 
@@ -161,7 +161,7 @@ func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
 		content, _ := json.Marshal(contentMap)
 		var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: "single"}
 		rpc.GetRequestId()
-		err := rpc.RequestAttributes(mqttclient.RpcPayload{Params: string(content)})
+		err := rpc.RequestAttributes(global_model.RpcPayload{Params: string(content)})
 		biz.ErrIsNil(err, "属性下发失败")
 	}
 }
@@ -174,7 +174,7 @@ func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	data.OrgId = rc.LoginAccount.OrganizationId
 	list := p.DeviceApp.FindList(entity.Device{Name: data.Name})
 	biz.IsTrue(!(list != nil && len(*list) > 0), fmt.Sprintf("名称%s已存在，设置其他命名", data.Name))
-	data.Id = tool.GenerateID()
+	data.Id = global_model.GenerateID()
 	data.LinkStatus = global.INACTIVE
 	data.LastAt = time.Now()
 	p.DeviceApp.Insert(data)

@@ -58,7 +58,7 @@ var rootCmd = &cobra.Command{
 			global.TdDb = tDengine
 			initialize.InitTable()
 			// 初始化事件监听
-			initialize.InitEvents()
+			go initialize.InitEvents()
 		} else {
 			global.Log.Panic("请配置config")
 		}

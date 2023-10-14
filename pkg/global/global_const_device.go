@@ -48,6 +48,7 @@ const (
 	MQTTProtocol  = "MQTT"
 	CoAPProtocol  = "CoAP"
 	TCPProtocol   = "TCP"
+	UDPProtocol   = "UDP"
 	HTTPProtocol  = "HTTP"
 	LwM2MProtocol = "LwM2M"
 )

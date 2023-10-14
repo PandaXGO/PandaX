@@ -5,8 +5,8 @@ import (
 	"pandax/apps/device/services"
 	"pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/global"
+	"pandax/pkg/global_model"
 	"pandax/pkg/tdengine"
-	"pandax/pkg/tool"
 	"regexp"
 	"strings"
 	"time"
@@ -17,7 +17,7 @@ func Auth(authToken string) bool {
 	if authToken == "pandax" {
 		return true
 	}
-	etoken := &tool.DeviceAuth{}
+	etoken := &global_model.DeviceAuth{}
 	// redis 中有就查询，没有就添加
 	exists, err := global.RedisDb.Exists(global.RedisDb.Context(), authToken).Result()
 	if exists == 1 {
@@ -28,7 +28,9 @@ func Auth(authToken string) bool {
 			global.Log.Infof("设备token %s 不存在", authToken)
 			return false
 		}
-		etoken, err = services.GetDeviceToken(device)
+		etoken = services.GetDeviceToken(&device.Device)
+		etoken.DeviceProtocol = device.Product.ProtocolName
+		err = global.RedisDb.Set(authToken, etoken.GetMarshal(), time.Hour*24*365)
 		if err != nil {
 			global.Log.Infof("设备TOKEN %s添加缓存失败", authToken)
 			return false
@@ -46,8 +48,8 @@ func Auth(authToken string) bool {
 	return true
 }
 
-func SubAuth(name string) (*tool.DeviceAuth, bool) {
-	etoken := &tool.DeviceAuth{}
+func SubAuth(name string) (*global_model.DeviceAuth, bool) {
+	etoken := &global_model.DeviceAuth{}
 	// redis 中有就查询，没有就添加
 	exists, err := global.RedisDb.Exists(global.RedisDb.Context(), name).Result()
 	if exists == 1 {
@@ -59,7 +61,10 @@ func SubAuth(name string) (*tool.DeviceAuth, bool) {
 			global.Log.Infof("设备标识 %s 不存在", name)
 			return nil, false
 		}
-		etoken, err = services.GetDeviceToken(device)
+		etoken = services.GetDeviceToken(&device.Device)
+		etoken.DeviceProtocol = device.Product.ProtocolName
+		// todo 子设备没有token
+		err = global.RedisDb.Set(device.Token, etoken.GetMarshal(), time.Hour*24*365)
 		if err != nil {
 			global.Log.Infof("设备标识 %s添加缓存失败", name)
 			return nil, false
@@ -148,7 +153,7 @@ func GetRequestIdFromTopic(reg, topic string) (requestId string) {
 	return ""
 }
 
-func CreateConnectionInfo(msgType, protocol, clientID, peerHost string, deviceAuth *tool.DeviceAuth) *DeviceEventInfo {
+func CreateConnectionInfo(msgType, protocol, clientID, peerHost string, deviceAuth *global_model.DeviceAuth) *DeviceEventInfo {
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
 	ci := &tdengine.ConnectInfo{
 		ClientID: clientID,

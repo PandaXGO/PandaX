@@ -11,7 +11,7 @@ import (
 	"pandax/apps/rule/entity"
 	"pandax/pkg/events"
 	"pandax/pkg/global"
-	"pandax/pkg/tool"
+	"pandax/pkg/global_model"
 )
 
 type (
@@ -77,7 +77,7 @@ func (m *ruleChainModelImpl) FindListPage(page, pageSize int, data entity.RuleCh
 		db = db.Where("rule_remark like ?", "%"+data.RuleRemark+"%")
 	}
 	// 组织数据访问权限
-	tool.OrgAuthSet(db, data.RoleId, data.Owner)
+	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
 	biz.ErrIsNil(err, "查询规则链分页列表失败")
@@ -95,7 +95,7 @@ func (m *ruleChainModelImpl) FindList(data entity.RuleChain) *[]entity.RuleChain
 		db = db.Where("rule_remark like ?", "%"+data.RuleRemark+"%")
 	}
 	// 组织数据访问权限
-	tool.OrgAuthSet(db, data.RoleId, data.Owner)
+	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询规则链列表失败")
 	return &list
 }
@@ -108,7 +108,7 @@ func (m *ruleChainModelImpl) FindListBaseLabel(data entity.RuleChain) *[]entity.
 		db = db.Where("rule_name like ?", "%"+data.RuleName+"%")
 	}
 	// 组织数据访问权限
-	tool.OrgAuthSet(db, data.RoleId, data.Owner)
+	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
 	biz.ErrIsNil(db.Find(&list).Error, "查询规则链列表失败")
 	return &list
 }

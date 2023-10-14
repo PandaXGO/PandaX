@@ -1,11 +1,13 @@
 package netbase
 
-import "pandax/pkg/tool"
+import (
+	"pandax/pkg/global_model"
+)
 
 type DeviceEventInfo struct {
-	DeviceId   string           `json:"deviceId"`
-	DeviceAuth *tool.DeviceAuth `json:"deviceAuth"`
-	Datas      string           `json:"datas"`
-	Type       string           `json:"type"`
-	RequestId  string           `json:"requestId"`
+	DeviceId   string                   `json:"deviceId"`
+	DeviceAuth *global_model.DeviceAuth `json:"deviceAuth"`
+	Datas      string                   `json:"datas"`
+	Type       string                   `json:"type"`
+	RequestId  string                   `json:"requestId"`
 }

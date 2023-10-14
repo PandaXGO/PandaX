@@ -11,8 +11,8 @@ import (
 	"pandax/iothub/hook_message_work"
 	"pandax/iothub/netbase"
 	"pandax/pkg/global"
+	"pandax/pkg/global_model"
 	"pandax/pkg/rule_engine/message"
-	"pandax/pkg/tool"
 	"sync"
 	"time"
 )
@@ -42,7 +42,7 @@ func InitHttpHook(addr string, hs *hook_message_work.HookService) {
 		case http.StateHijacked, http.StateClosed:
 			etoken, _ := activeConnections.Load(conn.RemoteAddr().String())
 			if etoken != nil {
-				data := netbase.CreateConnectionInfo(message.DisConnectMes, "http", conn.RemoteAddr().String(), conn.RemoteAddr().String(), etoken.(*tool.DeviceAuth))
+				data := netbase.CreateConnectionInfo(message.DisConnectMes, "http", conn.RemoteAddr().String(), conn.RemoteAddr().String(), etoken.(*global_model.DeviceAuth))
 				activeConnections.Delete(conn.RemoteAddr().String())
 				service.HookService.MessageCh <- data
 			}
@@ -80,7 +80,7 @@ func (hhs *HookHttpService) hook(req *restful.Request, resp *restful.Response) {
 		resp.Write([]byte("解析上报参数失败"))
 		return
 	}
-	etoken := &tool.DeviceAuth{}
+	etoken := &global_model.DeviceAuth{}
 	etoken.GetDeviceToken(token)
 	_, ok := activeConnections.Load(req.Request.RemoteAddr)
 	// 是否需要添加设备上线通知

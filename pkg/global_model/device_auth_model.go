@@ -1,4 +1,4 @@
-package tool
+package global_model
 
 import (
 	"bytes"
@@ -17,19 +17,16 @@ import (
 )
 
 type DeviceAuth struct {
-	Owner       string `json:"owner"`
-	OrgId       int64  `json:"orgId"`
-	DeviceId    string `json:"device_id"`
-	DeviceType  string `json:"device_type"`
-	ProductId   string `json:"product_id"`
-	RuleChainId string `json:"rule_chain_id"`
-	Name        string `json:"name"`
-	CreatedAt   int64  `json:"created_at"`
-	ExpiredAt   int64  `json:"expired_at"`
-}
-
-func (entity *DeviceAuth) CreateDeviceToken(key string) (err error) {
-	return global.RedisDb.Set(key, entity.GetMarshal(), time.Hour*24*365)
+	Owner          string `json:"owner"`
+	OrgId          int64  `json:"orgId"`
+	DeviceId       string `json:"deviceId"`
+	DeviceType     string `json:"deviceType"`
+	DeviceProtocol string `json:"deviceProtocol"`
+	ProductId      string `json:"productId"`
+	RuleChainId    string `json:"ruleChainId"`
+	Name           string `json:"name"`
+	CreatedAt      int64  `json:"created_at"`
+	ExpiredAt      int64  `json:"expired_at"`
 }
 
 func (entity *DeviceAuth) GetDeviceToken(key string) error {

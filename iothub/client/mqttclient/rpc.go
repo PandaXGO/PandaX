@@ -6,6 +6,7 @@ import (
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"math/rand"
+	"pandax/pkg/global_model"
 	"time"
 )
 
@@ -26,19 +27,10 @@ type RpcRequest struct {
 	Timeout   int    // 设置双向时，等待的超时时间
 }
 
-type RpcPayload struct {
-	Method string `json:"method"`
-	Params any    `json:"params"`
-}
-
 // RequestCmd 下发指令
-func (rpc RpcRequest) RequestCmd(rpcPayload RpcPayload) (respPayload string, err error) {
+func (rpc RpcRequest) RequestCmd(rpcPayload string) (respPayload string, err error) {
 	topic := fmt.Sprintf(RpcReqTopic, rpc.RequestId)
-	payload, err := json.Marshal(rpcPayload)
-	if err != nil {
-		return "", err
-	}
-	err = rpc.Client.Pub(topic, 0, string(payload))
+	err = rpc.Client.Pub(topic, 0, rpcPayload)
 	if err != nil {
 		return "", err
 	}
@@ -73,7 +65,7 @@ func (rpc RpcRequest) RequestCmd(rpcPayload RpcPayload) (respPayload string, err
 }
 
 // RequestAttributes rpc 下发属性
-func (rpc RpcRequest) RequestAttributes(rpcPayload RpcPayload) error {
+func (rpc RpcRequest) RequestAttributes(rpcPayload global_model.RpcPayload) error {
 	topic := fmt.Sprintf(RpcReqTopic, rpc.RequestId)
 	if rpcPayload.Method == "" {
 		rpcPayload.Method = "setAttributes"
@@ -85,18 +77,9 @@ func (rpc RpcRequest) RequestAttributes(rpcPayload RpcPayload) error {
 	return rpc.Client.Pub(topic, 0, string(payload))
 }
 
-// RespondTpc 处理设备端请求服务端方法
-func (rpc RpcRequest) RespondTpc(reqPayload RpcPayload) error {
+func (rpc RpcRequest) Pub(reqPayload string) error {
 	topic := fmt.Sprintf(RpcRespTopic, rpc.RequestId)
-	//TODO 此处处理设备的请求参数逻辑
-	//自己定义请求逻辑
-	if reqPayload.Params == "getCurrentTime" {
-		unix := time.Now().Unix()
-		msg := fmt.Sprintf("%d", unix)
-		return rpc.Client.Pub(topic, 0, msg)
-	}
-	// 获取属性 ...
-	return nil
+	return rpc.Client.Pub(topic, 0, reqPayload)
 }
 
 func (rpc *RpcRequest) GetRequestId() {

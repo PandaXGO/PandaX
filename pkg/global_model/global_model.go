@@ -1,6 +1,8 @@
-package global
+package global_model
 
-import "time"
+import (
+	"time"
+)
 
 type BaseModel struct {
 	Id        string    `json:"id" gorm:"primary_key;"`

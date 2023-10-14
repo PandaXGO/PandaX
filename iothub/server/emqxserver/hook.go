@@ -9,8 +9,8 @@ import (
 	"pandax/iothub/netbase"
 	exhook2 "pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/global"
+	"pandax/pkg/global_model"
 	"pandax/pkg/rule_engine/message"
-	"pandax/pkg/tool"
 	"time"
 )
 
@@ -82,12 +82,11 @@ func (s *HookGrpcService) OnClientConnack(ctx context.Context, in *exhook2.Clien
 
 func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.ClientConnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("Client %s Connected ", in.Clientinfo.GetNode()))
-
 	if in.Clientinfo.Clientid == mqttclient.DefaultDownStreamClientId {
 		return &exhook2.EmptySuccess{}, nil
 	}
 	token := netbase.GetUserName(in.Clientinfo)
-	etoken := &tool.DeviceAuth{}
+	etoken := &global_model.DeviceAuth{}
 	etoken.GetDeviceToken(token)
 	data := netbase.CreateConnectionInfo(message.ConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
 	s.HookService.MessageCh <- data
@@ -100,7 +99,7 @@ func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.
 	if in.Clientinfo.Clientid == mqttclient.DefaultDownStreamClientId {
 		return &exhook2.EmptySuccess{}, nil
 	}
-	etoken := &tool.DeviceAuth{}
+	etoken := &global_model.DeviceAuth{}
 	err := etoken.GetDeviceToken(token)
 	if err != nil {
 		return nil, err
@@ -182,7 +181,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 		res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: true}
 		return res, nil
 	}
-	etoken := &tool.DeviceAuth{}
+	etoken := &global_model.DeviceAuth{}
 	etoken.GetDeviceToken(in.Message.Headers["username"])
 	// 获取topic类型
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
@@ -273,9 +272,9 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 		}
 		bytes, _ := json.Marshal(telemetryData)
 		data.Datas = string(bytes)
-	case message.RpcRequestMes:
+	case message.RpcRequestFromDevice:
 		// 获取请求id
-		id := netbase.GetRequestIdFromTopic(RpcReqReg, in.Message.Topic)
+		id := netbase.GetRequestIdFromTopic(RpcReq, in.Message.Topic)
 		data.RequestId = id
 	}
 

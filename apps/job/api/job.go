@@ -9,7 +9,7 @@ import (
 	"pandax/apps/job/entity"
 	"pandax/apps/job/jobs"
 	"pandax/apps/job/services"
-	"pandax/pkg/tool"
+	"pandax/pkg/global_model"
 	"strings"
 )
 
@@ -20,7 +20,7 @@ type JobApi struct {
 func (j *JobApi) CreateJob(rc *restfulx.ReqCtx) {
 	var job entity.SysJob
 	restfulx.BindQuery(rc, &job)
-	job.Id = tool.GenerateID()
+	job.Id = global_model.GenerateID()
 	job.Owner = rc.LoginAccount.UserName
 	job.OrgId = rc.LoginAccount.OrganizationId
 	j.JobApp.Insert(job)

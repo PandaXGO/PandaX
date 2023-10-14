@@ -12,6 +12,7 @@ import (
 	ruleService "pandax/apps/rule/services"
 	"pandax/iothub/netbase"
 	"pandax/pkg/global"
+	"pandax/pkg/global_model"
 	"pandax/pkg/rule_engine"
 	"pandax/pkg/rule_engine/message"
 	"pandax/pkg/shadow"
@@ -44,7 +45,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 			}
 		}()
 		switch msg.Type {
-		case message.RowMes, message.AttributesMes, message.TelemetryMes, message.RpcRequestMes:
+		case message.RowMes, message.AttributesMes, message.TelemetryMes, message.RpcRequestFromDevice:
 			msgVals := make(map[string]interface{})
 			err := json.Unmarshal([]byte(msg.Datas), &msgVals)
 			if err != nil {
@@ -74,7 +75,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 				global.Log.Error("规则链执行失败", errs)
 			}
 			// 保存设备影子
-			if msg.Type != message.RpcRequestMes {
+			if msg.Type != message.RpcRequestFromDevice {
 				SetDeviceShadow(msg.DeviceAuth, ruleMessage.Msg, msg.Type)
 			}
 		case message.DisConnectMes, message.ConnectMes:
@@ -87,7 +88,8 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 			}
 			// 更改设备在线状态
 			if msg.Type == message.ConnectMes {
-				services.DeviceModelDao.UpdateStatus(msg.DeviceId, global.ONLINE)
+				err := services.DeviceModelDao.UpdateStatus(msg.DeviceId, global.ONLINE)
+				global.Log.Error(err)
 			} else {
 				services.DeviceModelDao.UpdateStatus(msg.DeviceId, global.OFFLINE)
 			}
@@ -106,7 +108,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 	}()
 }
 
-func getRuleChain(etoken *tool.DeviceAuth) *ruleEntity.RuleDataJson {
+func getRuleChain(etoken *global_model.DeviceAuth) *ruleEntity.RuleDataJson {
 	defer func() {
 		if err := recover(); err != nil {
 			global.Log.Error(err)
@@ -118,21 +120,22 @@ func getRuleChain(etoken *tool.DeviceAuth) *ruleEntity.RuleDataJson {
 		rule := ruleService.RuleChainModelDao.FindOne(one.RuleChainId)
 		return rule.RuleDataJson, nil
 	})
-	ruleData := ruleEntity.RuleDataJson{}
 	biz.ErrIsNil(err, "缓存读取规则链失败")
+	ruleData := ruleEntity.RuleDataJson{}
 	err = tool.StringToStruct(get.(string), &ruleData)
 	biz.ErrIsNil(err, "规则链数据转化失败")
 	return &ruleData
 }
 
-func buildRuleMessage(etoken *tool.DeviceAuth, msgVals map[string]interface{}, msgType string) *message.Message {
+func buildRuleMessage(etoken *global_model.DeviceAuth, msgVals map[string]interface{}, msgType string) *message.Message {
 	metadataVals := map[string]interface{}{
-		"deviceId":   etoken.DeviceId,
-		"deviceName": etoken.Name,
-		"deviceType": etoken.DeviceType,
-		"productId":  etoken.ProductId,
-		"orgId":      etoken.OrgId,
-		"owner":      etoken.Owner,
+		"deviceId":       etoken.DeviceId,
+		"deviceName":     etoken.Name,
+		"deviceType":     etoken.DeviceType,
+		"deviceProtocol": etoken.DeviceProtocol,
+		"productId":      etoken.ProductId,
+		"orgId":          etoken.OrgId,
+		"owner":          etoken.Owner,
 	}
 	return message.NewMessage(etoken.Owner, msgType, msgVals, metadataVals)
 }
@@ -154,7 +157,7 @@ func SendZtWebsocket(deviceId, message string) {
 }
 
 // SetDeviceShadow 设置设备点
-func SetDeviceShadow(etoken *tool.DeviceAuth, msgVals map[string]interface{}, msgType string) {
+func SetDeviceShadow(etoken *global_model.DeviceAuth, msgVals map[string]interface{}, msgType string) {
 	defer func() {
 		if err := recover(); &err != nil {
 			global.Log.Error(err)

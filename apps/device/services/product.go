@@ -77,6 +77,7 @@ func (m *productModelImpl) FindListPage(page, pageSize int, data entity.Product)
 	}
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Preload("ProductCategory").Limit(pageSize).Offset(offset).Find(&list).Error
+	log.Println(err)
 	biz.ErrIsNil(err, "查询产品分页列表失败")
 	return &list, total
 }

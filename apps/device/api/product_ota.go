@@ -5,6 +5,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
+	"pandax/pkg/global_model"
 	"pandax/pkg/tool"
 	"path"
 	"strings"
@@ -50,7 +51,7 @@ func (p *ProductOtaApi) InsertProductOta(rc *restfulx.ReqCtx) {
 	// 生成文件MD5值
 	md5, err := tool.GetFileMd5(path.Join(filePath, data.Url))
 	biz.ErrIsNil(err, "读取文件md5校验值错误")
-	data.Id = tool.GenerateID()
+	data.Id = global_model.GenerateID()
 	data.Check = md5
 	p.ProductOtaApp.Insert(data)
 }

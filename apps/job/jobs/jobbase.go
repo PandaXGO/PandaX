@@ -3,12 +3,11 @@ package jobs
 import (
 	"fmt"
 	"pandax/apps/job/entity"
-	"pandax/apps/job/services"
-	"pandax/pkg/global"
-	"pandax/pkg/tool"
-
 	logEntity "pandax/apps/job/entity"
+	"pandax/apps/job/services"
 	logServices "pandax/apps/job/services"
+	"pandax/pkg/global"
+	"pandax/pkg/global_model"
 
 	"sync"
 	"time"
@@ -54,7 +53,7 @@ type ExecJob struct {
 func (e *ExecJob) Run() {
 	startTime := time.Now()
 	jobLog := logEntity.JobLog{Name: e.Name, EntryId: e.EntryId, TargetInvoke: e.InvokeTarget, Status: "0"}
-	jobLog.Id = tool.GenerateID()
+	jobLog.Id = global_model.GenerateID()
 	jobLog.OrgId = e.OrgId
 	jobLog.Owner = e.Owner
 	var obj = jobList[e.InvokeTarget]
