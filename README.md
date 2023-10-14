@@ -72,13 +72,12 @@
 - <span class="tag done-tag">✔</span> **`组态大屏设计器`** - _通过拖拉拽直接生成组态、大屏。_
 - <span class="tag done-tag">✔</span> **`规则链设计`** - _物联网规则链过滤_
 - <span class="tag done-tag">✔</span> **`表单设计`** - _表单设计_
-- <span class="tag done-tag">✔</span> **`报表设计`** - _数据报表设计_
 - <span class="tag done-tag">✔</span> **`产品管理`** - _设备的产品管理_
 - <span class="tag done-tag">✔</span> **`设备管理`** - _设备的管理_
 
 ## 🛠 以后可能会有什么NB功能？
 - <span class="tag wip-tag">开发中</span> **`3D组态(2023-Q4)`** - _根据2d组态自动生成3D组态_
-- <span class="tag wip-tag">开发中</span> **`报表设计器（2024-Q1）`** - _excel的低代码报表设计_
+- <span class="tag wip-tag">开发中</span> **`边缘计算网关（2024-Q1）`** - _插件的形式实现南北向的设备接入上云_
 
 ---
 前端工程结构
