@@ -11,6 +11,7 @@ import (
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/device/util"
+	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	"pandax/pkg/global_model"
 	"pandax/pkg/shadow"
@@ -29,7 +30,7 @@ type DeviceApi struct {
 }
 
 func (p *DeviceApi) GetDevicePanel(rc *restfulx.ReqCtx) {
-	get, err := global.PanelCache.ComputeIfAbsent("panel", func(k any) (any, error) {
+	get, err := cache.PanelCache.ComputeIfAbsent("panel", func(k any) (any, error) {
 		var data entity.DeviceTotalOutput
 		data.DeviceInfo = p.DeviceApp.FindDeviceCount()
 		data.DeviceLinkStatusInfo = p.DeviceApp.FindDeviceCountGroupByLinkStatus()
@@ -158,6 +159,8 @@ func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
 func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	var data entity.Device
 	restfulx.BindJsonAndValid(rc, &data)
+	product := p.ProductApp.FindOne(data.Pid)
+	biz.NotNil(product, "未查到所属产品信息")
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	list := p.DeviceApp.FindList(entity.Device{Name: data.Name})
@@ -165,6 +168,8 @@ func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	data.Id = global_model.GenerateID()
 	data.LinkStatus = global.INACTIVE
 	data.LastAt = time.Now()
+	data.Protocol = product.ProtocolName
+
 	p.DeviceApp.Insert(data)
 }
 
@@ -172,6 +177,9 @@ func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 func (p *DeviceApi) UpdateDevice(rc *restfulx.ReqCtx) {
 	var data entity.Device
 	restfulx.BindJsonAndValid(rc, &data)
+	product := p.ProductApp.FindOne(data.Pid)
+	biz.NotNil(product, "未查到所属产品信息")
+	data.Protocol = product.ProtocolName
 
 	p.DeviceApp.Update(data)
 }

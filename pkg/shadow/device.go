@@ -38,15 +38,3 @@ func NewDevicePoint(pointName string, value interface{}) DevicePoint {
 		UpdatedAt: time.Now(),
 	}
 }
-
-func InitDeviceShadow(deviceName, ProductId string) Device {
-	device, err := DeviceShadowInstance.GetDevice(deviceName)
-	if err == UnknownDeviceErr {
-		attributes := make(map[string]DevicePoint)
-		telemetry := make(map[string]DevicePoint)
-		device = NewDevice(deviceName, ProductId, attributes, telemetry)
-		DeviceShadowInstance.AddDevice(device)
-		//shadow.DeviceShadowInstance.SetDeviceTTL()
-	}
-	return device
-}

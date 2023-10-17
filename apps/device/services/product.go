@@ -1,10 +1,9 @@
 package services
 
 import (
-	"context"
 	"github.com/PandaXGO/PandaKit/biz"
-	"log"
 	"pandax/apps/device/entity"
+	"pandax/pkg/cache"
 	"pandax/pkg/global"
 )
 
@@ -12,7 +11,6 @@ type (
 	ProductModel interface {
 		Insert(data entity.Product) *entity.Product
 		FindOne(id string) *entity.ProductRes
-		FindDefault() *entity.Product
 		FindListPage(page, pageSize int, data entity.Product) (*[]entity.ProductRes, int64)
 		FindList(data entity.Product) *[]entity.ProductRes
 		Update(data entity.Product) *entity.Product
@@ -49,14 +47,6 @@ func (m *productModelImpl) FindOne(id string) *entity.ProductRes {
 	db := global.Db.Table(m.table).Where("id = ?", id)
 	err := db.Preload("ProductCategory").First(resData).Error
 	biz.ErrIsNil(err, "查询产品失败")
-	return resData
-}
-
-func (m *productModelImpl) FindDefault() *entity.Product {
-	resData := new(entity.Product)
-	err := global.Db.Table(m.table).Where("is_default = ?", "1").First(resData).Error
-	log.Println(err)
-	biz.ErrIsNil(err, "查询默认产品失败")
 	return resData
 }
 
@@ -130,7 +120,7 @@ func (m *productModelImpl) Delete(ids []string) {
 		err := deleteDeviceStable(id)
 		global.Log.Error("时序数据库超级表删除失败", err)
 		// 删除所有缓存
-		global.RedisDb.Del(context.Background(), id)
+		cache.DelProductRule(id)
 	}
 }
 

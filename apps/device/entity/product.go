@@ -48,7 +48,6 @@ type Product struct {
 	DeviceType        string `json:"deviceType" gorm:"type:varchar(64);comment:设备类型"`   // 直连设备 网关设备 网关子设备 监控设备
 	RuleChainId       string `json:"ruleChainId" gorm:"type:varchar(64);comment:规则链Id"` //可空，如果空就走根规则链
 	Status            string `gorm:"type:varchar(1);comment:状态" json:"status"`
-	IsDefault         string `gorm:"type:varchar(1);comment:是否默认" json:"isDefault"`
 	RoleId            int64  `gorm:"-"` // 角色数据权限
 }
 

@@ -1399,3 +1399,19 @@ created by pandax/iothub/server/emqxserver.(*HookGrpcService).OnMessagePublish
 2023-10-17 11:28:38.846 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uname=panda] [PUT=/device/template] [uid=1] : 修改Template信息 ->528ms
 2023-10-17 11:28:38.876 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [GET=/device/template/list] : 获取Template分页列表 ->11ms
 2023-10-17 11:31:04.746 [ERROR] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:48] : error http serve: http: Server closed
+2023-10-17 11:31:12.053 [INFO] [D:/workspace/go/pkg/mod/github.com/!panda!x!g!o/!panda!kit@v0.0.0-20231014010146-3a169666cab5/starter/gorm.go:36] : 连接mysql [root:!MyEMS1@tcp(127.0.0.1:3306)/pandax_iot?charset=utf8&loc=Local&parseTime=true]
+2023-10-17 11:31:12.059 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:44] : mysql连接成功
+2023-10-17 11:31:12.062 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:49] : Redis连接成功
+2023-10-17 11:31:12.062 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:56] : Tdengine连接成功
+2023-10-17 11:31:12.069 [INFO] [D:/workspace/go/project/PandaX/PandaX/main.go:74] : 路由初始化完成
+2023-10-17 11:31:12.069 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:38] : HTTP Server listen: :7788
+2023-10-17 11:31:12.069 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/transport/http_server.go:46] : HTTP Server listen: :7788
+2023-10-17 11:31:12.070 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/server/emqxserver/hook.go:33] : IOTHUB HOOK Start SUCCESS,Grpc Server listen: :9001
+2023-10-17 11:31:12.070 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/server/tcpserver/hook.go:29] : TCP IOTHUB HOOK Start SUCCESS, Server listen: :9003
+2023-10-17 11:31:12.070 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/server/udpserver/hook.go:26] : UDP IOTHUB HOOK Start SUCCESS, Server listen: :9003
+2023-10-17 11:31:12.076 [INFO] [D:/workspace/go/project/PandaX/PandaX/apps/job/jobs/jobbase.go:86] : 2023-10-17 11:31:12 [INFO] JobCore start success.
+2023-10-17 11:31:16.701 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/server/emqxserver/hook.go:97] : pandax断开连接
+2023-10-17 11:31:16.702 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/server/emqxserver/hook.go:113] : 账号pandax,开始认证
+2023-10-17 11:31:16.706 [INFO] [D:/workspace/go/project/PandaX/PandaX/iothub/server/emqxserver/hook.go:84] : Client emqx@172.17.0.3 Connected 
+2023-10-17 11:31:31.409 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [uid=1] [uname=panda] [DELETE=/device/template/C-ic8z557Q] : 删除Template信息 ->369ms
+2023-10-17 11:31:31.439 [INFO] [D:/workspace/go/project/PandaX/PandaX/pkg/middleware/log.go:34] [GET=/device/template/list] [uid=1] [uname=panda] : 获取Template分页列表 ->8ms

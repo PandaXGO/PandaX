@@ -57,6 +57,18 @@ func init() {
 	DeviceShadowInstance = shadow
 }
 
+func InitDeviceShadow(deviceName, ProductId string) Device {
+	device, err := DeviceShadowInstance.GetDevice(deviceName)
+	if err == UnknownDeviceErr {
+		attributes := make(map[string]DevicePoint)
+		telemetry := make(map[string]DevicePoint)
+		device = NewDevice(deviceName, ProductId, attributes, telemetry)
+		DeviceShadowInstance.AddDevice(device)
+		//shadow.DeviceShadowInstance.SetDeviceTTL()
+	}
+	return device
+}
+
 func (d *deviceShadow) AddDevice(device Device) (err error) {
 	if _, ok := d.m.Load(device.Name); ok {
 		return DeviceRepeatErr

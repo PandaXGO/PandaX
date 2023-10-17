@@ -10,7 +10,7 @@ import (
 	"math/rand"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
-	"pandax/pkg/global"
+	"pandax/pkg/cache"
 	"strconv"
 	"strings"
 	"time"
@@ -30,7 +30,7 @@ type DeviceAuth struct {
 }
 
 func (entity *DeviceAuth) GetDeviceToken(key string) error {
-	if err := global.RedisDb.Get(key, entity); err != nil {
+	if err := cache.GetDeviceEtoken(key, entity); err != nil {
 		return err
 	}
 	return nil

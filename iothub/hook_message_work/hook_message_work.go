@@ -11,6 +11,7 @@ import (
 	ruleEntity "pandax/apps/rule/entity"
 	ruleService "pandax/apps/rule/services"
 	"pandax/iothub/netbase"
+	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	"pandax/pkg/global_model"
 	"pandax/pkg/rule_engine"
@@ -108,6 +109,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 	}()
 }
 
+// 根据产品Id从缓存中获取规则链，没有就查询
 func getRuleChain(etoken *global_model.DeviceAuth) *ruleEntity.RuleDataJson {
 	defer func() {
 		if err := recover(); err != nil {
@@ -115,7 +117,7 @@ func getRuleChain(etoken *global_model.DeviceAuth) *ruleEntity.RuleDataJson {
 		}
 	}()
 	key := etoken.ProductId
-	get, err := global.ProductCache.ComputeIfAbsent(key, func(k any) (any, error) {
+	get, err := cache.ComputeIfAbsentProductRule(key, func(k any) (any, error) {
 		one := services.ProductModelDao.FindOne(k.(string))
 		rule := ruleService.RuleChainModelDao.FindOne(one.RuleChainId)
 		return rule.RuleDataJson, nil
@@ -127,6 +129,7 @@ func getRuleChain(etoken *global_model.DeviceAuth) *ruleEntity.RuleDataJson {
 	return &ruleData
 }
 
+// 构建规则链执行的消息
 func buildRuleMessage(etoken *global_model.DeviceAuth, msgVals map[string]interface{}, msgType string) *message.Message {
 	metadataVals := map[string]interface{}{
 		"deviceId":       etoken.DeviceId,
@@ -159,7 +162,7 @@ func SendZtWebsocket(deviceId, message string) {
 // SetDeviceShadow 设置设备点
 func SetDeviceShadow(etoken *global_model.DeviceAuth, msgVals map[string]interface{}, msgType string) {
 	defer func() {
-		if err := recover(); &err != nil {
+		if err := recover(); err != nil {
 			global.Log.Error(err)
 		}
 	}()

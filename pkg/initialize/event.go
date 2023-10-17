@@ -3,6 +3,7 @@ package initialize
 import (
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	"pandax/pkg/cache"
 	"pandax/pkg/events"
 	"pandax/pkg/global"
 )
@@ -17,7 +18,7 @@ func InitEvents() {
 		})
 		if list != nil {
 			for _, product := range *list {
-				global.ProductCache.Put(product.Id, codeData)
+				cache.PutProductRule(product.Id, codeData)
 			}
 		}
 	})

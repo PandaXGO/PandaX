@@ -5,6 +5,7 @@ import (
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	"pandax/iothub/server/emqxserver/protobuf"
+	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	"pandax/pkg/global_model"
 	"pandax/pkg/tdengine"
@@ -22,26 +23,26 @@ func Auth(authToken string) bool {
 	}
 	etoken := &global_model.DeviceAuth{}
 	// redis 中有就查询，没有就添加
-	exists, err := global.RedisDb.Exists(global.RedisDb.Context(), authToken).Result()
-	if exists == 1 {
-		err = global.RedisDb.Get(authToken, etoken)
+	exists := cache.ExistsDeviceEtoken(authToken)
+	if exists {
+		err := cache.GetDeviceEtoken(authToken, etoken)
+		if err != nil {
+			global.Log.Infof("认证失败，缓存读取设备错误： %s", err)
+			return false
+		}
 	} else {
 		device, err := services.DeviceModelDao.FindOneByToken(authToken)
 		if err != nil {
-			global.Log.Infof("设备token %s 不存在", authToken)
+			global.Log.Infof("认证失败，设备token %s 不存在", authToken)
 			return false
 		}
 		etoken = services.GetDeviceToken(&device.Device)
 		etoken.DeviceProtocol = device.Product.ProtocolName
-		err = global.RedisDb.Set(authToken, etoken.GetMarshal(), time.Hour*24*365)
+		err = cache.SetDeviceEtoken(authToken, etoken.GetMarshal(), time.Hour*24*365)
 		if err != nil {
-			global.Log.Infof("设备TOKEN %s添加缓存失败", authToken)
+			global.Log.Infof("认证失败，设备TOKEN %s添加缓存失败", authToken)
 			return false
 		}
-	}
-	if err != nil {
-		global.Log.Infof("invalid authToken %s", authToken)
-		return false
 	}
 	// 判断token是否过期了, 设备过期
 	if etoken.ExpiredAt < time.Now().Unix() {
@@ -61,9 +62,13 @@ func SubAuth(name string) (*global_model.DeviceAuth, bool) {
 	}()
 	etoken := &global_model.DeviceAuth{}
 	// redis 中有就查询，没有就添加
-	exists, err := global.RedisDb.Exists(global.RedisDb.Context(), name).Result()
-	if exists == 1 {
-		err = etoken.GetDeviceToken(name)
+	exists := cache.ExistsDeviceEtoken(name)
+	if exists {
+		err := etoken.GetDeviceToken(name)
+		if err != nil {
+			global.Log.Infof("认证失败，缓存读取设备错误,无效的设备标识： %s", err)
+			return nil, false
+		}
 	} else {
 		device, err := services.DeviceModelDao.FindOneByName(name)
 		// 没有设备就要创建子设备
@@ -73,15 +78,11 @@ func SubAuth(name string) (*global_model.DeviceAuth, bool) {
 		}
 		etoken = services.GetDeviceToken(&device.Device)
 		etoken.DeviceProtocol = device.Product.ProtocolName
-		err = global.RedisDb.Set(name, etoken.GetMarshal(), time.Hour*24*365)
+		err = cache.SetDeviceEtoken(name, etoken.GetMarshal(), time.Hour*24*365)
 		if err != nil {
 			global.Log.Infof("设备标识 %s添加缓存失败", name)
 			return nil, false
 		}
-	}
-	if err != nil {
-		global.Log.Infof("无效设备标识 %s", name)
-		return nil, false
 	}
 	return etoken, true
 }

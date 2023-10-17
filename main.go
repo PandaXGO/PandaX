@@ -15,6 +15,7 @@ import (
 	"os"
 	"os/signal"
 	"pandax/iothub"
+	"pandax/pkg/cache"
 	"pandax/pkg/config"
 	"pandax/pkg/global"
 	"pandax/pkg/initialize"
@@ -48,7 +49,7 @@ var rootCmd = &cobra.Command{
 			} else {
 				global.Log.Info("Redis连接成功")
 			}
-			global.RedisDb = client
+			cache.RedisDb = client
 			tDengine, err := tdengine.NewTdengine(global.Conf.Taos.Username, global.Conf.Taos.Password, global.Conf.Taos.Host, global.Conf.Taos.Database)
 			if err != nil {
 				global.Log.Panic("Tdengine连接错误")

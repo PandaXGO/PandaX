@@ -1,9 +1,9 @@
 package services
 
 import (
-	"context"
 	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/entity"
+	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	"pandax/pkg/global_model"
 	"time"
@@ -43,11 +43,11 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 	token := GetDeviceToken(&data)
 	// 子网关不需要设置token
 	if data.DeviceType == global.GATEWAYS {
-		data.Token = ""
-		err := global.RedisDb.Set(data.Name, token.GetMarshal(), time.Hour*24*365)
+		err := cache.SetDeviceEtoken(data.Name, token.GetMarshal(), time.Hour*24*365)
 		biz.ErrIsNil(err, "设备缓存失败")
 	} else {
-		err := global.RedisDb.Set(data.Token, token.GetMarshal(), time.Hour*24*365)
+		data.Token = token.MD5ID()
+		err := cache.SetDeviceEtoken(data.Token, token.GetMarshal(), time.Hour*24*365)
 		biz.ErrIsNil(err, "设备缓存失败")
 	}
 	//3 添加设备
@@ -157,13 +157,13 @@ func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
 	return &list
 }
 
-// TODO 如果更改的是产品，tdengine的设备表也要更改
 func (m *deviceModelImpl) Update(data entity.Device) *entity.Device {
+	token := GetDeviceToken(&data)
 	if data.DeviceType == global.GATEWAYS {
-		data.Token = ""
+		err := cache.SetDeviceEtoken(data.Name, token.GetMarshal(), time.Hour*24*365)
+		biz.ErrIsNil(err, "设备更改缓存失败")
 	} else {
-		token := GetDeviceToken(&data)
-		err := global.RedisDb.Set(data.Token, token.GetMarshal(), time.Hour*24*365)
+		err := cache.SetDeviceEtoken(data.Token, token.GetMarshal(), time.Hour*24*365)
 		biz.ErrIsNil(err, "设备更改缓存失败")
 	}
 	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改设备失败")
@@ -176,12 +176,16 @@ func (m *deviceModelImpl) UpdateStatus(id, linkStatus string) error {
 func (m *deviceModelImpl) Delete(ids []string) {
 	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.Device{}, "id in (?)", ids).Error, "删除设备失败")
 	for _, id := range ids {
-		list := m.FindOne(id)
+		device := m.FindOne(id)
 		// 删除表
-		err := deleteDeviceTable(list.Name)
+		err := deleteDeviceTable(device.Name)
 		global.Log.Error("设备时序表删除失败", err)
 		// 删除所有缓存
-		global.RedisDb.Del(context.Background(), id)
+		if device.DeviceType == global.GATEWAYS {
+			cache.DelDeviceEtoken(device.Name)
+		} else {
+			cache.DelDeviceEtoken(device.Token)
+		}
 	}
 }
 
@@ -214,19 +218,17 @@ func deleteDeviceTable(device string) error {
 func GetDeviceToken(data *entity.Device) *global_model.DeviceAuth {
 	now := time.Now()
 	etoken := &global_model.DeviceAuth{
-		DeviceId:   data.Id,
-		OrgId:      data.OrgId,
-		Owner:      data.Owner,
-		Name:       data.Name,
-		DeviceType: data.DeviceType,
-		ProductId:  data.Pid,
+		DeviceId:       data.Id,
+		OrgId:          data.OrgId,
+		Owner:          data.Owner,
+		Name:           data.Name,
+		DeviceType:     data.DeviceType,
+		ProductId:      data.Pid,
+		DeviceProtocol: data.Protocol,
 	}
 	//设备有效期360天
 	etoken.CreatedAt = now.Unix()
 	etoken.ExpiredAt = now.Add(time.Hour * 24 * 365).Unix()
-	if data.Token == "" {
-		data.Token = etoken.MD5ID()
-	}
 	return etoken
 }
 

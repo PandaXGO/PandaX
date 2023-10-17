@@ -18,7 +18,6 @@ type DeviceGroup struct {
 	Sort        int64  `json:"sort" gorm:"type:int;comment:排序"`
 	Status      string `gorm:"type:varchar(1);comment:状态" json:"status"`
 	Ext         Ext    `json:"ext" gorm:"type:json;comment:扩展"` //可扩展的kv map,承载设备组的外围信息
-	IsDefault   string `gorm:"type:varchar(1);comment:是否默认" json:"isDefault"`
 
 	Children []DeviceGroup `json:"children" gorm:"-"` //子节点
 
@@ -47,7 +46,8 @@ type Device struct {
 	OtaVersion  string    `json:"otaVersion" gorm:"type:varchar(64);comment:固件版本" ` //上一次固件升级的版本
 	Ext         Ext       `json:"ext" gorm:"type:json;comment:扩展"`                  //可扩展的kv map,承载设备组的外围信息
 
-	RoleId int64 `gorm:"-"` // 角色数据权限
+	Protocol string `json:"protocol" gorm:"-"`
+	RoleId   int64  `gorm:"-"` // 角色数据权限
 }
 
 type DeviceRes struct {
