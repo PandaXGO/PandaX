@@ -10,11 +10,13 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
+	"pandax/apps/device/tsl"
 	"pandax/apps/device/util"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	"pandax/pkg/global_model"
 	"pandax/pkg/shadow"
+	"pandax/pkg/tool"
 	"strings"
 	"time"
 
@@ -114,6 +116,19 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 		if v, ok := rs[tel.Key]; ok {
 			sdv.Value = v.Value
 			sdv.Time = v.UpdatedAt
+			// 如果
+			if classify == global.TslTelemetryType && (tel.Type == "bool" || tel.Type == "enum") {
+				var boolDefine tsl.ValueType
+				err := tool.MapToStruct(tel.Define, &boolDefine)
+				if err != nil {
+					continue
+				}
+				boolDefine.Type = tel.Type
+				value := boolDefine.ConvertValue(v.Value)
+				if val, ok := value.(string); ok && val != "" {
+					sdv.Value = val
+				}
+			}
 		} else {
 			if classify == global.TslAttributesType {
 				if value, ok := tel.Define["default_value"]; ok {

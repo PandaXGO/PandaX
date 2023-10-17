@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PandaXGO/PandaKit/biz"
-	"log"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
@@ -83,8 +82,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 			//检测设备影子并修改设备影子状态
 			if msg.Type == message.ConnectMes {
 				shadow.InitDeviceShadow(msg.DeviceAuth.Name, msg.DeviceAuth.ProductId)
-				err := shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
-				log.Println(err)
+				shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
 			} else {
 				shadow.DeviceShadowInstance.SetOffline(msg.DeviceAuth.Name)
 			}
@@ -180,7 +178,6 @@ func SetDeviceShadow(etoken *global_model.DeviceAuth, msgVals map[string]interfa
 			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
 		}
 		if message.TelemetryMes == msgType {
-			log.Println(etoken.Name)
 			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslTelemetryType, tel.Key, msgVals[tel.Key])
 			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
 		}
