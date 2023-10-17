@@ -6,8 +6,10 @@ server:
   # debug release test
   model: release
   port: 7788
-  # iothub使用的rpc端口  9000 9001 可能与minio端口冲突
+  # iothub服务端口  使用的rpc端口  9000 9001 可能与minio端口冲突
   grpc-port: 9001
+  http-port: 9002
+  tcp-port: 9003
   cors: true
   # 数据上报 队列池
   queue-num: 1000

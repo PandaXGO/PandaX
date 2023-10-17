@@ -2,19 +2,22 @@ package netbase
 
 import (
 	"encoding/json"
+	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	"pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/global"
 	"pandax/pkg/global_model"
 	"pandax/pkg/tdengine"
+	"pandax/pkg/tool"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 )
 
 func Auth(authToken string) bool {
 	// 根据token，去查设备Id以及设备类型
-	if authToken == "pandax" {
+	if authToken == global.Conf.Mqtt.Username {
 		return true
 	}
 	etoken := &global_model.DeviceAuth{}
@@ -48,7 +51,14 @@ func Auth(authToken string) bool {
 	return true
 }
 
+// SubAuth 获取子设备的认证信息
 func SubAuth(name string) (*global_model.DeviceAuth, bool) {
+	defer func() {
+		if Rerr := recover(); Rerr != nil {
+			global.Log.Error(Rerr)
+			return
+		}
+	}()
 	etoken := &global_model.DeviceAuth{}
 	// redis 中有就查询，没有就添加
 	exists, err := global.RedisDb.Exists(global.RedisDb.Context(), name).Result()
@@ -56,15 +66,14 @@ func SubAuth(name string) (*global_model.DeviceAuth, bool) {
 		err = etoken.GetDeviceToken(name)
 	} else {
 		device, err := services.DeviceModelDao.FindOneByName(name)
-		// 没有设备就要创建设备
+		// 没有设备就要创建子设备
 		if err != nil {
-			global.Log.Infof("设备标识 %s 不存在", name)
+			global.Log.Infof("设备标识 %s 不存在, ", name)
 			return nil, false
 		}
 		etoken = services.GetDeviceToken(&device.Device)
 		etoken.DeviceProtocol = device.Product.ProtocolName
-		// todo 子设备没有token
-		err = global.RedisDb.Set(device.Token, etoken.GetMarshal(), time.Hour*24*365)
+		err = global.RedisDb.Set(name, etoken.GetMarshal(), time.Hour*24*365)
 		if err != nil {
 			global.Log.Infof("设备标识 %s添加缓存失败", name)
 			return nil, false
@@ -75,6 +84,58 @@ func SubAuth(name string) (*global_model.DeviceAuth, bool) {
 		return nil, false
 	}
 	return etoken, true
+}
+
+// CreateSubTable 创建子设备表
+func CreateSubTable(productId, deviceName string) error {
+	err := global.TdDb.CreateTable(productId+"_"+entity.ATTRIBUTES_TSL, deviceName+"_"+entity.ATTRIBUTES_TSL)
+	if err != nil {
+		global.Log.Error(err)
+		return err
+	}
+	err = global.TdDb.CreateTable(productId+"_"+entity.TELEMETRY_TSL, deviceName+"_"+entity.TELEMETRY_TSL)
+	if err != nil {
+		global.Log.Error(err)
+		return err
+	}
+	return nil
+}
+
+// CreateSubTableField 添加子设备字段
+func CreateSubTableField(productId, ty string, fields map[string]interface{}) {
+	var group sync.WaitGroup
+	for key, value := range fields {
+		group.Add(1)
+		go func(key string, value any) {
+			defer func() {
+				group.Done()
+				if err := recover(); err != nil {
+					global.Log.Error("自动创建tsl错误", err)
+					global.TdDb.DelTableField(productId+"_"+ty, key)
+				}
+			}()
+			if key == "ts" {
+				return
+			}
+			interfaceType := tool.GetInterfaceType(value)
+			// 向产品tsl中添加模型
+			err := global.TdDb.AddSTableField(productId+"_"+ty, key, interfaceType, 0)
+			if err != nil {
+				return
+			}
+			one := services.ProductModelDao.FindOne(productId)
+			tsl := entity.ProductTemplate{}
+			tsl.Pid = productId
+			tsl.Id = global_model.GenerateID()
+			tsl.OrgId = one.OrgId
+			tsl.Name = key
+			tsl.Type = interfaceType
+			tsl.Key = key
+			tsl.Classify = ty
+			services.ProductTemplateModelDao.Insert(tsl)
+		}(key, value)
+	}
+	group.Wait()
 }
 
 // 解析遥测数据类型 返回标准带时间戳格式
@@ -94,7 +155,12 @@ func UpdateDeviceTelemetryData(data string) map[string]interface{} {
 			}
 			resTel := make(map[string]interface{})
 			json.Unmarshal(marshal, &resTel)
-			resTel["ts"] = tel["ts"]
+
+			format := tool.TimeToFormat(tel["ts"])
+			if format == "" {
+				return nil
+			}
+			resTel["ts"] = format
 			return resTel
 		}
 	}

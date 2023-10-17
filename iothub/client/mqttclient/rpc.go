@@ -1,12 +1,10 @@
 package mqttclient
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"math/rand"
-	"pandax/pkg/global_model"
 	"time"
 )
 
@@ -48,7 +46,7 @@ func (rpc RpcRequest) RequestCmd(rpcPayload string) (respPayload string, err err
 	}
 	rpc.Client.Sub(respTopic, 0, mqMessagePubHandler)
 	if rpc.Timeout == 0 {
-		rpc.Timeout = 30
+		rpc.Timeout = 20
 	}
 	defer func() {
 		close(repsChan)
@@ -62,19 +60,6 @@ func (rpc RpcRequest) RequestCmd(rpcPayload string) (respPayload string, err err
 			return resp, nil
 		}
 	}
-}
-
-// RequestAttributes rpc 下发属性
-func (rpc RpcRequest) RequestAttributes(rpcPayload global_model.RpcPayload) error {
-	topic := fmt.Sprintf(RpcReqTopic, rpc.RequestId)
-	if rpcPayload.Method == "" {
-		rpcPayload.Method = "setAttributes"
-	}
-	payload, err := json.Marshal(rpcPayload)
-	if err != nil {
-		return err
-	}
-	return rpc.Client.Pub(topic, 0, string(payload))
 }
 
 func (rpc RpcRequest) Pub(reqPayload string) error {

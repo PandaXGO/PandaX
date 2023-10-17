@@ -4,7 +4,6 @@ import (
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"github.com/PandaXGO/PandaKit/utils"
-	"log"
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
 )
@@ -36,7 +35,6 @@ func (l *LogOperApi) GetOperLog(rc *restfulx.ReqCtx) {
 func (l *LogOperApi) DeleteOperLog(rc *restfulx.ReqCtx) {
 	operIds := restfulx.PathParam(rc, "operId")
 	group := utils.IdsStrToIdsIntGroup(operIds)
-	log.Println("group", group)
 	l.LogOperApp.Delete(group)
 }
 

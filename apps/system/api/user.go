@@ -7,8 +7,6 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/kakuilan/kgo"
 	"github.com/mssola/user_agent"
-	"log"
-
 	"pandax/apps/system/api/form"
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
@@ -59,7 +57,6 @@ func (u *UserApi) RefreshToken(rc *restfulx.ReqCtx) {
 func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 	var l form.Login
 	restfulx.BindJsonAndValid(rc, &l)
-	log.Println(l)
 	biz.IsTrue(captcha.Verify(l.CaptchaId, l.Captcha), "验证码认证失败")
 
 	login := u.UserApp.Login(entity.Login{Username: l.Username, Password: l.Password})

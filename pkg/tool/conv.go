@@ -2,7 +2,9 @@ package tool
 
 import (
 	"encoding/json"
+	"pandax/pkg/global"
 	"strings"
+	"time"
 )
 
 // SnakeString snake string, XxYy to xx_yy , XxYY to xx_y_y
@@ -99,4 +101,27 @@ func StringToStruct(m string, s interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func TimeToFormat(val interface{}) string {
+	switch v := val.(type) {
+	case int64:
+		// 如果是时间戳类型，将其转换为时间对象
+		t := time.Unix(v, 0)
+		// 格式化时间字符串
+		formattedTime := t.Format("2006-01-02 15:04:05")
+		return formattedTime
+	case string:
+		// 如果是字符串类型，将其解析为时间对象
+		t, err := time.Parse("2006-01-02 15:04:05", v)
+		if err != nil {
+			global.Log.Error("时间格式非标准格式")
+			return ""
+		}
+		// 格式化时间字符串
+		formattedTime := t.Format("2006-01-02 15:04:05")
+		return formattedTime
+	default:
+		return ""
+	}
 }

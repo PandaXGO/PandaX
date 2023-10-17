@@ -3,7 +3,6 @@ package nodes
 import (
 	"encoding/json"
 	"github.com/sirupsen/logrus"
-	"log"
 	"pandax/apps/device/services"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
@@ -36,7 +35,6 @@ func (n *clearAlarmNode) Handle(msg *message.Message) error {
 
 	alarm := services.DeviceAlarmModelDao.FindOneByType(msg.Metadata.GetValue("deviceId").(string), n.AlarmType, "0")
 	if alarm.DeviceId != "" {
-		log.Println("清除告警")
 		alarm.State = global.CLEARED
 		marshal, _ := json.Marshal(msg.Msg)
 		alarm.Details = string(marshal)

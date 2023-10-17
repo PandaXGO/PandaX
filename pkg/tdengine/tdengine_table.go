@@ -45,7 +45,7 @@ func (s *TdEngine) CreateStable(table string) (err error) {
 
 // CreateTable 添加子表
 func (s *TdEngine) CreateTable(stable, table string) (err error) {
-	sql := fmt.Sprintf("CREATE TABLE %s USING %s TAGS ('%s')", table, stable, table)
+	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS  %s USING %s TAGS ('%s')", table, stable, table)
 	_, err = s.db.Exec(sql)
 	return
 }

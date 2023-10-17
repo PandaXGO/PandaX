@@ -1,7 +1,6 @@
 package initialize
 
 import (
-	"log"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	"pandax/pkg/events"
@@ -18,7 +17,6 @@ func InitEvents() {
 		})
 		if list != nil {
 			for _, product := range *list {
-				log.Println("修改了产品的规则链", product.Id)
 				global.ProductCache.Put(product.Id, codeData)
 			}
 		}

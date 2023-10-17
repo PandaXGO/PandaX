@@ -41,20 +41,25 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 	biz.IsTrue(list != nil && len(*list) == 0, "设备名称已经存在")
 	//2 创建认证TOKEN IOTHUB使用
 	token := GetDeviceToken(&data)
-	err := global.RedisDb.Set(data.Token, token.GetMarshal(), time.Hour*24*365)
-	biz.ErrIsNil(err, "设备缓存失败")
 	// 子网关不需要设置token
 	if data.DeviceType == global.GATEWAYS {
 		data.Token = ""
+		err := global.RedisDb.Set(data.Name, token.GetMarshal(), time.Hour*24*365)
+		biz.ErrIsNil(err, "设备缓存失败")
+	} else {
+		err := global.RedisDb.Set(data.Token, token.GetMarshal(), time.Hour*24*365)
+		biz.ErrIsNil(err, "设备缓存失败")
 	}
 	//3 添加设备
-	err = tx.Table(m.table).Create(&data).Error
+	err := tx.Table(m.table).Create(&data).Error
 	biz.ErrIsNil(err, "添加设备失败")
 	// 创建超级表 失败就
-	err = createDeviceTable(data.Pid, data.Name)
-	if err != nil {
-		tx.Rollback()
-		biz.ErrIsNil(err, "添加设备失败，设备表创建失败")
+	if data.Pid != "" {
+		err = createDeviceTable(data.Pid, data.Name)
+		if err != nil {
+			tx.Rollback()
+			biz.ErrIsNil(err, "添加设备失败，设备表创建失败")
+		}
 	}
 	tx.Commit()
 	return &data
@@ -152,6 +157,7 @@ func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
 	return &list
 }
 
+// TODO 如果更改的是产品，tdengine的设备表也要更改
 func (m *deviceModelImpl) Update(data entity.Device) *entity.Device {
 	if data.DeviceType == global.GATEWAYS {
 		data.Token = ""

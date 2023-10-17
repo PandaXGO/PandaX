@@ -2,7 +2,6 @@ package services
 
 import (
 	"github.com/PandaXGO/PandaKit/biz"
-	"log"
 	"pandax/apps/device/entity"
 	"pandax/pkg/global"
 )
@@ -117,7 +116,6 @@ func (m *otaModelImpl) Update(data entity.ProductOta) *entity.ProductOta {
 	return &data
 }
 func (m *otaModelImpl) updateLatest(id string, IsLatest bool) {
-	log.Println(id, IsLatest)
 	err := global.Db.Table(m.table).Where("id = ?", id).Update("is_latest", IsLatest).Error
 	global.Log.Error("更新失败", err)
 }

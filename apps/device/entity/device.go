@@ -11,14 +11,16 @@ import (
 // DeviceGroup 设备分组
 type DeviceGroup struct {
 	global_model.BaseAuthModel
-	Name        string        `json:"name"  gorm:"type:varchar(128);comment:设备分组名称" validate:"required"`
-	Pid         string        `json:"pid" gorm:"type:varchar(64);comment:设备分组类型"`
-	Path        string        `json:"path" gorm:"type:varchar(255);comment:设备分组路径"`
-	Description string        `json:"description"  gorm:"type:varchar(255);comment:设备分组说明"`
-	Sort        int64         `json:"sort" gorm:"type:int;comment:排序"`
-	Status      string        `gorm:"status;type:varchar(1);comment:状态" json:"status"`
-	Ext         Ext           `json:"ext" gorm:"type:json;comment:扩展"` //可扩展的kv map,承载设备组的外围信息
-	Children    []DeviceGroup `json:"children" gorm:"-"`               //子节点
+	Name        string `json:"name"  gorm:"type:varchar(128);comment:设备分组名称" validate:"required"`
+	Pid         string `json:"pid" gorm:"type:varchar(64);comment:设备分组类型"`
+	Path        string `json:"path" gorm:"type:varchar(255);comment:设备分组路径"`
+	Description string `json:"description"  gorm:"type:varchar(255);comment:设备分组说明"`
+	Sort        int64  `json:"sort" gorm:"type:int;comment:排序"`
+	Status      string `gorm:"type:varchar(1);comment:状态" json:"status"`
+	Ext         Ext    `json:"ext" gorm:"type:json;comment:扩展"` //可扩展的kv map,承载设备组的外围信息
+	IsDefault   string `gorm:"type:varchar(1);comment:是否默认" json:"isDefault"`
+
+	Children []DeviceGroup `json:"children" gorm:"-"` //子节点
 
 	RoleId int64 `gorm:"-"` // 角色数据权限
 }

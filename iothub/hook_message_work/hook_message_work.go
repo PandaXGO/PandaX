@@ -82,14 +82,14 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 			//检测设备影子并修改设备影子状态
 			if msg.Type == message.ConnectMes {
 				shadow.InitDeviceShadow(msg.DeviceAuth.Name, msg.DeviceAuth.ProductId)
-				shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
+				err := shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
+				log.Println(err)
 			} else {
 				shadow.DeviceShadowInstance.SetOffline(msg.DeviceAuth.Name)
 			}
 			// 更改设备在线状态
 			if msg.Type == message.ConnectMes {
-				err := services.DeviceModelDao.UpdateStatus(msg.DeviceId, global.ONLINE)
-				global.Log.Error(err)
+				services.DeviceModelDao.UpdateStatus(msg.DeviceId, global.ONLINE)
 			} else {
 				services.DeviceModelDao.UpdateStatus(msg.DeviceId, global.OFFLINE)
 			}
@@ -177,7 +177,7 @@ func SetDeviceShadow(etoken *global_model.DeviceAuth, msgVals map[string]interfa
 			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
 		}
 		if message.TelemetryMes == msgType {
-			log.Println(etoken.Name, global.TslTelemetryType, tel.Key, msgVals[tel.Key])
+			log.Println(etoken.Name)
 			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslTelemetryType, tel.Key, msgVals[tel.Key])
 			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
 		}

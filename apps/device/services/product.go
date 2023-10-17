@@ -12,6 +12,7 @@ type (
 	ProductModel interface {
 		Insert(data entity.Product) *entity.Product
 		FindOne(id string) *entity.ProductRes
+		FindDefault() *entity.Product
 		FindListPage(page, pageSize int, data entity.Product) (*[]entity.ProductRes, int64)
 		FindList(data entity.Product) *[]entity.ProductRes
 		Update(data entity.Product) *entity.Product
@@ -51,6 +52,14 @@ func (m *productModelImpl) FindOne(id string) *entity.ProductRes {
 	return resData
 }
 
+func (m *productModelImpl) FindDefault() *entity.Product {
+	resData := new(entity.Product)
+	err := global.Db.Table(m.table).Where("is_default = ?", "1").First(resData).Error
+	log.Println(err)
+	biz.ErrIsNil(err, "查询默认产品失败")
+	return resData
+}
+
 func (m *productModelImpl) FindListPage(page, pageSize int, data entity.Product) (*[]entity.ProductRes, int64) {
 	list := make([]entity.ProductRes, 0)
 	var total int64 = 0
@@ -77,7 +86,6 @@ func (m *productModelImpl) FindListPage(page, pageSize int, data entity.Product)
 	}
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Preload("ProductCategory").Limit(pageSize).Offset(offset).Find(&list).Error
-	log.Println(err)
 	biz.ErrIsNil(err, "查询产品分页列表失败")
 	return &list, total
 }
@@ -111,8 +119,7 @@ func (m *productModelImpl) FindList(data entity.Product) *[]entity.ProductRes {
 func (m *productModelImpl) Update(data entity.Product) *entity.Product {
 	// go的一些默认值 int 0 bool false  保存失败需要先转成map
 	err := global.Db.Table(m.table).Where("id = ?", data.Id).Updates(data).Error
-	log.Println("update", err)
-	//biz.ErrIsNil(, "修改产品失败")
+	biz.ErrIsNil(err, "修改产品失败")
 	return &data
 }
 

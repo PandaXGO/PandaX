@@ -186,6 +186,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 	// 获取topic类型
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
 	eventType := IotHubTopic.GetMessageType(in.Message.Topic)
+
 	datas := string(in.GetMessage().GetPayload())
 	data := &netbase.DeviceEventInfo{
 		Type:       eventType,
@@ -193,6 +194,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 		DeviceId:   etoken.DeviceId,
 		DeviceAuth: etoken,
 	}
+
 	// 如果是网关子设备单独处理
 	if eventType == message.GATEWAY {
 		subData := make(map[string]interface{})
@@ -203,10 +205,9 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 			return res, nil
 		}
 		// key就是device name
-		for key, value := range subData {
-			auth, isSub := netbase.SubAuth(key)
+		for deviceName, value := range subData {
+			auth, isSub := netbase.SubAuth(deviceName)
 			if !isSub {
-				global.Log.Infof("子设备%s 标识不存在，请先创建设备标识", key)
 				continue
 			}
 			data.DeviceAuth = auth
@@ -220,6 +221,8 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 				}
 				bytes, _ := json.Marshal(attributesData)
 				data.Datas = string(bytes)
+				// 创建tdengine的设备属性表
+				netbase.CreateSubTableField(auth.ProductId, global.TslAttributesType, attributesData)
 				// 子设备发送到队列里
 				s.HookService.MessageCh <- data
 			}
@@ -233,6 +236,8 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 				}
 				bytes, _ := json.Marshal(telemetryData)
 				data.Datas = string(bytes)
+				// 创建tdengine的设备遥测表
+				netbase.CreateSubTableField(auth.ProductId, global.TslTelemetryType, telemetryData)
 				// 子设备发送到队列里
 				s.HookService.MessageCh <- data
 			}

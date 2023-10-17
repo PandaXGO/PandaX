@@ -3,7 +3,6 @@ package nodes
 import (
 	"errors"
 	"github.com/sirupsen/logrus"
-	"log"
 	"pandax/pkg/rule_engine/manifest"
 	"pandax/pkg/rule_engine/message"
 )
@@ -71,7 +70,6 @@ func GetNodes(m *manifest.Manifest) (map[string]Node, error) {
 		metadata := NewMetadataWithValues(n.Properties)
 		node, err := NewNode(n.Type, n.Id, metadata)
 		if err != nil {
-			log.Println(err)
 			logrus.Errorf("new node '%s' failure", n.Id)
 			continue
 		}

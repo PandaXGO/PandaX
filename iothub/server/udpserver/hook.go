@@ -3,7 +3,6 @@ package updserver
 import (
 	"context"
 	"encoding/hex"
-	"log"
 	"net"
 	"pandax/iothub/hook_message_work"
 	"pandax/iothub/netbase"
@@ -44,7 +43,6 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 }
 
 func (hhs *HookUdpService) hook(data []byte) {
-	log.Println("udp msg", string(data))
 	hhs.Send("success")
 }
 

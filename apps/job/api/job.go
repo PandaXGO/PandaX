@@ -4,7 +4,6 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"log"
 	"pandax/apps/job/api/from"
 	"pandax/apps/job/entity"
 	"pandax/apps/job/jobs"
@@ -86,7 +85,6 @@ func (l *JobApi) StartJobForService(rc *restfulx.ReqCtx) {
 	j.OrgId = job.OrgId
 	j.Owner = job.Owner
 	job.EntryId, err = jobs.AddJob(jobs.Crontab, j)
-	log.Println(err)
 	biz.ErrIsNil(err, "添加JOB失败")
 
 	l.JobApp.Update(*job)

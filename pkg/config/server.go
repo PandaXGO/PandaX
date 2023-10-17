@@ -5,6 +5,8 @@ import "fmt"
 type Server struct {
 	Port        int            `yaml:"port"`
 	GrpcPort    int            `yaml:"grpc-port"`
+	TcpPort     int            `yaml:"tcp-port"`
+	HttpPort    int            `yaml:"http-port"`
 	Model       string         `yaml:"model"`
 	Cors        bool           `yaml:"cors"`
 	Rate        *Rate          `yaml:"rate"`
