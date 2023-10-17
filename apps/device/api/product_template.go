@@ -68,18 +68,6 @@ func (p *ProductTemplateApi) InsertProductTemplate(rc *restfulx.ReqCtx) {
 		}
 		err := global.TdDb.AddSTableField(stable, data.Key, data.Type, len)
 		biz.ErrIsNil(err, "添加字段失败")
-		// 向子表中添加字段
-		go func() {
-			tables, err := global.TdDb.GetListTableByStableName(stable)
-			if err != nil {
-				global.Log.Error(err)
-				return
-			}
-			for _, table := range tables {
-				err = global.TdDb.AddTableField(table.TableName, data.Key, data.Type, 0)
-				global.Log.Error(err)
-			}
-		}()
 	}
 	p.ProductTemplateApp.Insert(data)
 }
@@ -108,19 +96,6 @@ func (p *ProductTemplateApi) UpdateProductTemplate(rc *restfulx.ReqCtx) {
 		err := global.TdDb.AddSTableField(stable, data.Key, data.Type, len)
 		biz.ErrIsNil(err, "添加字段失败")
 	}
-	// 向子表中添加字段
-	go func() {
-		tables, err := global.TdDb.GetListTableByStableName(stable)
-		if err != nil {
-			global.Log.Error(err)
-			return
-		}
-		for _, table := range tables {
-			global.TdDb.DelTableField(table.TableName, data.Key)
-			err = global.TdDb.AddTableField(table.TableName, data.Key, data.Type, len)
-			global.Log.Error(err)
-		}
-	}()
 	p.ProductTemplateApp.Update(data)
 
 }
@@ -141,18 +116,6 @@ func (p *ProductTemplateApi) DeleteProductTemplate(rc *restfulx.ReqCtx) {
 		err := global.TdDb.DelSTableField(data.Pid+"_"+entity.TELEMETRY_TSL, data.Key)
 		biz.ErrIsNil(err, "删除字段失败")
 	}
-	// 删除子表
-	go func() {
-		tables, err := global.TdDb.GetListTableByStableName(stable)
-		if err != nil {
-			global.Log.Error(err)
-			return
-		}
-		for _, table := range tables {
-			global.TdDb.DelTableField(table.TableName, data.Key)
-			global.Log.Error(err)
-		}
-	}()
 	ids := strings.Split(id, ",")
 	p.ProductTemplateApp.Delete(ids)
 }
