@@ -7,6 +7,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	"pandax/apps/device/tsl"
 	ruleEntity "pandax/apps/rule/entity"
 	ruleService "pandax/apps/rule/services"
 	"pandax/iothub/netbase"
@@ -178,7 +179,20 @@ func SetDeviceShadow(etoken *global_model.DeviceAuth, msgVals map[string]interfa
 			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
 		}
 		if message.TelemetryMes == msgType {
-			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslTelemetryType, tel.Key, msgVals[tel.Key])
+			var value interface{}
+			// tsl转化
+			var tslValue tsl.ValueType
+			err := tool.MapToStruct(tel.Define, &tslValue)
+			if err != nil {
+				value = msgVals[tel.Key]
+			} else {
+				tslValue.Type = tel.Type
+				value = tslValue.ConvertValue(msgVals[tel.Key])
+				if value == nil {
+					value = msgVals[tel.Key]
+				}
+			}
+			err = shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslTelemetryType, tel.Key, value)
 			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
 		}
 	}
