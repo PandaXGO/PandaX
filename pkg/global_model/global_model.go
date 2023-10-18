@@ -8,7 +8,6 @@ type BaseModel struct {
 	Id        string    `json:"id" gorm:"primary_key;"`
 	CreatedAt time.Time `gorm:"column:create_time" json:"createTime" form:"create_time"`
 	UpdatedAt time.Time `gorm:"column:update_time" json:"updateTime" form:"update_time"`
-	OrgId     int64     `json:"orgId"  gorm:"type:int;comment:机构ID"`
 }
 
 type BaseAuthModel struct {

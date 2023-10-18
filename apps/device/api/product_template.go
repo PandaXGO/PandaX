@@ -56,7 +56,6 @@ func (p *ProductTemplateApi) InsertProductTemplate(rc *restfulx.ReqCtx) {
 	var data entity.ProductTemplate
 	restfulx.BindJsonAndValid(rc, &data)
 	data.Id = global_model.GenerateID()
-	data.OrgId = rc.LoginAccount.OrganizationId
 	if data.Classify == entity.ATTRIBUTES_TSL || data.Classify == entity.TELEMETRY_TSL {
 		// 向超级表及子表中添加字段
 		len := 0

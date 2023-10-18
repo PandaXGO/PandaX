@@ -87,21 +87,6 @@ func SubAuth(name string) (*global_model.DeviceAuth, bool) {
 	return etoken, true
 }
 
-// CreateSubTable 创建子设备表
-func CreateSubTable(productId, deviceName string) error {
-	err := global.TdDb.CreateTable(productId+"_"+entity.ATTRIBUTES_TSL, deviceName+"_"+entity.ATTRIBUTES_TSL)
-	if err != nil {
-		global.Log.Error(err)
-		return err
-	}
-	err = global.TdDb.CreateTable(productId+"_"+entity.TELEMETRY_TSL, deviceName+"_"+entity.TELEMETRY_TSL)
-	if err != nil {
-		global.Log.Error(err)
-		return err
-	}
-	return nil
-}
-
 // CreateSubTableField 添加子设备字段
 func CreateSubTableField(productId, ty string, fields map[string]interface{}) {
 	var group sync.WaitGroup
@@ -124,11 +109,9 @@ func CreateSubTableField(productId, ty string, fields map[string]interface{}) {
 			if err != nil {
 				return
 			}
-			one := services.ProductModelDao.FindOne(productId)
 			tsl := entity.ProductTemplate{}
 			tsl.Pid = productId
 			tsl.Id = global_model.GenerateID()
-			tsl.OrgId = one.OrgId
 			tsl.Name = key
 			tsl.Type = interfaceType
 			tsl.Key = key
@@ -139,7 +122,7 @@ func CreateSubTableField(productId, ty string, fields map[string]interface{}) {
 	group.Wait()
 }
 
-// 解析遥测数据类型 返回标准带时间戳格式
+// UpdateDeviceTelemetryData 解析遥测数据类型 返回标准带时间戳格式
 func UpdateDeviceTelemetryData(data string) map[string]interface{} {
 	tel := make(map[string]interface{})
 	err := json.Unmarshal([]byte(data), &tel)
@@ -169,6 +152,7 @@ func UpdateDeviceTelemetryData(data string) map[string]interface{} {
 	return tel
 }
 
+// UpdateDeviceAttributesData 解析属性数据类型 返回标准带时间戳格式
 func UpdateDeviceAttributesData(data string) map[string]interface{} {
 	tel := make(map[string]interface{})
 	err := json.Unmarshal([]byte(data), &tel)
@@ -179,6 +163,8 @@ func UpdateDeviceAttributesData(data string) map[string]interface{} {
 	tel["ts"] = time.Now().Format("2006-01-02 15:04:05.000")
 	return tel
 }
+
+// GetUserName 根据emqx连接信息获取用户名
 func GetUserName(Clientinfo *exhook.ClientInfo) string {
 	// coap 协议 用户名最大支持5个字符
 	protocol := Clientinfo.GetProtocol()
@@ -202,15 +188,6 @@ func SplitLwm2mClientID(lwm2mClientID string, index int) string {
 	return idArray[index]
 }
 
-// encode data
-func EncodeData(jsonData interface{}) ([]byte, error) {
-	byteData, err := json.Marshal(jsonData)
-	if nil != err {
-		return nil, err
-	}
-	return byteData, nil
-}
-
 func GetRequestIdFromTopic(reg, topic string) (requestId string) {
 	re := regexp.MustCompile(reg)
 	res := re.FindStringSubmatch(topic)
@@ -230,8 +207,8 @@ func CreateConnectionInfo(msgType, protocol, clientID, peerHost string, deviceAu
 		Type:     msgType,
 		Ts:       ts,
 	}
-	v, err := EncodeData(*ci)
-	if err != nil {
+	v, err := json.Marshal(*ci)
+	if nil != err {
 		return nil
 	}
 	// 添加设备上线记录
