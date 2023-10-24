@@ -8,10 +8,6 @@ import (
 	"github.com/PandaXGO/PandaKit/starter"
 	"github.com/spf13/cobra"
 	"log"
-	"m7s.live/engine/v4"
-	_ "m7s.live/plugin/gb28181/v4"
-	_ "m7s.live/plugin/jessica/v4"
-	_ "m7s.live/plugin/rtmp/v4"
 	"os"
 	"os/signal"
 	"pandax/iothub"
@@ -76,8 +72,6 @@ var rootCmd = &cobra.Command{
 		app.Start(context.TODO())
 		//开启IOTHUB
 		go iothub.InitIothub()
-		//开启视频服务
-		go engine.Run(context.Background(), "config.yml")
 		stop := make(chan os.Signal, 1)
 		signal.Notify(stop, syscall.SIGTERM, os.Interrupt)
 		<-stop

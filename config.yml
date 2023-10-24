@@ -75,27 +75,6 @@ gen:
   # 代码生成是使用前端代码存放位置，需要指定到src文件夹，相对路径
   frontpath: ../PandaUi/src
 
-# 视频服务器使用的全局配置
-global:
-  http:
-    listenaddr: :8801 # 网关地址，用于访问API
-    listenaddrtls: :8443  # 用于HTTPS方式访问API的端口配置
-
-gb28181:
-  #sip服务器地址 默认 自动适配设备网段
-  sipip:          ""
-  serial:         "34020000002000000001"
-  realm:          "3402000000"
-  password:       "pandax"
-  #sip服务器端口
-  port:
-    sip: tcp:5060
-
-# 萤石摄像头token
-ys:
-  appKey: ""
-  secret: ""
-
 log:
   # 日志等级, trace, debug, info, warn, error, fatal
   level: info
