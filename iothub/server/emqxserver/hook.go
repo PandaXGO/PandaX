@@ -32,8 +32,6 @@ func InitEmqxHook(addr string, hs *hook_message_work.HookService) {
 	} else {
 		global.Log.Infof("IOTHUB HOOK Start SUCCESS,Grpc Server listen: %s", addr)
 	}
-	// 初始化 MQTT客户端
-	mqttclient.InitMqtt(global.Conf.Mqtt.Broker, global.Conf.Mqtt.Username, global.Conf.Mqtt.Password)
 }
 
 func NewHookGrpcService(hs *hook_message_work.HookService) *HookGrpcService {
@@ -82,12 +80,14 @@ func (s *HookGrpcService) OnClientConnack(ctx context.Context, in *exhook2.Clien
 
 func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.ClientConnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("Client %s Connected ", in.Clientinfo.GetNode()))
-	if in.Clientinfo.Clientid == mqttclient.DefaultDownStreamClientId {
-		return &exhook2.EmptySuccess{}, nil
-	}
 	token := netbase.GetUserName(in.Clientinfo)
 	etoken := &global_model.DeviceAuth{}
-	etoken.GetDeviceToken(token)
+	err := etoken.GetDeviceToken(token)
+	if err != nil {
+		return nil, err
+	}
+	//添加连接ID
+	mqttclient.MqttClient[etoken.DeviceId] = in.Clientinfo.Clientid
 	data := netbase.CreateConnectionInfo(message.ConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
 	s.HookService.MessageCh <- data
 	return &exhook2.EmptySuccess{}, nil
@@ -96,14 +96,13 @@ func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.Cli
 func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.ClientDisconnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("%s断开连接", in.Clientinfo.Username))
 	token := netbase.GetUserName(in.Clientinfo)
-	if in.Clientinfo.Clientid == mqttclient.DefaultDownStreamClientId {
-		return &exhook2.EmptySuccess{}, nil
-	}
 	etoken := &global_model.DeviceAuth{}
 	err := etoken.GetDeviceToken(token)
 	if err != nil {
 		return nil, err
 	}
+	//删除连接ID
+	delete(mqttclient.MqttClient, etoken.DeviceId)
 	data := netbase.CreateConnectionInfo(message.DisConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
 	s.HookService.MessageCh <- data
 	return &exhook2.EmptySuccess{}, nil
@@ -177,10 +176,6 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 	res.Type = exhook2.ValuedResponse_STOP_AND_RETURN
 	res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: false}
 
-	if in.Message.From == mqttclient.DefaultDownStreamClientId {
-		res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: true}
-		return res, nil
-	}
 	etoken := &global_model.DeviceAuth{}
 	etoken.GetDeviceToken(in.Message.Headers["username"])
 	// 获取topic类型

@@ -50,13 +50,13 @@ func (n *rpcRequestToDeviceNode) Handle(msg *message.Message) error {
 		deviceProtocol = msg.Metadata.GetValue("deviceProtocol").(string)
 	}
 	var err error
+	deviceId := msg.Metadata.GetValue("deviceId").(string)
 	if deviceProtocol == global.MQTTProtocol {
-		var rpc = &mqttclient.RpcRequest{Client: mqttclient.MqttClient, Mode: mode, Timeout: n.Timeout}
+		var rpc = &mqttclient.RpcRequest{Mode: mode, Timeout: n.Timeout}
 		rpc.GetRequestId()
-		_, err = rpc.RequestCmd(string(payload))
+		err = rpc.RequestCmd(deviceId, string(payload))
 	}
 	if deviceProtocol == global.TCPProtocol {
-		deviceId := msg.Metadata.GetValue("deviceId").(string)
 		err = tcpclient.Send(deviceId, string(payload))
 	}
 	if err != nil {
