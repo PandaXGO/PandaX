@@ -175,7 +175,11 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 	res := &exhook2.ValuedResponse{}
 	res.Type = exhook2.ValuedResponse_STOP_AND_RETURN
 	res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: false}
-
+	//服务端的HTTP请求放行
+	if in.GetMessage().From == "http_api" {
+		res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: true}
+		return res, nil
+	}
 	etoken := &global_model.DeviceAuth{}
 	etoken.GetDeviceToken(in.Message.Headers["username"])
 	// 获取topic类型

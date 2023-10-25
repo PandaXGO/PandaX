@@ -2,7 +2,6 @@ package updserver
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"pandax/pkg/global"
 )
@@ -38,7 +37,6 @@ func (s *UdpServer) Start(ctx context.Context) error {
 		global.Log.Errorf("error http serve: %s", err)
 		return err
 	}
-	fmt.Println("UDP server started, listening on", listener.LocalAddr().String())
 	s.listener = listener
 	return nil
 }
