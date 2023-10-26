@@ -114,6 +114,7 @@ func (m *ruleChainModelImpl) FindListBaseLabel(data entity.RuleChain) *[]entity.
 }
 
 func (m *ruleChainModelImpl) Update(data entity.RuleChain) *entity.RuleChain {
+	//更改本地规则链缓存
 	if data.RuleDataJson != "" {
 		go global.EventEmitter.Emit(events.ProductChainRuleEvent, data.Id, data.RuleDataJson)
 	}
