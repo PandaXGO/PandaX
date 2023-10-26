@@ -29,7 +29,7 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 		global.Log.Infof("UDP IOTHUB HOOK Start SUCCESS, Server listen: %s", addr)
 	}
 	buffer := make([]byte, 1024)
-	isAuth := false
+	authMap := make(map[string]bool)
 	etoken := &global_model.DeviceAuth{}
 	hhs := &HookUdpService{
 		HookService: hs,
@@ -41,33 +41,15 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 			global.Log.Error("Error accepting connection:", err)
 			_ = server.listener.Close()
 			//设置断开连接
-			if isAuth {
+			if isAuth, ok := authMap[client.AddrPort().String()]; ok && isAuth {
 				data := netbase.CreateConnectionInfo(message.DisConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
 				hhs.HookService.MessageCh <- data
 			}
 			delete(udpclient.UdpClient, etoken.DeviceId)
-			isAuth = false
+			delete(authMap, client.AddrPort().String())
 			continue
 		}
-		if !isAuth {
-			token := string(buffer[:n])
-			etoken.GetDeviceToken(token)
-			auth := netbase.Auth(token)
-			// 认证成功，创建连接记录
-			if auth {
-				global.Log.Infof("UDP协议 设备%s,认证成功", etoken.DeviceId)
-				data := netbase.CreateConnectionInfo(message.ConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
-				hhs.HookService.MessageCh <- data
-				isAuth = true
-				udpclient.UdpClient[etoken.DeviceId] = &udpclient.UdpClientT{
-					Conn: server.listener,
-					Addr: client,
-				}
-				hhs.Send(client, "success")
-			} else {
-				hhs.Send(client, "fail")
-			}
-		} else {
+		if isAuth, ok := authMap[client.AddrPort().String()]; ok && isAuth {
 			data := &netbase.DeviceEventInfo{
 				DeviceId:   etoken.DeviceId,
 				DeviceAuth: etoken,
@@ -81,6 +63,24 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 
 			// etoken中添加设备标识
 			hhs.HookService.MessageCh <- data
+		} else {
+			token := string(buffer[:n])
+			etoken.GetDeviceToken(token)
+			auth := netbase.Auth(token)
+			// 认证成功，创建连接记录
+			if auth {
+				global.Log.Infof("UDP协议 设备%s,认证成功", etoken.DeviceId)
+				data := netbase.CreateConnectionInfo(message.ConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
+				hhs.HookService.MessageCh <- data
+				authMap[client.AddrPort().String()] = true
+				udpclient.UdpClient[etoken.DeviceId] = &udpclient.UdpClientT{
+					Conn: server.listener,
+					Addr: client,
+				}
+				hhs.Send(client, "success")
+			} else {
+				hhs.Send(client, "fail")
+			}
 		}
 	}
 }
