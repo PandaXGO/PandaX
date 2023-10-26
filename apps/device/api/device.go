@@ -94,7 +94,7 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	classify := restfulx.QueryParam(rc, "classify")
 	device := p.DeviceApp.FindOne(id)
 	template := p.ProductTemplateApp.FindList(entity.ProductTemplate{Classify: classify, Pid: device.Pid})
-
+	// 从设备影子中读取
 	res := make([]entity.DeviceStatusVo, 0)
 	getDevice := shadow.InitDeviceShadow(device.Name, device.Pid)
 	rs := make(map[string]shadow.DevicePoint)
@@ -105,37 +105,50 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 		rs = getDevice.TelemetryPoints
 	}
 	for _, tel := range *template {
-		if _, ok := rs[tel.Key]; !ok {
-			continue
-		}
 		sdv := entity.DeviceStatusVo{
 			Name:   tel.Name,
 			Key:    tel.Key,
 			Type:   tel.Type,
 			Define: tel.Define,
 		}
-		if classify == global.TslTelemetryType {
-			value := rs[tel.Key].Value
-			// tsl转化
-			/*var tslValue tsl.ValueType
-			err := tool.MapToStruct(tel.Define, &tslValue)
-			if err != nil {
-				value = rs[tel.Key].Value
-			} else {
-				tslValue.Type = tel.Type
-				// 此处rs[tel.Key].Value 变成字符串类型了
-				value = tslValue.ConvertValue(rs[tel.Key].Value)
-				log.Println("value", value)
-				if value == nil {
-					value = rs[tel.Key]
-				}
-			}*/
-			sdv.Time = rs[tel.Key].UpdatedAt
-			sdv.Value = value
-		}
-		if classify == global.TslAttributesType {
-			if value, ok := tel.Define["default_value"]; ok {
+		// 有直接从设备影子中查询，没有查询时序数据库最后一条记录
+		if _, ok := rs[tel.Key]; ok {
+			if classify == global.TslTelemetryType {
+				value := rs[tel.Key].Value
+				// tsl转化
+				/*var tslValue tsl.ValueType
+				err := tool.MapToStruct(tel.Define, &tslValue)
+				if err != nil {
+					value = rs[tel.Key].Value
+				} else {
+					tslValue.Type = tel.Type
+					// 此处rs[tel.Key].Value 变成字符串类型了
+					value = tslValue.ConvertValue(rs[tel.Key].Value)
+					log.Println("value", value)
+					if value == nil {
+						value = rs[tel.Key]
+					}
+				}*/
+				sdv.Time = rs[tel.Key].UpdatedAt
 				sdv.Value = value
+			}
+			if classify == global.TslAttributesType {
+				if value, ok := tel.Define["default_value"]; ok {
+					sdv.Value = value
+				}
+			}
+		} else {
+			var table string
+			if classify == global.TslTelemetryType {
+				table = fmt.Sprintf("%s_telemetry", strings.ToLower(device.Name))
+			}
+			if classify == global.TslAttributesType {
+				table = fmt.Sprintf("%s_attributes", strings.ToLower(device.Name))
+			}
+			sql := `select ts,? from ? order by ts desc`
+			one, err := global.TdDb.GetOne(sql, strings.ToLower(tel.Key), table)
+			if err == nil {
+				sdv.Value = one[strings.ToLower(tel.Key)]
 			}
 		}
 		res = append(res, sdv)
