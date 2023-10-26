@@ -105,20 +105,37 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 		rs = getDevice.TelemetryPoints
 	}
 	for _, tel := range *template {
+		if _, ok := rs[tel.Key]; !ok {
+			continue
+		}
 		sdv := entity.DeviceStatusVo{
 			Name:   tel.Name,
 			Key:    tel.Key,
 			Type:   tel.Type,
 			Define: tel.Define,
 		}
-		if v, ok := rs[tel.Key]; ok {
-			sdv.Value = v.Value
-			sdv.Time = v.UpdatedAt
-		} else {
-			if classify == global.TslAttributesType {
-				if value, ok := tel.Define["default_value"]; ok {
-					sdv.Value = value
+		if classify == global.TslTelemetryType {
+			value := rs[tel.Key].Value
+			// tsl转化
+			/*var tslValue tsl.ValueType
+			err := tool.MapToStruct(tel.Define, &tslValue)
+			if err != nil {
+				value = rs[tel.Key].Value
+			} else {
+				tslValue.Type = tel.Type
+				// 此处rs[tel.Key].Value 变成字符串类型了
+				value = tslValue.ConvertValue(rs[tel.Key].Value)
+				log.Println("value", value)
+				if value == nil {
+					value = rs[tel.Key]
 				}
+			}*/
+			sdv.Time = rs[tel.Key].UpdatedAt
+			sdv.Value = value
+		}
+		if classify == global.TslAttributesType {
+			if value, ok := tel.Define["default_value"]; ok {
+				sdv.Value = value
 			}
 		}
 		res = append(res, sdv)

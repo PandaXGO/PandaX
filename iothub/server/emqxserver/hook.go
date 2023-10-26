@@ -176,7 +176,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 	res.Type = exhook2.ValuedResponse_STOP_AND_RETURN
 	res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: false}
 	//服务端的HTTP请求放行
-	if in.GetMessage().From == "http_api" {
+	if in.Message.From == "http_api" {
 		res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: true}
 		return res, nil
 	}
@@ -193,7 +193,6 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 		DeviceId:   etoken.DeviceId,
 		DeviceAuth: etoken,
 	}
-
 	// 如果是网关子设备单独处理
 	if eventType == message.GATEWAY {
 		subData := make(map[string]interface{})

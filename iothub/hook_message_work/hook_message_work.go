@@ -5,9 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PandaXGO/PandaKit/biz"
-	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
-	"pandax/apps/device/tsl"
 	ruleEntity "pandax/apps/rule/entity"
 	ruleService "pandax/apps/rule/services"
 	"pandax/iothub/netbase"
@@ -19,7 +17,6 @@ import (
 	"pandax/pkg/shadow"
 	"pandax/pkg/tool"
 	"pandax/pkg/websocket"
-	"strings"
 )
 
 // 消息处理模块
@@ -169,30 +166,13 @@ func SetDeviceShadow(etoken *global_model.DeviceAuth, msgVals map[string]interfa
 	if msgType == message.RowMes {
 		msgType = message.TelemetryMes
 	}
-	template := services.ProductTemplateModelDao.FindList(entity.ProductTemplate{Classify: strings.ToLower(msgType), Pid: etoken.ProductId})
-	for _, tel := range *template {
-		if _, ok := msgVals[tel.Key]; !ok {
-			continue
-		}
+	for key, value := range msgVals {
 		if message.AttributesMes == msgType {
-			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslAttributesType, tel.Key, msgVals[tel.Key])
+			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslAttributesType, key, value)
 			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
 		}
 		if message.TelemetryMes == msgType {
-			var value interface{}
-			// tsl转化
-			var tslValue tsl.ValueType
-			err := tool.MapToStruct(tel.Define, &tslValue)
-			if err != nil {
-				value = msgVals[tel.Key]
-			} else {
-				tslValue.Type = tel.Type
-				value = tslValue.ConvertValue(msgVals[tel.Key])
-				if value == nil {
-					value = msgVals[tel.Key]
-				}
-			}
-			err = shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslTelemetryType, tel.Key, value)
+			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslTelemetryType, key, value)
 			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
 		}
 	}

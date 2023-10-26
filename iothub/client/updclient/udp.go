@@ -1,4 +1,4 @@
-package tcpclient
+package udpclient
 
 import (
 	"encoding/hex"
@@ -6,12 +6,17 @@ import (
 	"pandax/pkg/global"
 )
 
-var UdpClient = make(map[string]*net.UDPConn)
+type UdpClientT struct {
+	Conn *net.UDPConn
+	Addr *net.UDPAddr
+}
+
+var UdpClient = make(map[string]*UdpClientT)
 
 func Send(deviceId, msg string) error {
 	if conn, ok := UdpClient[deviceId]; ok {
 		global.Log.Infof("设备%s, 发送指令%s", deviceId, msg)
-		_, err := conn.Write([]byte(msg))
+		_, err := conn.Conn.WriteToUDP([]byte(msg), conn.Addr)
 		if err != nil {
 			return err
 		}
@@ -28,7 +33,7 @@ func SendHex(deviceId, msg string) error {
 		if err != nil {
 			return err
 		}
-		_, err = conn.Write(b)
+		_, err = conn.Conn.WriteToUDP(b, conn.Addr)
 		if err != nil {
 			return err
 		}
