@@ -28,7 +28,7 @@ func BuildRunDeviceRpc(deviceId, mode string, metadata map[string]interface{}) e
 	dataCode := ruleData.LfData.DataCode
 	code, _ := json.Marshal(dataCode)
 	//新建规则链实体
-	instance, errs := rule_engine.NewRuleChainInstance(code)
+	instance, errs := rule_engine.NewRuleChainInstance(findOne.Id, code)
 	if len(errs) > 0 {
 		return errs[0]
 	}

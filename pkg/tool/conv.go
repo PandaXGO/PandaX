@@ -3,6 +3,7 @@ package tool
 import (
 	"encoding/json"
 	"pandax/pkg/global"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -65,6 +66,21 @@ func FirstLowCamelString(s string) string {
 		data[0] = data[0] + 32
 	}
 	return string(data)
+}
+
+func StructToMap(s interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
+
+	value := reflect.ValueOf(s)
+	typ := reflect.TypeOf(s)
+
+	for i := 0; i < value.NumField(); i++ {
+		field := typ.Field(i)
+		fieldValue := value.Field(i).Interface()
+		result[field.Name] = fieldValue
+	}
+
+	return result
 }
 
 func MapToStruct(m map[string]interface{}, s interface{}) error {

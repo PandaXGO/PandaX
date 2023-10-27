@@ -2,6 +2,8 @@ package tdengine
 
 import "time"
 
+const logTableName = "device_log"
+
 // CreateLogStable 添加LOG超级表
 func (s *TdEngine) CreateLogStable() (err error) {
 	var name string

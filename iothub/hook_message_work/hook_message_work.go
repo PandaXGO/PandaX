@@ -62,7 +62,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 			dataCode := chain.LfData.DataCode
 			code, err := json.Marshal(dataCode)
 			//新建规则链实体
-			instance, errs := rule_engine.NewRuleChainInstance(code)
+			instance, errs := rule_engine.NewRuleChainInstance(chain.Id, code)
 			if len(errs) > 0 {
 				global.Log.Error("规则链初始化失败", errs[0])
 				return
@@ -116,13 +116,19 @@ func getRuleChain(etoken *global_model.DeviceAuth) *ruleEntity.RuleDataJson {
 	get, err := cache.ComputeIfAbsentProductRule(key, func(k any) (any, error) {
 		one := services.ProductModelDao.FindOne(k.(string))
 		rule := ruleService.RuleChainModelDao.FindOne(one.RuleChainId)
-		return rule.RuleDataJson, nil
+		var lfData ruleEntity.LfData
+		err := tool.StringToStruct(rule.RuleDataJson, &lfData)
+		if err != nil {
+			return nil, err
+		}
+		return ruleEntity.RuleDataJson{Id: rule.Id, LfData: lfData}, nil
 	})
 	biz.ErrIsNil(err, "缓存读取规则链失败")
-	ruleData := ruleEntity.RuleDataJson{}
-	err = tool.StringToStruct(get.(string), &ruleData)
+	if ruleData, ok := get.(ruleEntity.RuleDataJson); ok {
+		return &ruleData
+	}
 	biz.ErrIsNil(err, "规则链数据转化失败")
-	return &ruleData
+	return nil
 }
 
 // 构建规则链执行的消息

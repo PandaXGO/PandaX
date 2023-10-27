@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
@@ -9,8 +8,6 @@ import (
 	"pandax/apps/rule/services"
 	"pandax/pkg/global_model"
 	"pandax/pkg/rule_engine"
-	"pandax/pkg/rule_engine/message"
-	"pandax/pkg/rule_engine/nodes"
 	"strings"
 )
 
@@ -19,14 +16,22 @@ type RuleChainApi struct {
 }
 
 func (r *RuleChainApi) GetNodeLabels(rc *restfulx.ReqCtx) {
-	rc.ResData = nodes.GetCategory()
+	rc.ResData = rule_engine.GetCategory()
 }
-func (r *RuleChainApi) RuleChainTest(rc *restfulx.ReqCtx) {
-	code := restfulx.QueryParam(rc, "code")
-	instance, _ := rule_engine.NewRuleChainInstance([]byte(code))
-	msg := message.NewMessage("1", message.TelemetryMes, message.Msg{"temperature": 60.4, "humidity": 32.5}, message.Metadata{})
-	instance.StartRuleChain(context.Background(), msg)
-	rc.ResData = []map[string]interface{}{}
+
+func (r *RuleChainApi) GetNodeDebug(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	ruleId := restfulx.QueryParam(rc, "ruleId")
+	nodeId := restfulx.QueryParam(rc, "nodeId")
+
+	total, list := rule_engine.GetDebugDataPage(pageNum, pageSize, ruleId, nodeId)
+	rc.ResData = model.ResultPage{
+		Total:    total,
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageSize),
+		Data:     list,
+	}
 }
 
 // GetRuleChainList WorkInfo列表数据

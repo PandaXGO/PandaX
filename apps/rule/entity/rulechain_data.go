@@ -5,12 +5,15 @@ import (
 )
 
 type RuleDataJson struct {
-	LfData struct {
-		GlobalColor string                 `json:"globalColor"`
-		DataCode    map[string]interface{} `json:"dataCode"`
-		OpenRule    bool                   `json:"openRule"`
-		Setting     map[string]interface{} `json:"setting"`
-	} `json:"lfData"`
+	Id     string
+	LfData LfData `json:"lfData"`
+}
+
+type LfData struct {
+	GlobalColor string                 `json:"globalColor"`
+	DataCode    map[string]interface{} `json:"dataCode"`
+	OpenRule    bool                   `json:"openRule"`
+	Setting     map[string]interface{} `json:"setting"`
 }
 
 // 序列化

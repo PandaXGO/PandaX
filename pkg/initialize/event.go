@@ -3,9 +3,11 @@ package initialize
 import (
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	ruleEntity "pandax/apps/rule/entity"
 	"pandax/pkg/cache"
 	"pandax/pkg/events"
 	"pandax/pkg/global"
+	"pandax/pkg/tool"
 )
 
 // 初始化事件监听
@@ -17,8 +19,10 @@ func InitEvents() {
 			RuleChainId: ruleId,
 		})
 		if list != nil {
+			var lfData ruleEntity.LfData
+			tool.StringToStruct(codeData, &lfData)
 			for _, product := range *list {
-				cache.PutProductRule(product.Id, codeData)
+				cache.PutProductRule(product.Id, ruleEntity.RuleDataJson{Id: ruleId, LfData: lfData})
 			}
 		}
 	})

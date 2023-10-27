@@ -27,12 +27,17 @@ func InitRuleChainRouter(container *restful.Container) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Returns(200, "OK", model.ResultPage{}))
 
-	ws.Route(ws.GET("/test").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("测试规则引擎").Handle(s.RuleChainTest)
+	ws.Route(ws.GET("/node/debug").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取规则链节点日志").Handle(s.GetNodeDebug)
 	}).
-		Doc("测试规则引擎").
-		Param(ws.QueryParameter("code", "流程代码").DataType("string")).
-		Metadata(restfulspec.KeyOpenAPITags, tags))
+		Doc("获取规则链节点日志").
+		Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("pageSize", "每页条数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("ruleId", "规则ID").Required(false).DataType("string")).
+		Param(ws.QueryParameter("nodeId", "节点ID").Required(false).DataType("string")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Returns(200, "OK", model.ResultPage{}))
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取规则引擎分页列表").Handle(s.GetRuleChainList)

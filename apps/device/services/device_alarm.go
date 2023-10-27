@@ -11,7 +11,7 @@ type (
 	DeviceAlarmModel interface {
 		Insert(data entity.DeviceAlarm) error
 		FindOne(id string) *entity.DeviceAlarm
-		FindOneByType(deviceId, ty, state string) *entity.DeviceAlarm
+		FindOneByType(deviceId, ty, state string) (*entity.DeviceAlarm, error)
 		FindListPage(page, pageSize int, data entity.DeviceAlarmForm) (*[]entity.DeviceAlarm, int64)
 		Update(data entity.DeviceAlarm) error
 		Delete(ids []string)
@@ -41,12 +41,14 @@ func (m *alarmModelImpl) FindOne(id string) *entity.DeviceAlarm {
 	return resData
 }
 
-func (m *alarmModelImpl) FindOneByType(deviceId, ty, state string) *entity.DeviceAlarm {
+func (m *alarmModelImpl) FindOneByType(deviceId, ty, state string) (*entity.DeviceAlarm, error) {
 	resData := new(entity.DeviceAlarm)
 	db := global.Db.Table(m.table).Where("device_id = ?", deviceId).Where("type = ? ", ty).Where("state = ? ", state)
 	err := db.First(resData).Error
-	biz.ErrIsNil(err, "查询设备告警失败")
-	return resData
+	if err != nil {
+		return nil, err
+	}
+	return resData, nil
 }
 
 func (m *alarmModelImpl) FindListPage(page, pageSize int, data entity.DeviceAlarmForm) (*[]entity.DeviceAlarm, int64) {

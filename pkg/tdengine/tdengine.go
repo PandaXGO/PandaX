@@ -8,14 +8,6 @@ import (
 	"time"
 )
 
-const (
-	TIME_TYPE_PROP  = "telemetry"
-	TIME_TYPE_ATRE  = "attributes"
-	TIME_TYPE_LOGS  = "logs"
-	TIME_TYPE_ALARM = "alarm"
-	TIME_TYPE_EVENT = "event"
-)
-
 type TdEngine struct {
 	db     *sql.DB
 	dbName string
