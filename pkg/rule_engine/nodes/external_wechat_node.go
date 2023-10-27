@@ -3,7 +3,6 @@ package nodes
 import (
 	"encoding/json"
 	"github.com/PandaXGO/PandaKit/httpclient"
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -21,7 +20,7 @@ type externalWechatNodeFactory struct{}
 func (f externalWechatNodeFactory) Name() string     { return "WechatNode" }
 func (f externalWechatNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalWechatNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f externalWechatNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f externalWechatNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &externalWechatNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -29,11 +28,12 @@ func (f externalWechatNodeFactory) Create(id string, meta Metadata) (Node, error
 }
 
 func (n *externalWechatNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
 	template, err := ParseTemplate(n.Content, msg.GetAllMap())
+
 	sendData := map[string]interface{}{
 		"msgtype": "text",
 		"text":    map[string]interface{}{"content": template},
@@ -46,6 +46,7 @@ func (n *externalWechatNode) Handle(msg *message.Message) error {
 	marshal, _ := json.Marshal(sendData)
 	postJson := httpclient.NewRequest(n.WebHook).Header("Content-Type", "application/json").PostJson(string(marshal))
 	if postJson.StatusCode != 200 {
+		n.Debug(msg, message.DEBUGOUT, "请求微信机器人hook接口失败")
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
 		} else {
@@ -53,6 +54,7 @@ func (n *externalWechatNode) Handle(msg *message.Message) error {
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(msg)
 	}
 	return nil

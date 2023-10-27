@@ -2,7 +2,6 @@ package nodes
 
 import (
 	"github.com/nats-io/nats.go"
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -19,7 +18,7 @@ type externalNatsNodeFactory struct{}
 func (f externalNatsNodeFactory) Name() string     { return "NatsNode" }
 func (f externalNatsNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalNatsNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f externalNatsNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f externalNatsNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &externalNatsNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -36,7 +35,7 @@ func (f externalNatsNodeFactory) Create(id string, meta Metadata) (Node, error) 
 }
 
 func (n *externalNatsNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 	defer n.client.Close()
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -46,6 +45,7 @@ func (n *externalNatsNode) Handle(msg *message.Message) error {
 	}
 	err = n.client.Publish(n.Subject, []byte(template))
 	if err != nil {
+		n.Debug(msg, message.DEBUGOUT, err.Error())
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
 		} else {
@@ -53,6 +53,7 @@ func (n *externalNatsNode) Handle(msg *message.Message) error {
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(msg)
 	}
 	return nil

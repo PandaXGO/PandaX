@@ -2,7 +2,6 @@ package nodes
 
 import (
 	"encoding/json"
-	"github.com/sirupsen/logrus"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	"pandax/pkg/global"
@@ -22,7 +21,7 @@ type createAlarmNodeFactory struct{}
 func (f createAlarmNodeFactory) Name() string     { return "CreateAlarmNode" }
 func (f createAlarmNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
 func (f createAlarmNodeFactory) Labels() []string { return []string{"Created", "Updated", "Failure"} }
-func (f createAlarmNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f createAlarmNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &createAlarmNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -30,23 +29,20 @@ func (f createAlarmNodeFactory) Create(id string, meta Metadata) (Node, error) {
 }
 
 func (n *createAlarmNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 
 	created := n.GetLinkedNode("Created")
 	updated := n.GetLinkedNode("Updated")
 	failure := n.GetLinkedNode("Failure")
-
-	alarm := services.DeviceAlarmModelDao.FindOneByType(msg.Metadata.GetValue("deviceId").(string), n.AlarmType, "0")
-	if alarm.DeviceId != "" {
+	var err error
+	alarm, err := services.DeviceAlarmModelDao.FindOneByType(msg.Metadata.GetValue("deviceId").(string), n.AlarmType, "0")
+	if err == nil {
 		marshal, _ := json.Marshal(msg.Msg)
 		alarm.Details = string(marshal)
-		err := services.DeviceAlarmModelDao.Update(*alarm)
-		if err != nil {
-			if failure != nil {
-				return failure.Handle(msg)
-			}
-		} else {
+		err = services.DeviceAlarmModelDao.Update(*alarm)
+		if err == nil {
 			if updated != nil {
+				n.Debug(msg, message.DEBUGOUT, "")
 				return updated.Handle(msg)
 			}
 		}
@@ -64,15 +60,20 @@ func (n *createAlarmNode) Handle(msg *message.Message) error {
 		alarm.Owner = msg.Metadata.GetValue("owner").(string)
 		marshal, _ := json.Marshal(msg.Msg)
 		alarm.Details = string(marshal)
-		err := services.DeviceAlarmModelDao.Insert(*alarm)
-		if err != nil {
-			if failure != nil {
-				return failure.Handle(msg)
-			}
-		} else {
+		err = services.DeviceAlarmModelDao.Insert(*alarm)
+		if err == nil {
 			if created != nil {
+				n.Debug(msg, message.DEBUGOUT, "")
 				return created.Handle(msg)
 			}
+		}
+	}
+	if err != nil {
+		n.Debug(msg, message.DEBUGOUT, err.Error())
+		if failure != nil {
+			return failure.Handle(msg)
+		} else {
+			return err
 		}
 	}
 	return nil

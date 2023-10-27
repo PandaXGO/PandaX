@@ -24,7 +24,7 @@ type externalKafkaNodeFactory struct{}
 func (f externalKafkaNodeFactory) Name() string     { return "KafkaNode" }
 func (f externalKafkaNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalKafkaNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f externalKafkaNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f externalKafkaNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &externalKafkaNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -46,7 +46,7 @@ func (f externalKafkaNodeFactory) Create(id string, meta Metadata) (Node, error)
 }
 
 func (n *externalKafkaNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 	defer n.KafkaCli.Close()
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -71,6 +71,7 @@ func (n *externalKafkaNode) Handle(msg *message.Message) error {
 	}
 	_, _, err := n.KafkaCli.SendMessage(kafkaM)
 	if err != nil {
+		n.Debug(msg, message.DEBUGOUT, err.Error())
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
 		} else {
@@ -78,6 +79,7 @@ func (n *externalKafkaNode) Handle(msg *message.Message) error {
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(msg)
 	}
 

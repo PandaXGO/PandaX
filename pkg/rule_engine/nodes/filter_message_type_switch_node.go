@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -26,7 +25,7 @@ func (f messageTypeSwitchNodeFactory) Labels() []string {
 		message.DisConnectMes,
 	}
 }
-func (f messageTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f messageTypeSwitchNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &messageTypeSwitchNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -34,7 +33,7 @@ func (f messageTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, er
 }
 
 func (n *messageTypeSwitchNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 	nodes := n.GetLinkedNodes()
 	messageType := msg.MsgType
 	for label, node := range nodes {
@@ -42,5 +41,6 @@ func (n *messageTypeSwitchNode) Handle(msg *message.Message) error {
 			return node.Handle(msg)
 		}
 	}
+	n.Debug(msg, message.DEBUGOUT, "消息类型不正确")
 	return nil
 }

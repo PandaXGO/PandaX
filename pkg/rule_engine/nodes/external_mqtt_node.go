@@ -29,7 +29,7 @@ type externalMqttNodeFactory struct{}
 func (f externalMqttNodeFactory) Name() string     { return "MqttNode" }
 func (f externalMqttNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalMqttNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f externalMqttNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f externalMqttNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &externalMqttNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -60,7 +60,7 @@ func (f externalMqttNodeFactory) Create(id string, meta Metadata) (Node, error) 
 }
 
 func (n *externalMqttNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 	defer n.MqttCli.Disconnect(1000)
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -71,6 +71,7 @@ func (n *externalMqttNode) Handle(msg *message.Message) error {
 	}
 	token := n.MqttCli.Publish(topic, 1, false, sendmqttmsg)
 	if token.Wait() && token.Error() != nil {
+		n.Debug(msg, message.DEBUGOUT, token.Error().Error())
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
 		} else {
@@ -78,6 +79,7 @@ func (n *externalMqttNode) Handle(msg *message.Message) error {
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(msg)
 	}
 	return nil

@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -16,8 +15,8 @@ type scriptFilterNodeFactory struct{}
 
 func (f scriptFilterNodeFactory) Name() string     { return ScriptFilterNodeName }
 func (f scriptFilterNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
-func (f scriptFilterNodeFactory) Labels() []string { return []string{"True", "False"} }
-func (f scriptFilterNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f scriptFilterNodeFactory) Labels() []string { return []string{"True", "False", "Failure"} }
+func (f scriptFilterNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &scriptFilterNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -25,16 +24,26 @@ func (f scriptFilterNodeFactory) Create(id string, meta Metadata) (Node, error) 
 }
 
 func (n *scriptFilterNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
-
+	n.Debug(msg, message.DEBUGIN, "")
 	trueLabelNode := n.GetLinkedNode("True")
 	falseLabelNode := n.GetLinkedNode("False")
+	failureLabelNode := n.GetLinkedNode("Failure")
+
 	scriptEngine := NewScriptEngine(*msg, "Filter", n.Script)
-	isTrue, error := scriptEngine.ScriptOnFilter()
-	if isTrue == true && error == nil && trueLabelNode != nil {
+	isTrue, err := scriptEngine.ScriptOnFilter()
+	if err != nil {
+		if failureLabelNode != nil {
+			n.Debug(msg, message.DEBUGOUT, err.Error())
+			return failureLabelNode.Handle(msg)
+		}
+	}
+
+	if isTrue == true && trueLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return trueLabelNode.Handle(msg)
 	} else {
 		if falseLabelNode != nil {
+			n.Debug(msg, message.DEBUGOUT, "Script脚本执行失败")
 			return falseLabelNode.Handle(msg)
 		}
 	}

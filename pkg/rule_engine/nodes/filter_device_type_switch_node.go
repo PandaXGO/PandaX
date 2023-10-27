@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -18,7 +17,7 @@ func (f deviceTypeSwitchNodeFactory) Category() string { return NODE_CATEGORY_FI
 func (f deviceTypeSwitchNodeFactory) Labels() []string {
 	return []string{message.DEVICE, message.GATEWAY}
 }
-func (f deviceTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f deviceTypeSwitchNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &deviceTypeSwitchNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -26,20 +25,23 @@ func (f deviceTypeSwitchNodeFactory) Create(id string, meta Metadata) (Node, err
 }
 
 func (n *deviceTypeSwitchNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 
 	deviceLabelNode := n.GetLinkedNode(message.DEVICE)
 	gatewayLabelNode := n.GetLinkedNode(message.GATEWAY)
 
-	if msg.Metadata.GetValue("deviceType").(string) == message.DEVICE {
+	deviceType := msg.Metadata.GetValue("deviceType").(string)
+	if deviceType == message.DEVICE {
 		if deviceLabelNode != nil {
+			n.Debug(msg, message.DEBUGOUT, "")
 			return deviceLabelNode.Handle(msg)
 		}
-	}
-	if msg.Metadata.GetValue("deviceType").(string) == message.GATEWAY {
+	} else if deviceType == message.GATEWAY {
 		if gatewayLabelNode != nil {
+			n.Debug(msg, message.DEBUGOUT, "")
 			return gatewayLabelNode.Handle(msg)
 		}
 	}
+	n.Debug(msg, message.DEBUGOUT, "没有匹配的设备类型")
 	return nil
 }

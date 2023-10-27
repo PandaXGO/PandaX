@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
 )
@@ -15,7 +14,7 @@ type saveTimeSeriesNodeFactory struct{}
 func (f saveTimeSeriesNodeFactory) Name() string     { return "SaveTimeSeriesNode" }
 func (f saveTimeSeriesNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
 func (f saveTimeSeriesNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f saveTimeSeriesNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f saveTimeSeriesNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &saveTimeSeriesNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -23,7 +22,8 @@ func (f saveTimeSeriesNodeFactory) Create(id string, meta Metadata) (Node, error
 }
 
 func (n *saveTimeSeriesNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
+
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
 	/*	if msg.MsgType != message.TelemetryMes && msg.MsgType != message.RowMes{
@@ -33,15 +33,18 @@ func (n *saveTimeSeriesNode) Handle(msg *message.Message) error {
 			return nil
 		}
 	}*/
-	//deviceId := msg.GetMetadata().GetValues()["deviceId"].(string)
 	deviceName := msg.Metadata["deviceName"].(string)
 	err := global.TdDb.InsertDevice(deviceName+"_telemetry", msg.Msg)
 	if err != nil {
+		n.Debug(msg, message.DEBUGOUT, err.Error())
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
+		} else {
+			return err
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(msg)
 	}
 	return nil

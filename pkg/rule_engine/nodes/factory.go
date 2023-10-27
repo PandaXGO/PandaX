@@ -18,7 +18,7 @@ type Factory interface {
 	Name() string
 	Category() string
 	Labels() []string
-	Create(id string, meta Metadata) (Node, error)
+	Create(id string, meta Properties) (Node, error)
 }
 
 var (
@@ -41,7 +41,7 @@ func RegisterFactory(f Factory) {
 }
 
 // NewNode is the only way to create a new node
-func NewNode(nodeType string, id string, meta Metadata) (Node, error) {
+func NewNode(nodeType string, id string, meta Properties) (Node, error) {
 	if f, found := allNodeFactories[nodeType]; found {
 		return f.Create(id, meta)
 	}

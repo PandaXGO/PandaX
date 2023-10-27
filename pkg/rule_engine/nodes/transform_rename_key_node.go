@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -19,7 +18,7 @@ type transformRenameKeyNodeFactory struct{}
 func (f transformRenameKeyNodeFactory) Name() string     { return "RenameKeyNode" }
 func (f transformRenameKeyNodeFactory) Category() string { return NODE_CATEGORY_TRANSFORM }
 func (f transformRenameKeyNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f transformRenameKeyNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f transformRenameKeyNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &transformRenameKeyNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -27,7 +26,7 @@ func (f transformRenameKeyNodeFactory) Create(id string, meta Metadata) (Node, e
 }
 
 func (n *transformRenameKeyNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -51,10 +50,12 @@ func (n *transformRenameKeyNode) Handle(msg *message.Message) error {
 		}
 	} else {
 		if failureLabelNode != nil {
+			n.Debug(msg, message.DEBUGOUT, "未识别FormType")
 			return failureLabelNode.Handle(msg)
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(msg)
 	}
 	return nil

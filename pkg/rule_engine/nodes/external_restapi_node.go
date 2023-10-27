@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/PandaXGO/PandaKit/httpclient"
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -20,7 +19,7 @@ type externalRestapiNodeFactory struct{}
 func (f externalRestapiNodeFactory) Name() string     { return "RestapiNode" }
 func (f externalRestapiNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalRestapiNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f externalRestapiNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f externalRestapiNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &externalRestapiNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -28,7 +27,7 @@ func (f externalRestapiNodeFactory) Create(id string, meta Metadata) (Node, erro
 }
 
 func (n *externalRestapiNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 	successLableNode := n.GetLinkedNode("Success")
 	failureLableNode := n.GetLinkedNode("Failure")
 	if n.RequestMethod == "GET" {
@@ -39,6 +38,7 @@ func (n *externalRestapiNode) Handle(msg *message.Message) error {
 		var response map[string]interface{}
 		err := json.Unmarshal(resp.Body, &response)
 		if err != nil && failureLableNode != nil {
+			n.Debug(msg, message.DEBUGOUT, err.Error())
 			return failureLableNode.Handle(msg)
 		} else {
 			if successLableNode != nil {
@@ -47,6 +47,7 @@ func (n *externalRestapiNode) Handle(msg *message.Message) error {
 					metadata.SetValue(key, value)
 				}
 				msg.Metadata = metadata
+				n.Debug(msg, message.DEBUGOUT, "")
 				return successLableNode.Handle(msg)
 			}
 		}
@@ -60,42 +61,15 @@ func (n *externalRestapiNode) Handle(msg *message.Message) error {
 		resp := req.PostJson(string(binary))
 		if resp.StatusCode != 200 {
 			if failureLableNode != nil {
+				n.Debug(msg, message.DEBUGOUT, "接口请求失败")
 				return failureLableNode.Handle(msg)
 			}
 		} else {
 			if successLableNode != nil {
+				n.Debug(msg, message.DEBUGOUT, "")
 				return successLableNode.Handle(msg)
 			}
 		}
 	}
-	/*if n.RequestMethod == "PUT" {
-		binary, _ := msg.MarshalBinary()
-		req := httpclient.NewRequest(n.RestEndpointUrlPattern)
-		for key,value := range n.Headers {
-			req.Header(key,value)
-		}
-		_, err := http.HttpPut(n.RestEndpointUrlPattern, n.Headers, nil, binary)
-		if err != nil {
-			if failureLableNode != nil {
-				return failureLableNode.Handle(msg)
-			}
-		} else {
-			if successLableNode != nil {
-				return successLableNode.Handle(msg)
-			}
-		}
-	}
-	if n.RequestMethod == "DELETE" {
-		_, err := http.HttpDelete(n.RestEndpointUrlPattern)
-		if err != nil {
-			if failureLableNode != nil {
-				return failureLableNode.Handle(msg)
-			}
-		} else {
-			if successLableNode != nil {
-				return successLableNode.Handle(msg)
-			}
-		}
-	}*/
 	return nil
 }

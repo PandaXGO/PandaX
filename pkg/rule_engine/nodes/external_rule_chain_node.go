@@ -19,7 +19,7 @@ type externalRuleChainNodeFactory struct{}
 func (f externalRuleChainNodeFactory) Name() string     { return "RuleChainNode" }
 func (f externalRuleChainNodeFactory) Category() string { return NODE_CATEGORY_FLOWS }
 func (f externalRuleChainNodeFactory) Labels() []string { return []string{} }
-func (f externalRuleChainNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f externalRuleChainNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &externalRuleChainNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}

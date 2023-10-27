@@ -2,7 +2,6 @@ package nodes
 
 import (
 	"errors"
-	"github.com/sirupsen/logrus"
 	"pandax/iothub/client/mqttclient"
 	"pandax/iothub/client/tcpclient"
 	"pandax/pkg/global"
@@ -20,7 +19,7 @@ type rpcRequestFromDeviceFactory struct{}
 func (f rpcRequestFromDeviceFactory) Name() string     { return "RpcRequestFromDeviceNode" }
 func (f rpcRequestFromDeviceFactory) Category() string { return NODE_CATEGORY_ACTION }
 func (f rpcRequestFromDeviceFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f rpcRequestFromDeviceFactory) Create(id string, meta Metadata) (Node, error) {
+func (f rpcRequestFromDeviceFactory) Create(id string, meta Properties) (Node, error) {
 	node := &rpcRequestFromDeviceNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -28,7 +27,7 @@ func (f rpcRequestFromDeviceFactory) Create(id string, meta Metadata) (Node, err
 }
 
 func (n *rpcRequestFromDeviceNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 	successLableNode := n.GetLinkedNode("Success")
 	failureLableNode := n.GetLinkedNode("Failure")
 
@@ -42,6 +41,7 @@ func (n *rpcRequestFromDeviceNode) Handle(msg *message.Message) error {
 	result, err := rpcp.GetRequestResult()
 	if err != nil {
 		if failureLableNode != nil {
+			n.Debug(msg, message.DEBUGOUT, err.Error())
 			return failureLableNode.Handle(msg)
 		} else {
 			return err
@@ -71,6 +71,7 @@ func (n *rpcRequestFromDeviceNode) Handle(msg *message.Message) error {
 		err = tcpclient.Send(deviceId, result)
 	}
 	if err != nil {
+		n.Debug(msg, message.DEBUGOUT, err.Error())
 		if failureLableNode != nil {
 			return failureLableNode.Handle(msg)
 		} else {
@@ -78,6 +79,7 @@ func (n *rpcRequestFromDeviceNode) Handle(msg *message.Message) error {
 		}
 	}
 	if successLableNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLableNode.Handle(msg)
 	}
 	return nil

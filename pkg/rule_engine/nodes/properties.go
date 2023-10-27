@@ -10,35 +10,35 @@ const (
 	NODE_CONFIG_ORIGINATOR_TYPE_KEY = "originatorTypeKey"
 )
 
-// Metadata 前端 参数 Properties
-type Metadata interface {
+// Properties 前端 参数 Properties
+type Properties interface {
 	Keys() []string
-	With(key string, val interface{}) Metadata
+	With(key string, val interface{}) Properties
 	Value(key string) (interface{}, error)
 	DecodePath(rawVal interface{}) error
 }
 
-type nodeMetadata struct {
+type nodeProperties struct {
 	keypairs map[string]interface{}
 }
 
-func NewMetadata() Metadata {
-	return &nodeMetadata{
+func NewProperties() Properties {
+	return &nodeProperties{
 		keypairs: make(map[string]interface{}),
 	}
 }
 
-func NewMetadataWithString(vals string) Metadata {
-	return &nodeMetadata{}
+func NewPropertiesWithString(vals string) Properties {
+	return &nodeProperties{}
 }
 
-func NewMetadataWithValues(vals map[string]interface{}) Metadata {
-	return &nodeMetadata{
+func NewPropertiesWithValues(vals map[string]interface{}) Properties {
+	return &nodeProperties{
 		keypairs: vals,
 	}
 }
 
-func (c *nodeMetadata) Keys() []string {
+func (c *nodeProperties) Keys() []string {
 	keys := []string{}
 	for key, _ := range c.keypairs {
 		keys = append(keys, key)
@@ -46,19 +46,19 @@ func (c *nodeMetadata) Keys() []string {
 	return keys
 }
 
-func (c *nodeMetadata) Value(key string) (interface{}, error) {
+func (c *nodeProperties) Value(key string) (interface{}, error) {
 	if val, found := c.keypairs[key]; found {
 		return val, nil
 	}
 	return nil, fmt.Errorf("key '%s' not found", key)
 }
 
-func (c *nodeMetadata) With(key string, val interface{}) Metadata {
+func (c *nodeProperties) With(key string, val interface{}) Properties {
 	c.keypairs[key] = val
 	return c
 }
 
-func (c *nodeMetadata) DecodePath(rawVal interface{}) error {
+func (c *nodeProperties) DecodePath(rawVal interface{}) error {
 	//return utils.Map2Struct(c.keypairs, rawVal)
 	return mapstructure.Decode(c.keypairs, rawVal)
 }

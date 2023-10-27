@@ -10,7 +10,7 @@ import (
 type Node interface {
 	Name() string
 	Id() string
-	Metadata() Metadata
+	Properties() Properties
 	MustLabels() []string
 	Handle(*message.Message) error
 
@@ -23,11 +23,11 @@ type bareNode struct {
 	name   string
 	id     string
 	nodes  map[string]Node
-	meta   Metadata
+	meta   Properties
 	labels []string
 }
 
-func newBareNode(name string, id string, meta Metadata, labels []string) bareNode {
+func newBareNode(name string, id string, meta Properties, labels []string) bareNode {
 	return bareNode{
 		name:   name,
 		id:     id,
@@ -52,11 +52,23 @@ func (n *bareNode) GetLinkedNode(label string) Node {
 
 func (n *bareNode) GetLinkedNodes() map[string]Node { return n.nodes }
 
-func (n *bareNode) Metadata() Metadata { return n.meta }
+func (n *bareNode) Properties() Properties { return n.meta }
 
 func (n *bareNode) Handle(*message.Message) error { return errors.New("not implemented") }
 
-func decodePath(meta Metadata, n Node) (Node, error) {
+func (n *bareNode) Debug(msg *message.Message, debugType, error string) {
+	value, err := n.meta.Value("debugMode")
+	if err != nil {
+		return
+	}
+	if debugMode, ok := value.(bool); ok {
+		if debugMode {
+			msg.Debug(n.id, n.name, debugType, error)
+		}
+	}
+}
+
+func decodePath(meta Properties, n Node) (Node, error) {
 	if err := meta.DecodePath(n); err != nil {
 		return n, err
 	}
@@ -67,8 +79,8 @@ func GetNodes(m *manifest.Manifest) (map[string]Node, error) {
 	nodes := make(map[string]Node)
 	// Create All nodes
 	for _, n := range m.Nodes {
-		metadata := NewMetadataWithValues(n.Properties)
-		node, err := NewNode(n.Type, n.Id, metadata)
+		propertie := NewPropertiesWithValues(n.Properties)
+		node, err := NewNode(n.Type, n.Id, propertie)
 		if err != nil {
 			logrus.Errorf("new node '%s' failure", n.Id)
 			continue

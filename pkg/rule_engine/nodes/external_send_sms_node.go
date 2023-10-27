@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -20,7 +19,7 @@ type externalSendSmsNodeFactory struct{}
 func (f externalSendSmsNodeFactory) Name() string     { return "SendSmsNode" }
 func (f externalSendSmsNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalSendSmsNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f externalSendSmsNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f externalSendSmsNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &externalSendSmsNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -28,10 +27,11 @@ func (f externalSendSmsNodeFactory) Create(id string, meta Metadata) (Node, erro
 }
 
 func (n *externalSendSmsNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 
 	successLabelNode := n.GetLinkedNode("Success")
 	//failureLabelNode := n.GetLinkedNode("Failure")
 
+	n.Debug(msg, message.DEBUGOUT, "")
 	return successLabelNode.Handle(msg)
 }

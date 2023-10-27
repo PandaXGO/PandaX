@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
 )
@@ -15,7 +14,7 @@ type saveAttributesNodeFactory struct{}
 func (f saveAttributesNodeFactory) Name() string     { return "SaveAttributesNode" }
 func (f saveAttributesNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
 func (f saveAttributesNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f saveAttributesNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f saveAttributesNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &saveAttributesNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -23,7 +22,7 @@ func (f saveAttributesNodeFactory) Create(id string, meta Metadata) (Node, error
 }
 
 func (n *saveAttributesNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
 	/*if msg.MsgType != message.AttributesMes {
@@ -37,11 +36,15 @@ func (n *saveAttributesNode) Handle(msg *message.Message) error {
 	deviceName := msg.Metadata["deviceName"].(string)
 	err := global.TdDb.InsertDevice(deviceName+"_attributes", msg.Msg)
 	if err != nil {
+		n.Debug(msg, message.DEBUGOUT, err.Error())
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
+		} else {
+			return err
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(msg)
 	}
 	return nil

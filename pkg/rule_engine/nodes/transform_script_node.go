@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -15,7 +14,7 @@ type transformScriptNodeFactory struct{}
 func (f transformScriptNodeFactory) Name() string     { return "ScriptKeyNode" }
 func (f transformScriptNodeFactory) Category() string { return NODE_CATEGORY_TRANSFORM }
 func (f transformScriptNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f transformScriptNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f transformScriptNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &transformScriptNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -23,7 +22,7 @@ func (f transformScriptNodeFactory) Create(id string, meta Metadata) (Node, erro
 }
 
 func (n *transformScriptNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -31,6 +30,7 @@ func (n *transformScriptNode) Handle(msg *message.Message) error {
 	scriptEngine := NewScriptEngine(*msg, "Transform", n.Script)
 	newMessage, err := scriptEngine.ScriptOnMessage()
 	if err != nil {
+		n.Debug(msg, message.DEBUGOUT, err.Error())
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
 		} else {
@@ -38,6 +38,7 @@ func (n *transformScriptNode) Handle(msg *message.Message) error {
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(newMessage)
 	}
 	return nil

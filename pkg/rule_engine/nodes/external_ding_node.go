@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PandaXGO/PandaKit/httpclient"
-	"github.com/sirupsen/logrus"
 	"net/url"
 	"pandax/pkg/rule_engine/message"
 	"time"
@@ -28,7 +27,7 @@ type externalDingNodeFactory struct{}
 func (f externalDingNodeFactory) Name() string     { return "DingNode" }
 func (f externalDingNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalDingNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f externalDingNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f externalDingNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &externalDingNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -36,7 +35,7 @@ func (f externalDingNodeFactory) Create(id string, meta Metadata) (Node, error) 
 }
 
 func (n *externalDingNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -63,6 +62,7 @@ func (n *externalDingNode) Handle(msg *message.Message) error {
 
 	postJson := httpclient.NewRequest(url).Header("Content-Type", "application/json").PostJson(string(marshal))
 	if postJson.StatusCode != 200 {
+		n.Debug(msg, message.DEBUGOUT, "钉钉机器人hook接口请求失败")
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
 		} else {
@@ -70,6 +70,7 @@ func (n *externalDingNode) Handle(msg *message.Message) error {
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(msg)
 	}
 	return nil

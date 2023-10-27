@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -16,7 +15,7 @@ func (f messageTypeFilterNodeFactory) Name() string     { return "MessageTypeNod
 func (f messageTypeFilterNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
 func (f messageTypeFilterNodeFactory) Labels() []string { return []string{"True", "False"} }
 
-func (f messageTypeFilterNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f messageTypeFilterNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &messageTypeFilterNode{
 		bareNode:     newBareNode(f.Name(), id, meta, f.Labels()),
 		MessageTypes: []string{},
@@ -25,19 +24,30 @@ func (f messageTypeFilterNodeFactory) Create(id string, meta Metadata) (Node, er
 }
 
 func (n *messageTypeFilterNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 
 	trueLabelNode := n.GetLinkedNode("True")
 	falseLabelNode := n.GetLinkedNode("False")
-	messageType := msg.MsgType
 
-	for _, filterType := range n.MessageTypes {
-		if filterType == messageType && trueLabelNode != nil {
+	if n.containsType(msg.MsgType) {
+		if trueLabelNode != nil {
+			n.Debug(msg, message.DEBUGOUT, "")
 			return trueLabelNode.Handle(msg)
 		}
-	}
-	if falseLabelNode != nil {
-		return falseLabelNode.Handle(msg)
+	} else {
+		if falseLabelNode != nil {
+			n.Debug(msg, message.DEBUGOUT, "不包含消息类型")
+			return falseLabelNode.Handle(msg)
+		}
 	}
 	return nil
+}
+
+func (n *messageTypeFilterNode) containsType(messageType string) bool {
+	for _, filterType := range n.MessageTypes {
+		if filterType == messageType {
+			return true
+		}
+	}
+	return false
 }

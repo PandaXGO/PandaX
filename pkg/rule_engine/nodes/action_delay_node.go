@@ -5,8 +5,6 @@ import (
 	"pandax/pkg/rule_engine/message"
 	"sync"
 	"time"
-
-	"github.com/sirupsen/logrus"
 )
 
 const DelayNodeName = "DelayNode"
@@ -25,7 +23,7 @@ type delayNodeFactory struct{}
 func (f delayNodeFactory) Name() string     { return DelayNodeName }
 func (f delayNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
 func (f delayNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f delayNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f delayNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &delayNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 		lock:     sync.Mutex{},
@@ -36,8 +34,7 @@ func (f delayNodeFactory) Create(id string, meta Metadata) (Node, error) {
 }
 
 func (n *delayNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
-
+	n.Debug(msg, message.DEBUGIN, "")
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
 	if successLabelNode == nil || failureLabelNode == nil {

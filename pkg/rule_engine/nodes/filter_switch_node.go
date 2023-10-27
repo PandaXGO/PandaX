@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -15,20 +14,9 @@ type switchFilterNodeFactory struct{}
 func (f switchFilterNodeFactory) Name() string     { return "SwitchNode" }
 func (f switchFilterNodeFactory) Category() string { return NODE_CATEGORY_FILTER }
 func (f switchFilterNodeFactory) Labels() []string {
-	return []string{
-		"True", "False",
-		message.RowMes,
-		message.AttributesMes,
-		message.TelemetryMes,
-		message.RpcRequestFromDevice,
-		message.RpcRequestToDevice,
-		message.AlarmMes,
-		message.UpEventMes,
-		message.ConnectMes,
-		message.DisConnectMes,
-	}
+	return []string{"Failure"}
 }
-func (f switchFilterNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f switchFilterNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &switchFilterNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -36,12 +24,15 @@ func (f switchFilterNodeFactory) Create(id string, meta Metadata) (Node, error) 
 }
 
 func (n *switchFilterNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
+
+	failureLabelNode := n.GetLinkedNode("Failure")
 
 	scriptEngine := NewScriptEngine(*msg, "Switch", n.Script)
 	SwitchResults, err := scriptEngine.ScriptOnSwitch()
 	if err != nil {
-		return err
+		n.Debug(msg, message.DEBUGOUT, err.Error())
+		return failureLabelNode.Handle(msg)
 	}
 	nodes := n.GetLinkedNodes()
 	for label, node := range nodes {
@@ -51,5 +42,6 @@ func (n *switchFilterNode) Handle(msg *message.Message) error {
 			}
 		}
 	}
+	n.Debug(msg, message.DEBUGOUT, "")
 	return nil
 }

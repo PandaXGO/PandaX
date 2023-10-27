@@ -3,7 +3,6 @@ package nodes
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"net/smtp"
 	"pandax/pkg/rule_engine/message"
 	"strings"
@@ -30,7 +29,7 @@ type externalSendEmailNodeFactory struct{}
 func (f externalSendEmailNodeFactory) Name() string     { return "SendEmailNode" }
 func (f externalSendEmailNodeFactory) Category() string { return NODE_CATEGORY_EXTERNAL }
 func (f externalSendEmailNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f externalSendEmailNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f externalSendEmailNodeFactory) Create(id string, meta Properties) (Node, error) {
 
 	node := &externalSendEmailNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
@@ -39,7 +38,7 @@ func (f externalSendEmailNodeFactory) Create(id string, meta Metadata) (Node, er
 }
 
 func (n *externalSendEmailNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -50,6 +49,7 @@ func (n *externalSendEmailNode) Handle(msg *message.Message) error {
 	}
 	err := n.send(tos, *msg)
 	if err != nil {
+		n.Debug(msg, message.DEBUGOUT, err.Error())
 		if failureLabelNode != nil {
 			return failureLabelNode.Handle(msg)
 		} else {
@@ -57,6 +57,7 @@ func (n *externalSendEmailNode) Handle(msg *message.Message) error {
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(msg)
 	}
 	return nil

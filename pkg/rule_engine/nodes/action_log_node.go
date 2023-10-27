@@ -16,7 +16,7 @@ type logNodeFactory struct{}
 func (f logNodeFactory) Name() string     { return "LogNode" }
 func (f logNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
 func (f logNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f logNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f logNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &logNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}

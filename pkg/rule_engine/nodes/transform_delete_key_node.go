@@ -1,7 +1,6 @@
 package nodes
 
 import (
-	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 	"strings"
 )
@@ -16,7 +15,7 @@ type transformDeleteKeyNodeFactory struct{}
 func (f transformDeleteKeyNodeFactory) Name() string     { return "DeleteKeyNode" }
 func (f transformDeleteKeyNodeFactory) Category() string { return NODE_CATEGORY_TRANSFORM }
 func (f transformDeleteKeyNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f transformDeleteKeyNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f transformDeleteKeyNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &transformDeleteKeyNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
@@ -24,7 +23,7 @@ func (f transformDeleteKeyNodeFactory) Create(id string, meta Metadata) (Node, e
 }
 
 func (n *transformDeleteKeyNode) Handle(msg *message.Message) error {
-	logrus.Infof("%s handle message '%s'", n.Name(), msg.MsgType)
+	n.Debug(msg, message.DEBUGIN, "")
 
 	successLabelNode := n.GetLinkedNode("Success")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -47,10 +46,12 @@ func (n *transformDeleteKeyNode) Handle(msg *message.Message) error {
 		}
 	} else {
 		if failureLabelNode != nil {
+			n.Debug(msg, message.DEBUGOUT, "未识别FormType")
 			return failureLabelNode.Handle(msg)
 		}
 	}
 	if successLabelNode != nil {
+		n.Debug(msg, message.DEBUGOUT, "")
 		return successLabelNode.Handle(msg)
 	}
 	return nil

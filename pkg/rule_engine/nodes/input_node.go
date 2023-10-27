@@ -16,7 +16,7 @@ type inputNodeFactory struct{}
 func (f inputNodeFactory) Name() string     { return "InputNode" }
 func (f inputNodeFactory) Category() string { return NODE_CATEGORY_OTHERS }
 func (f inputNodeFactory) Labels() []string { return []string{"True"} }
-func (f inputNodeFactory) Create(id string, meta Metadata) (Node, error) {
+func (f inputNodeFactory) Create(id string, meta Properties) (Node, error) {
 	node := &inputNode{
 		bareNode: newBareNode(InputNodeName, id, meta, f.Labels()),
 	}
