@@ -119,7 +119,7 @@ func (d *NodeDebugData) Clear(nodeId string) {
 // DebugData 调试数据
 // OnDebug 回调函数提供的数据
 type DebugData struct {
-	Ts         string
+	Ts         string   `json:"ts"`
 	NodeId     string   `json:"nodeId"`
 	MsgId      string   `json:"msgId"`
 	DebugType  string   `json:"debugType"` // In or Out

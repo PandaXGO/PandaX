@@ -116,12 +116,13 @@ func getRuleChain(etoken *global_model.DeviceAuth) *ruleEntity.RuleDataJson {
 	get, err := cache.ComputeIfAbsentProductRule(key, func(k any) (any, error) {
 		one := services.ProductModelDao.FindOne(k.(string))
 		rule := ruleService.RuleChainModelDao.FindOne(one.RuleChainId)
-		var lfData ruleEntity.LfData
+		var lfData ruleEntity.RuleDataJson
 		err := tool.StringToStruct(rule.RuleDataJson, &lfData)
 		if err != nil {
 			return nil, err
 		}
-		return ruleEntity.RuleDataJson{Id: rule.Id, LfData: lfData}, nil
+		lfData.Id = rule.Id
+		return lfData, nil
 	})
 	biz.ErrIsNil(err, "缓存读取规则链失败")
 	if ruleData, ok := get.(ruleEntity.RuleDataJson); ok {

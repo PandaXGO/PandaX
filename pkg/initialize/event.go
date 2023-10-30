@@ -19,10 +19,11 @@ func InitEvents() {
 			RuleChainId: ruleId,
 		})
 		if list != nil {
-			var lfData ruleEntity.LfData
+			var lfData ruleEntity.RuleDataJson
 			tool.StringToStruct(codeData, &lfData)
+			lfData.Id = ruleId
 			for _, product := range *list {
-				cache.PutProductRule(product.Id, ruleEntity.RuleDataJson{Id: ruleId, LfData: lfData})
+				cache.PutProductRule(product.Id, lfData)
 			}
 		}
 	})
