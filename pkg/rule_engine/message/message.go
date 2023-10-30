@@ -118,6 +118,11 @@ func (meta *Metadata) GetValue(key string) any {
 	return (*meta)[key]
 }
 
+func (meta *Metadata) Has(key string) bool {
+	_, ok := (*meta)[key]
+	return ok
+}
+
 func (meta *Metadata) SetValue(key string, val interface{}) {
 	(*meta)[key] = val
 }

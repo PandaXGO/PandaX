@@ -85,14 +85,17 @@ func (p *DeviceApi) GetDeviceListAll(rc *restfulx.ReqCtx) {
 // GetDevice 获取Device
 func (p *DeviceApi) GetDevice(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	rc.ResData = p.DeviceApp.FindOne(id)
+	device, err := p.DeviceApp.FindOne(id)
+	biz.ErrIsNil(err, "获取设备失败")
+	rc.ResData = device
 }
 
 // GetDeviceStatus 获取Device状态信息
 func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	classify := restfulx.QueryParam(rc, "classify")
-	device := p.DeviceApp.FindOne(id)
+	device, err := p.DeviceApp.FindOne(id)
+	biz.ErrIsNil(err, "获取设备失败")
 	template := p.ProductTemplateApp.FindList(entity.ProductTemplate{Classify: classify, Pid: device.Pid})
 	// 从设备影子中读取
 	res := make([]entity.DeviceStatusVo, 0)
@@ -164,7 +167,8 @@ func (p *DeviceApi) GetDeviceTelemetryHistory(rc *restfulx.ReqCtx) {
 	startTime := restfulx.QueryParam(rc, "startTime")
 	endTime := restfulx.QueryParam(rc, "endTime")
 	limit := restfulx.QueryInt(rc, "limit", 1000)
-	device := p.DeviceApp.FindOne(id)
+	device, err := p.DeviceApp.FindOne(id)
+	biz.ErrIsNil(err, "获取设备失败，设备不存在")
 	sql := `select ts,? from ? where ts > '?' and ts < '?' and ? is not null ORDER BY ts DESC LIMIT ? `
 	rs, err := global.TdDb.GetAll(sql, key, fmt.Sprintf("%s_telemetry", strings.ToLower(device.Name)), startTime, endTime, key, limit)
 	biz.ErrIsNilAppendErr(err, "查询设备属性的遥测历史失败")

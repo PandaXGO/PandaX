@@ -63,6 +63,9 @@ func GetEmqInfo(infoType string) ([]map[string]interface{}, error) {
 
 // Publish 推送信息
 func Publish(topic, clientId string, payload interface{}) error {
+	if clientId == "" {
+		return errors.New("未获取到MQTT连接")
+	}
 	global.Log.Debugf("send data to clientId: %s, topic:%s, payload: %v", clientId, topic, payload)
 	url := fmt.Sprintf("%s/v5/publish", global.Conf.Mqtt.Broker)
 	pubData := map[string]interface{}{

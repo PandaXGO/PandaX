@@ -14,7 +14,7 @@ type (
 		Insert(data entity.Device) *entity.Device
 		FindOneByToken(token string) (*entity.DeviceRes, error)
 		FindOneByName(name string) (*entity.DeviceRes, error)
-		FindOne(id string) *entity.DeviceRes
+		FindOne(id string) (*entity.DeviceRes, error)
 		FindListPage(page, pageSize int, data entity.Device) (*[]entity.DeviceRes, int64)
 		FindList(data entity.Device) *[]entity.DeviceRes
 		Update(data entity.Device) *entity.Device
@@ -65,12 +65,11 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 	return &data
 }
 
-func (m *deviceModelImpl) FindOne(id string) *entity.DeviceRes {
+func (m *deviceModelImpl) FindOne(id string) (*entity.DeviceRes, error) {
 	resData := new(entity.DeviceRes)
 	db := global.Db.Table(m.table).Where("id = ?", id)
 	err := db.Preload("Product").Preload("DeviceGroup").First(resData).Error
-	biz.ErrIsNil(err, "查询设备失败")
-	return resData
+	return resData, err
 }
 
 func (m *deviceModelImpl) FindOneByName(name string) (*entity.DeviceRes, error) {
@@ -176,9 +175,12 @@ func (m *deviceModelImpl) UpdateStatus(id, linkStatus string) error {
 func (m *deviceModelImpl) Delete(ids []string) {
 	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.Device{}, "id in (?)", ids).Error, "删除设备失败")
 	for _, id := range ids {
-		device := m.FindOne(id)
+		device, err := m.FindOne(id)
+		if err != nil {
+			continue
+		}
 		// 删除表
-		err := deleteDeviceTable(device.Name)
+		err = deleteDeviceTable(device.Name)
 		global.Log.Error("设备时序表删除失败", err)
 		// 删除所有缓存
 		if device.DeviceType == global.GATEWAYS {

@@ -11,6 +11,7 @@ func init() {
 	RegisterFactory(transformDeleteKeyNodeFactory{})
 	RegisterFactory(transformRenameKeyNodeFactory{})
 	RegisterFactory(transformScriptNodeFactory{})
+	RegisterFactory(transformMetadataNodeFactory{})
 
 	RegisterFactory(createAlarmNodeFactory{})
 	RegisterFactory(clearAlarmNodeFactory{})

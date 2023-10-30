@@ -14,13 +14,16 @@ import (
 )
 
 func BuildRunDeviceRpc(deviceId, mode string, metadata map[string]interface{}) error {
-	one := services.DeviceModelDao.FindOne(deviceId)
-	if one.LinkStatus != global.ONLINE {
+	device, err := services.DeviceModelDao.FindOne(deviceId)
+	if err != nil {
+		return err
+	}
+	if device.LinkStatus != global.ONLINE {
 		return errors.New("设备不在线无法设置属性")
 	}
-	findOne := ruleService.RuleChainModelDao.FindOne(one.Product.RuleChainId)
+	findOne := ruleService.RuleChainModelDao.FindOne(device.Product.RuleChainId)
 	ruleData := ruleEntity.RuleDataJson{}
-	err := tool.StringToStruct(findOne.RuleDataJson, &ruleData)
+	err = tool.StringToStruct(findOne.RuleDataJson, &ruleData)
 	if err != nil {
 		global.Log.Error("规则链数据转化失败", err)
 		return errors.New("规则链数据转化失败")
@@ -33,16 +36,16 @@ func BuildRunDeviceRpc(deviceId, mode string, metadata map[string]interface{}) e
 		return errs[0]
 	}
 	metadataVals := map[string]interface{}{
-		"deviceId":       one.Id,
+		"deviceId":       device.Id,
 		"mode":           mode,
-		"deviceName":     one.Name,
-		"deviceType":     one.DeviceType,
-		"deviceProtocol": one.Product.ProtocolName,
-		"productId":      one.Pid,
-		"orgId":          one.OrgId,
-		"owner":          one.Owner,
+		"deviceName":     device.Name,
+		"deviceType":     device.DeviceType,
+		"deviceProtocol": device.Product.ProtocolName,
+		"productId":      device.Pid,
+		"orgId":          device.OrgId,
+		"owner":          device.Owner,
 	}
-	msg := message.NewMessage(one.Owner, message.RpcRequestToDevice, metadata, metadataVals)
+	msg := message.NewMessage(device.Owner, message.RpcRequestToDevice, metadata, metadataVals)
 	err = instance.StartRuleChain(context.Background(), msg)
 	if err != nil {
 		global.Log.Error("规则链执行失败", errs)
