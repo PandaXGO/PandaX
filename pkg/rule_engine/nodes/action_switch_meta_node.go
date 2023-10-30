@@ -5,24 +5,24 @@ import (
 	"pandax/pkg/rule_engine/message"
 )
 
-type transformMetadataNode struct {
+type switchMetaNode struct {
 	bareNode
 	DeviceId string `json:"deviceId" yaml:"deviceId"`
 }
 
-type transformMetadataNodeFactory struct{}
+type switchMetaNodeFactory struct{}
 
-func (f transformMetadataNodeFactory) Name() string     { return "MetadataKeyNode" }
-func (f transformMetadataNodeFactory) Category() string { return NODE_CATEGORY_TRANSFORM }
-func (f transformMetadataNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
-func (f transformMetadataNodeFactory) Create(id string, meta Properties) (Node, error) {
-	node := &transformMetadataNode{
+func (f switchMetaNodeFactory) Name() string     { return "SwitchMetaNode" }
+func (f switchMetaNodeFactory) Category() string { return NODE_CATEGORY_ACTION }
+func (f switchMetaNodeFactory) Labels() []string { return []string{"Success", "Failure"} }
+func (f switchMetaNodeFactory) Create(id string, meta Properties) (Node, error) {
+	node := &switchMetaNode{
 		bareNode: newBareNode(f.Name(), id, meta, f.Labels()),
 	}
 	return decodePath(meta, node)
 }
 
-func (n *transformMetadataNode) Handle(msg *message.Message) error {
+func (n *switchMetaNode) Handle(msg *message.Message) error {
 	n.Debug(msg, message.DEBUGIN, "")
 
 	successLabelNode := n.GetLinkedNode("Success")

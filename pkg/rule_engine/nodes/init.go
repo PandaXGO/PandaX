@@ -11,7 +11,6 @@ func init() {
 	RegisterFactory(transformDeleteKeyNodeFactory{})
 	RegisterFactory(transformRenameKeyNodeFactory{})
 	RegisterFactory(transformScriptNodeFactory{})
-	RegisterFactory(transformMetadataNodeFactory{})
 
 	RegisterFactory(createAlarmNodeFactory{})
 	RegisterFactory(clearAlarmNodeFactory{})
@@ -31,4 +30,5 @@ func init() {
 	RegisterFactory(externalRuleChainNodeFactory{})
 	RegisterFactory(rpcRequestFromDeviceFactory{})
 	RegisterFactory(rpcRequestToDeviceNodeFactory{})
+	RegisterFactory(switchMetaNodeFactory{})
 }
