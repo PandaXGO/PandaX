@@ -191,7 +191,7 @@ func (m *deviceModelImpl) Delete(ids []string) {
 	}
 }
 
-// 获取Tdengine时序数据
+// 创建Tdengine时序数据
 func createDeviceTable(productId, device string) error {
 	err := global.TdDb.CreateTable(productId+"_"+entity.ATTRIBUTES_TSL, device+"_"+entity.ATTRIBUTES_TSL)
 	if err != nil {
