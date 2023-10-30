@@ -25,6 +25,7 @@ func (f scriptFilterNodeFactory) Create(id string, meta Properties) (Node, error
 
 func (n *scriptFilterNode) Handle(msg *message.Message) error {
 	n.Debug(msg, message.DEBUGIN, "")
+
 	trueLabelNode := n.GetLinkedNode("True")
 	falseLabelNode := n.GetLinkedNode("False")
 	failureLabelNode := n.GetLinkedNode("Failure")
@@ -32,18 +33,18 @@ func (n *scriptFilterNode) Handle(msg *message.Message) error {
 	scriptEngine := NewScriptEngine(*msg, "Filter", n.Script)
 	isTrue, err := scriptEngine.ScriptOnFilter()
 	if err != nil {
+		n.Debug(msg, message.DEBUGOUT, err.Error())
 		if failureLabelNode != nil {
-			n.Debug(msg, message.DEBUGOUT, err.Error())
 			return failureLabelNode.Handle(msg)
 		}
 	}
 
-	if isTrue == true && trueLabelNode != nil {
+	if isTrue && trueLabelNode != nil {
 		n.Debug(msg, message.DEBUGOUT, "")
 		return trueLabelNode.Handle(msg)
 	} else {
+		n.Debug(msg, message.DEBUGOUT, "Script脚本执行失败")
 		if falseLabelNode != nil {
-			n.Debug(msg, message.DEBUGOUT, "Script脚本执行失败")
 			return falseLabelNode.Handle(msg)
 		}
 	}

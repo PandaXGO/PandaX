@@ -16,6 +16,12 @@ func GetDebugData(ruleId, nodeId string) []message.DebugData {
 	return nil
 }
 
+func ClearDebugData(ruleId, nodeId string) {
+	if data, ok := ruleChainDebugData.Data[ruleId]; ok {
+		data.Clear(nodeId)
+	}
+}
+
 func GetDebugDataPage(page, pageSize int, ruleId, nodeId string) (int64, []message.DebugData) {
 	if page < 1 {
 		page = 1
@@ -26,7 +32,7 @@ func GetDebugDataPage(page, pageSize int, ruleId, nodeId string) (int64, []messa
 			total := len(data.Get(nodeId).Items)
 			end := offset + pageSize
 			if end >= total {
-				end = total - 1
+				end = total
 			}
 			return int64(total), data.Get(nodeId).Items[offset:end]
 		}

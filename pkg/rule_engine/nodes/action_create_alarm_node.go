@@ -41,8 +41,8 @@ func (n *createAlarmNode) Handle(msg *message.Message) error {
 		alarm.Details = string(marshal)
 		err = services.DeviceAlarmModelDao.Update(*alarm)
 		if err == nil {
+			n.Debug(msg, message.DEBUGOUT, "")
 			if updated != nil {
-				n.Debug(msg, message.DEBUGOUT, "")
 				return updated.Handle(msg)
 			}
 		}
@@ -62,8 +62,8 @@ func (n *createAlarmNode) Handle(msg *message.Message) error {
 		alarm.Details = string(marshal)
 		err = services.DeviceAlarmModelDao.Insert(*alarm)
 		if err == nil {
+			n.Debug(msg, message.DEBUGOUT, "")
 			if created != nil {
-				n.Debug(msg, message.DEBUGOUT, "")
 				return created.Handle(msg)
 			}
 		}

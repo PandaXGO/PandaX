@@ -34,6 +34,12 @@ func (r *RuleChainApi) GetNodeDebug(rc *restfulx.ReqCtx) {
 	}
 }
 
+func (r *RuleChainApi) ClearNodeDebug(rc *restfulx.ReqCtx) {
+	ruleId := restfulx.QueryParam(rc, "ruleId")
+	nodeId := restfulx.QueryParam(rc, "nodeId")
+	rule_engine.ClearDebugData(ruleId, nodeId)
+}
+
 // GetRuleChainList WorkInfo列表数据
 func (p *RuleChainApi) GetRuleChainList(rc *restfulx.ReqCtx) {
 	data := entity.RuleChain{}

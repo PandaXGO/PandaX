@@ -55,7 +55,7 @@ func NewMessage(user, messageType string, msg Msg, metadata Metadata) *Message {
 		MsgType:      messageType,
 		Msg:          msg,
 		Metadata:     metadata,
-		DeBugChan:    make(chan DebugData, 100),
+		DeBugChan:    make(chan DebugData),
 		EndDeBugChan: make(chan struct{}),
 	}
 }
@@ -65,7 +65,7 @@ func (t *Message) Debug(nodeId, nodeName, debugType, error string) {
 		logrus.Infof("%s handle message '%s'", nodeName, t.MsgType)
 	}
 	debug := DebugData{
-		Ts:        time.Now().Format("2006-01-02 15:04:05.000"),
+		Ts:        time.Now().Format("2006-01-02 15:04:05"),
 		NodeId:    nodeId,
 		MsgId:     t.Id,
 		DebugType: debugType,
