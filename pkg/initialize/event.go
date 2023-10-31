@@ -1,12 +1,14 @@
 package initialize
 
 import (
+	"encoding/json"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
 	"pandax/pkg/cache"
 	"pandax/pkg/events"
 	"pandax/pkg/global"
+	"pandax/pkg/rule_engine"
 	"pandax/pkg/tool"
 )
 
@@ -20,10 +22,24 @@ func InitEvents() {
 		})
 		if list != nil {
 			var lfData ruleEntity.RuleDataJson
-			tool.StringToStruct(codeData, &lfData)
-			lfData.Id = ruleId
+			err := tool.StringToStruct(codeData, &lfData)
+			if err != nil {
+				global.Log.Error("规则链序列化失败", err)
+				return
+			}
+			code, err := json.Marshal(lfData.LfData.DataCode)
+			if err != nil {
+				global.Log.Error("规则链序列化失败", err)
+				return
+			}
+			//新建规则链实体
+			instance, errs := rule_engine.NewRuleChainInstance(ruleId, code)
+			if len(errs) > 0 {
+				global.Log.Error("规则链初始化失败", errs[0])
+				return
+			}
 			for _, product := range *list {
-				cache.PutProductRule(product.Id, lfData)
+				cache.PutProductRule(product.Id, instance)
 			}
 		}
 	})

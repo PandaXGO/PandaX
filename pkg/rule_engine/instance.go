@@ -11,13 +11,13 @@ import (
 
 var ruleChainDebugData = message.NewRuleChainDebugData(100)
 
-type ruleChainInstance struct {
+type RuleChainInstance struct {
 	ruleId          string
 	firstRuleNodeId string
 	nodes           map[string]nodes.Node
 }
 
-func NewRuleChainInstance(ruleId string, data []byte) (*ruleChainInstance, []error) {
+func NewRuleChainInstance(ruleId string, data []byte) (*RuleChainInstance, []error) {
 	errors := make([]error, 0)
 
 	manifest, err := manifest.New(data)
@@ -35,14 +35,14 @@ func NewRuleChainInstance(ruleId string, data []byte) (*ruleChainInstance, []err
 }
 
 // newWithManifest create rule chain by user's manifest file
-func newInstanceWithManifest(m *manifest.Manifest) (*ruleChainInstance, []error) {
+func newInstanceWithManifest(m *manifest.Manifest) (*RuleChainInstance, []error) {
 	errs := make([]error, 0)
 	nodes, err := nodes.GetNodes(m)
 	if err != nil {
 		errs = append(errs, err)
 		return nil, errs
 	}
-	r := &ruleChainInstance{
+	r := &RuleChainInstance{
 		firstRuleNodeId: m.FirstRuleNodeId,
 		nodes:           nodes,
 	}
@@ -50,7 +50,7 @@ func newInstanceWithManifest(m *manifest.Manifest) (*ruleChainInstance, []error)
 }
 
 // StartRuleChain TODO 是否需要添加context
-func (c *ruleChainInstance) StartRuleChain(context context.Context, message *message.Message) error {
+func (c *RuleChainInstance) StartRuleChain(context context.Context, message *message.Message) error {
 	// 处理debug的通道消息
 	go func() {
 		for {
