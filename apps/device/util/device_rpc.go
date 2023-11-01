@@ -13,7 +13,7 @@ import (
 	"pandax/pkg/tool"
 )
 
-func BuildRunDeviceRpc(deviceId, mode string, metadata map[string]interface{}) error {
+func BuildRunDeviceRpc(deviceId, mode string, msgData map[string]interface{}) error {
 	device, err := services.DeviceModelDao.FindOne(deviceId)
 	if err != nil {
 		return err
@@ -45,7 +45,7 @@ func BuildRunDeviceRpc(deviceId, mode string, metadata map[string]interface{}) e
 		"orgId":          device.OrgId,
 		"owner":          device.Owner,
 	}
-	msg := message.NewMessage(device.Owner, message.RpcRequestToDevice, metadata, metadataVals)
+	msg := message.NewMessage(device.Owner, message.RpcRequestToDevice, msgData, metadataVals)
 	err = instance.StartRuleChain(context.Background(), msg)
 	if err != nil {
 		global.Log.Error("规则链执行失败", errs)
