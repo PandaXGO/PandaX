@@ -43,7 +43,7 @@ services:
     ports:
       - "3306:3306"
   pandax:
-    image: ccr.ccs.tencentyun.com/pandax/pandax:v1.9.1
+    image: ccr.ccs.tencentyun.com/pandax/pandax:v0.1
     container_name: pandax
     restart: always
     depends_on:
@@ -56,22 +56,20 @@ services:
       - "9001:9001"
       - "9002:9002"
       - "9003:9003"
-      - "8801:8801"
-      - "5060:5060"
   pandax-web:
-    image: ccr.ccs.tencentyun.com/pandax/pandaxweb:v1.9.1
+    image: ccr.ccs.tencentyun.com/pandax/pandaxweb:v0.1
     container_name: pandax-web
     restart: always
     ports:
       - "7789:7789"
   pandax-screen:
-    image: ccr.ccs.tencentyun.com/pandax/pandaxscreen:v1.9.1
+    image: ccr.ccs.tencentyun.com/pandax/pandaxscreen:v0.1
     container_name: pandax-screen
     restart: always
     ports:
       - "7790:7790"
   pandax-rule:
-    image: ccr.ccs.tencentyun.com/pandax/pandaxrule:v1.8
+    image: ccr.ccs.tencentyun.com/pandax/pandaxrule:v0.1
     container_name: pandax-rule
     restart: always
     ports:
