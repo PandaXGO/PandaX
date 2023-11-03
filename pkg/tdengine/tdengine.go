@@ -2,7 +2,9 @@ package tdengine
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
+	"github.com/PandaXGO/PandaKit/httpclient"
 	_ "github.com/taosdata/driver-go/v3/taosRestful"
 	"strings"
 	"time"
@@ -11,6 +13,14 @@ import (
 type TdEngine struct {
 	db     *sql.DB
 	dbName string
+}
+
+func InitTd(username, password, host, db string) (*TdEngine, error) {
+	_, err := CreateDataBase(username, password, host, db)
+	if err != nil {
+		return nil, err
+	}
+	return NewTdengine(username, password, host, db)
 }
 
 func NewTdengine(username, password, host, db string) (*TdEngine, error) {
@@ -22,6 +32,18 @@ func NewTdengine(username, password, host, db string) (*TdEngine, error) {
 		dbName: db,
 	}, err
 
+}
+
+// 创建数据库
+func CreateDataBase(username, password, host, dbname string) (float64, error) {
+	sql := "CREATE DATABASE if not exists " + dbname + " KEEP 365 VGROUPS 10"
+	url := fmt.Sprintf("http://%s/rest/sql", host)
+	token := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, password)))
+	data, err := httpclient.NewRequest(url).Header("Authorization", "Basic "+token).PostText(sql).BodyToMap()
+	if err != nil {
+		return 0, err
+	}
+	return data["rows"].(float64), nil
 }
 
 // GetTdEngineAllDb 获取所有数据库

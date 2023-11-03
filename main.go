@@ -46,7 +46,7 @@ var rootCmd = &cobra.Command{
 				global.Log.Info("Redis连接成功")
 			}
 			cache.RedisDb = client
-			tDengine, err := tdengine.NewTdengine(global.Conf.Taos.Username, global.Conf.Taos.Password, global.Conf.Taos.Host, global.Conf.Taos.Database)
+			tDengine, err := tdengine.InitTd(global.Conf.Taos.Username, global.Conf.Taos.Password, global.Conf.Taos.Host, global.Conf.Taos.Database)
 			if err != nil {
 				global.Log.Panic("Tdengine连接错误")
 			} else {
