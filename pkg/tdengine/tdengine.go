@@ -36,7 +36,7 @@ func NewTdengine(username, password, host, db string) (*TdEngine, error) {
 
 // 创建数据库
 func CreateDataBase(username, password, host, dbname string) (float64, error) {
-	sql := "CREATE DATABASE if not exists " + dbname + " KEEP 365 VGROUPS 10"
+	sql := "CREATE DATABASE if not exists " + dbname
 	url := fmt.Sprintf("http://%s/rest/sql", host)
 	token := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, password)))
 	data, err := httpclient.NewRequest(url).Header("Authorization", "Basic "+token).PostText(sql).BodyToMap()
