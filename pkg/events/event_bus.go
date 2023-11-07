@@ -8,8 +8,8 @@ import (
 type Handler func(args ...interface{})
 
 const (
-	ProductChainRuleEvent = "ProductChainRuleEvent"
-	ProductTSLEvent       = "ProductTSLEvent" // 产品属性改变， 设备td表也要跟着变
+	ProductChainRuleEvent = "ProductChainRuleEvent" //规则链改变，所对应的产品绑定的缓存也要改变
+	ProductTSLEvent       = "ProductTSLEvent"       // 产品属性改变， 设备td表也要跟着变
 )
 
 // EventInterface Events接口
