@@ -9,7 +9,7 @@ import (
 	"pandax/iothub/hook_message_work"
 	"pandax/iothub/netbase"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine/message"
 	"time"
 )
@@ -30,7 +30,7 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 	}
 	buffer := make([]byte, 1024)
 	authMap := make(map[string]bool)
-	etoken := &global_model.DeviceAuth{}
+	etoken := &model.DeviceAuth{}
 	hhs := &HookUdpService{
 		HookService: hs,
 		conn:        server.listener,

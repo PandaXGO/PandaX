@@ -5,7 +5,7 @@ import (
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	model2 "pandax/pkg/global/model"
 	"strings"
 
 	"pandax/apps/device/entity"
@@ -55,7 +55,7 @@ func (p *ProductTemplateApi) GetProductTemplate(rc *restfulx.ReqCtx) {
 func (p *ProductTemplateApi) InsertProductTemplate(rc *restfulx.ReqCtx) {
 	var data entity.ProductTemplate
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = global_model.GenerateID()
+	data.Id = model2.GenerateID()
 	if data.Classify == entity.ATTRIBUTES_TSL || data.Classify == entity.TELEMETRY_TSL {
 		// 向超级表及子表中添加字段
 		len := 0

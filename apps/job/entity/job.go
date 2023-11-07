@@ -1,11 +1,11 @@
 package entity
 
 import (
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 )
 
 type SysJob struct {
-	global_model.BaseAuthModel
+	model.BaseAuthModel
 	JobName        string `json:"jobName" gorm:"type:varchar(255);"`                 // 名称
 	TargetInvoke   string `json:"targetInvoke" gorm:"type:varchar(64);comment:目标类型"` //调用目标 设备还是产品
 	TargetArgs     string `json:"targetArgs" gorm:"type:varchar(64);comment:目标Id"`   //目标传参 设备或者产品id

@@ -8,7 +8,7 @@ import (
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/device/util"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	model2 "pandax/pkg/global/model"
 	"strings"
 	"time"
 
@@ -48,7 +48,7 @@ func (p *DeviceCmdLogApi) InsertDeviceCmdLog(rc *restfulx.ReqCtx) {
 	ms := make(map[string]interface{})
 	err := json.Unmarshal([]byte(data.CmdContent), &ms)
 	biz.ErrIsNil(err, "指令格式不正确")
-	data.Id = global_model.GenerateID()
+	data.Id = model2.GenerateID()
 	data.State = "2"
 	data.RequestTime = time.Now().Format("2006-01-02 15:04:05")
 	go func() {

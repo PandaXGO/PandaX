@@ -1,7 +1,7 @@
 package tool
 
 import (
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 	"testing"
 )
 
@@ -11,7 +11,7 @@ func TestToCamelCase(t *testing.T) {
 }
 
 func TestGenerateID(t *testing.T) {
-	id := global_model.GenerateID()
+	id := model.GenerateID()
 	t.Log(id)
 }
 

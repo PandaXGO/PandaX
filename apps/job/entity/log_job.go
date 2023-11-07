@@ -1,11 +1,11 @@
 package entity
 
 import (
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 )
 
 type JobLog struct {
-	global_model.BaseAuthModel
+	model.BaseAuthModel
 	Name         string `json:"name" gorm:"type:varchar(128);comment:任务名称"`
 	EntryId      int    `json:"entryId" gorm:"type:int;comment:任务id"`
 	TargetInvoke string `json:"targetInvoke" gorm:"type:varchar(128);comment:调用方法"`

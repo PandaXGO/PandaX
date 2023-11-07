@@ -8,7 +8,7 @@ import (
 	"pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 	"pandax/pkg/tdengine"
 	"pandax/pkg/tool"
 	"regexp"
@@ -22,7 +22,7 @@ func Auth(authToken string) bool {
 	if authToken == global.Conf.Mqtt.Username {
 		return true
 	}
-	etoken := &global_model.DeviceAuth{}
+	etoken := &model.DeviceAuth{}
 	// redis 中有就查询，没有就添加
 	exists := cache.ExistsDeviceEtoken(authToken)
 	if exists {
@@ -55,14 +55,14 @@ func Auth(authToken string) bool {
 }
 
 // SubAuth 获取子设备的认证信息
-func SubAuth(name string) (*global_model.DeviceAuth, bool) {
+func SubAuth(name string) (*model.DeviceAuth, bool) {
 	defer func() {
 		if Rerr := recover(); Rerr != nil {
 			global.Log.Error(Rerr)
 			return
 		}
 	}()
-	etoken := &global_model.DeviceAuth{}
+	etoken := &model.DeviceAuth{}
 	// redis 中有就查询，没有就添加
 	exists := cache.ExistsDeviceEtoken(name)
 	if exists {
@@ -113,7 +113,7 @@ func CreateSubTableField(productId, ty string, fields map[string]interface{}) {
 			}
 			tsl := entity.ProductTemplate{}
 			tsl.Pid = productId
-			tsl.Id = global_model.GenerateID()
+			tsl.Id = model.GenerateID()
 			tsl.Name = key
 			tsl.Type = interfaceType
 			tsl.Key = key
@@ -199,7 +199,7 @@ func GetRequestIdFromTopic(reg, topic string) (requestId string) {
 	return ""
 }
 
-func CreateConnectionInfo(msgType, protocol, clientID, peerHost string, deviceAuth *global_model.DeviceAuth) *DeviceEventInfo {
+func CreateConnectionInfo(msgType, protocol, clientID, peerHost string, deviceAuth *model.DeviceAuth) *DeviceEventInfo {
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
 	ci := &tdengine.ConnectInfo{
 		ClientID: clientID,

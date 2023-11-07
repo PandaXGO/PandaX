@@ -13,7 +13,7 @@ import (
 	"pandax/apps/device/util"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	model2 "pandax/pkg/global/model"
 	"pandax/pkg/shadow"
 	"strings"
 	"time"
@@ -199,7 +199,7 @@ func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	data.OrgId = rc.LoginAccount.OrganizationId
 	list := p.DeviceApp.FindList(entity.Device{Name: data.Name})
 	biz.IsTrue(!(list != nil && len(*list) > 0), fmt.Sprintf("名称%s已存在，设置其他命名", data.Name))
-	data.Id = global_model.GenerateID()
+	data.Id = model2.GenerateID()
 	data.LinkStatus = global.INACTIVE
 	data.LastAt = time.Now()
 	data.Protocol = product.ProtocolName

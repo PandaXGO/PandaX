@@ -9,7 +9,7 @@ import (
 	"pandax/iothub/netbase"
 	exhook2 "pandax/iothub/server/emqxserver/protobuf"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine/message"
 	"time"
 )
@@ -81,7 +81,7 @@ func (s *HookGrpcService) OnClientConnack(ctx context.Context, in *exhook2.Clien
 func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.ClientConnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("Client %s Connected ", in.Clientinfo.GetNode()))
 	token := netbase.GetUserName(in.Clientinfo)
-	etoken := &global_model.DeviceAuth{}
+	etoken := &model.DeviceAuth{}
 	err := etoken.GetDeviceToken(token)
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.Cli
 func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.ClientDisconnectedRequest) (*exhook2.EmptySuccess, error) {
 	global.Log.Info(fmt.Sprintf("%s断开连接", in.Clientinfo.Username))
 	token := netbase.GetUserName(in.Clientinfo)
-	etoken := &global_model.DeviceAuth{}
+	etoken := &model.DeviceAuth{}
 	err := etoken.GetDeviceToken(token)
 	if err != nil {
 		return nil, err
@@ -180,7 +180,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 		res.Value = &exhook2.ValuedResponse_BoolResult{BoolResult: true}
 		return res, nil
 	}
-	etoken := &global_model.DeviceAuth{}
+	etoken := &model.DeviceAuth{}
 	etoken.GetDeviceToken(in.Message.Headers["username"])
 	// 获取topic类型
 	ts := time.Now().Format("2006-01-02 15:04:05.000")

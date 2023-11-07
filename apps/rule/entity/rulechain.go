@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 	"time"
 )
 
@@ -12,7 +12,7 @@ type RuleChainBaseLabel struct {
 }
 
 type RuleChainBase struct {
-	global_model.BaseAuthModel
+	model.BaseAuthModel
 	Root       string `json:"root" gorm:"comment:是否根节点,1 根链 0 普通链"`
 	RuleName   string `gorm:"ruleName;type:varchar(50);comment:名称" json:"ruleName"`
 	RuleBase64 string `gorm:"ruleBase64;type:longtext;comment:Base64缩略图" json:"ruleBase64"` //缩略图 base64

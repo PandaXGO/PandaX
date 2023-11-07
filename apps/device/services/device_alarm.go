@@ -4,7 +4,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/entity"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 )
 
 type (
@@ -78,7 +78,7 @@ func (m *alarmModelImpl) FindListPage(page, pageSize int, data entity.DeviceAlar
 		db = db.Where("time < ?", data.EndTime)
 	}
 	// 组织数据访问权限
-	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
+	model.OrgAuthSet(db, data.RoleId, data.Owner)
 
 	err := db.Count(&total).Error
 	err = db.Order("time").Limit(pageSize).Offset(offset).Find(&list).Error

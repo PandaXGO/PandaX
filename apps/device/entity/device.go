@@ -4,13 +4,13 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 	"time"
 )
 
 // DeviceGroup 设备分组
 type DeviceGroup struct {
-	global_model.BaseAuthModel
+	model.BaseAuthModel
 	Name        string `json:"name"  gorm:"type:varchar(128);comment:设备分组名称" validate:"required"`
 	Pid         string `json:"pid" gorm:"type:varchar(64);comment:设备分组类型"`
 	Path        string `json:"path" gorm:"type:varchar(255);comment:设备分组路径"`
@@ -31,7 +31,7 @@ type DeviceGroupLabel struct {
 }
 
 type Device struct {
-	global_model.BaseAuthModel
+	model.BaseAuthModel
 	Name        string    `json:"name"  gorm:"type:varchar(128);comment:设备名称" validate:"required,alphanum"` // mqtt 用户名英文
 	ParentId    string    `json:"parentId" gorm:"type:varchar(64);comment:父设备"`
 	DeviceType  string    `json:"deviceType" gorm:"type:varchar(64);comment:设备类型"`

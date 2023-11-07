@@ -9,7 +9,7 @@ import (
 	"pandax/iothub/hook_message_work"
 	"pandax/iothub/netbase"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine/message"
 	"time"
 )
@@ -48,7 +48,7 @@ func InitTcpHook(addr string, hs *hook_message_work.HookService) {
 
 func (hhs *HookTcpService) hook() {
 	isAuth := false
-	etoken := &global_model.DeviceAuth{}
+	etoken := &model.DeviceAuth{}
 	for {
 		buf := make([]byte, 128)
 		n := 0

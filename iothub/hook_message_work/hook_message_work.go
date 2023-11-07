@@ -11,7 +11,7 @@ import (
 	"pandax/iothub/netbase"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine"
 	"pandax/pkg/rule_engine/message"
 	"pandax/pkg/shadow"
@@ -98,7 +98,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 }
 
 // 获取规则实体
-func getRuleChainInstance(etoken *global_model.DeviceAuth) *rule_engine.RuleChainInstance {
+func getRuleChainInstance(etoken *model.DeviceAuth) *rule_engine.RuleChainInstance {
 	defer func() {
 		if err := recover(); err != nil {
 			global.Log.Error(err)
@@ -131,7 +131,7 @@ func getRuleChainInstance(etoken *global_model.DeviceAuth) *rule_engine.RuleChai
 }
 
 // 构建规则链执行的消息
-func buildRuleMessage(etoken *global_model.DeviceAuth, msgVals map[string]interface{}, msgType string) *message.Message {
+func buildRuleMessage(etoken *model.DeviceAuth, msgVals map[string]interface{}, msgType string) *message.Message {
 	metadataVals := map[string]interface{}{
 		"deviceId":       etoken.DeviceId,
 		"deviceName":     etoken.Name,
@@ -161,7 +161,7 @@ func SendZtWebsocket(deviceId, message string) {
 }
 
 // SetDeviceShadow 设置设备点
-func SetDeviceShadow(etoken *global_model.DeviceAuth, msgVals map[string]interface{}, msgType string) {
+func SetDeviceShadow(etoken *model.DeviceAuth, msgVals map[string]interface{}, msgType string) {
 	defer func() {
 		if err := recover(); err != nil {
 			global.Log.Error(err)

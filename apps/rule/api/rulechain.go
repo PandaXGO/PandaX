@@ -6,7 +6,7 @@ import (
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/rule/entity"
 	"pandax/apps/rule/services"
-	"pandax/pkg/global_model"
+	model2 "pandax/pkg/global/model"
 	"pandax/pkg/rule_engine"
 	"strings"
 )
@@ -77,7 +77,7 @@ func (p *RuleChainApi) GetRuleChain(rc *restfulx.ReqCtx) {
 func (p *RuleChainApi) InsertRuleChain(rc *restfulx.ReqCtx) {
 	var data entity.RuleChain
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = global_model.GenerateID()
+	data.Id = model2.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	p.RuleChainApp.Insert(data)
@@ -104,7 +104,7 @@ func (p *RuleChainApi) CloneRuleChain(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	one := p.RuleChainApp.FindOne(id)
 	one.RuleName = one.RuleName + "-克隆"
-	one.Id = global_model.GenerateID()
+	one.Id = model2.GenerateID()
 	one.Root = "0"
 	p.RuleChainApp.Insert(*one)
 }

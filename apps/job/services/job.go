@@ -4,7 +4,7 @@ import (
 	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/job/entity"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 )
 
 type (
@@ -55,7 +55,7 @@ func (m *jobModelImpl) FindListPage(page, pageSize int, data entity.SysJob) (*[]
 	}
 
 	// 组织数据访问权限
-	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
+	model.OrgAuthSet(db, data.RoleId, data.Owner)
 
 	err := db.Count(&total).Error
 	err = db.Order("create_time desc").Limit(pageSize).Offset(offset).Find(&list).Error
@@ -75,7 +75,7 @@ func (m *jobModelImpl) FindList(data entity.SysJob) *[]entity.SysJob {
 		db = db.Where("status = ?", data.Status)
 	}
 	// 组织数据访问权限
-	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
+	model.OrgAuthSet(db, data.RoleId, data.Owner)
 	err := db.Order("create_time desc").Find(&list).Error
 	if err != nil {
 		global.Log.Error("查询任务分页信息失败:" + err.Error())

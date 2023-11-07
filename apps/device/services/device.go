@@ -5,7 +5,7 @@ import (
 	"pandax/apps/device/entity"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 	"time"
 )
 
@@ -114,7 +114,7 @@ func (m *deviceModelImpl) FindListPage(page, pageSize int, data entity.Device) (
 		db = db.Where("parent_id = ?", data.ParentId)
 	}
 	// 组织数据访问权限
-	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
+	model.OrgAuthSet(db, data.RoleId, data.Owner)
 
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Preload("Product").Preload("DeviceGroup").Limit(pageSize).Offset(offset).Find(&list).Error
@@ -150,7 +150,7 @@ func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
 	if data.ParentId != "" {
 		db = db.Where("parent_id = ?", data.ParentId)
 	}
-	global_model.OrgAuthSet(db, data.RoleId, data.Owner)
+	model.OrgAuthSet(db, data.RoleId, data.Owner)
 	db.Preload("Product").Preload("DeviceGroup")
 	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询设备列表失败")
 	return &list
@@ -217,9 +217,9 @@ func deleteDeviceTable(device string) error {
 	return nil
 }
 
-func GetDeviceToken(data *entity.Device) *global_model.DeviceAuth {
+func GetDeviceToken(data *entity.Device) *model.DeviceAuth {
 	now := time.Now()
-	etoken := &global_model.DeviceAuth{
+	etoken := &model.DeviceAuth{
 		DeviceId:       data.Id,
 		OrgId:          data.OrgId,
 		Owner:          data.Owner,

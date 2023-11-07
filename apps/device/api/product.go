@@ -11,7 +11,7 @@ import (
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	model2 "pandax/pkg/global/model"
 	"strings"
 
 	"pandax/apps/device/entity"
@@ -102,7 +102,7 @@ func (p *ProductApi) GetProduct(rc *restfulx.ReqCtx) {
 func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 	var data entity.Product
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = global_model.GenerateID()
+	data.Id = model2.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	// 如果未设置规则链，默认为主链

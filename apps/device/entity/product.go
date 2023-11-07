@@ -4,7 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 )
 
 const (
@@ -22,7 +22,7 @@ const (
 )
 
 type ProductCategory struct {
-	global_model.BaseAuthModel
+	model.BaseAuthModel
 	Name        string            `json:"name"  gorm:"type:varchar(128);comment:产品类型名称" validate:"required"`
 	Pid         string            `json:"pid" gorm:"type:varchar(64);comment:父产品类型"`
 	Path        string            `json:"path" gorm:"type:varchar(255);comment:产品类型路径"`
@@ -39,7 +39,7 @@ type ProductCategoryLabel struct {
 }
 
 type Product struct {
-	global_model.BaseAuthModel
+	model.BaseAuthModel
 	Name              string `json:"name"  gorm:"type:varchar(128);comment:产品名称" validate:"required"`
 	PhotoUrl          string `json:"photoUrl"  gorm:"type:varchar(255);comment:图片地址"`
 	Description       string `json:"description"  gorm:"type:varchar(255);comment:产品说明"`
@@ -57,7 +57,7 @@ type ProductRes struct {
 }
 
 type ProductTemplate struct {
-	global_model.BaseModel
+	model.BaseModel
 	Pid         string `json:"pid" gorm:"type:varchar(64);comment:产品Id" validate:"required"`
 	Classify    string `json:"classify" gorm:"type:varchar(64);comment:模型归类" validate:"required"` // 属性 遥测 命令 事件
 	Name        string `json:"name"  gorm:"type:varchar(64);comment:名称" validate:"required"`
@@ -68,7 +68,7 @@ type ProductTemplate struct {
 }
 
 type ProductOta struct {
-	global_model.BaseModel
+	model.BaseModel
 	Pid         string `json:"pid" gorm:"comment:产品Id" validate:"required"`
 	Name        string `json:"name"  gorm:"type:varchar(64);comment:固件名称" validate:"required"`
 	Version     string `json:"version" gorm:"type:varchar(64);comment:固件版本" validate:"required"`

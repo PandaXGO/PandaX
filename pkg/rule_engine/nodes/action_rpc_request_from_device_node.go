@@ -5,7 +5,7 @@ import (
 	"pandax/iothub/client/mqttclient"
 	"pandax/iothub/client/tcpclient"
 	"pandax/pkg/global"
-	"pandax/pkg/global_model"
+	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine/message"
 )
 
@@ -34,7 +34,7 @@ func (n *rpcRequestFromDeviceNode) Handle(msg *message.Message) error {
 	if msg.Msg.GetValue("method") == nil || msg.Msg.GetValue("params") == nil {
 		return errors.New("指令请求格式错误")
 	}
-	var rpcp = global_model.RpcPayload{
+	var rpcp = model.RpcPayload{
 		Method: msg.Msg.GetValue("method").(string),
 		Params: msg.Msg.GetValue("params"),
 	}
