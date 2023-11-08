@@ -20,9 +20,9 @@ const SubscribeTopicsInfo string = "subscribe"
 func GetEmqInfo(infoType string) ([]map[string]interface{}, error) {
 	var url string
 	if infoType == ClientsInfo {
-		url = fmt.Sprintf("%s/v5/clients?_page=1&_limit=100000", global.Conf.Mqtt.Broker)
+		url = fmt.Sprintf("%s/v5/clients?_page=1&_limit=100000", global.Conf.Mqtt.HttpBroker)
 	} else if infoType == SubscribeTopicsInfo {
-		url = fmt.Sprintf("%s/v5/subscriptions?_page=1&_limit=100000", global.Conf.Mqtt.Broker)
+		url = fmt.Sprintf("%s/v5/subscriptions?_page=1&_limit=100000", global.Conf.Mqtt.HttpBroker)
 	} else {
 		return nil, errors.New("invalid infoType")
 	}
@@ -67,7 +67,7 @@ func Publish(topic, clientId string, payload interface{}) error {
 		return errors.New("未获取到MQTT连接")
 	}
 	global.Log.Debugf("send data to clientId: %s, topic:%s, payload: %v", clientId, topic, payload)
-	url := fmt.Sprintf("%s/v5/publish", global.Conf.Mqtt.Broker)
+	url := fmt.Sprintf("%s/v5/publish", global.Conf.Mqtt.HttpBroker)
 	pubData := map[string]interface{}{
 		"topic":    topic,
 		"payload":  payload,

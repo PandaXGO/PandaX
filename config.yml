@@ -61,7 +61,8 @@ taos:
   config: ""
 
 mqtt:
-  broker: http://127.0.0.1:18083/api
+  broker: tcp://127.0.0.1:1883
+  httpBroker: http://127.0.0.1:18083/api
   qos: 1
   username: dbda318b31319d49
   password: wwqPbYu9BCsIFgW3m0aICmRrvxUHcIi44AQuG24wQARE
