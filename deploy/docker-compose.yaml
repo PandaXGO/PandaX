@@ -17,6 +17,9 @@ services:
     restart: always
     environment:
       - TZ=Asia/Shanghai
+    volumes:
+      - ./taos/data:/var/lib/taos
+      - ./taos/logs:/var/log/taos
     ports:
       - 6030:6030
       - 6041:6041
@@ -56,6 +59,7 @@ services:
       - "9001:9001"
       - "9002:9002"
       - "9003:9003"
+      - "9003:9003/udp"
   pandax-web:
     image: ccr.ccs.tencentyun.com/pandax/pandaxweb:v0.1
     container_name: pandax-web
