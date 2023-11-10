@@ -19,6 +19,7 @@ type DevGenTable struct {
 	Remark         string              `gorm:"remark"             json:"remark"`         // 备注
 	PkColumn       string              `gorm:"pk_column;"         json:"pkColumn"`
 	PkGoField      string              `gorm:"pk_go_field"        json:"pkGoField"`
+	PkGoType       string              `gorm:"pk_go_type"        json:"pkGoType"`
 	PkJsonField    string              `gorm:"pk_json_field"      json:"pkJsonField"`
 	Columns        []DevGenTableColumn `gorm:"-"                  json:"columns"` // 字段信息
 	model.BaseModel

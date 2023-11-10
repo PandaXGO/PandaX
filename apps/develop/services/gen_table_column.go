@@ -16,7 +16,7 @@ import (
 type (
 	SysGenTableColumnModel interface {
 		FindDbTablesColumnListPage(page, pageSize int, data entity.DBColumns) (*[]entity.DBColumns, int64)
-		FindDbTableColumnList(tableName string) *[]entity.DBColumns
+		FindDbTableColumnList(tableName string) []entity.DBColumns
 
 		Insert(data entity.DevGenTableColumn) *entity.DevGenTableColumn
 		FindList(data entity.DevGenTableColumn, exclude bool) *[]entity.DevGenTableColumn
@@ -58,8 +58,8 @@ func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int,
 	return &list, total
 }
 
-func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) *[]entity.DBColumns {
-	resData := make([]entity.DBColumns, 0)
+func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) []entity.DBColumns {
+
 	if global.Conf.Server.DbType != "mysql" && global.Conf.Server.DbType != "postgresql" {
 		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
 	}
@@ -73,9 +73,58 @@ func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) *[]ent
 	biz.IsTrue(tableName != "", "table name cannot be empty！")
 
 	db = db.Where("table_name = ?", tableName)
-	err := db.Find(&resData).Error
-	biz.ErrIsNil(err, "查询表字段失败")
-	return &resData
+	resData := make([]entity.DBColumns, 0)
+	if global.Conf.Server.DbType == "mysql" {
+		err := db.Find(&resData).Error
+		biz.ErrIsNil(err, "查询表字段失败")
+		return resData
+	}
+	if global.Conf.Server.DbType == "postgresql" {
+		pr, err := getPgPR(tableName)
+		biz.ErrIsNil(err, "查询PG表主键字段失败")
+		resDataP := make([]entity.DBColumnsP, 0)
+		err = db.Find(&resDataP).Error
+		biz.ErrIsNil(err, "查询表字段失败")
+		for _, data := range resDataP {
+			dbc := entity.DBColumns{
+				TableSchema:            data.TableSchema,
+				TableName:              data.TableName,
+				ColumnName:             data.ColumnName,
+				ColumnDefault:          data.ColumnDefault,
+				IsNullable:             data.IsNullable,
+				DataType:               data.DataType,
+				CharacterMaximumLength: data.CharacterMaximumLength,
+				CharacterSetName:       data.CharacterSetName,
+				ColumnType:             data.ColumnType,
+				ColumnKey:              data.ColumnKey,
+				Extra:                  data.Extra,
+				ColumnComment:          data.ColumnComment,
+			}
+			// 设置为主键
+			if pr == data.ColumnName {
+				dbc.ColumnKey = "PRIMARY KEY"
+			}
+			resData = append(resData, dbc)
+		}
+
+		return resData
+	}
+	return resData
+}
+
+func getPgPR(tableName string) (string, error) {
+	sql := `SELECT
+    kcu.column_name
+FROM
+    information_schema.table_constraints AS tc
+    JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name
+WHERE
+    tc.constraint_type = 'PRIMARY KEY'
+    AND tc.table_schema = 'public'
+    AND tc.table_name = ?;`
+	var pkname string
+	err := global.Db.Raw(sql, tableName).Scan(&pkname).Error
+	return pkname, err
 }
 
 func (m *devTableColumnModelImpl) Insert(dgt entity.DevGenTableColumn) *entity.DevGenTableColumn {

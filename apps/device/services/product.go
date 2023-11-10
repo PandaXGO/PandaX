@@ -151,6 +151,9 @@ func deleteDeviceStable(productId string) error {
 // 获取产品数量统计
 func (m *productModelImpl) FindProductCount() (count entity.DeviceCount) {
 	sql := `SELECT COUNT(*) AS total, (SELECT COUNT(*) FROM products WHERE DATE(create_time) = CURDATE()) AS today  FROM products`
+	if global.Conf.Server.DbType == "postgresql" {
+		sql = `SELECT COUNT(*) AS total, (SELECT COUNT(*) FROM products WHERE DATE(create_time) = current_date) AS today  FROM products`
+	}
 	err := global.Db.Raw(sql).Scan(&count).Error
 	biz.ErrIsNil(err, "获取产品统计总数失败")
 	return

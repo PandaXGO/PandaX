@@ -134,8 +134,13 @@ func (m *sysRoleModel) GetRoleOrganizationId(data entity.SysRole) []int64 {
 
 func (m *sysRoleModel) FindOrganizationsByRoleId(roleId int64) (entity.SysRole, error) {
 	var roleData entity.SysRole
-	err := global.Db.Table(m.table).
-		Select("sys_roles.data_scope, GROUP_CONCAT(sys_role_organizations.organization_id) as org").
+	db := global.Db.Table(m.table)
+	if global.Conf.Server.DbType == "mysql" {
+		db.Select("sys_roles.data_scope, GROUP_CONCAT(sys_role_organizations.organization_id) as org")
+	} else {
+		db.Select("sys_roles.data_scope, STRING_AGG(sys_role_organizations.organization_id::text,',') as org")
+	}
+	err := db.
 		Joins("LEFT JOIN sys_role_organizations ON sys_roles.role_id = sys_role_organizations.role_id").
 		Where("sys_roles.role_id = ?", roleId).
 		Group("sys_roles.role_id").

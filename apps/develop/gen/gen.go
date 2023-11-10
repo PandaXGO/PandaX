@@ -194,20 +194,19 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 	data.FunctionAuthor = "panda"
 
 	wg := sync.WaitGroup{}
-	dcs := *dbColumn
-	for x := 0; x < len(dcs); x++ {
+	for x := 0; x < len(dbColumn); x++ {
 		index := x
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, y int) {
 			defer wg.Done()
 			var column entity.DevGenTableColumn
-			column.ColumnComment = dcs[y].ColumnComment
-			column.ColumnName = dcs[y].ColumnName
-			column.ColumnType = dcs[y].ColumnType
+			column.ColumnComment = dbColumn[y].ColumnComment
+			column.ColumnName = dbColumn[y].ColumnName
+			column.ColumnType = dbColumn[y].ColumnType
 			column.Sort = y + 1
 			column.IsPk = "0"
 
-			nameList := strings.Split(dcs[y].ColumnName, "_")
+			nameList := strings.Split(dbColumn[y].ColumnName, "_")
 			for i := 0; i < len(nameList); i++ {
 				strStart := string([]byte(nameList[i])[:1])
 				strend := string([]byte(nameList[i])[1:])
@@ -218,21 +217,13 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 					column.JsonField += strings.ToUpper(strStart) + strend
 				}
 			}
-			if strings.Contains(dcs[y].ColumnKey, "PR") {
-				column.IsPk = "1"
-				data.PkColumn = dcs[y].ColumnName
-				data.PkGoField = column.GoField
-				data.PkJsonField = column.JsonField
-				if dcs[y].Extra == "auto_increment" {
-					column.IsIncrement = "1"
-				}
-			}
 
 			if column.ColumnComment == "" {
 				column.ColumnComment = column.GoField
 			}
 
-			dataType := s.GetDbType(column.ColumnType)
+			//dataType := s.GetDbType(column.ColumnType)
+			dataType := strings.ToLower(column.ColumnType)
 			if s.IsStringObject(dataType) {
 				//字段为字符串类型
 				column.GoType = "string"
@@ -248,7 +239,6 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 				column.HtmlType = "datetime"
 			} else if s.IsNumberObject(dataType) {
 				//字段为数字类型
-				column.HtmlType = "input"
 				column.HtmlType = "input"
 				t := ""
 				if global.Conf.Server.DbType == "postgresql" {
@@ -280,6 +270,17 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 				case "bool":
 					column.GoType = "bool"
 					column.HtmlType = "switch"
+				}
+			}
+			// 是主键的时候
+			if strings.Contains(dbColumn[y].ColumnKey, "PR") {
+				column.IsPk = "1"
+				data.PkColumn = dbColumn[y].ColumnName
+				data.PkGoField = column.GoField
+				data.PkGoType = column.GoType
+				data.PkJsonField = column.JsonField
+				if dbColumn[y].Extra == "auto_increment" {
+					column.IsIncrement = "1"
 				}
 			}
 			//新增字段
@@ -346,7 +347,7 @@ func Preview(tableId int64) map[string]any {
 	biz.ErrIsNil(err, "service模版读取失败")
 
 	t3, err := template.ParseFiles("resource/template/go/api.template")
-	biz.ErrIsNil(err, "api模版读取失败！")
+	biz.ErrIsNilAppendErr(err, "api模版读取失败！")
 
 	t4, err := template.ParseFiles("resource/template/go/router.template")
 	biz.ErrIsNil(err, "router模版读取失败")

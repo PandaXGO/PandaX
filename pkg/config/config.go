@@ -34,19 +34,20 @@ var startConfigParam *CmdConfigParam
 
 // yaml配置文件映射对象
 type Config struct {
-	App    *App    `yaml:"app"`
-	Server *Server `yaml:"server"`
-	Queue  *Queue  `yaml:"queue"`
-	Jwt    *Jwt    `yaml:"jwt"`
-	Redis  *Redis  `yaml:"redis"`
-	Mysql  *Mysql  `yaml:"mysql"`
-	Oss    *Oss    `yaml:"oss"`
-	Taos   *Taos   `yaml:"taos"`
-	Mqtt   *Mqtt   `yaml:"mqtt"`
-	Casbin *Casbin `yaml:"casbin"`
-	Gen    *Gen    `yaml:"gen"`
-	Ys     *Ys     `yaml:"ys"`
-	Log    *Log    `yaml:"log"`
+	App        *App        `yaml:"app"`
+	Server     *Server     `yaml:"server"`
+	Queue      *Queue      `yaml:"queue"`
+	Jwt        *Jwt        `yaml:"jwt"`
+	Redis      *Redis      `yaml:"redis"`
+	Mysql      *Mysql      `yaml:"mysql"`
+	Postgresql *Postgresql `yaml:"postgresql"`
+	Oss        *Oss        `yaml:"oss"`
+	Taos       *Taos       `yaml:"taos"`
+	Mqtt       *Mqtt       `yaml:"mqtt"`
+	Casbin     *Casbin     `yaml:"casbin"`
+	Gen        *Gen        `yaml:"gen"`
+	Ys         *Ys         `yaml:"ys"`
+	Log        *Log        `yaml:"log"`
 }
 
 // 配置文件内容校验

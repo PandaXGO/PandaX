@@ -36,6 +36,10 @@ var rootCmd = &cobra.Command{
 				dbGorm.Dsn = global.Conf.Mysql.Dsn()
 				dbGorm.MaxIdleConns = global.Conf.Mysql.MaxIdleConns
 				dbGorm.MaxOpenConns = global.Conf.Mysql.MaxOpenConns
+			} else {
+				dbGorm.Dsn = global.Conf.Postgresql.PgDsn()
+				dbGorm.MaxIdleConns = global.Conf.Postgresql.MaxIdleConns
+				dbGorm.MaxOpenConns = global.Conf.Postgresql.MaxOpenConns
 			}
 			global.Db = dbGorm.GormInit()
 			global.Log.Infof("%s连接成功", global.Conf.Server.DbType)

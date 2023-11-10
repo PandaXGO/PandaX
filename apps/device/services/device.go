@@ -237,6 +237,9 @@ func GetDeviceToken(data *entity.Device) *model.DeviceAuth {
 // 获取设备数量统计
 func (m *deviceModelImpl) FindDeviceCount() (result entity.DeviceCount) {
 	sql := `SELECT COUNT(*) AS total, (SELECT COUNT(*) FROM devices WHERE DATE(create_time) = CURDATE()) AS today  FROM devices`
+	if global.Conf.Server.DbType == "postgresql" {
+		sql = `SELECT COUNT(*) AS total, (SELECT COUNT(*) FROM devices WHERE DATE(create_time) = current_date) AS today  FROM devices`
+	}
 	err := global.Db.Raw(sql).Scan(&result).Error
 	biz.ErrIsNil(err, "获取设备统计总数失败")
 	return result

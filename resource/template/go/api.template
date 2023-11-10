@@ -44,8 +44,13 @@ func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *restfulx.ReqCtx) {
 
 // Get{{.ClassName}} 获取{{.FunctionName}}
 func (p *{{.ClassName}}Api) Get{{.ClassName}}(rc *restfulx.ReqCtx) {
-	{{.PkJsonField}} := restfulx.PathParamInt(rc, "{{.PkJsonField}}")
-	rc.ResData = p.{{.ClassName}}App.FindOne(int64({{.PkJsonField}}))
+    {{ if eq .PkGoType "string" -}}
+    {{.PkJsonField}} := restfulx.PathParam(rc, "{{.PkJsonField}}")
+    rc.ResData = p.{{.ClassName}}App.FindOne({{.PkJsonField}})
+    {{- else -}}
+    {{.PkJsonField}} := restfulx.PathParamInt(rc, "{{.PkJsonField}}")
+    rc.ResData = p.{{.ClassName}}App.FindOne(int64({{.PkJsonField}}))
+    {{- end}}
 }
 
 // Insert{{.ClassName}} 添加{{.FunctionName}}
@@ -67,6 +72,11 @@ func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *restfulx.ReqCtx) {
 // Delete{{.ClassName}} 删除{{.FunctionName}}
 func (p *{{.ClassName}}Api) Delete{{.ClassName}}(rc *restfulx.ReqCtx) {
 	{{.PkJsonField}} := restfulx.PathParam(rc,"{{.PkJsonField}}")
-	{{.PkJsonField}}s := utils.IdsStrToIdsIntGroup({{.PkJsonField}})
+
+	{{ if eq .PkGoType "string" -}}
+    {{.PkJsonField}}s := strings.Split({{.PkJsonField}}, ",")
+    {{- else -}}
+    {{.PkJsonField}}s := utils.IdsStrToIdsIntGroup({{.PkJsonField}})
+    {{- end }}
     p.{{.ClassName}}App.Delete({{.PkJsonField}}s)
 }
