@@ -63,6 +63,7 @@ func (m *productModelImpl) FindListPage(page, pageSize int, data entity.Product)
 		db = db.Where("device_type = ?", data.DeviceType)
 	}
 	if data.ProductCategoryId != "" {
+
 		db = db.Where("product_category_id = ?", data.ProductCategoryId)
 	}
 	if data.ProtocolName != "" {

@@ -52,13 +52,13 @@ func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
 	}
 	//3 添加设备
 	err := tx.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "添加设备失败")
+	biz.ErrIsNilAppendErr(err, "添加设备失败")
 	// 创建超级表 失败就
 	if data.Pid != "" {
 		err = createDeviceTable(data.Pid, data.Name)
 		if err != nil {
 			tx.Rollback()
-			biz.ErrIsNil(err, "添加设备失败，设备表创建失败")
+			biz.ErrIsNil(err, "时序数据设备表创建失败")
 		}
 	}
 	tx.Commit()

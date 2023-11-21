@@ -128,6 +128,19 @@ func (m *productCategoryModelImpl) SelectProductCategory(data entity.ProductCate
 	return sd
 }
 
+func (m *productCategoryModelImpl) SelectProductCategoryById(data entity.ProductCategory, id string) []string {
+	list := m.FindList(data)
+	sd := make([]string, 0)
+	li := *list
+	for i := 0; i < len(li); i++ {
+		if li[i].Pid == id {
+			info := DiGuiProductCategoryId(list, li[i])
+			sd = append(sd, info...)
+		}
+	}
+	return sd
+}
+
 func (m *productCategoryModelImpl) SelectProductCategoryLabel(data entity.ProductCategory) []entity.ProductCategoryLabel {
 	list := m.FindList(data)
 
@@ -170,6 +183,30 @@ func DiGuiProductCategory(sglist *[]entity.ProductCategory, menu entity.ProductC
 	menu.Children = min
 	return menu
 }
+
+func DiGuiProductCategoryId(sglist *[]entity.ProductCategory, menu entity.ProductCategory) []string {
+	list := *sglist
+
+	min := make([]string, 0)
+	for j := 0; j < len(list); j++ {
+
+		if menu.Id != list[j].Pid {
+			continue
+		}
+		mi := entity.ProductCategory{}
+		mi.Id = list[j].Id
+		mi.Pid = list[j].Pid
+		mi.Path = list[j].Path
+		mi.Name = list[j].Name
+		mi.Sort = list[j].Sort
+		mi.Status = list[j].Status
+		mi.Description = list[j].Description
+		ms := DiGuiProductCategoryId(sglist, mi)
+		min = append(min, ms...)
+	}
+	return min
+}
+
 func DiGuiProductCategoryLabel(sglist *[]entity.ProductCategory, organization entity.ProductCategoryLabel) entity.ProductCategoryLabel {
 	list := *sglist
 

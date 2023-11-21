@@ -205,7 +205,7 @@ func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 // UpdateDevice 修改Device
 func (p *DeviceApi) UpdateDevice(rc *restfulx.ReqCtx) {
 	var data entity.Device
-	restfulx.BindJsonAndValid(rc, &data)
+	restfulx.BindQuery(rc, &data)
 	product := p.ProductApp.FindOne(data.Pid)
 	biz.NotNil(product, "未查到所属产品信息")
 	data.Protocol = product.ProtocolName
