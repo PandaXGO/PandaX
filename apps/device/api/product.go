@@ -117,6 +117,13 @@ func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 // UpdateProduct 修改Product
 func (p *ProductApi) UpdateProduct(rc *restfulx.ReqCtx) {
 	var data entity.Product
+	restfulx.BindQuery(rc, &data)
+
+	p.ProductApp.Update(data)
+}
+
+func (p *ProductApi) UpdateProductStatue(rc *restfulx.ReqCtx) {
+	var data entity.Product
 	restfulx.BindJsonAndValid(rc, &data)
 
 	p.ProductApp.Update(data)
