@@ -49,6 +49,9 @@ func (m *logLoginModelImpl) FindListPage(page, pageSize int, data entity.LogLogi
 	if data.LoginLocation != "" {
 		db = db.Where("login_location like ?", "%"+data.LoginLocation+"%")
 	}
+	if data.Username != "" {
+		db = db.Where("username like ?", "%"+data.Username+"%")
+	}
 	err := db.Where("delete_time IS NULL").Count(&total).Error
 	err = db.Order("info_id desc").Limit(pageSize).Offset(offset).Find(&list).Error
 

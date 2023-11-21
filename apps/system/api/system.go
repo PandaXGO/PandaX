@@ -35,13 +35,13 @@ func (s *System) ServerInfo(request *restful.Request, response *restful.Response
 	diskDic["total"] = info.DiskTotal / GB
 	diskDic["free"] = info.DiskFree / GB
 	diskDic["used"] = info.DiskUsed / GB
-	diskDic["progress"] = int64((float64(info.DiskUsed) / float64(info.DiskTotal)) * 100)
+	diskDic["progress"] = fmt.Sprintf("%.2f", (float64(info.DiskUsed)/float64(info.DiskTotal))*100)
 
 	memDic := make(map[string]any, 0)
 	memDic["total"] = info.MemTotal / GB
 	memDic["used"] = info.MemUsed / GB
 	memDic["free"] = info.MemFree / GB
-	memDic["progress"] = int64((float64(info.MemUsed) / float64(info.MemTotal)) * 100)
+	memDic["progress"] = fmt.Sprintf("%.2f", (float64(info.MemUsed)/float64(info.MemTotal))*100)
 
 	cpuDic := make(map[string]any, 0)
 	cpuDic["num"] = info.CpuNum
