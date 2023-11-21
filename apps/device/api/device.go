@@ -11,7 +11,6 @@ import (
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/device/util"
-	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	model2 "pandax/pkg/global/model"
 	"pandax/pkg/shadow"
@@ -30,17 +29,13 @@ type DeviceApi struct {
 }
 
 func (p *DeviceApi) GetDevicePanel(rc *restfulx.ReqCtx) {
-	get, err := cache.PanelCache.ComputeIfAbsent("panel", func(k any) (any, error) {
-		var data entity.DeviceTotalOutput
-		data.DeviceInfo = p.DeviceApp.FindDeviceCount()
-		data.DeviceLinkStatusInfo = p.DeviceApp.FindDeviceCountGroupByLinkStatus()
-		data.DeviceCountType = p.DeviceApp.FindDeviceCountGroupByType()
-		data.AlarmInfo = p.DeviceAlarmApp.FindAlarmCount()
-		data.ProductInfo = p.ProductApp.FindProductCount()
-		return data, nil
-	})
-	biz.ErrIsNil(err, "获取面板数据失败")
-	rc.ResData = get
+	var data entity.DeviceTotalOutput
+	data.DeviceInfo = p.DeviceApp.FindDeviceCount()
+	data.DeviceLinkStatusInfo = p.DeviceApp.FindDeviceCountGroupByLinkStatus()
+	data.DeviceCountType = p.DeviceApp.FindDeviceCountGroupByType()
+	data.AlarmInfo = p.DeviceAlarmApp.FindAlarmCount()
+	data.ProductInfo = p.ProductApp.FindProductCount()
+	rc.ResData = data
 }
 
 // GetDeviceList Device列表数据

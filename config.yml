@@ -17,7 +17,7 @@ server:
   rate:
     enable: true
     rate-num: 100
-  db-type: postgresql
+  db-type: mysql
   # 是否开启数据库表初始化
   isInitTable: false
   excel-dir: ./resource/excel/
