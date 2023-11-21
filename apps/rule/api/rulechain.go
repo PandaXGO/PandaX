@@ -114,7 +114,8 @@ func (p *RuleChainApi) UpdateRuleRoot(rc *restfulx.ReqCtx) {
 	var rule entity.RuleChain
 	restfulx.BindJsonAndValid(rc, &rule)
 	// 修改主链为普通链
-	p.RuleChainApp.UpdateByRoot()
+	err := p.RuleChainApp.UpdateByRoot()
+	biz.ErrIsNil(err, "修改主链错误")
 	// 修改当前链为主链
 	p.RuleChainApp.Update(rule)
 }
