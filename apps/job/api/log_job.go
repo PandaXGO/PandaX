@@ -3,9 +3,9 @@ package api
 import (
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/job/entity"
 	"pandax/apps/job/services"
+	"strings"
 )
 
 type JobLogApi struct {
@@ -34,8 +34,8 @@ func (l *JobLogApi) GetJobLogList(rc *restfulx.ReqCtx) {
 
 // DeleteJobLog 批量删除登录日志
 func (l *JobLogApi) DeleteJobLog(rc *restfulx.ReqCtx) {
-	logIds := restfulx.QueryParam(rc, "logId")
-	group := utils.IdsStrToIdsIntGroup(logIds)
+	logIds := restfulx.PathParam(rc, "id")
+	group := strings.Split(logIds, ",")
 	l.JobLogApp.Delete(group)
 }
 

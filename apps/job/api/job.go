@@ -85,7 +85,7 @@ func (l *JobApi) StartJobForService(rc *restfulx.ReqCtx) {
 	j.OrgId = job.OrgId
 	j.Owner = job.Owner
 	job.EntryId, err = jobs.AddJob(jobs.Crontab, j)
-	biz.ErrIsNil(err, "添加JOB失败")
+	biz.ErrIsNil(err, "添加任务失败，可能任务表达式错误")
 
 	l.JobApp.Update(*job)
 }

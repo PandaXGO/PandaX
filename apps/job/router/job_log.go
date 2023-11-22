@@ -31,12 +31,12 @@ func InitJobLogRouter(container *restful.Container) {
 		Writes(model.ResultPage{}).
 		Returns(200, "OK", model.ResultPage{}))
 
-	ws.Route(ws.DELETE("/{logId}").To(func(request *restful.Request, response *restful.Response) {
+	ws.Route(ws.DELETE("/{id}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("删除操作日志信息").Handle(s.DeleteJobLog)
 	}).
 		Doc("删除操作日志信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Param(ws.PathParameter("logId", "多id 1,2,3").DataType("string")))
+		Param(ws.PathParameter("id", "多id 1,2,3").DataType("string")))
 
 	ws.Route(ws.DELETE("/all").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("清空操作日志信息").Handle(s.DeleteAll)

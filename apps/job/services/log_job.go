@@ -11,7 +11,7 @@ type (
 	JobLogModel interface {
 		Insert(data entity.JobLog) *entity.JobLog
 		FindListPage(page, pageSize int, data entity.JobLog) (*[]entity.JobLog, int64)
-		Delete(infoId []int64)
+		Delete(infoId []string)
 		DeleteAll()
 	}
 
@@ -48,16 +48,16 @@ func (m *JobLogModelImpl) FindListPage(page, pageSize int, data entity.JobLog) (
 	err := db.Count(&total).Error
 	err = db.Order("create_time desc").Limit(pageSize).Offset(offset).Find(&list).Error
 
-	biz.ErrIsNil(err, "查询登录分页日志信息失败")
+	biz.ErrIsNil(err, "查询任务分页日志信息失败")
 	return &list, total
 }
 
-func (m *JobLogModelImpl) Delete(logIds []int64) {
+func (m *JobLogModelImpl) Delete(logIds []string) {
 	err := global.Db.Table(m.table).Delete(&entity.JobLog{}, "id in (?)", logIds).Error
-	biz.ErrIsNil(err, "删除登录日志信息失败")
+	biz.ErrIsNil(err, "删除任务日志信息失败")
 	return
 }
 
 func (m *JobLogModelImpl) DeleteAll() {
-	global.Db.Exec("DELETE FROM log_jobs")
+	global.Db.Exec("DELETE FROM job_logs")
 }
