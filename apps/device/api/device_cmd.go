@@ -44,6 +44,7 @@ func (p *DeviceCmdLogApi) GetDeviceCmdLogList(rc *restfulx.ReqCtx) {
 func (p *DeviceCmdLogApi) InsertDeviceCmdLog(rc *restfulx.ReqCtx) {
 	var data entity.DeviceCmdLog
 	restfulx.BindJsonAndValid(rc, &data)
+	biz.NotEmpty(data.CmdContent, "请设置指令内容")
 	//验证指令格式
 	ms := make(map[string]interface{})
 	err := json.Unmarshal([]byte(data.CmdContent), &ms)

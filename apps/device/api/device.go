@@ -175,6 +175,7 @@ func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	key := restfulx.QueryParam(rc, "key")
 	value := restfulx.QueryParam(rc, "value")
+	biz.NotEmpty(value, "请设置属性值")
 	err := util.BuildRunDeviceRpc(id, "single", map[string]interface{}{
 		"method": "setAttributes",
 		"params": map[string]interface{}{
