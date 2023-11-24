@@ -58,11 +58,13 @@ func (p *ProductTemplateApi) InsertProductTemplate(rc *restfulx.ReqCtx) {
 	data.Id = model2.GenerateID()
 	if data.Classify == entity.ATTRIBUTES_TSL || data.Classify == entity.TELEMETRY_TSL {
 		// 向超级表及子表中添加字段
-		len := 0
+		len := 100
 		stable := data.Pid + "_" + data.Classify
 		if data.Classify == entity.TELEMETRY_TSL {
 			if data.Type == "string" {
-				len = int(data.Define["length"].(int64))
+				if maxLength, ok := data.Define["maxLength"].(float64); ok {
+					len = int(maxLength)
+				}
 			}
 		}
 		err := global.TdDb.AddSTableField(stable, data.Key, data.Type, len)
