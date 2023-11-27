@@ -63,6 +63,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 			err = instance.StartRuleChain(context.Background(), ruleMessage)
 			if err != nil {
 				global.Log.Error("规则链执行失败", err)
+				return
 			}
 			// 保存设备影子
 			if msg.Type != message.RpcRequestFromDevice {
