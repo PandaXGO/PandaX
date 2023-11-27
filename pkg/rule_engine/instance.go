@@ -49,7 +49,7 @@ func newInstanceWithManifest(m *manifest.Manifest) (*RuleChainInstance, []error)
 	return r, errs
 }
 
-// StartRuleChain TODO 是否需要添加contexthttp://39.107.143.109/login
+// StartRuleChain TODO 是否需要添加context
 func (c *RuleChainInstance) StartRuleChain(context context.Context, message *message.Message) error {
 	// 处理debug的通道消息
 	go func() {
