@@ -58,7 +58,7 @@ func (hhs *HookTcpService) hook() {
 			//设置断开连接
 			if isAuth {
 				data := netbase.CreateConnectionInfo(message.DisConnectMes, "tcp", hhs.conn.RemoteAddr().String(), hhs.conn.RemoteAddr().String(), etoken)
-				hhs.HookService.MessageCh <- data
+				hhs.HookService.Queue.Queue(data)
 			}
 			tcpclient.TcpClient.Delete(etoken.DeviceId)
 			isAuth = false
@@ -72,7 +72,7 @@ func (hhs *HookTcpService) hook() {
 			if auth {
 				global.Log.Infof("TCP协议 设备%s,认证成功", etoken.DeviceId)
 				data := netbase.CreateConnectionInfo(message.ConnectMes, "tcp", hhs.conn.RemoteAddr().String(), hhs.conn.RemoteAddr().String(), etoken)
-				hhs.HookService.MessageCh <- data
+				hhs.HookService.Queue.Queue(data)
 				isAuth = true
 				tcpclient.TcpClient.Store(etoken.DeviceId, hhs.conn)
 				hhs.Send("success")
@@ -92,7 +92,7 @@ func (hhs *HookTcpService) hook() {
 			data.Datas = fmt.Sprintf(`{"ts": "%s","rowdata": "%s"}`, ts, hexData)
 
 			// etoken中添加设备标识
-			hhs.HookService.MessageCh <- data
+			hhs.HookService.Queue.Queue(data)
 		}
 	}
 

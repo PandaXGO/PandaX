@@ -44,7 +44,7 @@ func InitHttpHook(addr string, hs *hook_message_work.HookService) {
 			if etoken != nil {
 				data := netbase.CreateConnectionInfo(message.DisConnectMes, "http", conn.RemoteAddr().String(), conn.RemoteAddr().String(), etoken.(*model.DeviceAuth))
 				activeConnections.Delete(conn.RemoteAddr().String())
-				service.HookService.MessageCh <- data
+				service.HookService.Queue.Queue(data)
 			}
 		}
 	}
@@ -87,7 +87,7 @@ func (hhs *HookHttpService) hook(req *restful.Request, resp *restful.Response) {
 	if !ok {
 		activeConnections.Store(req.Request.RemoteAddr, etoken)
 		data := netbase.CreateConnectionInfo(message.ConnectMes, "http", req.Request.RemoteAddr, req.Request.RemoteAddr, etoken)
-		hhs.HookService.MessageCh <- data
+		hhs.HookService.Queue.Queue(data)
 	}
 	marshal, _ := json.Marshal(upData)
 	data := &netbase.DeviceEventInfo{
@@ -122,6 +122,6 @@ func (hhs *HookHttpService) hook(req *restful.Request, resp *restful.Response) {
 		resp.Write([]byte("路径上报类型错误"))
 		return
 	}
-	hhs.HookService.MessageCh <- data
+	hhs.HookService.Queue.Queue(data)
 	io.WriteString(resp, "ok")
 }
