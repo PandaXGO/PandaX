@@ -1,6 +1,7 @@
 package mqttclient
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"time"
@@ -25,12 +26,20 @@ type RpcRequest struct {
 // RequestCmd 下发指令
 func (rpc RpcRequest) RequestCmd(deviceId, rpcPayload string) error {
 	topic := fmt.Sprintf(RpcReqTopic, rpc.RequestId)
-	return Publish(topic, MqttClient[deviceId], rpcPayload)
+	value, ok := MqttClient.Load(deviceId)
+	if !ok {
+		return errors.New("为获取到设备的MQTT连接")
+	}
+	return Publish(topic, value.(string), rpcPayload)
 }
 
 func (rpc RpcRequest) Pub(deviceId, reqPayload string) error {
 	topic := fmt.Sprintf(RpcRespTopic, rpc.RequestId)
-	return Publish(topic, MqttClient[deviceId], reqPayload)
+	value, ok := MqttClient.Load(deviceId)
+	if !ok {
+		return errors.New("为获取到设备的MQTT连接")
+	}
+	return Publish(topic, value.(string), reqPayload)
 }
 
 func (rpc *RpcRequest) GetRequestId() {

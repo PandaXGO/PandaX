@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"net"
 	"pandax/pkg/global"
+	"sync"
 )
 
 type UdpClientT struct {
@@ -11,10 +12,12 @@ type UdpClientT struct {
 	Addr *net.UDPAddr
 }
 
-var UdpClient = make(map[string]*UdpClientT)
+// var UdpClient = make(map[string]*UdpClientT)
+var UdpClient sync.Map
 
 func Send(deviceId, msg string) error {
-	if conn, ok := UdpClient[deviceId]; ok {
+	if conn, ok := UdpClient.Load(deviceId); ok {
+		conn := conn.(*UdpClientT)
 		global.Log.Infof("设备%s, 发送指令%s", deviceId, msg)
 		_, err := conn.Conn.WriteToUDP([]byte(msg), conn.Addr)
 		if err != nil {
@@ -27,7 +30,8 @@ func Send(deviceId, msg string) error {
 }
 
 func SendHex(deviceId, msg string) error {
-	if conn, ok := UdpClient[deviceId]; ok {
+	if conn, ok := UdpClient.Load(deviceId); ok {
+		conn := conn.(*UdpClientT)
 		global.Log.Infof("设备%s, 发送指令%s", deviceId, msg)
 		b, err := hex.DecodeString(msg)
 		if err != nil {

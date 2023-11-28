@@ -45,7 +45,7 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 				data := netbase.CreateConnectionInfo(message.DisConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
 				hhs.HookService.MessageCh <- data
 			}
-			delete(udpclient.UdpClient, etoken.DeviceId)
+			udpclient.UdpClient.Delete(etoken.DeviceId)
 			delete(authMap, client.AddrPort().String())
 			continue
 		}
@@ -73,10 +73,10 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 				data := netbase.CreateConnectionInfo(message.ConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
 				hhs.HookService.MessageCh <- data
 				authMap[client.AddrPort().String()] = true
-				udpclient.UdpClient[etoken.DeviceId] = &udpclient.UdpClientT{
+				udpclient.UdpClient.Store(etoken.DeviceId, &udpclient.UdpClientT{
 					Conn: server.listener,
 					Addr: client,
-				}
+				})
 				hhs.Send(client, "success")
 			} else {
 				hhs.Send(client, "fail")

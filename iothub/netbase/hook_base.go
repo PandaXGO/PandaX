@@ -2,7 +2,6 @@ package netbase
 
 import (
 	"encoding/json"
-	"log"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	"pandax/iothub/server/emqxserver/protobuf"
@@ -38,7 +37,6 @@ func Auth(authToken string) bool {
 			return false
 		}
 		etoken = services.GetDeviceToken(&device.Device)
-		log.Println("设置设备协议", device.Product.ProtocolName)
 		etoken.DeviceProtocol = device.Product.ProtocolName
 		err = cache.SetDeviceEtoken(authToken, etoken.GetMarshal(), time.Hour*24*365)
 		if err != nil {

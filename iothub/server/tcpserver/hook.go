@@ -60,7 +60,7 @@ func (hhs *HookTcpService) hook() {
 				data := netbase.CreateConnectionInfo(message.DisConnectMes, "tcp", hhs.conn.RemoteAddr().String(), hhs.conn.RemoteAddr().String(), etoken)
 				hhs.HookService.MessageCh <- data
 			}
-			delete(tcpclient.TcpClient, etoken.DeviceId)
+			tcpclient.TcpClient.Delete(etoken.DeviceId)
 			isAuth = false
 			return
 		}
@@ -74,7 +74,7 @@ func (hhs *HookTcpService) hook() {
 				data := netbase.CreateConnectionInfo(message.ConnectMes, "tcp", hhs.conn.RemoteAddr().String(), hhs.conn.RemoteAddr().String(), etoken)
 				hhs.HookService.MessageCh <- data
 				isAuth = true
-				tcpclient.TcpClient[etoken.DeviceId] = hhs.conn
+				tcpclient.TcpClient.Store(etoken.DeviceId, hhs.conn)
 				hhs.Send("success")
 			} else {
 				hhs.Send("fail")

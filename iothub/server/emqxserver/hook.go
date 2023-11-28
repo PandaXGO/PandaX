@@ -87,7 +87,7 @@ func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.Cli
 		return nil, err
 	}
 	//添加连接ID
-	mqttclient.MqttClient[etoken.DeviceId] = in.Clientinfo.Clientid
+	mqttclient.MqttClient.Store(etoken.DeviceId, in.Clientinfo.Clientid)
 	data := netbase.CreateConnectionInfo(message.ConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
 	s.HookService.MessageCh <- data
 	return &exhook2.EmptySuccess{}, nil
@@ -102,7 +102,7 @@ func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.
 		return nil, err
 	}
 	//删除连接ID
-	delete(mqttclient.MqttClient, etoken.DeviceId)
+	mqttclient.MqttClient.Delete(etoken.DeviceId)
 	data := netbase.CreateConnectionInfo(message.DisConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
 	s.HookService.MessageCh <- data
 	return &exhook2.EmptySuccess{}, nil

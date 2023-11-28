@@ -2,14 +2,17 @@ package tcpclient
 
 import (
 	"encoding/hex"
+	"errors"
 	"net"
 	"pandax/pkg/global"
+	"sync"
 )
 
-var TcpClient = make(map[string]*net.TCPConn)
+var TcpClient sync.Map
 
 func Send(deviceId, msg string) error {
-	if conn, ok := TcpClient[deviceId]; ok {
+	if conn, ok := TcpClient.Load(deviceId); ok {
+		conn := conn.(*net.TCPConn)
 		global.Log.Infof("设备%s, 发送指令%s", deviceId, msg)
 		_, err := conn.Write([]byte(msg))
 		if err != nil {
@@ -17,12 +20,15 @@ func Send(deviceId, msg string) error {
 		}
 	} else {
 		global.Log.Infof("设备%s TCP连接不存在, 发送指令失败", deviceId)
+		return errors.New("为获取到设备的MQTT连接")
 	}
 	return nil
 }
 
 func SendHex(deviceId, msg string) error {
-	if conn, ok := TcpClient[deviceId]; ok {
+
+	if conn, ok := TcpClient.Load(deviceId); ok {
+		conn := conn.(*net.TCPConn)
 		global.Log.Infof("设备%s, 发送指令%s", deviceId, msg)
 		b, err := hex.DecodeString(msg)
 		if err != nil {

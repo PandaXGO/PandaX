@@ -8,10 +8,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"pandax/pkg/global"
+	"sync"
 )
 
 // key 设备id，value MQTT的clientID
-var MqttClient = make(map[string]string)
+var MqttClient sync.Map
 
 const ClientsInfo string = "client"
 const SubscribeTopicsInfo string = "subscribe"
