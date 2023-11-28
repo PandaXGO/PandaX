@@ -11,8 +11,6 @@ server:
   http-port: 9002
   tcp-port: 9003
   cors: true
-  # 数据上报 队列池
-  queue-num: 1000
   # 接口限流
   rate:
     enable: true
@@ -31,8 +29,9 @@ jwt:
   expire-time: 604800
 #数据上报并发识别任务数量限制
 queue:
-  enable: false
-  num: 3000
+  queue-pool: 5 #消息队列池
+  task-num: 100 #任务队列数
+  ch-num: 3000  #并发执行数
 
 redis:
   host: 127.0.0.1

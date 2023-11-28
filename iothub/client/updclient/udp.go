@@ -12,7 +12,6 @@ type UdpClientT struct {
 	Addr *net.UDPAddr
 }
 
-// var UdpClient = make(map[string]*UdpClientT)
 var UdpClient sync.Map
 
 func Send(deviceId, msg string) error {

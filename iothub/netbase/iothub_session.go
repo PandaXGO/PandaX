@@ -1,6 +1,7 @@
 package netbase
 
 import (
+	"encoding/json"
 	"pandax/pkg/global/model"
 )
 
@@ -10,4 +11,12 @@ type DeviceEventInfo struct {
 	Datas      string            `json:"datas"`
 	Type       string            `json:"type"`
 	RequestId  string            `json:"requestId"`
+}
+
+func (j *DeviceEventInfo) Bytes() []byte {
+	b, err := json.Marshal(j)
+	if err != nil {
+		panic(err)
+	}
+	return b
 }

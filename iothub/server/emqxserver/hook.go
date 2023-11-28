@@ -281,9 +281,8 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 		data.RequestId = id
 	}
 
-	//TODO 如果设备消息；量过大，推荐采用NATS队列处理
-	s.HookService.MessageCh <- data
-
+	//将数据放到队列中
+	s.HookService.Queue.Queue(data)
 	res.Value = &exhook2.ValuedResponse_Message{Message: in.Message}
 	return res, nil
 }
