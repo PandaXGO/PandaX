@@ -30,8 +30,8 @@ jwt:
 #数据上报并发识别任务数量限制
 queue:
   queue-pool: 5 #消息队列池
-  task-num: 100 #任务队列数
-  ch-num: 3000  #并发执行数
+  task-num: 100 #任务队列数, 
+  ch-num: 3000  #并发执行数,同时处理多少条数据
 
 redis:
   host: 127.0.0.1
