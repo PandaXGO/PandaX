@@ -87,9 +87,9 @@ func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.Cli
 		return nil, err
 	}
 	//添加连接ID
-	go mqttclient.MqttClient.Store(etoken.DeviceId, in.Clientinfo.Clientid)
+	mqttclient.MqttClient.Store(etoken.DeviceId, in.Clientinfo.Clientid)
 	data := netbase.CreateConnectionInfo(message.ConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
-	s.HookService.Queue.Queue(data)
+	go s.HookService.Queue.Queue(data)
 	return &exhook2.EmptySuccess{}, nil
 }
 
@@ -102,9 +102,9 @@ func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.
 		return nil, err
 	}
 	//删除连接ID
-	go mqttclient.MqttClient.Delete(etoken.DeviceId)
+	mqttclient.MqttClient.Delete(etoken.DeviceId)
 	data := netbase.CreateConnectionInfo(message.DisConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
-	s.HookService.Queue.Queue(data)
+	go s.HookService.Queue.Queue(data)
 	return &exhook2.EmptySuccess{}, nil
 }
 
@@ -223,7 +223,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 					// 创建tdengine的设备属性表
 					netbase.CreateSubTableField(auth.ProductId, global.TslAttributesType, attributesData)
 					// 子设备发送到队列里
-					s.HookService.Queue.Queue(data)
+					go s.HookService.Queue.Queue(data)
 				}
 				if in.Message.Topic == TelemetryGatewayTopic {
 					data.Type = message.TelemetryMes
@@ -238,7 +238,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 					// 创建tdengine的设备遥测表
 					netbase.CreateSubTableField(auth.ProductId, global.TslTelemetryType, telemetryData)
 					// 子设备发送到队列里
-					s.HookService.Queue.Queue(data)
+					go s.HookService.Queue.Queue(data)
 				}
 				if in.Message.Topic == ConnectGatewayTopic {
 					if val, ok := value.(string); ok {
@@ -249,7 +249,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 							data = netbase.CreateConnectionInfo(message.DisConnectMes, "mqtt", in.Message.From, in.Message.Headers["peerhost"], auth)
 						}
 						// 子设备发送到队列里
-						s.HookService.Queue.Queue(data)
+						go s.HookService.Queue.Queue(data)
 					}
 				}
 			}
@@ -283,7 +283,7 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 			data.RequestId = id
 		}
 		//将数据放到队列中
-		s.HookService.Queue.Queue(data)
+		go s.HookService.Queue.Queue(data)
 	}()
 	res.Value = &exhook2.ValuedResponse_Message{Message: in.Message}
 	return res, nil

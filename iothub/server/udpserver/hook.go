@@ -43,7 +43,7 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 			//设置断开连接
 			if isAuth, ok := authMap[client.AddrPort().String()]; ok && isAuth {
 				data := netbase.CreateConnectionInfo(message.DisConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
-				hhs.HookService.Queue.Queue(data)
+				go hhs.HookService.Queue.Queue(data)
 			}
 			udpclient.UdpClient.Delete(etoken.DeviceId)
 			delete(authMap, client.AddrPort().String())
@@ -62,7 +62,7 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 			data.Datas = fmt.Sprintf(`{"ts": "%s","rowdata": "%s"}`, ts, hexData)
 
 			// etoken中添加设备标识
-			hhs.HookService.Queue.Queue(data)
+			go hhs.HookService.Queue.Queue(data)
 		} else {
 			token := string(buffer[:n])
 			etoken.GetDeviceToken(token)
@@ -71,7 +71,7 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 			if auth {
 				global.Log.Infof("UDP协议 设备%s,认证成功", etoken.DeviceId)
 				data := netbase.CreateConnectionInfo(message.ConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
-				hhs.HookService.Queue.Queue(data)
+				go hhs.HookService.Queue.Queue(data)
 
 				authMap[client.AddrPort().String()] = true
 				udpclient.UdpClient.Store(etoken.DeviceId, &udpclient.UdpClientT{
