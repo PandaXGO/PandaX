@@ -17,7 +17,7 @@ type (
 		Delete(roleId []int64)
 		GetRoleMeunId(data entity.SysRole) []int64
 		GetRoleOrganizationId(data entity.SysRole) []int64
-		FindOrganizationsByRoleId(roleId int64) (entity.SysRole, error)
+		FindOrganizationsByRoleId(roleId int64) (entity.SysRoleAuth, error)
 	}
 
 	sysRoleModel struct {
@@ -132,18 +132,8 @@ func (m *sysRoleModel) GetRoleOrganizationId(data entity.SysRole) []int64 {
 	return organizationIds
 }
 
-func (m *sysRoleModel) FindOrganizationsByRoleId(roleId int64) (entity.SysRole, error) {
-	var roleData entity.SysRole
-	db := global.Db.Table(m.table)
-	if global.Conf.Server.DbType == "mysql" {
-		db.Select("sys_roles.data_scope, GROUP_CONCAT(sys_role_organizations.organization_id) as org")
-	} else {
-		db.Select("sys_roles.data_scope, STRING_AGG(sys_role_organizations.organization_id::text,',') as org")
-	}
-	err := db.
-		Joins("LEFT JOIN sys_role_organizations ON sys_roles.role_id = sys_role_organizations.role_id").
-		Where("sys_roles.role_id = ?", roleId).
-		Group("sys_roles.role_id").
-		First(&roleData).Error
+func (m *sysRoleModel) FindOrganizationsByRoleId(roleId int64) (entity.SysRoleAuth, error) {
+	var roleData entity.SysRoleAuth
+	err := global.Db.Raw("SELECT sys_roles.data_scope, GROUP_CONCAT(sys_role_organizations.organization_id) as org FROM sys_roles LEFT JOIN sys_role_organizations ON sys_roles.role_id =  sys_role_organizations.role_id WHERE sys_roles.role_id = ? GROUP BY sys_roles.role_id", roleId).Scan(&roleData).Error
 	return roleData, err
 }
