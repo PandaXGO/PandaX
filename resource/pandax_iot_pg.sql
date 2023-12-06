@@ -513,7 +513,7 @@ CREATE TABLE "public"."device_groups" (
   "path" varchar(255) COLLATE "pg_catalog"."default",
   "description" varchar(255) COLLATE "pg_catalog"."default",
   "sort" int4,
-  "ext" varchar COLLATE "pg_catalog"."default",
+  "ext" json COLLATE "pg_catalog"."default",
   "status" varchar(1) COLLATE "pg_catalog"."default"
 )
 ;
@@ -552,7 +552,7 @@ CREATE TABLE "public"."devices" (
   "description" varchar(255) COLLATE "pg_catalog"."default",
   "status" varchar(1) COLLATE "pg_catalog"."default",
   "ota_version" varchar(64) COLLATE "pg_catalog"."default",
-  "ext" varchar COLLATE "pg_catalog"."default",
+  "ext" json COLLATE "pg_catalog"."default",
   "parent_id" varchar(64) COLLATE "pg_catalog"."default",
   "device_type" varchar(64) COLLATE "pg_catalog"."default",
   "link_status" varchar(10) COLLATE "pg_catalog"."default",
