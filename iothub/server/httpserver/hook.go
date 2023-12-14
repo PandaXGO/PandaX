@@ -25,6 +25,11 @@ var (
 	activeConnections sync.Map
 )
 
+const (
+	AEPTYPE    = "AEP"
+	ONENETTYPE = "ONENET"
+)
+
 func InitHttpHook(addr string, hs *hook_message_work.HookService) {
 	server := NewHttpServer(addr)
 	service := &HookHttpService{
@@ -70,6 +75,7 @@ func basicAuthenticate(req *restful.Request, resp *restful.Response, chain *rest
 func (hhs *HookHttpService) hook(req *restful.Request, resp *restful.Response) {
 	token := req.PathParameter("token")
 	pathType := req.PathParameter("pathType")
+	platformType := req.QueryParameter("platformType")
 	if token == "" || pathType == "" {
 		resp.Write([]byte("路径未识别token，或上报类型"))
 		return
@@ -89,8 +95,12 @@ func (hhs *HookHttpService) hook(req *restful.Request, resp *restful.Response) {
 		data := netbase.CreateConnectionInfo(message.ConnectMes, "http", req.Request.RemoteAddr, req.Request.RemoteAddr, etoken)
 		go hhs.HookService.Queue.Queue(data)
 	}
+	var data *netbase.DeviceEventInfo
+	if platformType == AEPTYPE {
+
+	}
 	marshal, _ := json.Marshal(upData)
-	data := &netbase.DeviceEventInfo{
+	data = &netbase.DeviceEventInfo{
 		Datas:      string(marshal),
 		DeviceAuth: etoken,
 		DeviceId:   etoken.DeviceId,
