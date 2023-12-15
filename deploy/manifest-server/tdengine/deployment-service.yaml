@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tdengine
+  name: tdengine-service
 spec:
   type: LoadBalancer
   ports:

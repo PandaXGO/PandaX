@@ -187,8 +187,8 @@ spec:
         - mountPath: /var/lib/mysql
           name: mysql-data
       volumes:
-      - hostPath:
-          name: mysql-data
+      - name: mysql-data
+        hostPath:
           path: ./mysql/data
 ---
 apiVersion: apps/v1
@@ -229,11 +229,11 @@ spec:
         - mountPath: /logs
           name: mysql-log
       volumes:
-      - hostPath:
-          name: redis-data
+      - name: redis-data
+        hostPath:
           path: ./redis/data
-      - hostPath:
-          name: redis-log
+      - name: redis-log
+        hostPath:
           path: ./redis/logs
 ---
 apiVersion: apps/v1
