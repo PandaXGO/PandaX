@@ -169,7 +169,7 @@ func (s *toolsGenTableColumn) CheckSexColumn(columnName string) bool {
 	return false
 }
 
-func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable {
+func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable, error) {
 	var data entity.DevGenTable
 	data.TableName = tableName
 	tableNameList := strings.Split(tableName, "_")
@@ -189,7 +189,10 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 	// 中横线表名称，接口路径、前端文件夹名称和js名称使用
 	data.ModuleName = strings.Replace(tableName, "_", "-", -1)
 
-	dbColumn := services.DevTableColumnModelDao.FindDbTableColumnList(tableName)
+	dbColumn, err := services.DevTableColumnModelDao.FindDbTableColumnList(tableName)
+	if err != nil {
+		return data, err
+	}
 	data.TableComment = data.ClassName
 	data.FunctionAuthor = "panda"
 
@@ -335,11 +338,16 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) entity.DevGenTable 
 		}(&wg, index)
 	}
 	wg.Wait()
-	return data
+	return data, nil
 }
 
 // 视图预览
 func Preview(tableId int64) map[string]any {
+	defer func() {
+		if err := recover(); &err != nil {
+			global.Log.Error(err)
+		}
+	}()
 	t1, err := template.ParseFiles("resource/template/go/entity.template")
 	biz.ErrIsNil(err, "entity模版读取失败")
 
@@ -361,7 +369,7 @@ func Preview(tableId int64) map[string]any {
 	t7, err := template.ParseFiles("resource/template/vue/edit-vue.template")
 	biz.ErrIsNil(err, "vue编辑模版读取失败！")
 
-	tab := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: tableId}, false)
+	tab, err := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: tableId}, false)
 
 	var b1 bytes.Buffer
 	err = t1.Execute(&b1, tab)
@@ -391,8 +399,14 @@ func Preview(tableId int64) map[string]any {
 
 // 生成 代码
 func GenCode(tableId int64) {
+	defer func() {
+		if err := recover(); &err != nil {
+			global.Log.Error(err)
+		}
+	}()
 
-	tab := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: tableId}, false)
+	tab, err := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: tableId}, false)
+	biz.ErrIsNil(err, "读取表信息失败！")
 	tab.ModuleName = strings.Replace(tab.TableName, "_", "-", -1)
 
 	t1, err := template.ParseFiles("resource/template/go/entity.template")
@@ -449,8 +463,10 @@ func GenCode(tableId int64) {
 
 // GenConfigure 生成菜单，api
 func GenConfigure(tableId, parentId int) {
-	tab := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: int64(tableId)}, false)
-
+	tab, err := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: int64(tableId)}, false)
+	if err != nil {
+		return
+	}
 	//生成菜单 一个菜单 三个按钮
 	component := "Layout"
 	if parentId != 0 {

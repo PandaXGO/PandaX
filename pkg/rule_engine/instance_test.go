@@ -13,7 +13,7 @@ func TestNewRuleChainInstance(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	instance, errs := NewRuleChainInstance(buf)
+	instance, errs := NewRuleChainInstance("11", buf)
 	if len(errs) > 0 {
 		t.Error(errs[0])
 	}

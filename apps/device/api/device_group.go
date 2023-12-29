@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
@@ -22,16 +23,18 @@ func (p *DeviceGroupApi) GetDeviceGroupTree(rc *restfulx.ReqCtx) {
 	vsg.Id = id
 	vsg.RoleId = rc.LoginAccount.RoleId
 	vsg.Owner = rc.LoginAccount.UserName
-
-	rc.ResData = p.DeviceGroupApp.SelectDeviceGroup(vsg)
+	group, err := p.DeviceGroupApp.SelectDeviceGroup(vsg)
+	biz.ErrIsNil(err, "查询设备组失败")
+	rc.ResData = group
 }
 
 func (p *DeviceGroupApi) GetDeviceGroupTreeLabel(rc *restfulx.ReqCtx) {
 	vsg := entity.DeviceGroup{}
 	vsg.RoleId = rc.LoginAccount.RoleId
 	vsg.Owner = rc.LoginAccount.UserName
-
-	rc.ResData = p.DeviceGroupApp.SelectDeviceGroupLabel(vsg)
+	label, err := p.DeviceGroupApp.SelectDeviceGroupLabel(vsg)
+	biz.ErrIsNil(err, "查询设备组失败")
+	rc.ResData = label
 }
 
 func (p *DeviceGroupApi) GetDeviceGroupList(rc *restfulx.ReqCtx) {
@@ -45,9 +48,13 @@ func (p *DeviceGroupApi) GetDeviceGroupList(rc *restfulx.ReqCtx) {
 	vsg.RoleId = rc.LoginAccount.RoleId
 	vsg.Owner = rc.LoginAccount.UserName
 	if vsg.Name == "" {
-		rc.ResData = p.DeviceGroupApp.SelectDeviceGroup(vsg)
+		group, err := p.DeviceGroupApp.SelectDeviceGroup(vsg)
+		biz.ErrIsNil(err, "查询设备组失败")
+		rc.ResData = group
 	} else {
-		rc.ResData = p.DeviceGroupApp.FindList(vsg)
+		list, err := p.DeviceGroupApp.FindList(vsg)
+		biz.ErrIsNil(err, "查询设备组列表失败")
+		rc.ResData = list
 	}
 }
 
@@ -56,14 +63,17 @@ func (p *DeviceGroupApi) GetDeviceGroupAllList(rc *restfulx.ReqCtx) {
 	var vsg entity.DeviceGroup
 	vsg.RoleId = rc.LoginAccount.RoleId
 	vsg.Owner = rc.LoginAccount.UserName
-
-	rc.ResData = p.DeviceGroupApp.FindList(vsg)
+	list, err := p.DeviceGroupApp.FindList(vsg)
+	biz.ErrIsNil(err, "查询设备组列表失败")
+	rc.ResData = list
 }
 
 // GetDeviceGroup 获取DeviceGroup
 func (p *DeviceGroupApi) GetDeviceGroup(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	rc.ResData = p.DeviceGroupApp.FindOne(id)
+	one, err := p.DeviceGroupApp.FindOne(id)
+	biz.ErrIsNil(err, "查询设备组失败")
+	rc.ResData = one
 }
 
 // InsertDeviceGroup 添加DeviceGroup

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"github.com/PandaXGO/PandaKit/utils"
@@ -23,7 +24,8 @@ func (g *GenTableApi) GetDBTableList(rc *restfulx.ReqCtx) {
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 	dbt.TableName = restfulx.QueryParam(rc, "tableName")
 
-	list, total := g.GenTableApp.FindDbTablesListPage(pageNum, pageSize, dbt)
+	list, total, err := g.GenTableApp.FindDbTablesListPage(pageNum, pageSize, dbt)
+	biz.ErrIsNil(err, "查询配置分页列表信息失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -42,7 +44,8 @@ func (g *GenTableApi) GetTablePage(rc *restfulx.ReqCtx) {
 	dgt.RoleId = rc.LoginAccount.RoleId
 	dgt.Owner = rc.LoginAccount.UserName
 
-	list, total := g.GenTableApp.FindListPage(pageNum, pageSize, dgt)
+	list, total, err := g.GenTableApp.FindListPage(pageNum, pageSize, dgt)
+	biz.ErrIsNil(err, "分页获取表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -56,7 +59,8 @@ func (g *GenTableApi) GetTableInfo(rc *restfulx.ReqCtx) {
 	dgt := entity.DevGenTable{}
 	dgt.TableId = int64(restfulx.PathParamInt(rc, "tableId"))
 	dgt.RoleId = rc.LoginAccount.RoleId
-	result := g.GenTableApp.FindOne(dgt, true)
+	result, err := g.GenTableApp.FindOne(dgt, true)
+	biz.ErrIsNil(err, "分页获取表信息失败")
 	rc.ResData = vo.TableInfoVo{
 		List: result.Columns,
 		Info: *result,
@@ -68,7 +72,8 @@ func (g *GenTableApi) GetTableInfoByName(rc *restfulx.ReqCtx) {
 	dgt := entity.DevGenTable{}
 	dgt.TableName = restfulx.QueryParam(rc, "tableName")
 	dgt.RoleId = rc.LoginAccount.RoleId
-	result := g.GenTableApp.FindOne(dgt, true)
+	result, err := g.GenTableApp.FindOne(dgt, true)
+	biz.ErrIsNil(err, "分页获取表信息失败")
 	rc.ResData = vo.TableInfoVo{
 		List: result.Columns,
 		Info: *result,
@@ -80,7 +85,9 @@ func (g *GenTableApi) GetTableTree(rc *restfulx.ReqCtx) {
 	dgt := entity.DevGenTable{}
 	dgt.RoleId = rc.LoginAccount.RoleId
 	dgt.Owner = rc.LoginAccount.UserName
-	rc.ResData = g.GenTableApp.FindTree(dgt)
+	tree, err := g.GenTableApp.FindTree(dgt)
+	biz.ErrIsNil(err, "获取树表信息失败")
+	rc.ResData = tree
 }
 
 // Insert 添加表结构
@@ -92,11 +99,14 @@ func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
 		index := i
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, index int) {
-			genTable := gen.ToolsGenTableColumn.GenTableInit(tablesList[index])
+			defer wg.Done()
+			genTable, err := gen.ToolsGenTableColumn.GenTableInit(tablesList[index])
+			if err != nil {
+				return
+			}
 			genTable.OrgId = rc.LoginAccount.OrganizationId
 			genTable.Owner = rc.LoginAccount.UserName
 			g.GenTableApp.Insert(genTable)
-			wg.Done()
 		}(&wg, index)
 	}
 	wg.Wait()
@@ -106,12 +116,14 @@ func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
 func (g *GenTableApi) Update(rc *restfulx.ReqCtx) {
 	var data entity.DevGenTable
 	restfulx.BindJsonAndValid(rc, &data)
-	g.GenTableApp.Update(data)
+	_, err := g.GenTableApp.Update(data)
+	biz.ErrIsNil(err, "修改表结构")
 }
 
 // Delete 删除表结构
 func (g *GenTableApi) Delete(rc *restfulx.ReqCtx) {
 	tableIds := restfulx.PathParam(rc, "tableId")
 	group := utils.IdsStrToIdsIntGroup(tableIds)
-	g.GenTableApp.Delete(group)
+	err := g.GenTableApp.Delete(group)
+	biz.ErrIsNil(err, "删除表结构")
 }

@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/develop/entity"
 	"pandax/pkg/global"
 )
@@ -15,13 +14,13 @@ import (
 
 type (
 	SysGenTableColumnModel interface {
-		FindDbTablesColumnListPage(page, pageSize int, data entity.DBColumns) (*[]entity.DBColumns, int64)
-		FindDbTableColumnList(tableName string) []entity.DBColumns
+		FindDbTablesColumnListPage(page, pageSize int, data entity.DBColumns) (*[]entity.DBColumns, int64, error)
+		FindDbTableColumnList(tableName string) ([]entity.DBColumns, error)
 
-		Insert(data entity.DevGenTableColumn) *entity.DevGenTableColumn
-		FindList(data entity.DevGenTableColumn, exclude bool) *[]entity.DevGenTableColumn
-		Update(data entity.DevGenTableColumn) *entity.DevGenTableColumn
-		Delete(tableId []int64)
+		Insert(data entity.DevGenTableColumn) (*entity.DevGenTableColumn, error)
+		FindList(data entity.DevGenTableColumn, exclude bool) (*[]entity.DevGenTableColumn, error)
+		Update(data entity.DevGenTableColumn) (*entity.DevGenTableColumn, error)
+		Delete(tableId []int64) error
 	}
 
 	devTableColumnModelImpl struct {
@@ -33,12 +32,12 @@ var DevTableColumnModelDao SysGenTableColumnModel = &devTableColumnModelImpl{
 	table: "dev_gen_table_columns",
 }
 
-func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int, data entity.DBColumns) (*[]entity.DBColumns, int64) {
+func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int, data entity.DBColumns) (*[]entity.DBColumns, int64, error) {
 	list := make([]entity.DBColumns, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
 	if global.Conf.Server.DbType != "mysql" && global.Conf.Server.DbType != "postgresql" {
-		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
+		return nil, 0, errors.New("只支持mysql和postgresql数据库")
 	}
 	db := global.Db.Table("information_schema.COLUMNS")
 	if global.Conf.Server.DbType == "mysql" {
@@ -54,14 +53,13 @@ func (m *devTableColumnModelImpl) FindDbTablesColumnListPage(page, pageSize int,
 
 	err := db.Count(&total).Error
 	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询生成代码列表信息失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) []entity.DBColumns {
+func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) ([]entity.DBColumns, error) {
 
 	if global.Conf.Server.DbType != "mysql" && global.Conf.Server.DbType != "postgresql" {
-		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
+		return nil, errors.New("只支持mysql和postgresql数据库")
 	}
 	db := global.Db.Table("information_schema.columns")
 	if global.Conf.Server.DbType == "mysql" {
@@ -70,21 +68,26 @@ func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) []enti
 	if global.Conf.Server.DbType == "postgresql" {
 		db = db.Where("table_schema = ? ", "public")
 	}
-	biz.IsTrue(tableName != "", "table name cannot be empty！")
+	if tableName == "" {
+		return nil, errors.New("table name cannot be empty！")
+	}
 
 	db = db.Where("table_name = ?", tableName)
 	resData := make([]entity.DBColumns, 0)
 	if global.Conf.Server.DbType == "mysql" {
 		err := db.Find(&resData).Error
-		biz.ErrIsNil(err, "查询表字段失败")
-		return resData
+		return resData, err
 	}
 	if global.Conf.Server.DbType == "postgresql" {
 		pr, err := getPgPR(tableName)
-		biz.ErrIsNil(err, "查询PG表主键字段失败")
+		if err != nil {
+			return resData, errors.New("查询PG表主键字段失败")
+		}
 		resDataP := make([]entity.DBColumnsP, 0)
 		err = db.Find(&resDataP).Error
-		biz.ErrIsNil(err, "查询表字段失败")
+		if err != nil {
+			return resData, errors.New("查询表字段失败")
+		}
 		for _, data := range resDataP {
 			dbc := entity.DBColumns{
 				TableSchema:            data.TableSchema,
@@ -107,9 +110,9 @@ func (m *devTableColumnModelImpl) FindDbTableColumnList(tableName string) []enti
 			resData = append(resData, dbc)
 		}
 
-		return resData
+		return resData, nil
 	}
-	return resData
+	return resData, nil
 }
 
 func getPgPR(tableName string) (string, error) {
@@ -127,13 +130,15 @@ WHERE
 	return pkname, err
 }
 
-func (m *devTableColumnModelImpl) Insert(dgt entity.DevGenTableColumn) *entity.DevGenTableColumn {
+func (m *devTableColumnModelImpl) Insert(dgt entity.DevGenTableColumn) (*entity.DevGenTableColumn, error) {
 	err := global.Db.Table(m.table).Create(&dgt).Error
-	biz.ErrIsNil(err, "新增生成代码字段表失败")
-	return &dgt
+	if err != nil {
+		global.Log.Error(err)
+	}
+	return &dgt, err
 }
 
-func (m *devTableColumnModelImpl) FindList(data entity.DevGenTableColumn, exclude bool) *[]entity.DevGenTableColumn {
+func (m *devTableColumnModelImpl) FindList(data entity.DevGenTableColumn, exclude bool) (*[]entity.DevGenTableColumn, error) {
 	list := make([]entity.DevGenTableColumn, 0)
 	db := global.Db.Table(m.table).Where("table_id = ?", data.TableId)
 	if exclude {
@@ -147,18 +152,15 @@ func (m *devTableColumnModelImpl) FindList(data entity.DevGenTableColumn, exclud
 		db = db.Where("column_name not in(?)", notIn)
 	}
 	err := db.Find(&list).Error
-	biz.ErrIsNil(err, "查询生成代码字段表信息失败")
-	return &list
+	return &list, err
 }
 
-func (m *devTableColumnModelImpl) Update(data entity.DevGenTableColumn) *entity.DevGenTableColumn {
+func (m *devTableColumnModelImpl) Update(data entity.DevGenTableColumn) (*entity.DevGenTableColumn, error) {
 	err := global.Db.Table(m.table).Model(&data).Updates(&data).Error
-	biz.ErrIsNil(err, "修改生成代码字段表失败")
-	return &data
+	return &data, err
 }
 
-func (m *devTableColumnModelImpl) Delete(tableId []int64) {
+func (m *devTableColumnModelImpl) Delete(tableId []int64) error {
 	err := global.Db.Table(m.table).Delete(&entity.DevGenTableColumn{}, "table_id in (?)", tableId).Error
-	biz.ErrIsNil(err, "删除生成代码字段表失败")
-	return
+	return err
 }

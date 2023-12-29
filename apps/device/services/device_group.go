@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/entity"
 	"pandax/pkg/global"
 	"pandax/pkg/global/model"
@@ -10,14 +9,14 @@ import (
 
 type (
 	DeviceGroupModel interface {
-		Insert(data entity.DeviceGroup) *entity.DeviceGroup
-		FindOne(id string) *entity.DeviceGroup
-		FindListPage(page, pageSize int, data entity.DeviceGroup) (*[]entity.DeviceGroup, int64)
-		FindList(data entity.DeviceGroup) *[]entity.DeviceGroup
-		Update(data entity.DeviceGroup) *entity.DeviceGroup
-		Delete(ids []string)
-		SelectDeviceGroup(data entity.DeviceGroup) []entity.DeviceGroup
-		SelectDeviceGroupLabel(data entity.DeviceGroup) []entity.DeviceGroupLabel
+		Insert(data entity.DeviceGroup) (*entity.DeviceGroup, error)
+		FindOne(id string) (*entity.DeviceGroup, error)
+		FindListPage(page, pageSize int, data entity.DeviceGroup) (*[]entity.DeviceGroup, int64, error)
+		FindList(data entity.DeviceGroup) (*[]entity.DeviceGroup, error)
+		Update(data entity.DeviceGroup) (*entity.DeviceGroup, error)
+		Delete(ids []string) error
+		SelectDeviceGroup(data entity.DeviceGroup) ([]entity.DeviceGroup, error)
+		SelectDeviceGroupLabel(data entity.DeviceGroup) ([]entity.DeviceGroupLabel, error)
 	}
 
 	deviceGroupModelImpl struct {
@@ -29,31 +28,30 @@ var DeviceGroupModelDao DeviceGroupModel = &deviceGroupModelImpl{
 	table: `device_groups`,
 }
 
-func (m *deviceGroupModelImpl) Insert(data entity.DeviceGroup) *entity.DeviceGroup {
-	err := global.Db.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "添加设备分组失败")
-
+func (m *deviceGroupModelImpl) Insert(data entity.DeviceGroup) (*entity.DeviceGroup, error) {
+	if err := global.Db.Table(m.table).Create(&data).Error; err != nil {
+		return nil, err
+	}
 	path := "/" + data.Id
 	if data.Pid != "0" {
-		vsg := m.FindOne(data.Pid)
+		vsg, _ := m.FindOne(data.Pid)
 		path = vsg.Path + path
 	} else {
 		path = "/0" + path
 	}
 	data.Path = path
-	biz.ErrIsNil(global.Db.Table(m.table).Model(&data).Updates(&data).Error, "修改设备分组信息失败")
-	return &data
+	err := global.Db.Table(m.table).Model(&data).Updates(&data).Error
+	return &data, err
 }
 
-func (m *deviceGroupModelImpl) FindOne(id string) *entity.DeviceGroup {
+func (m *deviceGroupModelImpl) FindOne(id string) (*entity.DeviceGroup, error) {
 	resData := new(entity.DeviceGroup)
 	db := global.Db.Table(m.table).Where("id = ?", id)
 	err := db.First(resData).Error
-	biz.ErrIsNil(err, "查询设备分组失败")
-	return resData
+	return resData, err
 }
 
-func (m *deviceGroupModelImpl) FindListPage(page, pageSize int, data entity.DeviceGroup) (*[]entity.DeviceGroup, int64) {
+func (m *deviceGroupModelImpl) FindListPage(page, pageSize int, data entity.DeviceGroup) (*[]entity.DeviceGroup, int64, error) {
 	list := make([]entity.DeviceGroup, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -69,15 +67,17 @@ func (m *deviceGroupModelImpl) FindListPage(page, pageSize int, data entity.Devi
 		db = db.Where("status = ?", data.Status)
 	}
 	// 组织数据访问权限
-	model.OrgAuthSet(db, data.RoleId, data.Owner)
-
-	err := db.Count(&total).Error
-	err = db.Order("sort").Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询设备分组分页列表失败")
-	return &list, total
+	if err := model.OrgAuthSet(db, data.RoleId, data.Owner); err != nil {
+		return nil, 0, err
+	}
+	if err := db.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	err := db.Order("sort").Limit(pageSize).Offset(offset).Find(&list).Error
+	return &list, total, err
 }
 
-func (m *deviceGroupModelImpl) FindList(data entity.DeviceGroup) *[]entity.DeviceGroup {
+func (m *deviceGroupModelImpl) FindList(data entity.DeviceGroup) (*[]entity.DeviceGroup, error) {
 	list := make([]entity.DeviceGroup, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
@@ -91,17 +91,21 @@ func (m *deviceGroupModelImpl) FindList(data entity.DeviceGroup) *[]entity.Devic
 		db = db.Where("status = ?", data.Status)
 	}
 	// 组织数据访问权限
-	model.OrgAuthSet(db, data.RoleId, data.Owner)
-	biz.ErrIsNil(db.Order("sort").Find(&list).Error, "查询设备分组列表失败")
-	return &list
+	if err := model.OrgAuthSet(db, data.RoleId, data.Owner); err != nil {
+		return nil, err
+	}
+	err := db.Order("sort").Find(&list).Error
+	return &list, err
 }
 
-func (m *deviceGroupModelImpl) Update(data entity.DeviceGroup) *entity.DeviceGroup {
-	one := m.FindOne(data.Id)
-
+func (m *deviceGroupModelImpl) Update(data entity.DeviceGroup) (*entity.DeviceGroup, error) {
+	one, err := m.FindOne(data.Id)
+	if err != nil {
+		return nil, err
+	}
 	path := "/" + data.Id
 	if data.Pid != "0" {
-		vsg := m.FindOne(data.Pid)
+		vsg, _ := m.FindOne(data.Pid)
 		path = vsg.Path + path
 	} else {
 		path = "/0" + path
@@ -109,19 +113,18 @@ func (m *deviceGroupModelImpl) Update(data entity.DeviceGroup) *entity.DeviceGro
 	data.Path = path
 
 	if data.Path != "" && data.Path != one.Path {
-		biz.ErrIsNil(errors.New("上级分组不允许修改！"), "上级分组不允许修改")
+		return nil, errors.New("上级分组不允许修改！")
 	}
-
-	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改设备分组失败")
-	return &data
+	err = global.Db.Table(m.table).Updates(&data).Error
+	return &data, err
 }
 
-func (m *deviceGroupModelImpl) Delete(s []string) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.DeviceGroup{}, "id in (?)", s).Error, "删除设备分组失败")
+func (m *deviceGroupModelImpl) Delete(s []string) error {
+	return global.Db.Table(m.table).Delete(&entity.DeviceGroup{}, "id in (?)", s).Error
 }
 
-func (m *deviceGroupModelImpl) SelectDeviceGroup(data entity.DeviceGroup) []entity.DeviceGroup {
-	list := m.FindList(data)
+func (m *deviceGroupModelImpl) SelectDeviceGroup(data entity.DeviceGroup) ([]entity.DeviceGroup, error) {
+	list, _ := m.FindList(data)
 	sd := make([]entity.DeviceGroup, 0)
 	li := *list
 	for i := 0; i < len(li); i++ {
@@ -131,12 +134,11 @@ func (m *deviceGroupModelImpl) SelectDeviceGroup(data entity.DeviceGroup) []enti
 		info := DiGuiDeviceGroup(list, li[i])
 		sd = append(sd, info)
 	}
-	return sd
+	return sd, nil
 }
 
-func (m *deviceGroupModelImpl) SelectDeviceGroupLabel(data entity.DeviceGroup) []entity.DeviceGroupLabel {
-	organizationlist := m.FindList(data)
-
+func (m *deviceGroupModelImpl) SelectDeviceGroupLabel(data entity.DeviceGroup) ([]entity.DeviceGroupLabel, error) {
+	organizationlist, _ := m.FindList(data)
 	dl := make([]entity.DeviceGroupLabel, 0)
 	organizationl := *organizationlist
 	for i := 0; i < len(organizationl); i++ {
@@ -150,7 +152,7 @@ func (m *deviceGroupModelImpl) SelectDeviceGroupLabel(data entity.DeviceGroup) [
 
 		dl = append(dl, organizationsInfo)
 	}
-	return dl
+	return dl, nil
 }
 
 func DiGuiDeviceGroup(sglist *[]entity.DeviceGroup, menu entity.DeviceGroup) entity.DeviceGroup {

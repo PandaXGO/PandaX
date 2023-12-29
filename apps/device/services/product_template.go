@@ -1,7 +1,6 @@
 package services
 
 import (
-	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/entity"
 	"pandax/pkg/global"
 	"strings"
@@ -9,13 +8,13 @@ import (
 
 type (
 	ProductTemplateModel interface {
-		Insert(data entity.ProductTemplate) *entity.ProductTemplate
-		FindOne(id string) *entity.ProductTemplate
-		FindListPage(page, pageSize int, data entity.ProductTemplate) (*[]entity.ProductTemplate, int64)
-		FindListAttrs(data entity.ProductTemplate) *[]entity.ProductTemplate
-		FindList(data entity.ProductTemplate) *[]entity.ProductTemplate
-		Update(data entity.ProductTemplate) *entity.ProductTemplate
-		Delete(ids []string)
+		Insert(data entity.ProductTemplate) (*entity.ProductTemplate, error)
+		FindOne(id string) (*entity.ProductTemplate, error)
+		FindListPage(page, pageSize int, data entity.ProductTemplate) (*[]entity.ProductTemplate, int64, error)
+		FindListAttrs(data entity.ProductTemplate) (*[]entity.ProductTemplate, error)
+		FindList(data entity.ProductTemplate) (*[]entity.ProductTemplate, error)
+		Update(data entity.ProductTemplate) (*entity.ProductTemplate, error)
+		Delete(ids []string) error
 	}
 
 	templateModelImpl struct {
@@ -27,21 +26,19 @@ var ProductTemplateModelDao ProductTemplateModel = &templateModelImpl{
 	table: `product_templates`,
 }
 
-func (m *templateModelImpl) Insert(data entity.ProductTemplate) *entity.ProductTemplate {
+func (m *templateModelImpl) Insert(data entity.ProductTemplate) (*entity.ProductTemplate, error) {
 	err := global.Db.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "添加产品模型失败")
-	return &data
+	return &data, err
 }
 
-func (m *templateModelImpl) FindOne(id string) *entity.ProductTemplate {
+func (m *templateModelImpl) FindOne(id string) (*entity.ProductTemplate, error) {
 	resData := new(entity.ProductTemplate)
 	db := global.Db.Table(m.table).Where("id = ?", id)
 	err := db.First(resData).Error
-	biz.ErrIsNil(err, "查询产品模型失败")
-	return resData
+	return resData, err
 }
 
-func (m *templateModelImpl) FindListPage(page, pageSize int, data entity.ProductTemplate) (*[]entity.ProductTemplate, int64) {
+func (m *templateModelImpl) FindListPage(page, pageSize int, data entity.ProductTemplate) (*[]entity.ProductTemplate, int64, error) {
 	list := make([]entity.ProductTemplate, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -62,13 +59,14 @@ func (m *templateModelImpl) FindListPage(page, pageSize int, data entity.Product
 	if data.Pid != "" {
 		db = db.Where("pid = ?", data.Pid)
 	}
-	err := db.Count(&total).Error
-	err = db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询产品模型分页列表失败")
-	return &list, total
+	if err := db.Count(&total).Error; err != nil {
+		return &list, total, err
+	}
+	err := db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
+	return &list, total, err
 }
 
-func (m *templateModelImpl) FindListAttrs(data entity.ProductTemplate) *[]entity.ProductTemplate {
+func (m *templateModelImpl) FindListAttrs(data entity.ProductTemplate) (*[]entity.ProductTemplate, error) {
 	list := make([]entity.ProductTemplate, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
@@ -77,11 +75,10 @@ func (m *templateModelImpl) FindListAttrs(data entity.ProductTemplate) *[]entity
 	}
 	db = db.Where("classify in (?)", []string{"attributes", "telemetry"})
 	err := db.Order("create_time").Find(&list).Error
-	biz.ErrIsNil(err, "查询产品模型分页列表失败")
-	return &list
+	return &list, err
 }
 
-func (m *templateModelImpl) FindList(data entity.ProductTemplate) *[]entity.ProductTemplate {
+func (m *templateModelImpl) FindList(data entity.ProductTemplate) (*[]entity.ProductTemplate, error) {
 	list := make([]entity.ProductTemplate, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
@@ -100,15 +97,15 @@ func (m *templateModelImpl) FindList(data entity.ProductTemplate) *[]entity.Prod
 	if data.Pid != "" {
 		db = db.Where("pid = ?", data.Pid)
 	}
-	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询产品模型列表失败")
-	return &list
+	err := db.Order("create_time").Find(&list).Error
+	return &list, err
 }
 
-func (m *templateModelImpl) Update(data entity.ProductTemplate) *entity.ProductTemplate {
-	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改产品模型失败")
-	return &data
+func (m *templateModelImpl) Update(data entity.ProductTemplate) (*entity.ProductTemplate, error) {
+	err := global.Db.Table(m.table).Updates(&data).Error
+	return &data, err
 }
 
-func (m *templateModelImpl) Delete(ids []string) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.ProductTemplate{}, "id in (?)", ids).Error, "删除产品模型失败")
+func (m *templateModelImpl) Delete(ids []string) error {
+	return global.Db.Table(m.table).Delete(&entity.ProductTemplate{}, "id in (?)", ids).Error
 }

@@ -1,7 +1,6 @@
 package services
 
 import (
-	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/entity"
 	"pandax/pkg/global"
 	"time"
@@ -10,11 +9,11 @@ import (
 type (
 	DeviceCmdLogModel interface {
 		Insert(data entity.DeviceCmdLog) error
-		FindOne(id string) *entity.DeviceCmdLog
-		FindListPage(page, pageSize int, data entity.DeviceCmdLog) (*[]entity.DeviceCmdLog, int64)
+		FindOne(id string) (*entity.DeviceCmdLog, error)
+		FindListPage(page, pageSize int, data entity.DeviceCmdLog) (*[]entity.DeviceCmdLog, int64, error)
 		Update(data entity.DeviceCmdLog) error
 		UpdateResp(id, responseContent, responseTime string) error
-		Delete(ids []string)
+		Delete(ids []string) error
 	}
 
 	cmdLogModelImpl struct {
@@ -31,15 +30,14 @@ func (m *cmdLogModelImpl) Insert(data entity.DeviceCmdLog) error {
 	return err
 }
 
-func (m *cmdLogModelImpl) FindOne(id string) *entity.DeviceCmdLog {
+func (m *cmdLogModelImpl) FindOne(id string) (*entity.DeviceCmdLog, error) {
 	resData := new(entity.DeviceCmdLog)
 	db := global.Db.Table(m.table).Where("id = ?", id)
 	err := db.First(resData).Error
-	biz.ErrIsNil(err, "查询设备指令下发失败")
-	return resData
+	return resData, err
 }
 
-func (m *cmdLogModelImpl) FindListPage(page, pageSize int, data entity.DeviceCmdLog) (*[]entity.DeviceCmdLog, int64) {
+func (m *cmdLogModelImpl) FindListPage(page, pageSize int, data entity.DeviceCmdLog) (*[]entity.DeviceCmdLog, int64, error) {
 	list := make([]entity.DeviceCmdLog, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -56,10 +54,11 @@ func (m *cmdLogModelImpl) FindListPage(page, pageSize int, data entity.DeviceCmd
 	if data.State != "" {
 		db = db.Where("state = ?", data.State)
 	}
-	err := db.Count(&total).Error
-	err = db.Order("request_time").Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询设备指令下发分页列表失败")
-	return &list, total
+	if err := db.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	err := db.Order("request_time").Limit(pageSize).Offset(offset).Find(&list).Error
+	return &list, total, err
 }
 
 func (m *cmdLogModelImpl) Update(data entity.DeviceCmdLog) error {
@@ -78,6 +77,6 @@ func (m *cmdLogModelImpl) UpdateResp(id, responseContent, state string) error {
 	return err
 }
 
-func (m *cmdLogModelImpl) Delete(id []string) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.DeviceCmdLog{}, "id in (?)", id).Error, "删除设备指令下发失败")
+func (m *cmdLogModelImpl) Delete(id []string) error {
+	return global.Db.Table(m.table).Delete(&entity.DeviceCmdLog{}, "id in (?)", id).Error
 }

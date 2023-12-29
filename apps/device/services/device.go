@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/PandaXGO/PandaKit/biz"
+	"errors"
 	"pandax/apps/device/entity"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
@@ -11,18 +11,18 @@ import (
 
 type (
 	DeviceModel interface {
-		Insert(data entity.Device) *entity.Device
+		Insert(data entity.Device) (*entity.Device, error)
 		FindOneByToken(token string) (*entity.DeviceRes, error)
 		FindOneByName(name string) (*entity.DeviceRes, error)
 		FindOne(id string) (*entity.DeviceRes, error)
-		FindListPage(page, pageSize int, data entity.Device) (*[]entity.DeviceRes, int64)
-		FindList(data entity.Device) *[]entity.DeviceRes
-		Update(data entity.Device) *entity.Device
+		FindListPage(page, pageSize int, data entity.Device) (*[]entity.DeviceRes, int64, error)
+		FindList(data entity.Device) (*[]entity.DeviceRes, error)
+		Update(data entity.Device) (*entity.Device, error)
 		UpdateStatus(id, linkStatus string) error
-		Delete(ids []string)
-		FindDeviceCount() entity.DeviceCount
-		FindDeviceCountGroupByLinkStatus() []entity.DeviceCountLinkStatus
-		FindDeviceCountGroupByType() []entity.DeviceCountType
+		Delete(ids []string) error
+		FindDeviceCount() (entity.DeviceCount, error)
+		FindDeviceCountGroupByLinkStatus() ([]entity.DeviceCountLinkStatus, error)
+		FindDeviceCountGroupByType() ([]entity.DeviceCountType, error)
 	}
 
 	deviceModelImpl struct {
@@ -34,35 +34,44 @@ var DeviceModelDao DeviceModel = &deviceModelImpl{
 	table: `devices`,
 }
 
-func (m *deviceModelImpl) Insert(data entity.Device) *entity.Device {
+func (m *deviceModelImpl) Insert(data entity.Device) (*entity.Device, error) {
 	tx := global.Db.Begin()
 	//1 检查设备名称是否存在
-	list := m.FindList(entity.Device{Name: data.Name})
-	biz.IsTrue(list != nil && len(*list) == 0, "设备名称已经存在")
+	list, _ := m.FindList(entity.Device{Name: data.Name})
+	if list != nil && len(*list) > 0 {
+		return nil, errors.New("设备名称已经存在")
+	}
 	//2 创建认证TOKEN IOTHUB使用
 	token := GetDeviceToken(&data)
 	// 子网关不需要设置token
 	if data.DeviceType == global.GATEWAYS {
 		err := cache.SetDeviceEtoken(data.Name, token.GetMarshal(), time.Hour*24*365)
-		biz.ErrIsNil(err, "设备缓存失败")
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		data.Token = token.MD5ID()
 		err := cache.SetDeviceEtoken(data.Token, token.GetMarshal(), time.Hour*24*365)
-		biz.ErrIsNil(err, "设备缓存失败")
+		if err != nil {
+			return nil, err
+		}
 	}
 	//3 添加设备
 	err := tx.Table(m.table).Create(&data).Error
-	biz.ErrIsNilAppendErr(err, "添加设备失败")
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 	// 创建超级表 失败就
 	if data.Pid != "" {
 		err = createDeviceTable(data.Pid, data.Name)
 		if err != nil {
 			tx.Rollback()
-			biz.ErrIsNil(err, "时序数据设备表创建失败")
+			return nil, errors.New("时序数据设备表创建失败")
 		}
 	}
 	tx.Commit()
-	return &data
+	return &data, nil
 }
 
 func (m *deviceModelImpl) FindOne(id string) (*entity.DeviceRes, error) {
@@ -86,7 +95,7 @@ func (m *deviceModelImpl) FindOneByToken(token string) (*entity.DeviceRes, error
 	return resData, err
 }
 
-func (m *deviceModelImpl) FindListPage(page, pageSize int, data entity.Device) (*[]entity.DeviceRes, int64) {
+func (m *deviceModelImpl) FindListPage(page, pageSize int, data entity.Device) (*[]entity.DeviceRes, int64, error) {
 	list := make([]entity.DeviceRes, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -114,15 +123,17 @@ func (m *deviceModelImpl) FindListPage(page, pageSize int, data entity.Device) (
 		db = db.Where("parent_id = ?", data.ParentId)
 	}
 	// 组织数据访问权限
-	model.OrgAuthSet(db, data.RoleId, data.Owner)
-
-	err := db.Count(&total).Error
-	err = db.Order("create_time").Preload("Product").Preload("DeviceGroup").Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询设备分页列表失败")
-	return &list, total
+	if err := model.OrgAuthSet(db, data.RoleId, data.Owner); err != nil {
+		return &list, total, err
+	}
+	if err := db.Count(&total).Error; err != nil {
+		return &list, total, err
+	}
+	err := db.Order("create_time").Preload("Product").Preload("DeviceGroup").Limit(pageSize).Offset(offset).Find(&list).Error
+	return &list, total, err
 }
 
-func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
+func (m *deviceModelImpl) FindList(data entity.Device) (*[]entity.DeviceRes, error) {
 	list := make([]entity.DeviceRes, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
@@ -150,30 +161,38 @@ func (m *deviceModelImpl) FindList(data entity.Device) *[]entity.DeviceRes {
 	if data.ParentId != "" {
 		db = db.Where("parent_id = ?", data.ParentId)
 	}
-	model.OrgAuthSet(db, data.RoleId, data.Owner)
+	if err := model.OrgAuthSet(db, data.RoleId, data.Owner); err != nil {
+		return nil, err
+	}
 	db.Preload("Product").Preload("DeviceGroup")
-	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询设备列表失败")
-	return &list
+	err := db.Order("create_time").Find(&list).Error
+	return &list, err
 }
 
-func (m *deviceModelImpl) Update(data entity.Device) *entity.Device {
+func (m *deviceModelImpl) Update(data entity.Device) (*entity.Device, error) {
 	token := GetDeviceToken(&data)
 	if data.DeviceType == global.GATEWAYS {
 		err := cache.SetDeviceEtoken(data.Name, token.GetMarshal(), time.Hour*24*365)
-		biz.ErrIsNil(err, "设备更改缓存失败")
+		if err != nil {
+			return nil, errors.New("设备更改缓存失败")
+		}
 	} else {
 		err := cache.SetDeviceEtoken(data.Token, token.GetMarshal(), time.Hour*24*365)
-		biz.ErrIsNil(err, "设备更改缓存失败")
+		if err != nil {
+			return nil, errors.New("设备更改缓存失败")
+		}
 	}
-	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改设备失败")
-	return &data
+	err := global.Db.Table(m.table).Updates(&data).Error
+	return &data, err
 }
 func (m *deviceModelImpl) UpdateStatus(id, linkStatus string) error {
 	return global.Db.Table(m.table).Where("id", id).Update("link_status", linkStatus).Update("last_time", time.Now()).Error
 }
 
-func (m *deviceModelImpl) Delete(ids []string) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.Device{}, "id in (?)", ids).Error, "删除设备失败")
+func (m *deviceModelImpl) Delete(ids []string) error {
+	if err := global.Db.Table(m.table).Delete(&entity.Device{}, "id in (?)", ids).Error; err != nil {
+		return err
+	}
 	for _, id := range ids {
 		device, err := m.FindOne(id)
 		if err != nil {
@@ -181,7 +200,6 @@ func (m *deviceModelImpl) Delete(ids []string) {
 		}
 		// 删除表
 		err = deleteDeviceTable(device.Name)
-		global.Log.Error("设备时序表删除失败", err)
 		// 删除所有缓存
 		if device.DeviceType == global.GATEWAYS {
 			cache.DelDeviceEtoken(device.Name)
@@ -189,6 +207,7 @@ func (m *deviceModelImpl) Delete(ids []string) {
 			cache.DelDeviceEtoken(device.Token)
 		}
 	}
+	return nil
 }
 
 // 创建Tdengine时序数据
@@ -235,27 +254,24 @@ func GetDeviceToken(data *entity.Device) *model.DeviceAuth {
 }
 
 // 获取设备数量统计
-func (m *deviceModelImpl) FindDeviceCount() (result entity.DeviceCount) {
+func (m *deviceModelImpl) FindDeviceCount() (result entity.DeviceCount, err error) {
 	sql := `SELECT COUNT(*) AS total, (SELECT COUNT(*) FROM devices WHERE DATE(create_time) = CURDATE()) AS today  FROM devices`
 	if global.Conf.Server.DbType == "postgresql" {
 		sql = `SELECT COUNT(*) AS total, (SELECT COUNT(*) FROM devices WHERE DATE(create_time) = current_date) AS today  FROM devices`
 	}
-	err := global.Db.Raw(sql).Scan(&result).Error
-	biz.ErrIsNil(err, "获取设备统计总数失败")
-	return result
-}
-
-// 获取设备类型数量统计
-func (m *deviceModelImpl) FindDeviceCountGroupByLinkStatus() (count []entity.DeviceCountLinkStatus) {
-	sql := `SELECT link_status, COUNT(*) AS total  FROM devices GROUP BY link_status`
-	err := global.Db.Raw(sql, m.table).Scan(&count).Error
-	biz.ErrIsNil(err, "获取通过设备在线状态的设备统计总数失败")
+	err = global.Db.Raw(sql).Scan(&result).Error
 	return
 }
 
-func (m *deviceModelImpl) FindDeviceCountGroupByType() (count []entity.DeviceCountType) {
+// 获取设备类型数量统计
+func (m *deviceModelImpl) FindDeviceCountGroupByLinkStatus() (count []entity.DeviceCountLinkStatus, err error) {
+	sql := `SELECT link_status, COUNT(*) AS total  FROM devices GROUP BY link_status`
+	err = global.Db.Raw(sql, m.table).Scan(&count).Error
+	return
+}
+
+func (m *deviceModelImpl) FindDeviceCountGroupByType() (count []entity.DeviceCountType, err error) {
 	sql := `SELECT device_type, COUNT(*) AS total  FROM devices GROUP BY device_type`
-	err := global.Db.Raw(sql, m.table).Scan(&count).Error
-	biz.ErrIsNil(err, "获取通过设备类型的设备统计总数失败")
+	err = global.Db.Raw(sql, m.table).Scan(&count).Error
 	return
 }

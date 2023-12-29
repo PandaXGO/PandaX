@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"github.com/PandaXGO/PandaKit/biz"
+	"errors"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"math/rand"
@@ -63,18 +63,24 @@ func (m *DeviceAuth) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, m)
 }
 
-func OrgAuthSet(tx *gorm.DB, roleId int64, owner string) {
+func OrgAuthSet(tx *gorm.DB, roleId int64, owner string) error {
 	if roleId == 0 {
-		return
+		return errors.New("角色Id不能为空")
 	}
 	role, err := services.SysRoleModelDao.FindOrganizationsByRoleId(roleId)
-	biz.ErrIsNil(err, "查询角色数据权限失败")
+	if err != nil {
+		return err
+	}
 	if role.DataScope != entity.SELFDATASCOPE {
-		biz.IsTrue(len(role.Org) > 0, "该角色下未分配组织权限")
+		if len(role.Org) <= 0 {
+			return errors.New("该角色下未分配组织权限")
+		}
 		tx.Where("org_id in (?)", strings.Split(role.Org, ","))
 	} else {
 		tx.Where("owner = ?", owner)
 	}
+
+	return nil
 }
 func GenerateID() string {
 	rand.Seed(time.Now().UnixNano())

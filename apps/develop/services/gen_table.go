@@ -17,16 +17,16 @@ import (
 
 type (
 	SysGenTableModel interface {
-		FindDbTablesListPage(page, pageSize int, data entity.DBTables) (*[]entity.DBTables, int64)
-		FindDbTableOne(tableName string) *entity.DBTables
+		FindDbTablesListPage(page, pageSize int, data entity.DBTables) (*[]entity.DBTables, int64, error)
+		FindDbTableOne(tableName string) (*entity.DBTables, error)
 
 		// 导入表数据
-		Insert(data entity.DevGenTable)
-		FindOne(data entity.DevGenTable, exclude bool) *entity.DevGenTable
-		FindTree(data entity.DevGenTable) *[]entity.DevGenTable
-		FindListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64)
-		Update(data entity.DevGenTable) *entity.DevGenTable
-		Delete(tableIds []int64)
+		Insert(data entity.DevGenTable) error
+		FindOne(data entity.DevGenTable, exclude bool) (*entity.DevGenTable, error)
+		FindTree(data entity.DevGenTable) (*[]entity.DevGenTable, error)
+		FindListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64, error)
+		Update(data entity.DevGenTable) (*entity.DevGenTable, error)
+		Delete(tableIds []int64) error
 	}
 
 	devGenTableModelImpl struct {
@@ -38,7 +38,7 @@ var DevGenTableModelDao SysGenTableModel = &devGenTableModelImpl{
 	table: "dev_gen_tables",
 }
 
-func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data entity.DBTables) (*[]entity.DBTables, int64) {
+func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data entity.DBTables) (*[]entity.DBTables, int64, error) {
 	list := make([]entity.DBTables, 0)
 	pgdata := make([]map[string]any, 0)
 	var total int64 = 0
@@ -60,22 +60,20 @@ func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data ent
 	}
 	if global.Conf.Server.DbType == "mysql" {
 		err := db.Limit(pageSize).Offset(offset).Find(&list).Offset(-1).Limit(-1).Count(&total).Error
-		biz.ErrIsNil(err, "查询配置分页列表信息失败")
-		return &list, total
+		return &list, total, err
 	} else {
 		err := db.Limit(pageSize).Offset(offset).Find(&pgdata).Offset(-1).Limit(-1).Count(&total).Error
-		biz.ErrIsNil(err, "查询配置分页列表信息失败")
 		for _, pd := range pgdata {
 			list = append(list, entity.DBTables{TableName: utils.B2S(pd["table_name"].([]uint8))})
 		}
-		return &list, total
+		return &list, total, err
 	}
 }
 
-func (m *devGenTableModelImpl) FindDbTableOne(tableName string) *entity.DBTables {
+func (m *devGenTableModelImpl) FindDbTableOne(tableName string) (*entity.DBTables, error) {
 	resData := new(entity.DBTables)
 	if global.Conf.Server.DbType != "mysql" && global.Conf.Server.DbType != "postgresql" {
-		biz.ErrIsNil(errors.New("只支持mysql和postgresql数据库"), "只支持mysql和postgresql数据库")
+		return nil, errors.New("只支持mysql和postgresql数据库")
 	}
 	db := global.Db.Table("information_schema.tables")
 	if global.Conf.Server.DbType == "mysql" {
@@ -86,13 +84,14 @@ func (m *devGenTableModelImpl) FindDbTableOne(tableName string) *entity.DBTables
 	}
 	db = db.Where("table_name = ?", tableName)
 	err := db.First(&resData).Error
-	biz.ErrIsNil(err, err.Error())
-	return resData
+	return resData, err
 }
 
-func (m *devGenTableModelImpl) Insert(dgt entity.DevGenTable) {
+func (m *devGenTableModelImpl) Insert(dgt entity.DevGenTable) error {
 	err := global.Db.Table(m.table).Create(&dgt).Error
-	biz.ErrIsNil(err, "新增生成代码表失败")
+	if err != nil {
+		return err
+	}
 	for i := 0; i < len(dgt.Columns); i++ {
 		dgt.Columns[i].TableId = dgt.TableId
 		columns := dgt.Columns[i]
@@ -100,9 +99,10 @@ func (m *devGenTableModelImpl) Insert(dgt entity.DevGenTable) {
 		columns.Owner = dgt.Owner
 		DevTableColumnModelDao.Insert(columns)
 	}
+	return nil
 }
 
-func (m *devGenTableModelImpl) FindOne(data entity.DevGenTable, exclude bool) *entity.DevGenTable {
+func (m *devGenTableModelImpl) FindOne(data entity.DevGenTable, exclude bool) (*entity.DevGenTable, error) {
 	resData := new(entity.DevGenTable)
 	db := global.Db.Table(m.table)
 	if data.TableName != "" {
@@ -115,13 +115,15 @@ func (m *devGenTableModelImpl) FindOne(data entity.DevGenTable, exclude bool) *e
 		db = db.Where("table_comment = ?", data.TableComment)
 	}
 	err := db.First(resData).Error
-	biz.ErrIsNil(err, "查询配置信息失败")
-	list := DevTableColumnModelDao.FindList(entity.DevGenTableColumn{TableId: resData.TableId}, exclude)
+	if err != nil {
+		return resData, err
+	}
+	list, err := DevTableColumnModelDao.FindList(entity.DevGenTableColumn{TableId: resData.TableId}, exclude)
 	resData.Columns = *list
-	return resData
+	return resData, err
 }
 
-func (m *devGenTableModelImpl) FindTree(data entity.DevGenTable) *[]entity.DevGenTable {
+func (m *devGenTableModelImpl) FindTree(data entity.DevGenTable) (*[]entity.DevGenTable, error) {
 	resData := make([]entity.DevGenTable, 0)
 	db := global.Db.Table(m.table)
 
@@ -135,20 +137,23 @@ func (m *devGenTableModelImpl) FindTree(data entity.DevGenTable) *[]entity.DevGe
 		db = db.Where("table_comment = ?", data.TableComment)
 	}
 	// 组织数据访问权限
-	model.OrgAuthSet(db, data.RoleId, data.Owner)
-	err := db.Find(&resData).Error
-	biz.ErrIsNil(err, "获取TableTree失败")
+	if err := model.OrgAuthSet(db, data.RoleId, data.Owner); err != nil {
+		return nil, err
+	}
+	if err := db.Find(&resData).Error; err != nil {
+		return nil, err
+	}
 	for i := 0; i < len(resData); i++ {
 		var col entity.DevGenTableColumn
 		col.TableId = resData[i].TableId
 		col.RoleId = data.RoleId
-		columns := DevTableColumnModelDao.FindList(col, false)
+		columns, _ := DevTableColumnModelDao.FindList(col, false)
 		resData[i].Columns = *columns
 	}
-	return &resData
+	return &resData, nil
 }
 
-func (m *devGenTableModelImpl) FindListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64) {
+func (m *devGenTableModelImpl) FindListPage(page, pageSize int, data entity.DevGenTable) (*[]entity.DevGenTable, int64, error) {
 	list := make([]entity.DevGenTable, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -162,17 +167,24 @@ func (m *devGenTableModelImpl) FindListPage(page, pageSize int, data entity.DevG
 		db = db.Where("table_comment = ?", data.TableComment)
 	}
 	// 组织数据访问权限
-	model.OrgAuthSet(db, data.RoleId, data.Owner)
+	if err := model.OrgAuthSet(db, data.RoleId, data.Owner); err != nil {
+		return &list, total, err
+	}
 	db.Where("delete_time IS NULL")
-	err := db.Count(&total).Error
-	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询生成代码列表信息失败")
-	return &list, total
+	if err := db.Count(&total).Error; err != nil {
+		return &list, total, err
+	}
+	if err := db.Limit(pageSize).Offset(offset).Find(&list).Error; err != nil {
+		return &list, total, err
+	}
+	return &list, total, nil
 }
 
-func (m *devGenTableModelImpl) Update(data entity.DevGenTable) *entity.DevGenTable {
+func (m *devGenTableModelImpl) Update(data entity.DevGenTable) (*entity.DevGenTable, error) {
 	err := global.Db.Table(m.table).Model(&data).Updates(&data).Error
-	biz.ErrIsNil(err, "修改生成代码信息失败")
+	if err != nil {
+		return nil, err
+	}
 
 	tableNames := make([]string, 0)
 	for i := range data.Columns {
@@ -185,7 +197,9 @@ func (m *devGenTableModelImpl) Update(data entity.DevGenTable) *entity.DevGenTab
 	tableMap := make(map[string]*entity.DevGenTable)
 	if len(tableNames) > 0 {
 		err = global.Db.Table(m.table).Where("table_name in (?)", tableNames).Find(&tables).Error
-		biz.ErrIsNil(err, "关联表不存在")
+		if err != nil {
+			return nil, err
+		}
 		for i := range tables {
 			tableMap[tables[i].TableName] = &tables[i]
 		}
@@ -203,10 +217,10 @@ func (m *devGenTableModelImpl) Update(data entity.DevGenTable) *entity.DevGenTab
 		}
 		DevTableColumnModelDao.Update(data.Columns[i])
 	}
-	return &data
+	return &data, nil
 }
 
-func (e *devGenTableModelImpl) DeleteTables(tableId int64) bool {
+func (e *devGenTableModelImpl) DeleteTables(tableId int64) (bool, error) {
 	var err error
 	success := false
 	tx := global.Db.Begin()
@@ -218,18 +232,20 @@ func (e *devGenTableModelImpl) DeleteTables(tableId int64) bool {
 		}
 	}()
 	if err = tx.Table("sys_tables").Delete(entity.DevGenTable{}, "table_id = ?", tableId).Error; err != nil {
-		return success
+		return success, err
 	}
 	if err = tx.Table("sys_columns").Delete(entity.DevGenTableColumn{}, "table_id = ?", tableId).Error; err != nil {
-		return success
+		return success, err
 	}
 	success = true
-	return success
+	return success, nil
 }
 
-func (m *devGenTableModelImpl) Delete(configIds []int64) {
+func (m *devGenTableModelImpl) Delete(configIds []int64) error {
 	err := global.Db.Table(m.table).Delete(&entity.DevGenTable{}, "table_id in (?)", configIds).Error
-	biz.ErrIsNil(err, "删除生成代码信息失败")
+	if err != nil {
+		return errors.New("删除生成代码信息失败")
+	}
 	DevTableColumnModelDao.Delete(configIds)
-	return
+	return nil
 }

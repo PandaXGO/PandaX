@@ -30,11 +30,11 @@ type DeviceApi struct {
 
 func (p *DeviceApi) GetDevicePanel(rc *restfulx.ReqCtx) {
 	var data entity.DeviceTotalOutput
-	data.DeviceInfo = p.DeviceApp.FindDeviceCount()
-	data.DeviceLinkStatusInfo = p.DeviceApp.FindDeviceCountGroupByLinkStatus()
-	data.DeviceCountType = p.DeviceApp.FindDeviceCountGroupByType()
-	data.AlarmInfo = p.DeviceAlarmApp.FindAlarmCount()
-	data.ProductInfo = p.ProductApp.FindProductCount()
+	data.DeviceInfo, _ = p.DeviceApp.FindDeviceCount()
+	data.DeviceLinkStatusInfo, _ = p.DeviceApp.FindDeviceCountGroupByLinkStatus()
+	data.DeviceCountType, _ = p.DeviceApp.FindDeviceCountGroupByType()
+	data.AlarmInfo, _ = p.DeviceAlarmApp.FindAlarmCount()
+	data.ProductInfo, _ = p.ProductApp.FindProductCount()
 	rc.ResData = data
 }
 
@@ -53,8 +53,8 @@ func (p *DeviceApi) GetDeviceList(rc *restfulx.ReqCtx) {
 
 	data.RoleId = rc.LoginAccount.RoleId
 	data.Owner = rc.LoginAccount.UserName
-	list, total := p.DeviceApp.FindListPage(pageNum, pageSize, data)
-
+	list, total, err := p.DeviceApp.FindListPage(pageNum, pageSize, data)
+	biz.ErrIsNil(err, "查询设备列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -73,7 +73,8 @@ func (p *DeviceApi) GetDeviceListAll(rc *restfulx.ReqCtx) {
 	data.RoleId = rc.LoginAccount.RoleId
 	data.Owner = rc.LoginAccount.UserName
 
-	list := p.DeviceApp.FindList(data)
+	list, err := p.DeviceApp.FindList(data)
+	biz.ErrIsNil(err, "查询所有设备失败")
 	rc.ResData = list
 }
 
@@ -91,7 +92,8 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	classify := restfulx.QueryParam(rc, "classify")
 	device, err := p.DeviceApp.FindOne(id)
 	biz.ErrIsNil(err, "获取设备失败")
-	template := p.ProductTemplateApp.FindList(entity.ProductTemplate{Classify: classify, Pid: device.Pid})
+	template, err := p.ProductTemplateApp.FindList(entity.ProductTemplate{Classify: classify, Pid: device.Pid})
+	biz.ErrIsNil(err, "查询设备模板失败")
 	// 从设备影子中读取
 	res := make([]entity.DeviceStatusVo, 0)
 	getDevice := shadow.InitDeviceShadow(device.Name, device.Pid)
@@ -113,20 +115,6 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 		if _, ok := rs[tel.Key]; ok {
 			if classify == global.TslTelemetryType {
 				value := rs[tel.Key].Value
-				// tsl转化
-				/*var tslValue tsl.ValueType
-				err := tool.MapToStruct(tel.Define, &tslValue)
-				if err != nil {
-					value = rs[tel.Key].Value
-				} else {
-					tslValue.Type = tel.Type
-					// 此处rs[tel.Key].Value 变成字符串类型了
-					value = tslValue.ConvertValue(rs[tel.Key].Value)
-					log.Println("value", value)
-					if value == nil {
-						value = rs[tel.Key]
-					}
-				}*/
 				sdv.Time = rs[tel.Key].UpdatedAt
 				sdv.Value = value
 			}
@@ -189,36 +177,38 @@ func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
 func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	var data entity.Device
 	restfulx.BindJsonAndValid(rc, &data)
-	product := p.ProductApp.FindOne(data.Pid)
+	product, _ := p.ProductApp.FindOne(data.Pid)
 	biz.NotNil(product, "未查到所属产品信息")
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
-	list := p.DeviceApp.FindList(entity.Device{Name: data.Name})
+	list, _ := p.DeviceApp.FindList(entity.Device{Name: data.Name})
 	biz.IsTrue(!(list != nil && len(*list) > 0), fmt.Sprintf("名称%s已存在，设置其他命名", data.Name))
 	data.Id = model2.GenerateID()
 	data.LinkStatus = global.INACTIVE
 	data.LastAt = time.Now()
 	data.Protocol = product.ProtocolName
 
-	p.DeviceApp.Insert(data)
+	_, err := p.DeviceApp.Insert(data)
+	biz.ErrIsNil(err, "添加设备失败")
 }
 
 // UpdateDevice 修改Device
 func (p *DeviceApi) UpdateDevice(rc *restfulx.ReqCtx) {
 	var data entity.Device
 	restfulx.BindQuery(rc, &data)
-	product := p.ProductApp.FindOne(data.Pid)
+	product, _ := p.ProductApp.FindOne(data.Pid)
 	biz.NotNil(product, "未查到所属产品信息")
 	data.Protocol = product.ProtocolName
 
-	p.DeviceApp.Update(data)
+	_, err := p.DeviceApp.Update(data)
+	biz.ErrIsNil(err, "修改失败")
 }
 
 // DeleteDevice 删除Device
 func (p *DeviceApi) DeleteDevice(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	ids := strings.Split(id, ",")
-	p.DeviceApp.Delete(ids)
+	biz.ErrIsNil(p.DeviceApp.Delete(ids), "删除失败")
 }
 
 func (p *DeviceApi) ScreenTwinData(rc *restfulx.ReqCtx) {
@@ -227,9 +217,9 @@ func (p *DeviceApi) ScreenTwinData(rc *restfulx.ReqCtx) {
 	classId := restfulx.QueryParam(rc, "classId")
 	if classId == "" {
 		vp := make([]entity.VisualClass, 0)
-		list := p.ProductApp.FindList(entity.Product{})
+		list, _ := p.ProductApp.FindList(entity.Product{})
 		for _, pro := range *list {
-			data := p.ProductTemplateApp.FindListAttrs(entity.ProductTemplate{Pid: pro.Id})
+			data, _ := p.ProductTemplateApp.FindListAttrs(entity.ProductTemplate{Pid: pro.Id})
 			vta := make([]entity.VisualTwinAttr, 0)
 			for _, attr := range *data {
 				twinAttr := entity.VisualTwinAttr{
@@ -258,7 +248,7 @@ func (p *DeviceApi) ScreenTwinData(rc *restfulx.ReqCtx) {
 	} else {
 		device := entity.Device{Pid: classId, RoleId: rc.LoginAccount.RoleId}
 		device.Owner = rc.LoginAccount.UserName
-		findList, _ := p.DeviceApp.FindListPage(pageNum, pageSize, device)
+		findList, _, _ := p.DeviceApp.FindListPage(pageNum, pageSize, device)
 		vt := make([]entity.VisualTwin, 0)
 		for _, device := range *findList {
 			vt = append(vt, entity.VisualTwin{

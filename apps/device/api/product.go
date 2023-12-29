@@ -38,8 +38,8 @@ func (p *ProductApi) GetProductList(rc *restfulx.ReqCtx) {
 	data.DeviceType = restfulx.QueryParam(rc, "deviceType")
 	data.Name = restfulx.QueryParam(rc, "name")
 
-	list, total := p.ProductApp.FindListPage(pageNum, pageSize, data)
-
+	list, total, err := p.ProductApp.FindListPage(pageNum, pageSize, data)
+	biz.ErrIsNil(err, "查询产品列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -55,15 +55,17 @@ func (p *ProductApi) GetProductListAll(rc *restfulx.ReqCtx) {
 	data.ProtocolName = restfulx.QueryParam(rc, "protocolName")
 	data.DeviceType = restfulx.QueryParam(rc, "deviceType")
 	data.Name = restfulx.QueryParam(rc, "name")
-
-	rc.ResData = p.ProductApp.FindList(data)
+	list, err := p.ProductApp.FindList(data)
+	biz.ErrIsNil(err, "查询产品列表失败")
+	rc.ResData = list
 }
 
 // GetProductTsl Template列表数据
 func (p *ProductApi) GetProductTsl(rc *restfulx.ReqCtx) {
 	data := entity.ProductTemplate{}
 	data.Pid = restfulx.PathParam(rc, "id")
-	templates := p.TemplateApp.FindList(data)
+	templates, err := p.TemplateApp.FindList(data)
+	biz.ErrIsNil(err, "查询产品模板列表失败")
 	attributes := make([]map[string]interface{}, 0)
 	telemetry := make([]map[string]interface{}, 0)
 	commands := make([]map[string]interface{}, 0)
@@ -95,7 +97,9 @@ func (p *ProductApi) GetProductTsl(rc *restfulx.ReqCtx) {
 // GetProduct 获取Product
 func (p *ProductApi) GetProduct(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	rc.ResData = p.ProductApp.FindOne(id)
+	one, err := p.ProductApp.FindOne(id)
+	biz.ErrIsNil(err, "查询失败")
+	rc.ResData = one
 }
 
 // InsertProduct 添加Product
@@ -134,7 +138,7 @@ func (p *ProductApi) DeleteProduct(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	ids := strings.Split(id, ",")
 	for _, id := range ids {
-		list := p.DeviceApp.FindList(entity.Device{Pid: id})
+		list, _ := p.DeviceApp.FindList(entity.Device{Pid: id})
 		biz.IsTrue(!(list != nil && len(*list) > 0), fmt.Sprintf("产品ID%s下存在设备，不能被删除", id))
 	}
 	// 删除产品

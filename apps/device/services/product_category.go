@@ -9,12 +9,12 @@ import (
 
 type (
 	ProductCategoryModel interface {
-		Insert(data entity.ProductCategory) *entity.ProductCategory
-		FindOne(id string) *entity.ProductCategory
-		FindListPage(page, pageSize int, data entity.ProductCategory) (*[]entity.ProductCategory, int64)
-		FindList(data entity.ProductCategory) *[]entity.ProductCategory
-		Update(data entity.ProductCategory) *entity.ProductCategory
-		Delete(ids []string)
+		Insert(data entity.ProductCategory) (*entity.ProductCategory, error)
+		FindOne(id string) (*entity.ProductCategory, error)
+		FindListPage(page, pageSize int, data entity.ProductCategory) (*[]entity.ProductCategory, int64, error)
+		FindList(data entity.ProductCategory) (*[]entity.ProductCategory, error)
+		Update(data entity.ProductCategory) (*entity.ProductCategory, error)
+		Delete(ids []string) error
 		SelectProductCategory(data entity.ProductCategory) []entity.ProductCategory
 		SelectProductCategoryLabel(data entity.ProductCategory) []entity.ProductCategoryLabel
 	}
@@ -28,31 +28,30 @@ var ProductCategoryModelDao ProductCategoryModel = &productCategoryModelImpl{
 	table: `product_categories`,
 }
 
-func (m *productCategoryModelImpl) Insert(data entity.ProductCategory) *entity.ProductCategory {
-	err := global.Db.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "添加产品分组失败")
-
+func (m *productCategoryModelImpl) Insert(data entity.ProductCategory) (*entity.ProductCategory, error) {
+	if err := global.Db.Table(m.table).Create(&data).Error; err != nil {
+		return nil, err
+	}
 	path := "/" + data.Id
 	if data.Pid != "0" {
-		vsg := m.FindOne(data.Pid)
+		vsg, _ := m.FindOne(data.Pid)
 		path = vsg.Path + path
 	} else {
 		path = "/0" + path
 	}
 	data.Path = path
-	biz.ErrIsNil(global.Db.Table(m.table).Model(&data).Updates(&data).Error, "修改产品分组信息失败")
-	return &data
+	err := global.Db.Table(m.table).Model(&data).Updates(&data).Error
+	return &data, err
 }
 
-func (m *productCategoryModelImpl) FindOne(id string) *entity.ProductCategory {
+func (m *productCategoryModelImpl) FindOne(id string) (*entity.ProductCategory, error) {
 	resData := new(entity.ProductCategory)
 	db := global.Db.Table(m.table).Where("id = ?", id)
 	err := db.First(resData).Error
-	biz.ErrIsNil(err, "查询产品分组失败")
-	return resData
+	return resData, err
 }
 
-func (m *productCategoryModelImpl) FindListPage(page, pageSize int, data entity.ProductCategory) (*[]entity.ProductCategory, int64) {
+func (m *productCategoryModelImpl) FindListPage(page, pageSize int, data entity.ProductCategory) (*[]entity.ProductCategory, int64, error) {
 	list := make([]entity.ProductCategory, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -67,13 +66,14 @@ func (m *productCategoryModelImpl) FindListPage(page, pageSize int, data entity.
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
 	}
-	err := db.Count(&total).Error
-	err = db.Order("sort").Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询产品分组分页列表失败")
-	return &list, total
+	if err := db.Count(&total).Error; err != nil {
+		return &list, total, err
+	}
+	err := db.Order("sort").Limit(pageSize).Offset(offset).Find(&list).Error
+	return &list, total, err
 }
 
-func (m *productCategoryModelImpl) FindList(data entity.ProductCategory) *[]entity.ProductCategory {
+func (m *productCategoryModelImpl) FindList(data entity.ProductCategory) (*[]entity.ProductCategory, error) {
 	list := make([]entity.ProductCategory, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
@@ -86,16 +86,16 @@ func (m *productCategoryModelImpl) FindList(data entity.ProductCategory) *[]enti
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
 	}
-	biz.ErrIsNil(db.Order("sort").Find(&list).Error, "查询产品分组列表失败")
-	return &list
+	err := db.Order("sort").Find(&list).Error
+	return &list, err
 }
 
-func (m *productCategoryModelImpl) Update(data entity.ProductCategory) *entity.ProductCategory {
-	one := m.FindOne(data.Id)
+func (m *productCategoryModelImpl) Update(data entity.ProductCategory) (*entity.ProductCategory, error) {
+	one, _ := m.FindOne(data.Id)
 
 	path := "/" + data.Id
 	if data.Pid != "0" {
-		vsg := m.FindOne(data.Pid)
+		vsg, _ := m.FindOne(data.Pid)
 		path = vsg.Path + path
 	} else {
 		path = "/0" + path
@@ -104,18 +104,18 @@ func (m *productCategoryModelImpl) Update(data entity.ProductCategory) *entity.P
 
 	if data.Path != "" && data.Path != one.Path {
 		biz.ErrIsNil(errors.New("上级分组不允许修改！"), "上级分组不允许修改")
+		return nil, errors.New("上级分组不允许修改！")
 	}
-
-	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改产品分组失败")
-	return &data
+	err := global.Db.Table(m.table).Updates(&data).Error
+	return &data, err
 }
 
-func (m *productCategoryModelImpl) Delete(s []string) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.ProductCategory{}, "id in (?)", s).Error, "删除产品分组失败")
+func (m *productCategoryModelImpl) Delete(s []string) error {
+	return global.Db.Table(m.table).Delete(&entity.ProductCategory{}, "id in (?)", s).Error
 }
 
 func (m *productCategoryModelImpl) SelectProductCategory(data entity.ProductCategory) []entity.ProductCategory {
-	list := m.FindList(data)
+	list, _ := m.FindList(data)
 	sd := make([]entity.ProductCategory, 0)
 	li := *list
 	for i := 0; i < len(li); i++ {
@@ -129,7 +129,7 @@ func (m *productCategoryModelImpl) SelectProductCategory(data entity.ProductCate
 }
 
 func (m *productCategoryModelImpl) SelectProductCategoryById(data entity.ProductCategory, id string) []string {
-	list := m.FindList(data)
+	list, _ := m.FindList(data)
 	sd := make([]string, 0)
 	li := *list
 	for i := 0; i < len(li); i++ {
@@ -142,7 +142,7 @@ func (m *productCategoryModelImpl) SelectProductCategoryById(data entity.Product
 }
 
 func (m *productCategoryModelImpl) SelectProductCategoryLabel(data entity.ProductCategory) []entity.ProductCategoryLabel {
-	list := m.FindList(data)
+	list, _ := m.FindList(data)
 
 	dl := make([]entity.ProductCategoryLabel, 0)
 	organizationl := *list

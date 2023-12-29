@@ -30,8 +30,8 @@ func (p *DeviceCmdLogApi) GetDeviceCmdLogList(rc *restfulx.ReqCtx) {
 	data.State = restfulx.QueryParam(rc, "state")
 	data.Type = restfulx.QueryParam(rc, "type")
 
-	list, total := p.DeviceCmdLogApp.FindListPage(pageNum, pageSize, data)
-
+	list, total, err := p.DeviceCmdLogApp.FindListPage(pageNum, pageSize, data)
+	biz.ErrIsNil(err, "查询告警列表数据失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -74,5 +74,5 @@ func (p *DeviceCmdLogApi) InsertDeviceCmdLog(rc *restfulx.ReqCtx) {
 func (p *DeviceCmdLogApi) DeleteDeviceCmdLog(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	ids := strings.Split(id, ",")
-	p.DeviceCmdLogApp.Delete(ids)
+	biz.ErrIsNil(p.DeviceCmdLogApp.Delete(ids), "删除指令失败")
 }

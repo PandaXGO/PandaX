@@ -28,8 +28,8 @@ func (p *ProductOtaApi) GetProductOtaList(rc *restfulx.ReqCtx) {
 	data.Name = restfulx.QueryParam(rc, "name")
 	data.Pid = restfulx.QueryParam(rc, "pid")
 
-	list, total := p.ProductOtaApp.FindListPage(pageNum, pageSize, data)
-
+	list, total, err := p.ProductOtaApp.FindListPage(pageNum, pageSize, data)
+	biz.ErrIsNil(err, "查询OTA信息列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -41,7 +41,9 @@ func (p *ProductOtaApi) GetProductOtaList(rc *restfulx.ReqCtx) {
 // GetProductOta 获取Ota
 func (p *ProductOtaApi) GetProductOta(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	rc.ResData = p.ProductOtaApp.FindOne(id)
+	one, err := p.ProductOtaApp.FindOne(id)
+	biz.ErrIsNil(err, "查询OTA信息失败")
+	rc.ResData = one
 }
 
 // InsertProductOta 添加Ota

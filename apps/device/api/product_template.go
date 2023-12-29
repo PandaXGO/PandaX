@@ -25,8 +25,8 @@ func (p *ProductTemplateApi) GetProductTemplateList(rc *restfulx.ReqCtx) {
 	data.Classify = restfulx.QueryParam(rc, "classify")
 	data.Name = restfulx.QueryParam(rc, "name")
 
-	list, total := p.ProductTemplateApp.FindListPage(pageNum, pageSize, data)
-
+	list, total, err := p.ProductTemplateApp.FindListPage(pageNum, pageSize, data)
+	biz.ErrIsNil(err, "查询产品模板列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -41,14 +41,17 @@ func (p *ProductTemplateApi) GetProductTemplateListAll(rc *restfulx.ReqCtx) {
 	data.Pid = restfulx.QueryParam(rc, "pid")
 	data.Classify = restfulx.QueryParam(rc, "classify")
 	data.Name = restfulx.QueryParam(rc, "name")
-	list := p.ProductTemplateApp.FindList(data)
+	list, err := p.ProductTemplateApp.FindList(data)
+	biz.ErrIsNil(err, "查询产品模板列表失败")
 	rc.ResData = list
 }
 
 // GetProductTemplate 获取Template
 func (p *ProductTemplateApi) GetProductTemplate(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	rc.ResData = p.ProductTemplateApp.FindOne(id)
+	one, err := p.ProductTemplateApp.FindOne(id)
+	biz.ErrIsNil(err, "查询产品模板失败")
+	rc.ResData = one
 }
 
 // InsertProductTemplate 添加Template
@@ -77,7 +80,8 @@ func (p *ProductTemplateApi) InsertProductTemplate(rc *restfulx.ReqCtx) {
 func (p *ProductTemplateApi) UpdateProductTemplate(rc *restfulx.ReqCtx) {
 	var data entity.ProductTemplate
 	restfulx.BindJsonAndValid(rc, &data)
-	one := p.ProductTemplateApp.FindOne(data.Id)
+	one, err := p.ProductTemplateApp.FindOne(data.Id)
+	biz.ErrIsNil(err, "查询产品模板失败")
 	stable := ""
 	len := 0
 	if data.Classify == entity.ATTRIBUTES_TSL {
@@ -104,7 +108,8 @@ func (p *ProductTemplateApi) UpdateProductTemplate(rc *restfulx.ReqCtx) {
 // DeleteProductTemplate 删除Template
 func (p *ProductTemplateApi) DeleteProductTemplate(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	data := p.ProductTemplateApp.FindOne(id)
+	data, err := p.ProductTemplateApp.FindOne(id)
+	biz.ErrIsNil(err, "查询产品模板失败")
 	// 向超级表中删除字段
 	stable := ""
 	if data.Classify == entity.ATTRIBUTES_TSL {

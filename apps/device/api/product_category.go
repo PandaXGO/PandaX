@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
@@ -39,20 +40,26 @@ func (p *ProductCategoryApi) GetProductCategoryList(rc *restfulx.ReqCtx) {
 	if sg.Name == "" {
 		rc.ResData = p.ProductCategoryApp.SelectProductCategory(sg)
 	} else {
-		rc.ResData = p.ProductCategoryApp.FindList(sg)
+		list, err := p.ProductCategoryApp.FindList(sg)
+		biz.ErrIsNil(err, "查询产品分类列表失败")
+		rc.ResData = list
 	}
 }
 
 // GetProductCategoryAllList 查询所有
 func (p *ProductCategoryApi) GetProductCategoryAllList(rc *restfulx.ReqCtx) {
 	var vsg entity.ProductCategory
-	rc.ResData = p.ProductCategoryApp.FindList(vsg)
+	list, err := p.ProductCategoryApp.FindList(vsg)
+	biz.ErrIsNil(err, "查询产品分类列表失败")
+	rc.ResData = list
 }
 
 // GetProductCategory 获取ProductCategory
 func (p *ProductCategoryApi) GetProductCategory(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	rc.ResData = p.ProductCategoryApp.FindOne(id)
+	one, err := p.ProductCategoryApp.FindOne(id)
+	biz.ErrIsNil(err, "查询产品分类失败")
+	rc.ResData = one
 }
 
 // InsertProductCategory 添加ProductCategory

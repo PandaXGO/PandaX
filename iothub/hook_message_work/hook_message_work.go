@@ -108,10 +108,13 @@ func getRuleChainInstance(etoken *model.DeviceAuth) *rule_engine.RuleChainInstan
 
 	key := etoken.ProductId
 	instance, err := cache.ComputeIfAbsentProductRule(key, func(k any) (any, error) {
-		one := services.ProductModelDao.FindOne(k.(string))
+		one, err := services.ProductModelDao.FindOne(k.(string))
+		if err != nil {
+			return nil, err
+		}
 		rule := ruleService.RuleChainModelDao.FindOne(one.RuleChainId)
 		var lfData ruleEntity.RuleDataJson
-		err := tool.StringToStruct(rule.RuleDataJson, &lfData)
+		err = tool.StringToStruct(rule.RuleDataJson, &lfData)
 		if err != nil {
 			return nil, err
 		}
