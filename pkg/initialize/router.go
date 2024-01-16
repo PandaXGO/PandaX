@@ -1,6 +1,8 @@
 package initialize
 
 import (
+	"github.com/emicklei/go-restful/v3"
+	"net/http"
 	"pandax/apps/job/jobs"
 	ruleRouter "pandax/apps/rule/router"
 	"pandax/pkg/global"
@@ -30,6 +32,14 @@ func InitRouter() *transport.HttpServer {
 	// 流量限制
 	if serverConfig.Rate.Enable {
 		container.Filter(middleware.Rate)
+	}
+	//设置静态页面
+	{
+		webservice := new(restful.WebService)
+		// 配置静态文件的路由
+		webservice.Route(webservice.GET("/").To(indexHandler))
+		webservice.Route(webservice.GET("/{subpath:*}").To(staticResourceHandler))
+		container.Add(webservice)
 	}
 	// 设置路由组
 	{
@@ -83,4 +93,20 @@ func InitRouter() *transport.HttpServer {
 	}()
 
 	return server
+}
+
+func indexHandler(request *restful.Request, response *restful.Response) {
+	// 返回 index.html 文件
+	http.ServeFile(response.ResponseWriter, request.Request, "static/index.html")
+}
+
+func staticResourceHandler(request *restful.Request, response *restful.Response) {
+	// 获取静态资源的子路径
+	subpath := request.PathParameter("subpath")
+
+	// 构建静态资源的完整路径
+	resourcePath := "static/" + subpath
+
+	// 读取静态资源文件
+	http.ServeFile(response.ResponseWriter, request.Request, resourcePath)
 }
