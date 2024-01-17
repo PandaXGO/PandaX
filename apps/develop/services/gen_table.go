@@ -59,10 +59,10 @@ func (m *devGenTableModelImpl) FindDbTablesListPage(page, pageSize int, data ent
 		db = db.Where("table_name like ?", "%"+data.TableName+"%")
 	}
 	if global.Conf.Server.DbType == "mysql" {
-		err := db.Limit(pageSize).Offset(offset).Find(&list).Offset(-1).Limit(-1).Count(&total).Error
+		err := db.Limit(pageSize).Offset(offset).Find(&list).Count(&total).Error
 		return &list, total, err
 	} else {
-		err := db.Limit(pageSize).Offset(offset).Find(&pgdata).Offset(-1).Limit(-1).Count(&total).Error
+		err := db.Limit(pageSize).Offset(offset).Find(&pgdata).Count(&total).Error
 		for _, pd := range pgdata {
 			list = append(list, entity.DBTables{TableName: utils.B2S(pd["table_name"].([]uint8))})
 		}
