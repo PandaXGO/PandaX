@@ -6,15 +6,15 @@ const logTableName = "device_log"
 
 // CreateLogStable 添加LOG超级表
 func (s *TdEngine) CreateLogStable() (err error) {
-	sql := "CREATE STABLE IF NOT EXISTS device_log (ts TIMESTAMP, type VARCHAR(20), content VARCHAR(1000)) TAGS (device VARCHAR(255))"
-	_, err = s.db.Exec(sql)
+	sql := "CREATE STABLE IF NOT EXISTS ? (ts TIMESTAMP, type VARCHAR(20), content VARCHAR(1000)) TAGS (device VARCHAR(255))"
+	_, err = s.db.Exec(sql, logTableName)
 	return
 }
 
 // InsertLog 写入数据
 func (s *TdEngine) InsertLog(log *TdLog) (err error) {
 	sql := "INSERT INTO log_? USING device_log TAGS (?) VALUES (?, ?, ?)"
-	_, err = s.db.Exec(sql, log.Device, log.Device, log.Ts, log.Type, log.Content)
+	_, err = s.db.Exec(sql, log.Device, log.Ts, log.Type, log.Content)
 
 	return
 }
