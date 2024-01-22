@@ -18,8 +18,8 @@ func (s *TdEngine) CreateLogStable() (err error) {
 
 // InsertLog 写入数据
 func (s *TdEngine) InsertLog(log *TdLog) (err error) {
-	sql := "INSERT INTO ? USING device_log TAGS ('?') VALUES ('?', '?', '?')"
-	_, err = s.db.Exec(sql, "log_"+log.Device, log.Device, log.Ts, log.Type, log.Content)
+	sql := "INSERT INTO log_? USING device_log TAGS (?) VALUES (?, ?, ?)"
+	_, err = s.db.Exec(sql, log.Device, log.Device, log.Ts, log.Type, log.Content)
 
 	return
 }
