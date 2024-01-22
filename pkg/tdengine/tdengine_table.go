@@ -15,22 +15,25 @@ func (s *TdEngine) RunSql(sql string) (err error) {
 }
 
 // InsertDevice 数据入库
-func (s *TdEngine) InsertDevice(deviceKey string, data map[string]any) (err error) {
-
+func (s *TdEngine) InsertDevice(deviceKey string, data map[string]interface{}) (err error) {
 	if len(data) == 0 {
 		return
 	}
+
 	var (
-		field = []string{}
-		value = []string{}
+		field        = []string{}
+		value        = []interface{}{}
+		placeholders = []string{}
 	)
+
 	for k, v := range data {
 		field = append(field, k)
-		value = append(value, "'"+kgo.KConv.ToStr(v)+"'")
+		value = append(value, v)
+		placeholders = append(placeholders, "?")
 	}
 
-	sql := "INSERT INTO ? (?) VALUES (?)"
-	_, err = s.db.Exec(sql, strings.ToLower(deviceKey), strings.Join(field, ","), strings.Join(value, ","))
+	sql := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", strings.ToLower(deviceKey), strings.Join(field, ","), strings.Join(placeholders, ","))
+	_, err = s.db.Exec(sql, value...)
 
 	return
 }
