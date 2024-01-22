@@ -22,17 +22,19 @@ func (s *TdEngine) InsertDevice(deviceKey string, data map[string]interface{}) e
 	}
 
 	var (
-		field = []string{}
-		value = []string{}
+		field        []string
+		value        []interface{}
+		placeholders []string
 	)
 
 	for k, v := range data {
 		field = append(field, k)
-		value = append(value, "'"+kgo.KConv.ToStr(v)+"'")
+		value = append(value, kgo.KConv.ToStr(v))
+		placeholders = append(placeholders, "?")
 	}
-	// 存在sql注入隐患，在之后的提交修复
-	sql := "INSERT INTO ? (?) VALUES (?)"
-	_, err := s.db.Exec(sql, strings.ToLower(deviceKey), strings.Join(field, ","), strings.Join(value, ","))
+
+	sql := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", strings.ToLower(deviceKey), strings.Join(field, ","), strings.Join(placeholders, ","))
+	_, err := s.db.Exec(sql, value...)
 
 	return err
 }
