@@ -57,18 +57,6 @@ func init() {
 	DeviceShadowInstance = shadow
 }
 
-func InitDeviceShadow(deviceName, ProductId string) Device {
-	device, err := DeviceShadowInstance.GetDevice(deviceName)
-	if err == UnknownDeviceErr {
-		attributes := make(map[string]DevicePoint)
-		telemetry := make(map[string]DevicePoint)
-		device = NewDevice(deviceName, ProductId, attributes, telemetry)
-		DeviceShadowInstance.AddDevice(device)
-		//shadow.DeviceShadowInstance.SetDeviceTTL()
-	}
-	return device
-}
-
 func (d *deviceShadow) AddDevice(device Device) (err error) {
 	if _, ok := d.m.Load(device.Name); ok {
 		return DeviceRepeatErr
@@ -82,6 +70,7 @@ func (d *deviceShadow) AddDevice(device Device) (err error) {
 func (d *deviceShadow) SetDeviceTTL(ttl int) {
 	d.ttl = ttl
 }
+
 func (d *deviceShadow) GetDevice(deviceName string) (device Device, err error) {
 	if deviceAny, ok := d.m.Load(deviceName); ok {
 		return deviceAny.(Device), nil
@@ -99,29 +88,33 @@ func (d *deviceShadow) SetDevicePoint(deviceName, pointType, pointName string, v
 	// update point value
 	device.updatedAt = time.Now()
 
-	if pointType == global.TslAttributesType {
+	switch pointType {
+	case global.TslAttributesType:
 		device.AttributesPoints[pointName] = NewDevicePoint(pointName, value)
-	} else if pointType == global.TslTelemetryType {
+	case global.TslTelemetryType:
 		device.TelemetryPoints[pointName] = NewDevicePoint(pointName, value)
-	} else {
+	default:
 		return errors.New("设备属性类型错误")
 	}
+
 	// update
 	d.m.Store(deviceName, device)
 	return
 }
 
+		
 func (d *deviceShadow) GetDevicePoint(deviceName, pointType, pointName string) (value DevicePoint, err error) {
 	if deviceAny, ok := d.m.Load(deviceName); ok {
 		device := deviceAny.(Device)
-		if device.online == false || time.Now().Sub(device.updatedAt) > time.Duration(d.ttl)*time.Second {
+		if !device.online || time.Since(device.updatedAt) > time.Duration(d.ttl)*time.Second {
 			return
 		}
-		if pointType == global.TslAttributesType {
+		switch pointType {
+		case global.TslAttributesType:
 			return device.AttributesPoints[pointName], nil
-		} else if pointType == global.TslTelemetryType {
+		case global.TslTelemetryType:
 			return device.TelemetryPoints[pointName], nil
-		} else {
+		default:
 			return value, errors.New("设备属性类型错误")
 		}
 	} else {
@@ -131,11 +124,13 @@ func (d *deviceShadow) GetDevicePoint(deviceName, pointType, pointName string) (
 
 func (d *deviceShadow) GetDevicePoints(deviceName, pointType string) (points map[string]DevicePoint, err error) {
 	if deviceAny, ok := d.m.Load(deviceName); ok {
-		if pointType == global.TslAttributesType {
-			return deviceAny.(Device).AttributesPoints, nil
-		} else if pointType == global.TslTelemetryType {
-			return deviceAny.(Device).TelemetryPoints, nil
-		} else {
+		device := deviceAny.(Device)
+		switch pointType {
+		case global.TslAttributesType:
+			return device.AttributesPoints, nil
+		case global.TslTelemetryType:
+			return device.TelemetryPoints, nil
+		default:
 			return points, errors.New("设备属性类型错误")
 		}
 	} else {
@@ -152,16 +147,16 @@ func (d *deviceShadow) GetDeviceUpdateAt(deviceName string) (time.Time, error) {
 }
 
 func (d *deviceShadow) changeOnOff(deviceName string, online bool) (err error) {
-	if deviceAny, ok := d.m.Load(deviceName); ok {
-		device := deviceAny.(Device)
-		if device.online != online {
-			device.online = online
-			device.updatedAt = time.Now()
-			d.m.Store(deviceName, device)
-			d.handlerCallback(deviceName, online)
-		}
-	} else {
+	deviceAny, ok := d.m.Load(deviceName)
+	if !ok {
 		return UnknownDeviceErr
+	}
+	device := deviceAny.(Device)
+	if device.online != online {
+		device.online = online
+		device.updatedAt = time.Now()
+		d.m.Store(deviceName, device)
+		d.handlerCallback(deviceName, online)
 	}
 	return
 }
@@ -193,16 +188,19 @@ func (d *deviceShadow) StopStatusListener() {
 
 func (d *deviceShadow) checkOnOff() {
 	for range d.ticker.C {
-		d.m.Range(func(key, value any) bool {
-			if device, ok := value.(Device); ok {
-				// fix: when ttl == 0, device always offline
-				if d.ttl == 0 {
-					return true
-				}
+		d.m.Range(func(key, value interface{}) bool {
+			device, ok := value.(Device)
+			if !ok {
+				return true
+			}
 
-				if device.online && time.Now().Sub(device.updatedAt) > time.Duration(d.ttl)*time.Second {
-					_ = d.SetOffline(device.Name)
-				}
+			// fix: when ttl == 0, device always offline
+			if d.ttl == 0 {
+				return true
+			}
+
+			if device.online && time.Since(device.updatedAt) > time.Duration(d.ttl)*time.Second {
+				_ = d.SetOffline(device.Name)
 			}
 			return true
 		})
@@ -239,13 +237,13 @@ func parseOnlineBindPV(pv interface{}) (online bool, err error) {
 func parseStrOnlineBindPV(pv string) (online bool, err error) {
 	onlineList := []string{"on", "online", "1", "true", "yes"}
 	offlineList := []string{"off", "offline", "0", "false", "no"}
-	for i, _ := range onlineList {
-		if pv == onlineList[i] {
+	for _, v := range onlineList {
+		if pv == v {
 			return true, nil
 		}
 	}
-	for i, _ := range offlineList {
-		if pv == offlineList[i] {
+	for _, v := range offlineList {
+		if pv == v {
 			return false, nil
 		}
 	}

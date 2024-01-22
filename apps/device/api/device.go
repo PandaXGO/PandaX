@@ -1,16 +1,11 @@
 package api
 
-// ==========================================================================
-// 生成日期：2023-06-30 09:19:43 +0800 CST
-// 生成路径: apps/device/api/devices.go
-// 生成人：panda
-// ==========================================================================
 import (
 	"fmt"
+	"pandax/apps/device/util"
 	"github.com/PandaXGO/PandaKit/biz"
 	"github.com/PandaXGO/PandaKit/model"
 	"github.com/PandaXGO/PandaKit/restfulx"
-	"pandax/apps/device/util"
 	"pandax/pkg/global"
 	model2 "pandax/pkg/global/model"
 	"pandax/pkg/shadow"
@@ -26,6 +21,7 @@ type DeviceApi struct {
 	DeviceAlarmApp     services.DeviceAlarmModel
 	ProductApp         services.ProductModel
 	ProductTemplateApp services.ProductTemplateModel
+	DeviceShadow       shadow.DeviceShadow // 添加设备影子
 }
 
 func (p *DeviceApi) GetDevicePanel(rc *restfulx.ReqCtx) {
@@ -96,13 +92,12 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	biz.ErrIsNil(err, "查询设备模板失败")
 	// 从设备影子中读取
 	res := make([]entity.DeviceStatusVo, 0)
-	getDevice := shadow.InitDeviceShadow(device.Name, device.Pid)
 	rs := make(map[string]shadow.DevicePoint)
 	if classify == global.TslAttributesType {
-		rs = getDevice.AttributesPoints
+		rs, _ = p.DeviceShadow.GetDevicePoints(device.Name, global.TslAttributesType) // 使用GetDevicePoints()函数
 	}
 	if classify == global.TslTelemetryType {
-		rs = getDevice.TelemetryPoints
+		rs, _ = p.DeviceShadow.GetDevicePoints(device.Name, global.TslTelemetryType) // 使用GetDevicePoints()函数
 	}
 	for _, tel := range *template {
 		sdv := entity.DeviceStatusVo{
@@ -112,10 +107,10 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 			Define: tel.Define,
 		}
 		// 有直接从设备影子中查询，没有查询时序数据库最后一条记录
-		if _, ok := rs[tel.Key]; ok {
+		if point, ok := rs[tel.Key]; ok {
 			if classify == global.TslTelemetryType {
-				value := rs[tel.Key].Value
-				sdv.Time = rs[tel.Key].UpdatedAt
+				value := point.Value
+				sdv.Time = point.UpdatedAt
 				sdv.Value = value
 			}
 			if classify == global.TslAttributesType {

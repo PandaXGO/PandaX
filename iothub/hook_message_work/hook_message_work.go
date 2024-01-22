@@ -69,7 +69,6 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 		case message.DisConnectMes, message.ConnectMes:
 			//检测设备影子并修改设备影子状态
 			if msg.Type == message.ConnectMes {
-				shadow.InitDeviceShadow(msg.DeviceAuth.Name, msg.DeviceAuth.ProductId)
 				shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
 			} else {
 				shadow.DeviceShadowInstance.SetOffline(msg.DeviceAuth.Name)
