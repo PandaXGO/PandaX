@@ -3,42 +3,36 @@ package gen
 import (
 	"bytes"
 	"fmt"
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/utils"
-	"github.com/kakuilan/kgo"
 	"os"
-	"pandax/apps/develop/entity"
-	"pandax/apps/develop/services"
-	sysEntity "pandax/apps/system/entity"
-	sysServices "pandax/apps/system/services"
-	"pandax/pkg/global"
 	"strconv"
 	"strings"
 	"sync"
 	"text/template"
+
+	"pandax/apps/develop/entity"
+	"pandax/apps/develop/services"
+	sysEntity "pandax/apps/system/entity"
+	sysServices "pandax/apps/system/services"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/utils"
+	"pandax/pkg/global"
+
+	"github.com/kakuilan/kgo"
 )
+
+var ToolsGenTableColumn = toolsGenTableColumn{}
 
 var (
-	ToolsGenTableColumn = &toolsGenTableColumn{
-		ColumnTypeStr:      []string{"char", "varchar", "narchar", "varchar2", "tinytext", "text", "mediumtext", "longtext"},
-		ColumnTypeTime:     []string{"datetime", "time", "date", "timestamp", "timestamptz"},
-		ColumnTypeNumber:   []string{"tinyint", "smallint", "mediumint", "int", "int2", "int4", "int8", "number", "integer", "numeric", "bigint", "float", "float4", "float8", "double", "decimal"},
-		ColumnNameNotEdit:  []string{"create_by", "update_by", "create_time", "update_time", "delete_time"},
-		ColumnNameNotList:  []string{"create_by", "update_by", "update_time", "delete_time"},
-		ColumnNameNotQuery: []string{"create_by", "update_by", "create_time", "update_time", "delete_time", "remark"},
-	}
+	ColumnTypeStr      = []string{"char", "varchar", "narchar", "varchar2", "tinytext", "text", "mediumtext", "longtext"}
+	ColumnTypeTime     = []string{"datetime", "time", "date", "timestamp", "timestamptz"}
+	ColumnTypeNumber   = []string{"tinyint", "smallint", "mediumint", "int", "int2", "int4", "int8", "number", "integer", "numeric", "bigint", "float", "float4", "float8", "double", "decimal"}
+	ColumnNameNotEdit  = []string{"create_by", "update_by", "create_time", "update_time", "delete_time"}
+	ColumnNameNotList  = []string{"create_by", "update_by", "update_time", "delete_time"}
+	ColumnNameNotQuery = []string{"create_by", "update_by", "create_time", "update_time", "delete_time", "remark"}
 )
 
-type toolsGenTableColumn struct {
-	ColumnTypeStr      []string //数据库字符串类型
-	ColumnTypeTime     []string //数据库时间类型
-	ColumnTypeNumber   []string //数据库数字类型
-	ColumnNameNotEdit  []string //页面不需要编辑字段
-	ColumnNameNotList  []string //页面不需要显示的列表字段
-	ColumnNameNotQuery []string //页面不需要查询字段
-}
+type toolsGenTableColumn struct{}
 
-// GetDbType 获取数据库类型字段
 func (s *toolsGenTableColumn) GetDbType(columnType string) string {
 	if strings.Index(columnType, "(") > 0 {
 		return columnType[0:strings.Index(columnType, "(")]
@@ -47,122 +41,78 @@ func (s *toolsGenTableColumn) GetDbType(columnType string) string {
 	}
 }
 
-// IsExistInArray 判断 value 是否存在在切片array中
 func (s *toolsGenTableColumn) IsExistInArray(value string, array []string) bool {
-	for _, v := range array {
-		if v == value {
-			return true
-		}
-	}
-	return false
+	return strings.Contains(strings.Join(array, ","), value)
 }
 
-// GetColumnLength 获取字段长度
 func (s *toolsGenTableColumn) GetColumnLength(columnType string) int {
-	start := strings.Index(columnType, "(")
-	end := strings.Index(columnType, ")")
-	result := ""
+	start := strings.LastIndex(columnType, "(")
+	end := strings.LastIndex(columnType, ")")
 	if start >= 0 && end >= 0 {
-		result = columnType[start+1 : end-1]
+		result := columnType[start+1 : end]
+		i, _ := strconv.Atoi(result)
+		return i
 	}
-	i, _ := strconv.Atoi(result)
-	return i
+	return 0
 }
 
-// IsStringObject 判断是否是数据库字符串类型
 func (s *toolsGenTableColumn) IsStringObject(dataType string) bool {
-	return s.IsExistInArray(dataType, s.ColumnTypeStr)
+	return s.IsExistInArray(dataType, ColumnTypeStr)
 }
 
-// IsTimeObject 判断是否是数据库时间类型
 func (s *toolsGenTableColumn) IsTimeObject(dataType string) bool {
-	return s.IsExistInArray(dataType, s.ColumnTypeTime)
+	return s.IsExistInArray(dataType, ColumnTypeTime)
 }
 
-// IsNumberObject 是否数字类型
 func (s *toolsGenTableColumn) IsNumberObject(dataType string) bool {
-	return s.IsExistInArray(dataType, s.ColumnTypeNumber)
+	return s.IsExistInArray(dataType, ColumnTypeNumber)
 }
 
-// IsNotEdit 是否不可编辑
 func (s *toolsGenTableColumn) IsNotEdit(name string) bool {
 	if strings.Contains(name, "id") {
 		return true
 	}
-	return s.IsExistInArray(name, s.ColumnNameNotEdit)
+	return s.IsExistInArray(name, ColumnNameNotEdit)
 }
 
-// IsNotList 不在列表显示
 func (s *toolsGenTableColumn) IsNotList(name string) bool {
-	return s.IsExistInArray(name, s.ColumnNameNotList)
+	return s.IsExistInArray(name, ColumnNameNotList)
 }
 
-// IsNotQuery 不可用于查询
 func (s *toolsGenTableColumn) IsNotQuery(name string) bool {
-	return s.IsExistInArray(name, s.ColumnNameNotQuery)
+	return s.IsExistInArray(name, ColumnNameNotQuery)
 }
 
-// CheckNameColumn 检查字段名后4位是否是name
 func (s *toolsGenTableColumn) CheckNameColumn(columnName string) bool {
 	if len(columnName) >= 4 {
-		end := len(columnName)
-		start := end - 4
-		if start <= 0 {
-			start = 0
-		}
-		tmp := columnName[start:end]
-		if tmp == "name" {
+		if tmp := columnName[len(columnName)-4:]; tmp == "name" {
 			return true
 		}
 	}
 	return false
 }
 
-// CheckStatusColumn 检查字段名后6位是否是status
 func (s *toolsGenTableColumn) CheckStatusColumn(columnName string) bool {
 	if len(columnName) >= 6 {
-		end := len(columnName)
-		start := end - 6
-
-		if start <= 0 {
-			start = 0
-		}
-		tmp := columnName[start:end]
-
-		if tmp == "status" {
+		if tmp := columnName[len(columnName)-6:]; tmp == "status" {
 			return true
 		}
 	}
-
 	return false
 }
 
-// CheckTypeColumn 检查字段名后4位是否是type
 func (s *toolsGenTableColumn) CheckTypeColumn(columnName string) bool {
 	if len(columnName) >= 4 {
-		end := len(columnName)
-		start := end - 4
-
-		if start <= 0 {
-			start = 0
-		}
-
-		if columnName[start:end] == "type" {
+		if tmp := columnName[len(columnName)-4:]; tmp == "type" {
 			return true
 		}
 	}
 	return false
 }
 
-// CheckSexColumn 检查字段名后3位是否是sex
 func (s *toolsGenTableColumn) CheckSexColumn(columnName string) bool {
 	if len(columnName) >= 3 {
-		end := len(columnName)
-		start := end - 3
-		if start <= 0 {
-			start = 0
-		}
-		if columnName[start:end] == "sex" {
+		if tmp := columnName[len(columnName)-3:]; tmp == "sex" {
 			return true
 		}
 	}
@@ -176,9 +126,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 	for i := 0; i < len(tableNameList); i++ {
 		strStart := string([]byte(tableNameList[i])[:1])
 		strEnd := string([]byte(tableNameList[i])[1:])
-		// 大驼峰表名 结构体使用
 		data.ClassName += strings.ToUpper(strStart) + strEnd
-		// js函数名和权限标识使用
 		if i >= 1 {
 			data.BusinessName += strings.ToLower(strStart) + strEnd
 			data.FunctionName = strings.ToUpper(strStart) + strEnd
@@ -186,7 +134,6 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 	}
 	data.PackageName = "system"
 	data.TplCategory = "crud"
-	// 中横线表名称，接口路径、前端文件夹名称和js名称使用
 	data.ModuleName = strings.Replace(tableName, "_", "-", -1)
 
 	dbColumn, err := services.DevTableColumnModelDao.FindDbTableColumnList(tableName)
@@ -196,7 +143,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 	data.TableComment = data.ClassName
 	data.FunctionAuthor = "panda"
 
-	wg := sync.WaitGroup{}
+	var wg sync.WaitGroup
 	for x := 0; x < len(dbColumn); x++ {
 		index := x
 		wg.Add(1)
@@ -225,10 +172,8 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 				column.ColumnComment = column.GoField
 			}
 
-			//dataType := s.GetDbType(column.ColumnType)
 			dataType := strings.ToLower(column.ColumnType)
 			if s.IsStringObject(dataType) {
-				//字段为字符串类型
 				column.GoType = "string"
 				columnLength := s.GetColumnLength(column.ColumnType)
 				if columnLength >= 500 {
@@ -237,11 +182,9 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 					column.HtmlType = "input"
 				}
 			} else if s.IsTimeObject(dataType) {
-				//字段为时间类型
 				column.GoType = "Time"
 				column.HtmlType = "datetime"
 			} else if s.IsNumberObject(dataType) {
-				//字段为数字类型
 				column.HtmlType = "input"
 				t := ""
 				if global.Conf.Server.DbType == "postgresql" {
@@ -251,7 +194,6 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 					t = strings.Split(strings.TrimSpace(t), " ")[0]
 					t = strings.ToLower(t)
 				}
-				// 如果是浮点型
 				switch t {
 				case "float", "float4", "float8", "double", "decimal":
 					column.GoType = "float64"
@@ -275,7 +217,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 					column.HtmlType = "switch"
 				}
 			}
-			// 是主键的时候
+
 			if strings.Contains(dbColumn[y].ColumnKey, "PR") {
 				column.IsPk = "1"
 				data.PkColumn = dbColumn[y].ColumnName
@@ -286,7 +228,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 					column.IsIncrement = "1"
 				}
 			}
-			//新增字段
+
 			if s.IsNotEdit(column.ColumnName) {
 				column.IsRequired = "0"
 				column.IsInsert = "0"
@@ -297,7 +239,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 					column.IsRequired = "1"
 				}
 			}
-			// 编辑字段
+
 			if s.IsNotEdit(column.ColumnName) {
 				column.IsEdit = "0"
 			} else {
@@ -307,33 +249,31 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 					column.IsEdit = "1"
 				}
 			}
-			// 列表字段
+
 			if s.IsNotList(column.ColumnName) {
 				column.IsList = "0"
 			} else {
 				column.IsList = "1"
 			}
-			// 查询字段
+
 			if s.IsNotQuery(column.ColumnName) {
 				column.IsQuery = "0"
 			} else {
 				column.IsQuery = "1"
 			}
 
-			// 查询字段类型
 			if s.CheckNameColumn(column.ColumnName) {
 				column.QueryType = "LIKE"
 			} else {
 				column.QueryType = "EQ"
 			}
-			// 状态字段设置单选框
+
 			if s.CheckStatusColumn(column.ColumnName) {
 				column.HtmlType = "radio"
 			} else if s.CheckTypeColumn(column.ColumnName) || s.CheckSexColumn(column.ColumnName) {
-				// 类型&性别字段设置下拉框
 				column.HtmlType = "select"
 			}
-			global.Log.Info(y)
+
 			data.Columns = append(data.Columns, column)
 		}(&wg, index)
 	}
@@ -341,13 +281,13 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 	return data, nil
 }
 
-// 视图预览
-func Preview(tableId int64) map[string]any {
+func Preview(tableId int64) map[string]interface{} {
 	defer func() {
-		if err := recover(); &err != nil {
+		if err := recover(); err != nil {
 			global.Log.Error(err)
 		}
 	}()
+
 	t1, err := template.ParseFiles("resource/template/go/entity.template")
 	biz.ErrIsNil(err, "entity模版读取失败")
 
@@ -369,24 +309,24 @@ func Preview(tableId int64) map[string]any {
 	t7, err := template.ParseFiles("resource/template/vue/edit-vue.template")
 	biz.ErrIsNil(err, "vue编辑模版读取失败！")
 
-	tab, err := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: tableId}, false)
+	tab, _ := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: tableId}, false)
 
 	var b1 bytes.Buffer
-	err = t1.Execute(&b1, tab)
+	t1.Execute(&b1, tab)
 	var b2 bytes.Buffer
-	err = t2.Execute(&b2, tab)
+	t2.Execute(&b2, tab)
 	var b3 bytes.Buffer
-	err = t3.Execute(&b3, tab)
+	t3.Execute(&b3, tab)
 	var b4 bytes.Buffer
-	err = t4.Execute(&b4, tab)
+	t4.Execute(&b4, tab)
 	var b5 bytes.Buffer
-	err = t5.Execute(&b5, tab)
+	t5.Execute(&b5, tab)
 	var b6 bytes.Buffer
-	err = t6.Execute(&b6, tab)
+	t6.Execute(&b6, tab)
 	var b7 bytes.Buffer
-	err = t7.Execute(&b7, tab)
+	t7.Execute(&b7, tab)
 
-	mp := make(map[string]any)
+	mp := make(map[string]interface{})
 	mp["template/entity.template"] = b1.String()
 	mp["template/services.template"] = b2.String()
 	mp["template/api.template"] = b3.String()
@@ -397,10 +337,9 @@ func Preview(tableId int64) map[string]any {
 	return mp
 }
 
-// 生成 代码
 func GenCode(tableId int64) {
 	defer func() {
-		if err := recover(); &err != nil {
+		if err := recover(); err != nil {
 			global.Log.Error(err)
 		}
 	}()
@@ -438,19 +377,19 @@ func GenCode(tableId int64) {
 	kgo.KFile.Mkdir(global.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/"+"component"+"/", os.ModePerm)
 
 	var b1 bytes.Buffer
-	err = t1.Execute(&b1, tab)
+	t1.Execute(&b1, tab)
 	var b2 bytes.Buffer
-	err = t2.Execute(&b2, tab)
+	t2.Execute(&b2, tab)
 	var b3 bytes.Buffer
-	err = t3.Execute(&b3, tab)
+	t3.Execute(&b3, tab)
 	var b4 bytes.Buffer
-	err = t4.Execute(&b4, tab)
+	t4.Execute(&b4, tab)
 	var b5 bytes.Buffer
-	err = t5.Execute(&b5, tab)
+	t5.Execute(&b5, tab)
 	var b6 bytes.Buffer
-	err = t6.Execute(&b6, tab)
+	t6.Execute(&b6, tab)
 	var b7 bytes.Buffer
-	err = t7.Execute(&b7, tab)
+	t7.Execute(&b7, tab)
 
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/entity/"+tab.TableName+".go", b1.Bytes())
 	kgo.KFile.WriteFile("./apps/"+tab.PackageName+"/services/"+tab.TableName+".go", b2.Bytes())
@@ -461,13 +400,11 @@ func GenCode(tableId int64) {
 	kgo.KFile.WriteFile(global.Conf.Gen.Frontpath+"/views/"+tab.PackageName+"/"+tab.BusinessName+"/"+"component"+"/editModule.vue", b7.Bytes())
 }
 
-// GenConfigure 生成菜单，api
 func GenConfigure(tableId, parentId int) {
 	tab, err := services.DevGenTableModelDao.FindOne(entity.DevGenTable{TableId: int64(tableId)}, false)
 	if err != nil {
 		return
 	}
-	//生成菜单 一个菜单 三个按钮
 	component := "Layout"
 	if parentId != 0 {
 		component = fmt.Sprintf("/%s/%s/index", tab.PackageName, tab.BusinessName)
@@ -489,7 +426,6 @@ func GenConfigure(tableId, parentId int) {
 		CreateBy:    "admin",
 	}
 	insert := sysServices.SysMenuModelDao.Insert(menu)
-	//新增按钮
 	menuA := sysEntity.SysMenu{
 		ParentId:   insert.MenuId,
 		MenuName:   "新增" + tab.TableComment,
@@ -500,7 +436,6 @@ func GenConfigure(tableId, parentId int) {
 		CreateBy:   "admin",
 	}
 	go sysServices.SysMenuModelDao.Insert(menuA)
-	//修改按钮
 	menuE := sysEntity.SysMenu{
 		ParentId:   insert.MenuId,
 		MenuName:   "修改" + tab.TableComment,
@@ -511,7 +446,6 @@ func GenConfigure(tableId, parentId int) {
 		CreateBy:   "admin",
 	}
 	go sysServices.SysMenuModelDao.Insert(menuE)
-	//删除按钮
 	menuD := sysEntity.SysMenu{
 		ParentId:   insert.MenuId,
 		MenuName:   "删除" + tab.TableComment,
@@ -522,7 +456,6 @@ func GenConfigure(tableId, parentId int) {
 		CreateBy:   "admin",
 	}
 	go sysServices.SysMenuModelDao.Insert(menuD)
-	//生成api
 	apiL := sysEntity.SysApi{
 		Path:        fmt.Sprintf("/%s/%s/list", tab.PackageName, tab.BusinessName),
 		Description: fmt.Sprintf("查询%s列表（分页）", tab.TableComment),
