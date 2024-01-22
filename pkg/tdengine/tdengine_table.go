@@ -29,7 +29,7 @@ func (s *TdEngine) InsertDevice(deviceKey string, data map[string]interface{}) e
 
 	for k, v := range data {
 		field = append(field, k)
-		value = append(value, kgo.KConv.ToStr(v))
+		value = append(value, fmt.Sprintf("'%s'", kgo.KConv.ToStr(v)))
 		placeholders = append(placeholders, "?")
 	}
 
