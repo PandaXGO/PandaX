@@ -69,6 +69,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 		case message.DisConnectMes, message.ConnectMes:
 			//检测设备影子并修改设备影子状态
 			if msg.Type == message.ConnectMes {
+				shadow.InitDeviceShadow(msg.DeviceAuth.Name, msg.DeviceAuth.ProductId)
 				shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
 			} else {
 				shadow.DeviceShadowInstance.SetOffline(msg.DeviceAuth.Name)
@@ -116,10 +117,10 @@ func getRuleChainInstance(etoken *model.DeviceAuth) *rule_engine.RuleChainInstan
 		}
 		code, _ := json.Marshal(lfData.LfData.DataCode)
 		//新建规则链实体
-		instance, errs := rule_engine.NewRuleChainInstance(rule.Id, code)
-		if errs != nil {
-			global.Log.Error("规则链初始化失败", errs)
-			return nil, errs
+		instance, err := rule_engine.NewRuleChainInstance(rule.Id, code)
+		if err != nil {
+			global.Log.Error("规则链初始化失败", err)
+			return nil, err
 		}
 		return instance, nil
 	})
@@ -154,7 +155,7 @@ func SendZtWebsocket(deviceId, message string) {
 		"attrs":  msgVals,
 	}
 	data, _ := json.Marshal(twinData)
-	for stageid := range websocket.Wsp {
+		for stageid := range websocket.Wsp {
 		CJNR := fmt.Sprintf(`{"MESSAGETYPE":"01","MESSAGECONTENT": %s}`, string(data))
 		websocket.SendMessage(CJNR, stageid)
 	}
