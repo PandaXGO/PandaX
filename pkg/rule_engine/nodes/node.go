@@ -94,12 +94,12 @@ func GetNodes(m *manifest.Manifest) (map[string]Node, error) {
 	for _, edge := range m.Edges {
 		originalNode, found := nodes[edge.SourceNodeId]
 		if !found {
-			logrus.Errorf("original node '%s' no exist in", originalNode.Name())
+			logrus.Errorf("original node '%s' does not exist in rulechain", edge.SourceNodeId)
 			continue
 		}
 		targetNode, found := nodes[edge.TargetNodeId]
 		if !found {
-			logrus.Errorf("target node '%s' no exist in rulechain", targetNode.Name())
+			logrus.Errorf("target node '%s' does not exist in rulechain", edge.TargetNodeId)
 			continue
 		}
 		//可以有多个类型
