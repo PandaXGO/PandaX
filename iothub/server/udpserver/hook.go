@@ -5,13 +5,14 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net"
+	"time"
+
 	udpclient "pandax/iothub/client/updclient"
 	"pandax/iothub/hook_message_work"
 	"pandax/iothub/netbase"
 	"pandax/pkg/global"
 	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine/message"
-	"time"
 )
 
 type HookUdpService struct {
@@ -25,9 +26,9 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 	if err != nil {
 		global.Log.Error("IOTHUB UDP服务启动错误", err)
 		return
-	} else {
-		global.Log.Infof("UDP IOTHUB HOOK Start SUCCESS, Server listen: %s", addr)
 	}
+	global.Log.Infof("UDP IOTHUB HOOK Start SUCCESS, Server listen: %s", addr)
+
 	buffer := make([]byte, 1024)
 	authMap := make(map[string]bool)
 	etoken := &model.DeviceAuth{}
@@ -35,12 +36,13 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 		HookService: hs,
 		conn:        server.listener,
 	}
+
 	for {
 		n, client, err := server.listener.ReadFromUDP(buffer)
 		if err != nil {
 			global.Log.Error("Error accepting connection:", err)
 			_ = server.listener.Close()
-			//设置断开连接
+
 			if isAuth, ok := authMap[client.AddrPort().String()]; ok && isAuth {
 				data := netbase.CreateConnectionInfo(message.DisConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
 				go hhs.HookService.Queue.Queue(data)
@@ -49,6 +51,7 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 			delete(authMap, client.AddrPort().String())
 			continue
 		}
+
 		if isAuth, ok := authMap[client.AddrPort().String()]; ok && isAuth {
 			data := &netbase.DeviceEventInfo{
 				DeviceId:   etoken.DeviceId,
@@ -61,13 +64,12 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 			data.Type = message.RowMes
 			data.Datas = fmt.Sprintf(`{"ts": "%s","rowdata": "%s"}`, ts, hexData)
 
-			// etoken中添加设备标识
 			go hhs.HookService.Queue.Queue(data)
 		} else {
 			token := string(buffer[:n])
 			etoken.GetDeviceToken(token)
 			auth := netbase.Auth(token)
-			// 认证成功，创建连接记录
+
 			if auth {
 				global.Log.Infof("UDP协议 设备%s,认证成功", etoken.DeviceId)
 				data := netbase.CreateConnectionInfo(message.ConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
