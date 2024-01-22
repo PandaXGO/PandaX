@@ -46,7 +46,7 @@ func CamelString(s string) string {
 	return string(data)
 }
 
-func FirstLowCamelString(s string) string {
+func convertString(s string, firstLower bool) string {
 	data := make([]byte, 0, len(s))
 	flag, num := true, len(s)-1
 	for i := 0; i <= num; i++ {
@@ -62,12 +62,18 @@ func FirstLowCamelString(s string) string {
 		}
 		data = append(data, d)
 	}
-	if len(data) > 0 && data[0] >= 65 && data[0] <= 90 {
+	if firstLower && len(data) > 0 && data[0] >= 'A' && data[0] <= 'Z' {
 		data[0] = data[0] + 32
 	}
 	return string(data)
 }
 
+// FirstLowCamelString first low camel string, xx_yy to xxYy
+func FirstLowCamelString(s string) string {
+	return convertString(s, true)
+}
+
+// StructToMap convert struct to map
 func StructToMap(s interface{}) map[string]interface{} {
 	result := make(map[string]interface{})
 
@@ -83,6 +89,7 @@ func StructToMap(s interface{}) map[string]interface{} {
 	return result
 }
 
+// MapToStruct convert map to struct
 func MapToStruct(m map[string]interface{}, s interface{}) error {
 	data, err := json.Marshal(m)
 	if err != nil {
@@ -97,6 +104,7 @@ func MapToStruct(m map[string]interface{}, s interface{}) error {
 	return nil
 }
 
+// InterfaceToStruct convert interface to struct
 func InterfaceToStruct(m interface{}, s interface{}) error {
 	data, err := json.Marshal(m)
 	if err != nil {
@@ -111,6 +119,7 @@ func InterfaceToStruct(m interface{}, s interface{}) error {
 	return nil
 }
 
+// StringToStruct convert string to struct
 func StringToStruct(m string, s interface{}) error {
 	err := json.Unmarshal([]byte(m), s)
 	if err != nil {
@@ -119,6 +128,7 @@ func StringToStruct(m string, s interface{}) error {
 	return nil
 }
 
+// TimeToFormat convert time to formatted string
 func TimeToFormat(val interface{}) string {
 	switch v := val.(type) {
 	case int64:
