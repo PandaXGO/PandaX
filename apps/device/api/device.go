@@ -1,11 +1,16 @@
 package api
 
+// ==========================================================================
+// 生成日期：2023-06-30 09:19:43 +0800 CST
+// 生成路径: apps/device/api/devices.go
+// 生成人：panda
+// ==========================================================================
 import (
 	"fmt"
 	"pandax/apps/device/util"
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/model"
-	"github.com/PandaXGO/PandaKit/restfulx"
+	"pandax/kit/biz"
+	"pandax/kit/model"
+	"pandax/kit/restfulx"
 	"pandax/pkg/global"
 	model2 "pandax/pkg/global/model"
 	"pandax/pkg/shadow"
@@ -21,7 +26,6 @@ type DeviceApi struct {
 	DeviceAlarmApp     services.DeviceAlarmModel
 	ProductApp         services.ProductModel
 	ProductTemplateApp services.ProductTemplateModel
-	DeviceShadow       shadow.DeviceShadow // 添加设备影子
 }
 
 func (p *DeviceApi) GetDevicePanel(rc *restfulx.ReqCtx) {
@@ -92,12 +96,13 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	biz.ErrIsNil(err, "查询设备模板失败")
 	// 从设备影子中读取
 	res := make([]entity.DeviceStatusVo, 0)
+	getDevice := shadow.InitDeviceShadow(device.Name, device.Pid)
 	rs := make(map[string]shadow.DevicePoint)
 	if classify == global.TslAttributesType {
-		rs, _ = p.DeviceShadow.GetDevicePoints(device.Name, global.TslAttributesType) // 使用GetDevicePoints()函数
+		rs = getDevice.AttributesPoints
 	}
 	if classify == global.TslTelemetryType {
-		rs, _ = p.DeviceShadow.GetDevicePoints(device.Name, global.TslTelemetryType) // 使用GetDevicePoints()函数
+		rs = getDevice.TelemetryPoints
 	}
 	for _, tel := range *template {
 		sdv := entity.DeviceStatusVo{

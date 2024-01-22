@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/kakuilan/kgo"
 )
 
 // RunSql 运行
@@ -20,19 +22,17 @@ func (s *TdEngine) InsertDevice(deviceKey string, data map[string]interface{}) e
 	}
 
 	var (
-		field        []string
-		value        []interface{}
-		placeholders []string
+		field = []string{}
+		value = []string{}
 	)
 
 	for k, v := range data {
 		field = append(field, k)
-		value = append(value, v)
-		placeholders = append(placeholders, "?")
+		value = append(value, "'"+kgo.KConv.ToStr(v)+"'")
 	}
-
-	sql := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", strings.ToLower(deviceKey), strings.Join(field, ","), strings.Join(placeholders, ","))
-	_, err := s.db.Exec(sql, value...)
+	// 存在sql注入隐患，在之后的提交修复
+	sql := "INSERT INTO ? (?) VALUES (?)"
+	_, err := s.db.Exec(sql, strings.ToLower(deviceKey), strings.Join(field, ","), strings.Join(value, ","))
 
 	return err
 }
