@@ -22,6 +22,8 @@ import (
 
 var ToolsGenTableColumn = toolsGenTableColumn{}
 
+type toolsGenTableColumn struct{}
+
 var (
 	ColumnTypeStr      = []string{"char", "varchar", "narchar", "varchar2", "tinytext", "text", "mediumtext", "longtext"}
 	ColumnTypeTime     = []string{"datetime", "time", "date", "timestamp", "timestamptz"}
@@ -30,8 +32,6 @@ var (
 	ColumnNameNotList  = []string{"create_by", "update_by", "update_time", "delete_time"}
 	ColumnNameNotQuery = []string{"create_by", "update_by", "create_time", "update_time", "delete_time", "remark"}
 )
-
-type toolsGenTableColumn struct{}
 
 func (s *toolsGenTableColumn) GetDbType(columnType string) string {
 	if strings.Index(columnType, "(") > 0 {
@@ -119,10 +119,14 @@ func (s *toolsGenTableColumn) CheckSexColumn(columnName string) bool {
 	return false
 }
 
-func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable, error) {
+type Generator struct {
+	TableName string
+}
+
+func (g *Generator) Generate() (entity.DevGenTable, error) {
 	var data entity.DevGenTable
-	data.TableName = tableName
-	tableNameList := strings.Split(tableName, "_")
+	data.TableName = g.TableName
+	tableNameList := strings.Split(g.TableName, "_")
 	for i := 0; i < len(tableNameList); i++ {
 		strStart := string([]byte(tableNameList[i])[:1])
 		strEnd := string([]byte(tableNameList[i])[1:])
@@ -134,9 +138,9 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 	}
 	data.PackageName = "system"
 	data.TplCategory = "crud"
-	data.ModuleName = strings.Replace(tableName, "_", "-", -1)
+	data.ModuleName = strings.Replace(g.TableName, "_", "-", -1)
 
-	dbColumn, err := services.DevTableColumnModelDao.FindDbTableColumnList(tableName)
+	dbColumn, err := services.DevTableColumnModelDao.FindDbTableColumnList(g.TableName)
 	if err != nil {
 		return data, err
 	}
@@ -173,18 +177,18 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 			}
 
 			dataType := strings.ToLower(column.ColumnType)
-			if s.IsStringObject(dataType) {
+			if ToolsGenTableColumn.IsStringObject(dataType) {
 				column.GoType = "string"
-				columnLength := s.GetColumnLength(column.ColumnType)
+				columnLength := ToolsGenTableColumn.GetColumnLength(column.ColumnType)
 				if columnLength >= 500 {
 					column.HtmlType = "textarea"
 				} else {
 					column.HtmlType = "input"
 				}
-			} else if s.IsTimeObject(dataType) {
+			} else if ToolsGenTableColumn.IsTimeObject(dataType) {
 				column.GoType = "Time"
 				column.HtmlType = "datetime"
-			} else if s.IsNumberObject(dataType) {
+			} else if ToolsGenTableColumn.IsNumberObject(dataType) {
 				column.HtmlType = "input"
 				t := ""
 				if global.Conf.Server.DbType == "postgresql" {
@@ -229,7 +233,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 				}
 			}
 
-			if s.IsNotEdit(column.ColumnName) {
+			if ToolsGenTableColumn.IsNotEdit(column.ColumnName) {
 				column.IsRequired = "0"
 				column.IsInsert = "0"
 			} else {
@@ -240,7 +244,7 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 				}
 			}
 
-			if s.IsNotEdit(column.ColumnName) {
+			if ToolsGenTableColumn.IsNotEdit(column.ColumnName) {
 				column.IsEdit = "0"
 			} else {
 				if column.IsPk == "1" {
@@ -250,27 +254,27 @@ func (s *toolsGenTableColumn) GenTableInit(tableName string) (entity.DevGenTable
 				}
 			}
 
-			if s.IsNotList(column.ColumnName) {
+			if ToolsGenTableColumn.IsNotList(column.ColumnName) {
 				column.IsList = "0"
 			} else {
 				column.IsList = "1"
 			}
 
-			if s.IsNotQuery(column.ColumnName) {
+			if ToolsGenTableColumn.IsNotQuery(column.ColumnName) {
 				column.IsQuery = "0"
 			} else {
 				column.IsQuery = "1"
 			}
 
-			if s.CheckNameColumn(column.ColumnName) {
+			if ToolsGenTableColumn.CheckNameColumn(column.ColumnName) {
 				column.QueryType = "LIKE"
 			} else {
 				column.QueryType = "EQ"
 			}
 
-			if s.CheckStatusColumn(column.ColumnName) {
+			if ToolsGenTableColumn.CheckStatusColumn(column.ColumnName) {
 				column.HtmlType = "radio"
-			} else if s.CheckTypeColumn(column.ColumnName) || s.CheckSexColumn(column.ColumnName) {
+			} else if ToolsGenTableColumn.CheckTypeColumn(column.ColumnName) || ToolsGenTableColumn.CheckSexColumn(column.ColumnName) {
 				column.HtmlType = "select"
 			}
 

@@ -99,7 +99,10 @@ func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
 		wg.Add(1)
 		go func(table string) {
 			defer wg.Done()
-			genTable, err := gen.ToolsGenTableColumn.GenTableInit(table)
+			var tg = gen.Generator{
+				TableName: table,
+			}
+			genTable, err := tg.Generate()
 			if err != nil {
 				biz.ErrIsNil(err, "创建表结构")
 			}
