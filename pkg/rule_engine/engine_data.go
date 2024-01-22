@@ -28,13 +28,14 @@ func GetDebugDataPage(page, pageSize int, ruleId, nodeId string) (int64, []messa
 	}
 	offset := pageSize * (page - 1)
 	if data, ok := ruleChainDebugData.Data[ruleId]; ok {
-		if data.Get(nodeId) != nil {
-			total := len(data.Get(nodeId).Items)
+		nodeData := data.Get(nodeId)
+		if nodeData != nil {
+			total := len(nodeData.Items)
 			end := offset + pageSize
 			if end >= total {
 				end = total
 			}
-			return int64(total), data.Get(nodeId).Items[offset:end]
+			return int64(total), nodeData.Items[offset:end]
 		}
 	}
 	return 0, nil
