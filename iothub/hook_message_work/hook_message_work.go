@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
 	ruleService "pandax/apps/rule/services"
 	"pandax/iothub/netbase"
+	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	"pandax/pkg/global/model"
@@ -21,11 +21,8 @@ import (
 
 // 消息处理模块
 func (s *HookService) MessageWork() {
-	for {
-		select {
-		case msg := <-s.MessageCh:
-			s.handleOne(msg) // 处理消息
-		}
+	for msg := range s.MessageCh {
+		s.handleOne(msg) // 处理消息
 	}
 }
 
@@ -118,12 +115,12 @@ func getRuleChainInstance(etoken *model.DeviceAuth) *rule_engine.RuleChainInstan
 		if err != nil {
 			return nil, err
 		}
-		code, err := json.Marshal(lfData.LfData.DataCode)
+		code, _ := json.Marshal(lfData.LfData.DataCode)
 		//新建规则链实体
 		instance, errs := rule_engine.NewRuleChainInstance(rule.Id, code)
-		if len(errs) > 0 {
-			global.Log.Error("规则链初始化失败", errs[0])
-			return nil, errs[0]
+		if errs != nil {
+			global.Log.Error("规则链初始化失败", errs)
+			return nil, errs
 		}
 		return instance, nil
 	})
@@ -158,7 +155,7 @@ func SendZtWebsocket(deviceId, message string) {
 		"attrs":  msgVals,
 	}
 	data, _ := json.Marshal(twinData)
-	for stageid, _ := range websocket.Wsp {
+	for stageid := range websocket.Wsp {
 		CJNR := fmt.Sprintf(`{"MESSAGETYPE":"01","MESSAGECONTENT": %s}`, string(data))
 		websocket.SendMessage(CJNR, stageid)
 	}

@@ -32,8 +32,8 @@ func BuildRunDeviceRpc(deviceId, mode string, msgData map[string]interface{}) er
 	code, _ := json.Marshal(dataCode)
 	//新建规则链实体
 	instance, errs := rule_engine.NewRuleChainInstance(findOne.Id, code)
-	if len(errs) > 0 {
-		return errs[0]
+	if err != nil {
+		return errs
 	}
 	metadataVals := map[string]interface{}{
 		"deviceId":       device.Id,

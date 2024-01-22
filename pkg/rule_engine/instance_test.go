@@ -2,20 +2,20 @@ package rule_engine
 
 import (
 	"context"
-	"io/ioutil"
+	"os"
 	"pandax/pkg/rule_engine/message"
 	"pandax/pkg/rule_engine/nodes"
 	"testing"
 )
 
 func TestNewRuleChainInstance(t *testing.T) {
-	buf, err := ioutil.ReadFile("./manifest/manifest_sample.json")
+	buf, err := os.ReadFile("./manifest/manifest_sample.json")
 	if err != nil {
 		t.Error(err)
 	}
-	instance, errs := NewRuleChainInstance("11", buf)
-	if len(errs) > 0 {
-		t.Error(errs[0])
+	instance, err := NewRuleChainInstance("11", buf)
+	if err != nil {
+		t.Error(err)
 	}
 
 	metadata := message.Metadata{

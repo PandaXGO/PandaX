@@ -33,9 +33,9 @@ func InitEvents() {
 				return
 			}
 			//新建规则链实体
-			instance, errs := rule_engine.NewRuleChainInstance(ruleId, code)
-			if len(errs) > 0 {
-				global.Log.Error("规则链初始化失败", errs[0])
+			instance, err := rule_engine.NewRuleChainInstance(ruleId, code)
+			if err != nil {
+				global.Log.Error("规则链初始化失败", err)
 				return
 			}
 			for _, product := range *list {
