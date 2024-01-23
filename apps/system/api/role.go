@@ -3,13 +3,13 @@ package api
 import (
 	"errors"
 	"fmt"
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/casbin"
-	"github.com/PandaXGO/PandaKit/model"
-	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/PandaXGO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
+	"pandax/kit/biz"
+	"pandax/kit/casbin"
+	"pandax/kit/model"
+	"pandax/kit/restfulx"
+	"pandax/kit/utils"
 	"pandax/pkg/global"
 )
 
@@ -61,7 +61,7 @@ func (r *RoleApi) InsertRole(rc *restfulx.ReqCtx) {
 	role.RoleId = insert.RoleId
 	r.RoleMenuApp.Insert(insert.RoleId, role.MenuIds)
 	//添加权限
-	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+	ca := casbin.CasbinService{ModelPath: global.Conf.Casbin.ModelPath}
 	ca.UpdateCasbin(role.RoleKey, role.ApiIds)
 }
 
@@ -77,7 +77,7 @@ func (r *RoleApi) UpdateRole(rc *restfulx.ReqCtx) {
 	// 添加角色菜单绑定
 	r.RoleMenuApp.Insert(role.RoleId, role.MenuIds)
 	//修改api权限
-	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+	ca := casbin.CasbinService{ModelPath: global.Conf.Casbin.ModelPath}
 	ca.UpdateCasbin(role.RoleKey, role.ApiIds)
 }
 
@@ -139,7 +139,7 @@ func (r *RoleApi) DeleteRole(rc *restfulx.ReqCtx) {
 		if len(*list) == 0 {
 			delList = append(delList, rid)
 			//删除角色绑定api
-			ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+			ca := casbin.CasbinService{ModelPath: global.Conf.Casbin.ModelPath}
 			ca.ClearCasbin(0, role.RoleKey)
 		} else {
 			global.Log.Info(fmt.Sprintf("role:%d 存在用户无法删除", rid))

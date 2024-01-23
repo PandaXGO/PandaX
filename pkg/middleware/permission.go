@@ -1,12 +1,13 @@
 package middleware
 
 import (
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/casbin"
-	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/PandaXGO/PandaKit/token"
-	"github.com/dgrijalva/jwt-go"
+	"pandax/kit/biz"
+	"pandax/kit/casbin"
+	"pandax/kit/restfulx"
+	"pandax/kit/token"
 	"pandax/pkg/global"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 func PermissionHandler(rc *restfulx.ReqCtx) error {
@@ -34,11 +35,11 @@ func PermissionHandler(rc *restfulx.ReqCtx) error {
 		return nil
 	}
 
-	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
-	e := ca.Casbin()
+	ca := casbin.CasbinService{ModelPath: global.Conf.Casbin.ModelPath}
+	e := ca.GetCasbinEnforcer()
 	// 判断策略中是否存在
 	success, err := e.Enforce(loginAccount.RoleKey, rc.Request.Request.URL.Path, rc.Request.Request.Method)
-	if !success {
+	if !success || err != nil {
 		return biz.CasbinErr
 	}
 

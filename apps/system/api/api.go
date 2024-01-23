@@ -1,12 +1,12 @@
 package api
 
 import (
-	"github.com/PandaXGO/PandaKit/casbin"
-	"github.com/PandaXGO/PandaKit/model"
-	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/PandaXGO/PandaKit/utils"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
+	"pandax/kit/casbin"
+	"pandax/kit/model"
+	"pandax/kit/restfulx"
+	"pandax/kit/utils"
 	"pandax/pkg/global"
 )
 
@@ -60,6 +60,6 @@ func (s *SystemApiApi) GetAllApis(rc *restfulx.ReqCtx) {
 
 func (s *SystemApiApi) GetPolicyPathByRoleId(rc *restfulx.ReqCtx) {
 	roleKey := rc.Request.QueryParameter("roleKey")
-	ca := casbin.CasbinS{ModelPath: global.Conf.Casbin.ModelPath}
+	ca := casbin.CasbinService{ModelPath: global.Conf.Casbin.ModelPath}
 	rc.ResData = ca.GetPolicyPathByRoleId(roleKey)
 }
