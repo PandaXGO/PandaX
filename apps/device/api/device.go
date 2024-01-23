@@ -8,9 +8,9 @@ package api
 import (
 	"fmt"
 	"pandax/apps/device/util"
-	"pandax/kit/biz"
-	"pandax/kit/model"
-	"pandax/kit/restfulx"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/pkg/global"
 	model2 "pandax/pkg/global/model"
 	"pandax/pkg/shadow"
