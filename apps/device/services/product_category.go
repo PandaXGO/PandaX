@@ -2,8 +2,8 @@ package services
 
 import (
 	"errors"
-	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/entity"
+	"pandax/kit/biz"
 	"pandax/pkg/global"
 )
 

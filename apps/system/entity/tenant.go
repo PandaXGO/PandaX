@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"github.com/PandaXGO/PandaKit/model"
+	"pandax/kit/model"
 	"time"
 )
 

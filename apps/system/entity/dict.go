@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/PandaXGO/PandaKit/model"
+import "pandax/kit/model"
 
 type SysDictData struct {
 	DictCode  int64  `json:"dictCode" gorm:"primary_key;AUTO_INCREMENT"`

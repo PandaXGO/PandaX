@@ -1,13 +1,14 @@
 package router
 
 import (
-	"github.com/PandaXGO/PandaKit/model"
-	"github.com/PandaXGO/PandaKit/restfulx"
-	restfulspec "github.com/emicklei/go-restful-openapi/v2"
-	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/system/api"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
+	"pandax/kit/model"
+	"pandax/kit/restfulx"
+
+	restfulspec "github.com/emicklei/go-restful-openapi/v2"
+	"github.com/emicklei/go-restful/v3"
 )
 
 func InitDictRouter(container *restful.Container) {

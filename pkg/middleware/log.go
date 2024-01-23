@@ -3,13 +3,14 @@ package middleware
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/logger"
-	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/PandaXGO/PandaKit/utils"
-	"github.com/sirupsen/logrus"
+	"pandax/kit/biz"
+	"pandax/kit/logger"
+	"pandax/kit/restfulx"
+	"pandax/kit/utils"
 	"reflect"
 	"runtime/debug"
+
+	"github.com/sirupsen/logrus"
 )
 
 func LogHandler(rc *restfulx.ReqCtx) error {

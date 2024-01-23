@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/PandaXGO/PandaKit/biz"
+	"pandax/kit/biz"
 )
 
 type Jwt struct {

@@ -2,15 +2,14 @@ package main
 
 import (
 	"context"
-	"github.com/PandaXGO/PandaKit/logger"
-	"github.com/PandaXGO/PandaKit/rediscli"
-	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/PandaXGO/PandaKit/starter"
-	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"os/signal"
 	"pandax/iothub"
+	"pandax/kit/logger"
+	"pandax/kit/rediscli"
+	"pandax/kit/restfulx"
+	"pandax/kit/starter"
 	"pandax/pkg/cache"
 	"pandax/pkg/config"
 	"pandax/pkg/global"
@@ -18,6 +17,8 @@ import (
 	"pandax/pkg/middleware"
 	"pandax/pkg/tdengine"
 	"syscall"
+
+	"github.com/spf13/cobra"
 )
 
 var (

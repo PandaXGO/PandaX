@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/PandaXGO/PandaKit/model"
+import "pandax/kit/model"
 
 type SysConfig struct {
 	ConfigId    int64  `json:"configId" gorm:"primaryKey;AUTO_INCREMENT;comment:主键编码"`

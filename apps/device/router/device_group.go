@@ -1,12 +1,13 @@
 package router
 
 import (
-	"github.com/PandaXGO/PandaKit/restfulx"
-	restfulspec "github.com/emicklei/go-restful-openapi/v2"
-	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/device/api"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	"pandax/kit/restfulx"
+
+	restfulspec "github.com/emicklei/go-restful-openapi/v2"
+	"github.com/emicklei/go-restful/v3"
 )
 
 func InitDeviceGroupRouter(container *restful.Container) {

@@ -4,10 +4,11 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"fmt"
-	"github.com/PandaXGO/PandaKit/httpclient"
-	_ "github.com/taosdata/driver-go/v3/taosRestful"
+	"pandax/kit/httpclient"
 	"strings"
 	"time"
+
+	_ "github.com/taosdata/driver-go/v3/taosRestful"
 )
 
 type TdEngine struct {

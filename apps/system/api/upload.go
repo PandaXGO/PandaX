@@ -2,11 +2,11 @@ package api
 
 import (
 	"fmt"
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/oss"
-	"github.com/PandaXGO/PandaKit/restfulx"
 	"net/http"
 	"os"
+	"pandax/kit/biz"
+	"pandax/kit/oss"
+	"pandax/kit/restfulx"
 	"pandax/pkg/config"
 	"pandax/pkg/global"
 	"pandax/pkg/tool"

@@ -1,12 +1,12 @@
 package api
 
 import (
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/system/api/vo"
 	entity "pandax/apps/system/entity"
 	services "pandax/apps/system/services"
+	"pandax/kit/biz"
+	"pandax/kit/restfulx"
+	"pandax/kit/utils"
 )
 
 type MenuApi struct {

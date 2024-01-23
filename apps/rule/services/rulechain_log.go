@@ -7,8 +7,8 @@
 package services
 
 import (
-	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/rule/entity"
+	"pandax/kit/biz"
 	"pandax/pkg/global"
 	"pandax/pkg/global/model"
 )

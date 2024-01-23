@@ -3,8 +3,8 @@ package ys
 import (
 	"errors"
 	"fmt"
-	"github.com/PandaXGO/PandaKit/httpclient"
 	"log"
+	"pandax/kit/httpclient"
 	"strings"
 	"time"
 )

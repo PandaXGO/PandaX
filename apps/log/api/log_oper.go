@@ -1,11 +1,11 @@
 package api
 
 import (
-	"github.com/PandaXGO/PandaKit/model"
-	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
+	"pandax/kit/model"
+	"pandax/kit/restfulx"
+	"pandax/kit/utils"
 )
 
 type LogOperApi struct {

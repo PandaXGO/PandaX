@@ -8,7 +8,7 @@ import (
 	ruleEntity "pandax/apps/rule/entity"
 	ruleService "pandax/apps/rule/services"
 	"pandax/iothub/netbase"
-	"github.com/PandaXGO/PandaKit/biz"
+	"pandax/kit/biz"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	"pandax/pkg/global/model"
@@ -155,7 +155,7 @@ func SendZtWebsocket(deviceId, message string) {
 		"attrs":  msgVals,
 	}
 	data, _ := json.Marshal(twinData)
-		for stageid := range websocket.Wsp {
+	for stageid := range websocket.Wsp {
 		CJNR := fmt.Sprintf(`{"MESSAGETYPE":"01","MESSAGECONTENT": %s}`, string(data))
 		websocket.SendMessage(CJNR, stageid)
 	}

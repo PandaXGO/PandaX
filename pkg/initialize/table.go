@@ -1,11 +1,11 @@
 package initialize
 
 import (
-	"github.com/PandaXGO/PandaKit/biz"
 	devEntity "pandax/apps/develop/entity"
 	jobEntity "pandax/apps/job/entity"
 	logEntity "pandax/apps/log/entity"
 	systemEntity "pandax/apps/system/entity"
+	"pandax/kit/biz"
 	"pandax/pkg/global"
 )
 

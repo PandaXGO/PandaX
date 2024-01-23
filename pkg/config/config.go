@@ -3,8 +3,8 @@ package config
 import (
 	"flag"
 	"fmt"
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/utils"
+	"pandax/kit/biz"
+	"pandax/kit/utils"
 	"path/filepath"
 )
 

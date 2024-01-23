@@ -1,8 +1,8 @@
 package entity
 
 import (
-	"github.com/PandaXGO/PandaKit/casbin"
-	"github.com/PandaXGO/PandaKit/model"
+	"pandax/kit/casbin"
+	"pandax/kit/model"
 )
 
 const (

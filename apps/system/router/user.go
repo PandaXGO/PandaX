@@ -1,17 +1,18 @@
 package router
 
 import (
-	"github.com/PandaXGO/PandaKit/model"
-	restfulspec "github.com/emicklei/go-restful-openapi/v2"
-	"github.com/emicklei/go-restful/v3"
 	"pandax/apps/system/api"
 	"pandax/apps/system/api/form"
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
+	"pandax/kit/model"
 
-	"github.com/PandaXGO/PandaKit/restfulx"
+	restfulspec "github.com/emicklei/go-restful-openapi/v2"
+	"github.com/emicklei/go-restful/v3"
+
 	logServices "pandax/apps/log/services"
+	"pandax/kit/restfulx"
 )
 
 func InitUserRouter(container *restful.Container) {

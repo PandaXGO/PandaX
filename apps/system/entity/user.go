@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/PandaXGO/PandaKit/model"
+import "pandax/kit/model"
 
 type LoginM struct {
 	Username string `gorm:"type:varchar(64)" json:"username"`

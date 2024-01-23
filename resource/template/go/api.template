@@ -5,12 +5,12 @@ package api
 // 生成人：{{.FunctionAuthor}}
 // ==========================================================================
 import (
-    "github.com/PandaXGO/PandaKit/model"
-    "github.com/PandaXGO/PandaKit/restfulx"
+    "pandax/kit/model"
+    "pandax/kit/restfulx"
 
 	"pandax/apps/{{.PackageName}}/entity"
 	"pandax/apps/{{.PackageName}}/services"
-	"github.com/PandaXGO/PandaKit/utils"
+	"pandax/kit/utils"
 )
 
 type {{.ClassName}}Api struct {

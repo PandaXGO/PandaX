@@ -7,9 +7,9 @@ package api
 // ==========================================================================
 import (
 	"fmt"
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/model"
-	"github.com/PandaXGO/PandaKit/restfulx"
+	"pandax/kit/biz"
+	"pandax/kit/model"
+	"pandax/kit/restfulx"
 	"pandax/pkg/global"
 	model2 "pandax/pkg/global/model"
 	"strings"

@@ -13,8 +13,8 @@ import (
 	"pandax/apps/develop/services"
 	sysEntity "pandax/apps/system/entity"
 	sysServices "pandax/apps/system/services"
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/utils"
+	"pandax/kit/biz"
+	"pandax/kit/utils"
 	"pandax/pkg/global"
 
 	"github.com/kakuilan/kgo"

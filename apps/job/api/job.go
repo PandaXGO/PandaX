@@ -1,13 +1,13 @@
 package api
 
 import (
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/model"
-	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/job/api/from"
 	"pandax/apps/job/entity"
 	"pandax/apps/job/jobs"
 	"pandax/apps/job/services"
+	"pandax/kit/biz"
+	"pandax/kit/model"
+	"pandax/kit/restfulx"
 	model2 "pandax/pkg/global/model"
 	"strings"
 )

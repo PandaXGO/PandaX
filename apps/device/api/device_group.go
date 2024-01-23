@@ -1,10 +1,10 @@
 package api
 
 import (
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	"pandax/kit/biz"
+	"pandax/kit/restfulx"
 	"pandax/pkg/global/model"
 	"strings"
 )

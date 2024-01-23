@@ -2,14 +2,15 @@ package api
 
 import (
 	"fmt"
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/PandaXGO/PandaKit/ws"
+	"pandax/kit/biz"
+	"pandax/kit/restfulx"
+	"pandax/kit/ws"
+	"pandax/pkg/middleware"
+	"runtime"
+
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
 	"github.com/kakuilan/kgo"
-	"pandax/pkg/middleware"
-	"runtime"
 )
 
 type System struct{}

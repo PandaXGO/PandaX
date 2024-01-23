@@ -3,10 +3,10 @@ package api
 // ==========================================================================
 import (
 	"encoding/json"
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/model"
-	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/device/util"
+	"pandax/kit/biz"
+	"pandax/kit/model"
+	"pandax/kit/restfulx"
 	"pandax/pkg/global"
 	model2 "pandax/pkg/global/model"
 	"strings"
