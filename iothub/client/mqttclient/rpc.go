@@ -26,7 +26,7 @@ type RpcRequest struct {
 // RequestCmd 下发指令
 func (rpc RpcRequest) RequestCmd(deviceId, rpcPayload string) error {
 	topic := fmt.Sprintf(RpcReqTopic, rpc.RequestId)
-	value, ok := MqttClient.Load(deviceId)
+	value, ok := Session.Load(deviceId)
 	if !ok {
 		return errors.New("为获取到设备的MQTT连接")
 	}
@@ -35,7 +35,7 @@ func (rpc RpcRequest) RequestCmd(deviceId, rpcPayload string) error {
 
 func (rpc RpcRequest) Pub(deviceId, reqPayload string) error {
 	topic := fmt.Sprintf(RpcRespTopic, rpc.RequestId)
-	value, ok := MqttClient.Load(deviceId)
+	value, ok := Session.Load(deviceId)
 	if !ok {
 		return errors.New("为获取到设备的MQTT连接")
 	}

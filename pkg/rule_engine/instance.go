@@ -38,23 +38,23 @@ func newInstanceWithManifest(m *manifest.Manifest) (*RuleChainInstance, error) {
 		return nil, err
 	}
 	r := &RuleChainInstance{
-		firstRuleNodeID: m.FirstRuleNodeID,
+		firstRuleNodeID: m.FirstRuleNodeId,
 		nodes:           nodes,
 	}
 	return r, nil
 }
 
 func (c *RuleChainInstance) StartRuleChain(ctx context.Context, msg *message.Message) error {
-	debugChan := make(chan *message.DebugMessage, 100)
+	debugChan := make(chan *message.DebugData, 100)
 	endDebugChan := make(chan struct{})
 
 	go func() {
 		for {
 			select {
 			case debugMsg := <-debugChan:
-				ruleChainDebugData.Add(c.ruleID, debugMsg.NodeID, debugMsg)
+				ruleChainDebugData.Add(c.ruleID, debugMsg.NodeId, *debugMsg)
 			case <-endDebugChan:
-				logrus.Debugf("规则链%s,执行结束", msg.ID)
+				logrus.Debugf("规则链%s,执行结束", msg.Id)
 				return
 			}
 		}

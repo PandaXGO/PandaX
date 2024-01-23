@@ -1,25 +1,26 @@
 package api
 
 import (
-	"github.com/PandaXGO/PandaKit/model"
-	"github.com/PandaXGO/PandaKit/token"
+	"pandax/apps/system/api/form"
+	"pandax/apps/system/api/vo"
+	"pandax/apps/system/entity"
+	"pandax/kit/model"
+	"pandax/kit/token"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/kakuilan/kgo"
 	"github.com/mssola/user_agent"
-	"pandax/apps/system/api/form"
-	"pandax/apps/system/api/vo"
-	"pandax/apps/system/entity"
 
 	logEntity "pandax/apps/log/entity"
 	logServices "pandax/apps/log/services"
 
-	"github.com/PandaXGO/PandaKit/biz"
-	"github.com/PandaXGO/PandaKit/captcha"
-	filek "github.com/PandaXGO/PandaKit/file"
-	"github.com/PandaXGO/PandaKit/restfulx"
-	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/system/services"
+	"pandax/kit/biz"
+	"pandax/kit/captcha"
+	filek "pandax/kit/file"
+	"pandax/kit/restfulx"
+	"pandax/kit/utils"
 	"pandax/pkg/global"
 	"strings"
 	"time"
@@ -37,7 +38,7 @@ type UserApi struct {
 
 // GenerateCaptcha 获取验证码
 func (u *UserApi) GenerateCaptcha(request *restful.Request, response *restful.Response) {
-	id, image := captcha.Generate()
+	id, image, _ := captcha.Generate()
 	response.WriteEntity(vo.CaptchaVo{Base64Captcha: image, CaptchaId: id})
 }
 
