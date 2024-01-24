@@ -91,7 +91,7 @@ func (q *qiniuOss) PutObj(objectName string, file io.Reader) error {
 
 func (q *qiniuOss) Get(objectName, downloadedFileName string) error {
 	publicAccessURL := storage.MakePublicURL(q.config.Domain, objectName)
-	err := utilFile.DownloadFile(publicAccessURL, downloadedFileName)
+	err := utilFile.DownloadFileWithConcurrency(publicAccessURL, downloadedFileName)
 	if err != nil {
 		return errors.Wrapf(err, "qiniu oss get file fail")
 	}
