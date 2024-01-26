@@ -1,1 +1,2 @@
-taskkill /pid 29720  -t  -f
+taskkill /im /f /t pandax.exe
+taskkill /im /f /t go.exe
