@@ -21,7 +21,7 @@
 组态大屏：http://101.35.247.125:7790/  
 规则引擎：http://101.35.247.125:7791/
 
-## Debian/Ubuntu系统快速启动
+## Debian/Ubuntu系统快速部署测试环境
 
 ``` sh
 git clone https://gitee.com/XM-GO/PandaX.git
