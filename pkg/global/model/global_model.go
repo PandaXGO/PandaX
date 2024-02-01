@@ -16,4 +16,6 @@ type BaseAuthModel struct {
 	OrgId     int64     `json:"orgId"  gorm:"type:int;comment:机构ID"`
 	CreatedAt time.Time `gorm:"column:create_time" json:"createTime" form:"create_time"`
 	UpdatedAt time.Time `gorm:"column:update_time" json:"updateTime" form:"update_time"`
+
+	RoleId int64 `gorm:"-"` // 角色数据权限
 }

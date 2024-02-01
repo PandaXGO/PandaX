@@ -17,8 +17,6 @@ type RuleChainBase struct {
 	RuleName   string `gorm:"ruleName;type:varchar(50);comment:名称" json:"ruleName"`
 	RuleBase64 string `gorm:"ruleBase64;type:longtext;comment:Base64缩略图" json:"ruleBase64"` //缩略图 base64
 	RuleRemark string `gorm:"ruleRemark;type:varchar(256);comment:说明" json:"ruleRemark"`
-
-	RoleId int64 `gorm:"-"` // 角色数据权限
 }
 
 type RuleChain struct {

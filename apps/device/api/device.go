@@ -246,7 +246,8 @@ func (p *DeviceApi) ScreenTwinData(rc *restfulx.ReqCtx) {
 		}
 		rc.ResData = vp
 	} else {
-		device := entity.Device{Pid: classId, RoleId: rc.LoginAccount.RoleId}
+		device := entity.Device{Pid: classId}
+		device.RoleId = rc.LoginAccount.RoleId
 		device.Owner = rc.LoginAccount.UserName
 		findList, _, _ := p.DeviceApp.FindListPage(pageNum, pageSize, device)
 		vt := make([]entity.VisualTwin, 0)

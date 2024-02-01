@@ -20,8 +20,6 @@ type DeviceGroup struct {
 	Ext         Ext    `json:"ext" gorm:"type:json;comment:扩展"` //可扩展的kv map,承载设备组的外围信息
 
 	Children []DeviceGroup `json:"children" gorm:"-"` //子节点
-
-	RoleId int64 `gorm:"-"` // 角色数据权限
 }
 
 type DeviceGroupLabel struct {
@@ -47,7 +45,6 @@ type Device struct {
 	Ext         Ext       `json:"ext" gorm:"type:json;comment:扩展"`                  //可扩展的kv map,承载设备组的外围信息
 
 	Protocol string `json:"protocol" gorm:"-"`
-	RoleId   int64  `gorm:"-"` // 角色数据权限
 }
 
 type DeviceRes struct {
