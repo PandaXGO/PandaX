@@ -301,6 +301,14 @@ func (u *UserApi) UpdateSysUser(rc *restfulx.ReqCtx) {
 	u.UserApp.Update(sysUser)
 }
 
+// UpdateSysUserSelf 用户修改数据
+func (u *UserApi) UpdateSysUserSelf(rc *restfulx.ReqCtx) {
+	var sysUser entity.SysUser
+	restfulx.BindJsonAndValid(rc, &sysUser)
+	sysUser.UserId = rc.LoginAccount.UserId
+	u.UserApp.Update(sysUser)
+}
+
 // UpdateSysUserStu 修改用户状态
 func (u *UserApi) UpdateSysUserStu(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser

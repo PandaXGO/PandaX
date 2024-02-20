@@ -68,6 +68,14 @@ func InitUserRouter(container *restful.Container) {
 		Writes(model.ResultPage{}).
 		Returns(200, "OK", model.ResultPage{}))
 
+	ws.Route(ws.GET("/me").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取个人信息").Handle(s.GetSysUserProfile)
+	}).
+		Doc("获取个人信息").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Writes(vo.UserVo{}).
+		Returns(200, "OK", vo.UserVo{}))
+
 	ws.Route(ws.GET("/getById/{userId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取用户信息").Handle(s.GetSysUser)
 	}).
@@ -104,6 +112,13 @@ func InitUserRouter(container *restful.Container) {
 
 	ws.Route(ws.PUT("").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("修改用户信息").Handle(s.UpdateSysUser)
+	}).
+		Doc("修改用户信息").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Reads(entity.SysUser{}))
+
+	ws.Route(ws.PUT("/profile").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("用户修改信息").Handle(s.UpdateSysUserSelf)
 	}).
 		Doc("修改用户信息").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
