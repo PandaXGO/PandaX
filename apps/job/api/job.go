@@ -22,7 +22,8 @@ func (j *JobApi) CreateJob(rc *restfulx.ReqCtx) {
 	job.Id = model2.GenerateID()
 	job.Owner = rc.LoginAccount.UserName
 	job.OrgId = rc.LoginAccount.OrganizationId
-	j.JobApp.Insert(job)
+	_, err := j.JobApp.Insert(job)
+	biz.ErrIsNil(err, "添加任务失败")
 }
 
 func (j *JobApi) GetJobList(rc *restfulx.ReqCtx) {
@@ -35,7 +36,8 @@ func (j *JobApi) GetJobList(rc *restfulx.ReqCtx) {
 	job.RoleId = rc.LoginAccount.RoleId
 	job.Owner = rc.LoginAccount.UserName
 
-	list, total := j.JobApp.FindListPage(pageNum, pageSize, job)
+	list, total, err := j.JobApp.FindListPage(pageNum, pageSize, job)
+	biz.ErrIsNil(err, "查询任务列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -46,35 +48,39 @@ func (j *JobApi) GetJobList(rc *restfulx.ReqCtx) {
 
 func (j *JobApi) GetJob(rc *restfulx.ReqCtx) {
 	jobId := restfulx.PathParam(rc, "jobId")
-	rc.ResData = j.JobApp.FindOne(jobId)
+	data, err := j.JobApp.FindOne(jobId)
+	biz.ErrIsNil(err, "查询任务失败")
+	rc.ResData = data
 }
 
 func (l *JobApi) UpdateJob(rc *restfulx.ReqCtx) {
 	var job entity.SysJob
 	restfulx.BindQuery(rc, &job)
-	l.JobApp.Update(job)
+	_, err := l.JobApp.Update(job)
+	biz.ErrIsNil(err, "修改任务失败")
 }
 
 func (l *JobApi) DeleteJob(rc *restfulx.ReqCtx) {
 	jobIds := restfulx.PathParam(rc, "jobId")
 	group := strings.Split(jobIds, ",")
-	l.JobApp.Delete(group)
+	err := l.JobApp.Delete(group)
+	biz.ErrIsNil(err, "删除任务失败")
 }
 
 func (l *JobApi) StopJobForService(rc *restfulx.ReqCtx) {
 	jobId := restfulx.PathParam(rc, "jobId")
-	job := l.JobApp.FindOne(jobId)
+	job, err := l.JobApp.FindOne(jobId)
+	biz.ErrIsNil(err, "任务不存在")
 	jobs.Remove(jobs.Crontab, job.EntryId)
 }
 
 func (l *JobApi) StartJobForService(rc *restfulx.ReqCtx) {
 	jobId := restfulx.PathParam(rc, "jobId")
-	job := l.JobApp.FindOne(jobId)
-
+	job, err := l.JobApp.FindOne(jobId)
+	biz.ErrIsNil(err, "任务不存在")
 	biz.IsTrue(job.Status == "0", "以关闭的任务不能开启")
 	biz.IsTrue(job.EntryId == 0, "任务不能重复启动")
 
-	var err error
 	var j = &jobs.ExecJob{}
 	j.InvokeTarget = job.TargetInvoke
 	j.CronExpression = job.CronExpression
@@ -87,7 +93,8 @@ func (l *JobApi) StartJobForService(rc *restfulx.ReqCtx) {
 	job.EntryId, err = jobs.AddJob(jobs.Crontab, j)
 	biz.ErrIsNil(err, "添加任务失败，可能任务表达式错误")
 
-	l.JobApp.Update(*job)
+	_, err = l.JobApp.Update(*job)
+	biz.ErrIsNil(err, "修改任务失败")
 }
 
 func (l *JobApi) UpdateStatusJob(rc *restfulx.ReqCtx) {
@@ -96,5 +103,6 @@ func (l *JobApi) UpdateStatusJob(rc *restfulx.ReqCtx) {
 	sjob := entity.SysJob{}
 	sjob.Id = job.JobId
 	sjob.Status = job.Status
-	l.JobApp.Update(sjob)
+	_, err := l.JobApp.Update(sjob)
+	biz.ErrIsNil(err, "修改任务状态失败")
 }

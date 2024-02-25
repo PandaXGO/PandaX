@@ -2,20 +2,19 @@ package services
 
 import (
 	"pandax/apps/job/entity"
-	"pandax/kit/biz"
 	"pandax/pkg/global"
 	"pandax/pkg/global/model"
 )
 
 type (
 	JobModel interface {
-		Insert(data entity.SysJob) *entity.SysJob
-		FindOne(jobId string) *entity.SysJob
-		FindListPage(page, pageSize int, data entity.SysJob) (*[]entity.SysJob, int64)
-		FindList(data entity.SysJob) *[]entity.SysJob
-		Update(data entity.SysJob) *entity.SysJob
-		Delete(jobId []string)
-		FindByEntryId(entryId int64) *entity.SysJob
+		Insert(data entity.SysJob) (*entity.SysJob, error)
+		FindOne(jobId string) (*entity.SysJob, error)
+		FindListPage(page, pageSize int, data entity.SysJob) (*[]entity.SysJob, int64, error)
+		FindList(data entity.SysJob) (*[]entity.SysJob, error)
+		Update(data entity.SysJob) (*entity.SysJob, error)
+		Delete(jobId []string) error
+		FindByEntryId(entryId int64) (*entity.SysJob, error)
 		RemoveAllEntryID() error
 		RemoveEntryID(EntryID int) error
 	}
@@ -29,19 +28,18 @@ var JobModelDao JobModel = &jobModelImpl{
 	table: `jobs`,
 }
 
-func (m *jobModelImpl) Insert(data entity.SysJob) *entity.SysJob {
-	global.Db.Table(m.table).Create(&data)
-	return &data
+func (m *jobModelImpl) Insert(data entity.SysJob) (*entity.SysJob, error) {
+	err := global.Db.Table(m.table).Create(&data).Error
+	return &data, err
 }
 
-func (m *jobModelImpl) FindOne(jobId string) *entity.SysJob {
+func (m *jobModelImpl) FindOne(jobId string) (*entity.SysJob, error) {
 	resData := new(entity.SysJob)
 	err := global.Db.Table(m.table).Where("id = ?", jobId).First(resData).Error
-	biz.ErrIsNil(err, "查询任务信息失败")
-	return resData
+	return resData, err
 }
 
-func (m *jobModelImpl) FindListPage(page, pageSize int, data entity.SysJob) (*[]entity.SysJob, int64) {
+func (m *jobModelImpl) FindListPage(page, pageSize int, data entity.SysJob) (*[]entity.SysJob, int64, error) {
 	list := make([]entity.SysJob, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -58,13 +56,14 @@ func (m *jobModelImpl) FindListPage(page, pageSize int, data entity.SysJob) (*[]
 	model.OrgAuthSet(db, data.RoleId, data.Owner)
 
 	err := db.Count(&total).Error
+	if err != nil {
+		return &list, total, err
+	}
 	err = db.Order("create_time desc").Limit(pageSize).Offset(offset).Find(&list).Error
-
-	biz.ErrIsNil(err, "查询任务分页信息失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *jobModelImpl) FindList(data entity.SysJob) *[]entity.SysJob {
+func (m *jobModelImpl) FindList(data entity.SysJob) (*[]entity.SysJob, error) {
 	list := make([]entity.SysJob, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
@@ -75,30 +74,28 @@ func (m *jobModelImpl) FindList(data entity.SysJob) *[]entity.SysJob {
 		db = db.Where("status = ?", data.Status)
 	}
 	// 组织数据访问权限
-	model.OrgAuthSet(db, data.RoleId, data.Owner)
-	err := db.Order("create_time desc").Find(&list).Error
+	err := model.OrgAuthSet(db, data.RoleId, data.Owner)
 	if err != nil {
-		global.Log.Error("查询任务分页信息失败:" + err.Error())
+		return nil, err
 	}
-	return &list
+	err = db.Order("create_time desc").Find(&list).Error
+	return &list, err
 }
 
-func (m *jobModelImpl) Update(data entity.SysJob) *entity.SysJob {
-	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改任务失败")
-	return &data
+func (m *jobModelImpl) Update(data entity.SysJob) (*entity.SysJob, error) {
+	err := global.Db.Table(m.table).Updates(&data).Error
+	return &data, err
 }
 
-func (m *jobModelImpl) Delete(jobIds []string) {
+func (m *jobModelImpl) Delete(jobIds []string) error {
 	err := global.Db.Table(m.table).Delete(&entity.SysJob{}, "id in (?)", jobIds).Error
-	biz.ErrIsNil(err, "删除操作日志信息失败")
-	return
+	return err
 }
 
-func (m *jobModelImpl) FindByEntryId(entryId int64) *entity.SysJob {
+func (m *jobModelImpl) FindByEntryId(entryId int64) (*entity.SysJob, error) {
 	resData := new(entity.SysJob)
 	err := global.Db.Table(m.table).Where("entry_id = ?", entryId).First(resData).Error
-	biz.ErrIsNil(err, "查询失败")
-	return resData
+	return resData, err
 }
 
 func (m *jobModelImpl) RemoveAllEntryID() error {

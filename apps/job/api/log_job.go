@@ -3,6 +3,7 @@ package api
 import (
 	"pandax/apps/job/entity"
 	"pandax/apps/job/services"
+	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
 	"strings"
@@ -23,7 +24,8 @@ func (l *JobLogApi) GetJobLogList(rc *restfulx.ReqCtx) {
 	job.RoleId = rc.LoginAccount.RoleId
 	job.Owner = rc.LoginAccount.UserName
 
-	list, total := l.JobLogApp.FindListPage(pageNum, pageSize, job)
+	list, total, err := l.JobLogApp.FindListPage(pageNum, pageSize, job)
+	biz.ErrIsNil(err, "查询任务列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -36,10 +38,12 @@ func (l *JobLogApi) GetJobLogList(rc *restfulx.ReqCtx) {
 func (l *JobLogApi) DeleteJobLog(rc *restfulx.ReqCtx) {
 	logIds := restfulx.PathParam(rc, "id")
 	group := strings.Split(logIds, ",")
-	l.JobLogApp.Delete(group)
+	err := l.JobLogApp.Delete(group)
+	biz.ErrIsNil(err, "删除失败")
 }
 
 // DeleteAll 清空登录日志
 func (l *JobLogApi) DeleteAll(rc *restfulx.ReqCtx) {
-	l.JobLogApp.DeleteAll()
+	err := l.JobLogApp.DeleteAll()
+	biz.ErrIsNil(err, "清空失败")
 }
