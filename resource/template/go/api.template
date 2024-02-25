@@ -10,6 +10,7 @@ import (
 
 	"pandax/apps/{{.PackageName}}/entity"
 	"pandax/apps/{{.PackageName}}/services"
+	"pandax/kit/biz"
 	"pandax/kit/utils"
 )
 
@@ -32,8 +33,8 @@ func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *restfulx.ReqCtx) {
     {{- end -}}
 	{{- end }}
 
-	list, total := p.{{.ClassName}}App.FindListPage(pageNum, pageSize, data)
-
+	list, total,err := p.{{.ClassName}}App.FindListPage(pageNum, pageSize, data)
+    biz.ErrIsNil(err, "查询{{.TableComment}}列表失败")
 	rc.ResData = model.ResultPage{
     	Total: total,
     	PageNum: int64(pageNum),
@@ -46,11 +47,13 @@ func (p *{{.ClassName}}Api) Get{{.ClassName}}List(rc *restfulx.ReqCtx) {
 func (p *{{.ClassName}}Api) Get{{.ClassName}}(rc *restfulx.ReqCtx) {
     {{ if eq .PkGoType "string" -}}
     {{.PkJsonField}} := restfulx.PathParam(rc, "{{.PkJsonField}}")
-    rc.ResData = p.{{.ClassName}}App.FindOne({{.PkJsonField}})
+    data,err := p.{{.ClassName}}App.FindOne({{.PkJsonField}})
     {{- else -}}
     {{.PkJsonField}} := restfulx.PathParamInt(rc, "{{.PkJsonField}}")
-    rc.ResData = p.{{.ClassName}}App.FindOne(int64({{.PkJsonField}}))
+    data,err := p.{{.ClassName}}App.FindOne(int64({{.PkJsonField}}))
     {{- end}}
+    biz.ErrIsNil(err, "查询{{.TableComment}}失败")
+    rc.ResData = data
 }
 
 // Insert{{.ClassName}} 添加{{.FunctionName}}
@@ -58,7 +61,8 @@ func (p *{{.ClassName}}Api) Insert{{.ClassName}}(rc *restfulx.ReqCtx) {
 	var data entity.{{.ClassName}}
 	restfulx.BindQuery(rc, &data)
 
-	p.{{.ClassName}}App.Insert(data)
+	err := p.{{.ClassName}}App.Insert(data)
+	biz.ErrIsNil(err, "添加{{.TableComment}}失败")
 }
 
 // Update{{.ClassName}} 修改{{.FunctionName}}
@@ -66,7 +70,8 @@ func (p *{{.ClassName}}Api) Update{{.ClassName}}(rc *restfulx.ReqCtx) {
 	var data entity.{{.ClassName}}
 	restfulx.BindQuery(rc, &data)
 
-	p.{{.ClassName}}App.Update(data)
+	err := p.{{.ClassName}}App.Update(data)
+	biz.ErrIsNil(err, "修改{{.TableComment}}失败")
 }
 
 // Delete{{.ClassName}} 删除{{.FunctionName}}
@@ -78,5 +83,5 @@ func (p *{{.ClassName}}Api) Delete{{.ClassName}}(rc *restfulx.ReqCtx) {
     {{- else -}}
     {{.PkJsonField}}s := utils.IdsStrToIdsIntGroup({{.PkJsonField}})
     {{- end }}
-    p.{{.ClassName}}App.Delete({{.PkJsonField}}s)
+    biz.ErrIsNil(p.{{.ClassName}}App.Delete({{.PkJsonField}}s), "删除{{.TableComment}}失败")
 }

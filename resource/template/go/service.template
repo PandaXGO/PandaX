@@ -8,18 +8,17 @@ package services
 
 import (
     "pandax/apps/{{.PackageName}}/entity"
-    "pandax/kit/biz"
     "pandax/pkg/global"
 )
 
 type (
 	{{.ClassName}}Model interface {
-		Insert(data entity.{{.ClassName}}) *entity.{{.ClassName}}
-		FindOne({{.PkJsonField}} {{.PkGoType}}) *entity.{{.ClassName}}
-		FindListPage(page, pageSize int, data entity.{{.ClassName}}) (*[]entity.{{.ClassName}}, int64)
-		FindList(data entity.{{ .ClassName }}) *[]entity.{{.ClassName}}
-		Update(data entity.{{.ClassName}}) *entity.{{.ClassName}}
-		Delete({{.PkJsonField}}s []{{.PkGoType}})
+		Insert(data entity.{{.ClassName}}) (*entity.{{.ClassName}}, error)
+		FindOne({{.PkJsonField}} {{.PkGoType}}) (*entity.{{.ClassName}},error)
+		FindListPage(page, pageSize int, data entity.{{.ClassName}}) (*[]entity.{{.ClassName}}, int64, error)
+		FindList(data entity.{{ .ClassName }}) (*[]entity.{{.ClassName}},error)
+		Update(data entity.{{.ClassName}}) (*entity.{{.ClassName}},error)
+		Delete({{.PkJsonField}}s []{{.PkGoType}}) error
 	}
 
 	{{.BusinessName}}ModelImpl struct {
@@ -32,13 +31,12 @@ var {{.ClassName}}ModelDao {{.ClassName}}Model = &{{.BusinessName}}ModelImpl{
 	table: `{{.TableName}}`,
 }
 
-func (m *{{.BusinessName}}ModelImpl) Insert(data entity.{{$model}}) *entity.{{$model}} {
+func (m *{{.BusinessName}}ModelImpl) Insert(data entity.{{$model}}) (*entity.{{$model}}, error) {
 	err := global.Db.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "添加{{.TableComment}}失败")
-	return &data
+	return &data, err
 }
 
-func (m *{{.BusinessName}}ModelImpl) FindOne({{.PkJsonField}} {{.PkGoType}}) *entity.{{$model}} {
+func (m *{{.BusinessName}}ModelImpl) FindOne({{.PkJsonField}} {{.PkGoType}}) (*entity.{{$model}}, error) {
 	resData := new(entity.{{$model}})
 	db := global.Db.Table(m.table).Where("{{.PkColumn}} = ?", {{.PkJsonField}})
 	{{- range $index, $column := .Columns -}}
@@ -47,11 +45,10 @@ func (m *{{.BusinessName}}ModelImpl) FindOne({{.PkJsonField}} {{.PkGoType}}) *en
     {{- end -}}
     {{- end}}
 	err := db.First(resData).Error
-	biz.ErrIsNil(err, "查询{{.TableComment}}失败")
-	return resData
+	return resData, err
 }
 
-func (m *{{.BusinessName}}ModelImpl) FindListPage(page, pageSize int, data entity.{{$model}}) (*[]entity.{{$model}}, int64) {
+func (m *{{.BusinessName}}ModelImpl) FindListPage(page, pageSize int, data entity.{{$model}}) (*[]entity.{{$model}}, int64, error) {
 	list := make([]entity.{{$model}}, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -119,12 +116,14 @@ func (m *{{.BusinessName}}ModelImpl) FindListPage(page, pageSize int, data entit
     {{- end -}}
     {{- end}}
 	err := db.Count(&total).Error
+	if err != nil {
+        return &list, total, err
+    }
 	err = db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询{{.TableComment}}分页列表失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *{{.BusinessName}}ModelImpl) FindList(data entity.{{$model}}) *[]entity.{{$model}} {
+func (m *{{.BusinessName}}ModelImpl) FindList(data entity.{{$model}}) (*[]entity.{{$model}}, error) {
 	list := make([]entity.{{$model}}, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
@@ -189,15 +188,15 @@ func (m *{{.BusinessName}}ModelImpl) FindList(data entity.{{$model}}) *[]entity.
     db.Preload("{{$column.LinkTableClass}}")
     {{- end -}}
     {{- end}}
-	biz.ErrIsNil(db.Order("create_time").Find(&list).Error, "查询{{.TableComment}}列表失败")
-	return &list
+	err := db.Order("create_time").Find(&list).Error
+	return &list, err
 }
 
-func (m *{{.BusinessName}}ModelImpl) Update(data entity.{{$model}}) *entity.{{$model}} {
-	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改{{.TableComment}}失败")
-	return &data
+func (m *{{.BusinessName}}ModelImpl) Update(data entity.{{$model}}) (*entity.{{$model}}, error) {
+	err := global.Db.Table(m.table).Updates(&data).Error
+	return &data, err
 }
 
-func (m *{{.BusinessName}}ModelImpl) Delete({{.PkJsonField}}s []{{.PkGoType}}) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.{{$model}}{}, "{{.PkColumn}} in (?)", {{.PkJsonField}}s).Error, "删除{{.TableComment}}失败")
+func (m *{{.BusinessName}}ModelImpl) Delete({{.PkJsonField}}s []{{.PkGoType}}) error {
+	return global.Db.Table(m.table).Delete(&entity.{{$model}}{}, "{{.PkColumn}} in (?)", {{.PkJsonField}}s).Error
 }
