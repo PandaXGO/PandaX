@@ -54,6 +54,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 			// 获取规则链代码实体
 			instance := getRuleChainInstance(msg.DeviceAuth)
 			if instance == nil {
+				global.Log.Error("规则链实体不存在")
 				return
 			}
 			ruleMessage := buildRuleMessage(msg.DeviceAuth, msgVals, msg.Type)
@@ -109,7 +110,10 @@ func getRuleChainInstance(etoken *model.DeviceAuth) *rule_engine.RuleChainInstan
 		if err != nil {
 			return nil, err
 		}
-		rule := ruleService.RuleChainModelDao.FindOne(one.RuleChainId)
+		rule, err := ruleService.RuleChainModelDao.FindOne(one.RuleChainId)
+		if err != nil {
+			return nil, err
+		}
 		var lfData ruleEntity.RuleDataJson
 		err = tool.StringToStruct(rule.RuleDataJson, &lfData)
 		if err != nil {

@@ -25,7 +25,8 @@ func (r *RuleChainApi) GetNodeDebug(rc *restfulx.ReqCtx) {
 	ruleId := restfulx.QueryParam(rc, "ruleId")
 	nodeId := restfulx.QueryParam(rc, "nodeId")
 
-	total, list := rule_engine.GetDebugDataPage(pageNum, pageSize, ruleId, nodeId)
+	total, list, err := rule_engine.GetDebugDataPage(pageNum, pageSize, ruleId, nodeId)
+	biz.ErrIsNil(err, "获取规则测试数据错误")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -50,8 +51,8 @@ func (p *RuleChainApi) GetRuleChainList(rc *restfulx.ReqCtx) {
 	data.RoleId = rc.LoginAccount.RoleId
 	data.Owner = rc.LoginAccount.UserName
 
-	list, total := p.RuleChainApp.FindListPage(pageNum, pageSize, data)
-
+	list, total, err := p.RuleChainApp.FindListPage(pageNum, pageSize, data)
+	biz.ErrIsNil(err, "获取规则链列表错误")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -63,14 +64,17 @@ func (p *RuleChainApi) GetRuleChainList(rc *restfulx.ReqCtx) {
 func (p *RuleChainApi) GetRuleChainListLabel(rc *restfulx.ReqCtx) {
 	data := entity.RuleChain{}
 	data.RuleName = restfulx.QueryParam(rc, "ruleName")
-	list := p.RuleChainApp.FindListBaseLabel(data)
+	list, err := p.RuleChainApp.FindListBaseLabel(data)
+	biz.ErrIsNil(err, "获取规则链Label错误")
 	rc.ResData = list
 }
 
 // GetRuleChain 获取规则链
 func (p *RuleChainApi) GetRuleChain(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	rc.ResData = p.RuleChainApp.FindOne(id)
+	data, err := p.RuleChainApp.FindOne(id)
+	biz.ErrIsNil(err, "获取规则链信息错误")
+	rc.ResData = data
 }
 
 // InsertRuleChain 添加规则链
@@ -80,33 +84,38 @@ func (p *RuleChainApi) InsertRuleChain(rc *restfulx.ReqCtx) {
 	data.Id = model2.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
-	p.RuleChainApp.Insert(data)
+	_, err := p.RuleChainApp.Insert(data)
+	biz.ErrIsNil(err, "添加规则链错误")
 }
 
 // UpdateRuleChain 修改规则链
 func (p *RuleChainApi) UpdateRuleChain(rc *restfulx.ReqCtx) {
 	var data entity.RuleChain
 	restfulx.BindJsonAndValid(rc, &data)
-	p.RuleChainApp.Update(data)
+	_, err := p.RuleChainApp.Update(data)
+	biz.ErrIsNil(err, "修改规则链错误")
 }
 
 // DeleteRuleChain 删除规则链
 func (p *RuleChainApi) DeleteRuleChain(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	one := p.RuleChainApp.FindOne(id)
+	one, err := p.RuleChainApp.FindOne(id)
+	biz.ErrIsNil(err, "规则链不存在")
 	biz.IsTrue(!(one.Root == "1"), "主链不可被删除")
 	ids := strings.Split(id, ",")
-	p.RuleChainApp.Delete(ids)
+	biz.ErrIsNil(p.RuleChainApp.Delete(ids), "删除规则链失败")
 }
 
 // CloneRuleChain 克隆规则链
 func (p *RuleChainApi) CloneRuleChain(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
-	one := p.RuleChainApp.FindOne(id)
+	one, err := p.RuleChainApp.FindOne(id)
+	biz.ErrIsNil(err, "规则链不存在")
 	one.RuleName = one.RuleName + "-克隆"
 	one.Id = model2.GenerateID()
 	one.Root = "0"
-	p.RuleChainApp.Insert(*one)
+	_, err = p.RuleChainApp.Insert(*one)
+	biz.ErrIsNil(err, "克隆规则链失败")
 }
 
 // UpdateRuleRoot 修改根链
@@ -117,5 +126,6 @@ func (p *RuleChainApi) UpdateRuleRoot(rc *restfulx.ReqCtx) {
 	err := p.RuleChainApp.UpdateByRoot()
 	biz.ErrIsNil(err, "修改主链错误")
 	// 修改当前链为主链
-	p.RuleChainApp.Update(rule)
+	_, err = p.RuleChainApp.Update(rule)
+	biz.ErrIsNil(err, "修改当前链为主链错误")
 }

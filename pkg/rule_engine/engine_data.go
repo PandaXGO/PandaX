@@ -1,6 +1,7 @@
 package rule_engine
 
 import (
+	"errors"
 	"pandax/pkg/rule_engine/message"
 	"pandax/pkg/rule_engine/nodes"
 )
@@ -22,7 +23,7 @@ func ClearDebugData(ruleId, nodeId string) {
 	}
 }
 
-func GetDebugDataPage(page, pageSize int, ruleId, nodeId string) (int64, []message.DebugData) {
+func GetDebugDataPage(page, pageSize int, ruleId, nodeId string) (int64, []message.DebugData, error) {
 	if page < 1 {
 		page = 1
 	}
@@ -35,8 +36,8 @@ func GetDebugDataPage(page, pageSize int, ruleId, nodeId string) (int64, []messa
 			if end >= total {
 				end = total
 			}
-			return int64(total), nodeData.Items[offset:end]
+			return int64(total), nodeData.Items[offset:end], nil
 		}
 	}
-	return 0, nil
+	return 0, nil, errors.New("规则不存在")
 }

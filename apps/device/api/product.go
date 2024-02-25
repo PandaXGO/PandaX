@@ -111,7 +111,8 @@ func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 	data.OrgId = rc.LoginAccount.OrganizationId
 	// 如果未设置规则链，默认为主链
 	if data.RuleChainId == "" {
-		root := p.RuleApp.FindOneByRoot()
+		root, err := p.RuleApp.FindOneByRoot()
+		biz.ErrIsNil(err, "规则链查询错误")
 		data.RuleChainId = root.Id
 	}
 

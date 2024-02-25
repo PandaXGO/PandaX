@@ -21,7 +21,11 @@ func BuildRunDeviceRpc(deviceId, mode string, msgData map[string]interface{}) er
 	if device.LinkStatus != global.ONLINE {
 		return errors.New("设备不在线无法设置属性")
 	}
-	findOne := ruleService.RuleChainModelDao.FindOne(device.Product.RuleChainId)
+	findOne, err := ruleService.RuleChainModelDao.FindOne(device.Product.RuleChainId)
+	if err != nil {
+		global.Log.Error("查询规则链数据失败", err)
+		return errors.New("查询规则链数据失败")
+	}
 	ruleData := ruleEntity.RuleDataJson{}
 	err = tool.StringToStruct(findOne.RuleDataJson, &ruleData)
 	if err != nil {

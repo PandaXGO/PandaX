@@ -3,6 +3,7 @@ package api
 import (
 	"pandax/apps/rule/entity"
 	"pandax/apps/rule/services"
+	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
 	"pandax/pkg/rule_engine/nodes"
@@ -27,8 +28,8 @@ func (p *RuleChainMsgLogApi) GetRuleChainMsgLogList(rc *restfulx.ReqCtx) {
 	data.RoleId = rc.LoginAccount.RoleId
 	data.Owner = rc.LoginAccount.UserName
 
-	list, total := p.RuleChainMsgLogApp.FindListPage(pageNum, pageSize, data)
-
+	list, total, err := p.RuleChainMsgLogApp.FindListPage(pageNum, pageSize, data)
+	biz.ErrIsNil(err, "查询规则链日志列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -42,5 +43,5 @@ func (p *RuleChainMsgLogApi) DeleteRuleChainMsgLog(rc *restfulx.ReqCtx) {
 	data := entity.RuleChainMsgLog{}
 	data.DeviceName = restfulx.QueryParam(rc, "deviceName")
 	data.MsgType = restfulx.QueryParam(rc, "msgType")
-	p.RuleChainMsgLogApp.Delete(data)
+	biz.ErrIsNil(p.RuleChainMsgLogApp.Delete(data), "删除规则链日志失败")
 }
