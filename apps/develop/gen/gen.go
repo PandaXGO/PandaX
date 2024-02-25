@@ -148,6 +148,8 @@ func (g *Generator) Generate() (entity.DevGenTable, error) {
 	data.FunctionAuthor = "panda"
 
 	var wg sync.WaitGroup
+	columnChan := make(chan entity.DevGenTableColumn, len(dbColumn)) // 创建带缓冲的通道
+	
 	for x := 0; x < len(dbColumn); x++ {
 		index := x
 		wg.Add(1)
@@ -239,7 +241,7 @@ func (g *Generator) Generate() (entity.DevGenTable, error) {
 			} else {
 				column.IsRequired = "0"
 				column.IsInsert = "1"
-				if strings.Index(column.ColumnName, "name") >= 0 || strings.Index(column.ColumnName, "status") >= 0 {
+				if strings.Contains(column.ColumnName, "name") || strings.Contains(column.ColumnName, "status") {
 					column.IsRequired = "1"
 				}
 			}
@@ -278,10 +280,17 @@ func (g *Generator) Generate() (entity.DevGenTable, error) {
 				column.HtmlType = "select"
 			}
 
-			data.Columns = append(data.Columns, column)
+			columnChan <- column // 将处理结果放入通道
 		}(&wg, index)
 	}
 	wg.Wait()
+
+	close(columnChan) // 关闭通道
+
+	for column := range columnChan {
+		data.Columns = append(data.Columns, column) // 将通道中的结果放入data.Columns
+	}
+
 	return data, nil
 }
 

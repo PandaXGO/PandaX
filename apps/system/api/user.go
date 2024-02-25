@@ -45,6 +45,10 @@ func (u *UserApi) GenerateCaptcha(request *restful.Request, response *restful.Re
 // RefreshToken 刷新token
 func (u *UserApi) RefreshToken(rc *restfulx.ReqCtx) {
 	tokenStr := rc.Request.Request.Header.Get("X-TOKEN")
+	// 如果token为空，从请求参数中获取
+	if tokenStr == "" {
+		tokenStr = rc.Request.Request.URL.Query().Get("token")
+	}
 	j := token.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
 	token, err := j.RefreshToken(tokenStr)
 	biz.ErrIsNil(err, "刷新token失败")
@@ -294,6 +298,14 @@ func (u *UserApi) UpdateSysUser(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
 	restfulx.BindJsonAndValid(rc, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
+	u.UserApp.Update(sysUser)
+}
+
+// UpdateSysUserSelf 用户修改数据
+func (u *UserApi) UpdateSysUserSelf(rc *restfulx.ReqCtx) {
+	var sysUser entity.SysUser
+	restfulx.BindJsonAndValid(rc, &sysUser)
+	sysUser.UserId = rc.LoginAccount.UserId
 	u.UserApp.Update(sysUser)
 }
 
