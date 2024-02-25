@@ -450,12 +450,7 @@ CREATE TABLE `device_alarms`  (
 -- ----------------------------
 -- Records of device_alarms
 -- ----------------------------
-INSERT INTO `device_alarms` VALUES ('a45726cd56758eca709290c74', 'ws432', 2, 'panda', 'd_1928b99619910dae5a001fa7', 'p_3ba460634520cf4590dc90e5', '高温报警', 'MAJOR', '1', '{\"humidity\":41.6,\"temperature\":26.6,\"ts\":\"2023-09-14 08:58:24.593\"}', '2023-09-14 08:58:25');
-INSERT INTO `device_alarms` VALUES ('aa462b4c73d3670fe6e5f73cc', 'ws432', 2, 'panda', 'd_1928b99619910dae5a001fa7', 'p_3ba460634520cf4590dc90e5', '高温报警', 'MAJOR', '1', '{\"humidity\":41.6,\"temperature\":26.6,\"ts\":\"2023-08-17 16:40:47.677\"}', '2023-08-17 16:34:06');
-INSERT INTO `device_alarms` VALUES ('af3b39f8d8ca220fee001fcf', 'ws432', 2, 'panda', 'd_1928b99619910dae5a001fa7', 'p_3ba460634520cf4590dc90e5', '高温报警', 'MAJOR', '1', '{\"humidity\":43.6,\"temperature\":26.6,\"ts\":\"2023-08-07 16:26:09.443\"}', '2023-08-03 11:19:56');
-INSERT INTO `device_alarms` VALUES ('e765e9ef022812a8b89dfb4c', '', 2, 'panda', 'd_1928b99619910dae5a001fa7', 'p_3ba460634520cf4590dc90e5', '高温报警', 'MAJOR', '3', '{\"humidity\":43.6,\"temperature\":18.6,\"ts\":\"2023-08-03 11:16:38.617\"}', '2023-08-03 11:11:44');
-INSERT INTO `device_alarms` VALUES ('xjqWL6LtKK', 'ws432', 2, 'panda', '9GOIPOI6GQ', 'p_3ba460634520cf4590dc90e5', '高温报警', 'MAJOR', '1', '{\"temperature\":28.8,\"ts\":\"2023-09-22 15:03:30.271\"}', '2023-09-22 14:48:06');
-INSERT INTO `device_alarms` VALUES ('xjqWL6LtKQ', 'ws432', 2, 'panda', '9GOIPOI6GQ', 'p_3ba460634520cf4590dc90e5', '高温报警', 'MAJOR', '0', '{\"temperature\":28.2,\"ts\":\"2023-09-28 09:24:14.780\"}', '2023-09-22 14:48:06');
+
 
 -- ----------------------------
 -- Table structure for device_cmd_log
@@ -478,15 +473,7 @@ CREATE TABLE `device_cmd_log`  (
 -- ----------------------------
 -- Records of device_cmd_log
 -- ----------------------------
-INSERT INTO `device_cmd_log` VALUES ('5B7Lmbpltg', '9GOIPOI6GQ', 'restart', '{\"aa\":12,\"deviceNum\":\"ws432\"}', '0', '', '2023-10-14 09:56:28', '2023-10-14 09:56:28.053', '', 'single');
-INSERT INTO `device_cmd_log` VALUES ('8_HIP-icQQ', '9GOIPOI6GQ', 'restart', '{\"aa\":11,\"deviceNum\":\"ws432\"}', '0', '', '2023-10-14 09:40:09', '2023-10-14 09:40:09.437', '', 'single');
-INSERT INTO `device_cmd_log` VALUES ('atjwpxZ69A', '9GOIPOI6GQ', 'ota', '{\"version\":\"v1.4\",\"url\":\"http://127.0.0.1:7788/upload/get/0ab71ae4a9b9b6f045d43be8de89344d_20231005105659.zip\",\"module\":\"main\",\"check\":\"1586515d5f0216eb7d2d28204321edf5\"}', '0', '', '2023-10-05 11:45:19', '', '', NULL);
-INSERT INTO `device_cmd_log` VALUES ('cmd_de8489c9bf0da8f79e9573f5', 'd_1928b99619910dae5a001fa7', 'restart', '{\"aa\":444}', '0', '{\"aa\":\"7\"}', '2023-08-04 15:19:20', '2023-08-04 15:57:52', '', NULL);
-INSERT INTO `device_cmd_log` VALUES ('ExEH02Mhsg', 'lCtIzLLdIQ', 'closeD', '{\"close\":\"aaa\"}', '0', '', '2023-09-27 17:16:08', '', '', NULL);
-INSERT INTO `device_cmd_log` VALUES ('kOJqT2-1kg', 'lCtIzLLdIQ', 'closeD', '{\"close\":\"asd\"}', '0', '', '2023-09-27 17:21:04', '', '', NULL);
-INSERT INTO `device_cmd_log` VALUES ('LbPRgvmfSQ', '9GOIPOI6GQ', 'restart', '{\"aa\":12,\"deviceNum\":\"ws432\"}', '0', '', '2023-10-14 09:52:03', '2023-10-14 09:52:03.457', '', 'single');
-INSERT INTO `device_cmd_log` VALUES ('mtvm1Qd0PA', 'lCtIzLLdIQ', 'closeD', '{\"close\":\"010304026C00883BF0\"}', '0', '', '2023-09-27 16:45:12', '', '', NULL);
-INSERT INTO `device_cmd_log` VALUES ('QVtEIXPndA', '9GOIPOI6GQ', 'restart', '{\"aa\":34,\"deviceNum\":\"ws432\"}', '0', '', '2023-10-14 11:35:25', '2023-10-14 11:35:25.723', '', 'single');
+
 
 -- ----------------------------
 -- Table structure for device_groups
@@ -579,7 +566,6 @@ CREATE TABLE `job_logs`  (
 -- ----------------------------
 -- Records of job_logs
 -- ----------------------------
-INSERT INTO `job_logs` VALUES ('74GZAOIGuA', '', '2', '2023-08-08 17:46:00', '2023-08-08 17:46:00', 'adsa', 1, 'cronDevice', '任务运行成功，总耗时 0.001264', '0');
 
 -- ----------------------------
 -- Table structure for jobs
@@ -839,7 +825,6 @@ CREATE TABLE `rule_chain_msg_log`  (
 -- ----------------------------
 -- Records of rule_chain_msg_log
 -- ----------------------------
-INSERT INTO `rule_chain_msg_log` VALUES ('3453d', 2, 'panda', 'Telemetry', 'd_1928b99619910dae5a001fa7', 'ws432', '2023-07-31 14:23:13', 'Incoming message', '2023-09-06 15:28:45');
 
 -- ----------------------------
 -- Table structure for sys_apis
@@ -1356,8 +1341,6 @@ CREATE TABLE `sys_notices`  (
 -- Records of sys_notices
 -- ----------------------------
 INSERT INTO `sys_notices` VALUES (1, '关于学习交流的通知', '<p>发布<b>入群</b>通知&nbsp;<span style=\"color: var(--el-text-color-regular);\">467890197, 交流学习</span><span style=\"font-size: 14px; color: var(--el-text-color-regular);\"></span></p>', '1', 0, '2021-12-26 15:29:25', '2021-12-26 16:19:48', NULL, 'panda');
-INSERT INTO `sys_notices` VALUES (2, 'test', '<p>sdsad</p>', '1', 2, '2021-12-26 16:23:13', '2021-12-26 16:23:13', '2021-12-26 16:31:31', 'panda');
-INSERT INTO `sys_notices` VALUES (3, '版本更新通知：任务功能，通知功能完成', '<p><span style=\"font-size: 14px; color: var(--el-text-color-regular);\">', '1', 0, '2021-12-26 17:33:47', '2021-12-26 17:33:47', NULL, 'panda');
 
 -- ----------------------------
 -- Table structure for sys_organizations
@@ -1800,7 +1783,6 @@ INSERT INTO `sys_users` VALUES (1, 'pandax', '13818888888', 1, NULL, '', '0', '1
 INSERT INTO `sys_users` VALUES (3, '测试用户', '18435234356', 2, '', '', '0', '342@163.com', 3, 1, 'test', '', '', '0', '2021-12-06 15:16:53', '2022-05-10 19:19:25', NULL, 'test', '$2a$10$4cHTracxWJLdhMmazvbm1urKyD3v5N2AYxAFtNYh6juU39kgae73e', '2', '1,4');
 INSERT INTO `sys_users` VALUES (4, 'panda', '18353366912', 2, '', '', '0', '2417920382@qq.com', 2, 4, 'panda', '', '', '0', '2021-12-19 15:58:09', '2021-12-19 16:06:54', NULL, 'admin', '$2a$10$cKFFTCzGOvaIHHJY2K45Zuwt8TD6oPzYi4s5MzYIBAWCLL6ZhouP2', '2', '4,1');
 INSERT INTO `sys_users` VALUES (5, 'tenant', '', 1, '', '', '0', '', 3, 1, 'panda', '1', '', '0', '2021-12-03 09:46:55', '2022-02-09 13:28:49', NULL, 'tenant', '$2a$10$ycRsRdsrNQInLB2Ib0maOetsWZ0kFctmF6ytAErWTjOx5cWdeJMcK', '1', '1,4');
-INSERT INTO `sys_users` VALUES (6, 'tt', '', 0, '', '', '', '', 7, 0, 'panda', '', '', '', '2023-09-14 14:58:50', '2023-09-14 14:58:50', NULL, 'fsdfsdfs', '$2a$10$D4igypJIcjca57RQcKPFAuOf/fY77itlB9PZyYgrCsK61crZijYLS', '2', '');
 
 -- ----------------------------
 -- Table structure for video_channels
@@ -2008,16 +1990,7 @@ CREATE TABLE `visual_data_set_field`  (
 -- ----------------------------
 -- Records of visual_data_set_field
 -- ----------------------------
-INSERT INTO `visual_data_set_field` VALUES ('2023-04-30 10:36:03', '2023-07-18 02:10:39', '234342', 'pxcea96e8b46ddac0b0ac34c9b', '昵称', 'q', NULL, NULL, 'nickname', '0', NULL);
-INSERT INTO `visual_data_set_field` VALUES ('2023-08-15 08:38:29', '2023-08-15 08:38:29', 'px12d31893e2e7c34e61d22367', 'pxd6f0fd0c3f365d68c6e9f5fa', 'date', 'd', NULL, NULL, 'date', '0', '');
-INSERT INTO `visual_data_set_field` VALUES ('2023-08-15 09:23:17', '2023-08-15 09:23:17', 'px23318fc04a912e24b78bcd7b', 'px07efe5a950fb6927b37da6c9', 'name', 'd', NULL, NULL, 'name', '0', '');
-INSERT INTO `visual_data_set_field` VALUES ('2023-08-14 18:10:08', '2023-08-15 09:50:14', 'px38ab56b7c143d966a9d855fc', 'px8d2d3d823f50d49fe4abbbff', '新增确诊', 'q', NULL, NULL, 'new_diagnosis', '2', '');
-INSERT INTO `visual_data_set_field` VALUES ('2023-08-15 09:23:17', '2023-08-15 09:49:38', 'px4abb36991e29f076c63bacd5', 'px07efe5a950fb6927b37da6c9', '年龄', 'q', NULL, NULL, 'age', '2', '');
-INSERT INTO `visual_data_set_field` VALUES ('2023-08-15 08:38:29', '2023-08-15 08:38:29', 'px55027695cb4e5a23f3569060', 'pxd6f0fd0c3f365d68c6e9f5fa', 'current_diagnosis', 'q', NULL, NULL, 'current_diagnosis', '2', '');
-INSERT INTO `visual_data_set_field` VALUES ('2023-08-15 09:23:17', '2023-08-15 09:23:17', 'px657fa68e05b958654e40bbe6', 'px07efe5a950fb6927b37da6c9', 'score', 'q', NULL, NULL, 'score', '2', '');
-INSERT INTO `visual_data_set_field` VALUES ('2023-08-14 18:10:09', '2023-08-15 09:50:20', 'pxb0bfc6afeecf8042cc73a028', 'px8d2d3d823f50d49fe4abbbff', '现有确诊', 'q', NULL, NULL, 'current_diagnosis', '2', '');
-INSERT INTO `visual_data_set_field` VALUES ('2023-08-15 08:38:29', '2023-08-15 08:38:29', 'pxdbacfa603f6c1f88423e6fdb', 'pxd6f0fd0c3f365d68c6e9f5fa', 'new_diagnosis', 'q', NULL, NULL, 'new_diagnosis', '2', '');
-INSERT INTO `visual_data_set_field` VALUES ('2023-08-14 18:10:08', '2023-08-15 09:50:27', 'pxfeec273823f2f42f087b1416', 'px8d2d3d823f50d49fe4abbbff', '日期', 'd', NULL, NULL, 'date', '0', '');
+
 
 -- ----------------------------
 -- Table structure for visual_data_set_table
@@ -2040,12 +2013,7 @@ CREATE TABLE `visual_data_set_table`  (
 -- ----------------------------
 -- Records of visual_data_set_table
 -- ----------------------------
-INSERT INTO `visual_data_set_table` VALUES ('2023-08-15 09:23:16', '2023-08-15 09:23:16', 'px07efe5a950fb6927b37da6c9', '', 'api', '{\"method\":\"get\",\"url\":\"http://127.0.0.1:8889/visual/datasource/testApiUser\",\"headers\":[{\"key\":\"X-TOKEN\",\"value\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjEsIlRlbmFudElkIjowLCJVc2VyTmFtZSI6InBhbmRhIiwiUm9sZUlkIjoxLCJSb2xlS2V5IjoiYWRtaW4iLCJEZXB0SWQiOjIsIlBvc3RJZCI6NCwiZXhwIjoxNjkyNjYzMTMzLCJpc3MiOiJQYW5kYVgiLCJuYmYiOjE2OTIwNTczMzN9.easKyloj7D2KKVDaoFeCJunjplxPg0Loo_NJSMi8C8Y\"}],\"params\":[],\"datas\":[],\"respScript\":\"return resp.data\"}', 0, '测试API', 2, 'panda');
-INSERT INTO `visual_data_set_table` VALUES ('2023-08-14 17:32:54', '2023-08-14 18:10:08', 'px8d2d3d823f50d49fe4abbbff', 'px9256d7dd9add568796911b25', 'sql', '{\"sql\": \"select * from demo_new_trend_of_diagnosis where new_diagnosis > ${diag}\",\"inParams\": [{\"deName\":\"diag\",\"deType\":\"2\",\"deValue\":35}]}', 0, '疫情', 2, 'panda');
-INSERT INTO `visual_data_set_table` VALUES ('2023-04-27 16:46:41', '2023-04-27 16:46:41', 'pxcea96e8b46ddac0b0ac34c9b', 'pxab7d17d7e8db23ee3ac0a897', 'sql', '{\"sql\": \"select nickname from res_emails\"}', 0, 'testSql', 2, 'panda');
-INSERT INTO `visual_data_set_table` VALUES ('2023-04-27 16:22:42', '2023-08-15 08:38:29', 'pxd6f0fd0c3f365d68c6e9f5fa', 'px9256d7dd9add568796911b25', 'db', '{\"table\": \"demo_new_trend_of_diagnosis\"}', 0, 'testSet', 2, 'panda');
-INSERT INTO `visual_data_set_table` VALUES ('2023-04-27 17:14:49', '2023-04-27 17:14:49', 'pxebe07ffb9d98bd22aef895cc', '', 'excel', '{\"filePath\": \"uploads/excel/c7ddb65e42_20230427171333.xlsx\"}', 0, 'testExcel', 2, 'panda');
-INSERT INTO `visual_data_set_table` VALUES ('2023-04-30 09:46:24', '2023-04-30 09:46:24', 'pxf665b4faeb5915d811263dd2', 'pxab7d17d7e8db23ee3ac0a897', 'sql', '{\"sql\": \"select COUNT(*) from log_jobs group by job_group\"}', 0, '付款', 2, 'panda');
+
 
 -- ----------------------------
 -- Table structure for visual_data_set_table_function
@@ -2156,9 +2124,6 @@ CREATE TABLE `visual_data_source`  (
 -- ----------------------------
 -- Records of visual_data_source
 -- ----------------------------
-INSERT INTO `visual_data_source` VALUES ('2023-06-17 14:29:07', '2023-06-17 14:29:07', 'px7ffd02bc7a1fd559d460985d', 'MySQL', 'ddd', '', '0', '{\"host\":\"127.0.0.1\",\"port\":3306,\"dbname\":\"iThings\",\"username\":\"root\",\"password\":\"password\",\"config\":\"charset=utf8\\u0026loc=Local\\u0026parseTime=true\",\"schema\":\"\"}', 0, 2, 'panda');
-INSERT INTO `visual_data_source` VALUES ('2023-04-25 16:08:44', '2023-08-14 10:34:38', 'px9256d7dd9add568796911b25', 'MySQL', '本地数据库', '描述', '1', '{\"host\":\"127.0.0.1\",\"port\":3306,\"dbname\":\"pandax\",\"username\":\"root\",\"password\":\"!MyEMS1\",\"config\":\"charset=utf8\\u0026loc=Local\\u0026parseTime=true\",\"schema\":\"\"}', 0, 2, 'panda');
-INSERT INTO `visual_data_source` VALUES ('2023-04-25 09:21:18', '2023-08-11 16:07:02', 'pxab7d17d7e8db23ee3ac0a897', 'MySQL', 'test', '啊啊', '0', '{\"host\":\"127.0.0.1\",\"port\":3306,\"dbname\":\"pandax\",\"username\":\"root\",\"password\":\"!MyEMS1\",\"config\":\"\",\"schema\":\"\"}', 0, 2, 'panda');
 
 -- ----------------------------
 -- Table structure for visual_screen
