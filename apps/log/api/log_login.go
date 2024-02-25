@@ -3,6 +3,7 @@ package api
 import (
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
+	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
 	"pandax/kit/utils"
@@ -17,7 +18,8 @@ func (l *LogLoginApi) GetLoginLogList(rc *restfulx.ReqCtx) {
 	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
 	loginLocation := restfulx.QueryParam(rc, "loginLocation")
 	username := restfulx.QueryParam(rc, "username")
-	list, total := l.LogLoginApp.FindListPage(pageNum, pageSize, entity.LogLogin{LoginLocation: loginLocation, Username: username})
+	list, total, err := l.LogLoginApp.FindListPage(pageNum, pageSize, entity.LogLogin{LoginLocation: loginLocation, Username: username})
+	biz.ErrIsNil(err, "查询任务日志失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -28,21 +30,26 @@ func (l *LogLoginApi) GetLoginLogList(rc *restfulx.ReqCtx) {
 
 func (l *LogLoginApi) GetLoginLog(rc *restfulx.ReqCtx) {
 	infoId := restfulx.PathParamInt(rc, "infoId")
-	rc.ResData = l.LogLoginApp.FindOne(int64(infoId))
+	data, err := l.LogLoginApp.FindOne(int64(infoId))
+	biz.ErrIsNil(err, "查询日志信息失败")
+	rc.ResData = data
 }
 
 func (l *LogLoginApi) UpdateLoginLog(rc *restfulx.ReqCtx) {
 	var log entity.LogLogin
 	restfulx.BindQuery(rc, &log)
-	l.LogLoginApp.Update(log)
+	_, err := l.LogLoginApp.Update(log)
+	biz.ErrIsNil(err, "修改日志信息失败")
 }
 
 func (l *LogLoginApi) DeleteLoginLog(rc *restfulx.ReqCtx) {
 	infoIds := restfulx.PathParam(rc, "infoId")
 	group := utils.IdsStrToIdsIntGroup(infoIds)
-	l.LogLoginApp.Delete(group)
+	err := l.LogLoginApp.Delete(group)
+	biz.ErrIsNil(err, "删除日志失败")
 }
 
 func (l *LogLoginApi) DeleteAll(rc *restfulx.ReqCtx) {
-	l.LogLoginApp.DeleteAll()
+	err := l.LogLoginApp.DeleteAll()
+	biz.ErrIsNil(err, "清空日志失败")
 }

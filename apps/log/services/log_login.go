@@ -2,18 +2,17 @@ package services
 
 import (
 	"pandax/apps/log/entity"
-	"pandax/kit/biz"
 	"pandax/pkg/global"
 )
 
 type (
 	LogLoginModel interface {
-		Insert(data entity.LogLogin) *entity.LogLogin
-		FindOne(infoId int64) *entity.LogLogin
-		FindListPage(page, pageSize int, data entity.LogLogin) (*[]entity.LogLogin, int64)
-		Update(data entity.LogLogin) *entity.LogLogin
-		Delete(infoId []int64)
-		DeleteAll()
+		Insert(data entity.LogLogin) (*entity.LogLogin, error)
+		FindOne(infoId int64) (*entity.LogLogin, error)
+		FindListPage(page, pageSize int, data entity.LogLogin) (*[]entity.LogLogin, int64, error)
+		Update(data entity.LogLogin) (*entity.LogLogin, error)
+		Delete(infoId []int64) error
+		DeleteAll() error
 	}
 
 	logLoginModelImpl struct {
@@ -25,19 +24,18 @@ var LogLoginModelDao LogLoginModel = &logLoginModelImpl{
 	table: `log_logins`,
 }
 
-func (m *logLoginModelImpl) Insert(data entity.LogLogin) *entity.LogLogin {
-	global.Db.Table(m.table).Create(&data)
-	return &data
+func (m *logLoginModelImpl) Insert(data entity.LogLogin) (*entity.LogLogin, error) {
+	err := global.Db.Table(m.table).Create(&data).Error
+	return &data, err
 }
 
-func (m *logLoginModelImpl) FindOne(infoId int64) *entity.LogLogin {
+func (m *logLoginModelImpl) FindOne(infoId int64) (*entity.LogLogin, error) {
 	resData := new(entity.LogLogin)
 	err := global.Db.Table(m.table).Where("info_id = ?", infoId).First(resData).Error
-	biz.ErrIsNil(err, "查询登录日志信息失败")
-	return resData
+	return resData, err
 }
 
-func (m *logLoginModelImpl) FindListPage(page, pageSize int, data entity.LogLogin) (*[]entity.LogLogin, int64) {
+func (m *logLoginModelImpl) FindListPage(page, pageSize int, data entity.LogLogin) (*[]entity.LogLogin, int64, error) {
 	list := make([]entity.LogLogin, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -53,24 +51,23 @@ func (m *logLoginModelImpl) FindListPage(page, pageSize int, data entity.LogLogi
 		db = db.Where("username like ?", "%"+data.Username+"%")
 	}
 	err := db.Where("delete_time IS NULL").Count(&total).Error
+	if err != nil {
+		return &list, total, err
+	}
 	err = db.Order("info_id desc").Limit(pageSize).Offset(offset).Find(&list).Error
-
-	biz.ErrIsNil(err, "查询登录分页日志信息失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *logLoginModelImpl) Update(data entity.LogLogin) *entity.LogLogin {
+func (m *logLoginModelImpl) Update(data entity.LogLogin) (*entity.LogLogin, error) {
 	err := global.Db.Table(m.table).Updates(&data).Error
-	biz.ErrIsNil(err, "修改登录日志信息失败")
-	return &data
+	return &data, err
 }
 
-func (m *logLoginModelImpl) Delete(infoIds []int64) {
+func (m *logLoginModelImpl) Delete(infoIds []int64) error {
 	err := global.Db.Table(m.table).Delete(&entity.LogLogin{}, "info_id in (?)", infoIds).Error
-	biz.ErrIsNil(err, "删除登录日志信息失败")
-	return
+	return err
 }
 
-func (m *logLoginModelImpl) DeleteAll() {
-	global.Db.Exec("DELETE FROM log_logins")
+func (m *logLoginModelImpl) DeleteAll() error {
+	return global.Db.Exec("DELETE FROM log_logins").Error
 }

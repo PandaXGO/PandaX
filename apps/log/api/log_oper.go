@@ -3,6 +3,7 @@ package api
 import (
 	"pandax/apps/log/entity"
 	"pandax/apps/log/services"
+	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
 	"pandax/kit/utils"
@@ -18,7 +19,8 @@ func (l *LogOperApi) GetOperLogList(rc *restfulx.ReqCtx) {
 	businessType := restfulx.QueryParam(rc, "businessType")
 	operName := restfulx.QueryParam(rc, "operName")
 	title := restfulx.QueryParam(rc, "title")
-	list, total := l.LogOperApp.FindListPage(pageNum, pageSize, entity.LogOper{BusinessType: businessType, OperName: operName, Title: title})
+	list, total, err := l.LogOperApp.FindListPage(pageNum, pageSize, entity.LogOper{BusinessType: businessType, OperName: operName, Title: title})
+	biz.ErrIsNil(err, "查询操作日志列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -29,15 +31,17 @@ func (l *LogOperApi) GetOperLogList(rc *restfulx.ReqCtx) {
 
 func (l *LogOperApi) GetOperLog(rc *restfulx.ReqCtx) {
 	operId := restfulx.PathParamInt(rc, "operId")
-	rc.ResData = l.LogOperApp.FindOne(int64(operId))
+	data, err := l.LogOperApp.FindOne(int64(operId))
+	biz.ErrIsNil(err, "查询操作日志失败")
+	rc.ResData = data
 }
 
 func (l *LogOperApi) DeleteOperLog(rc *restfulx.ReqCtx) {
 	operIds := restfulx.PathParam(rc, "operId")
 	group := utils.IdsStrToIdsIntGroup(operIds)
-	l.LogOperApp.Delete(group)
+	biz.ErrIsNil(l.LogOperApp.Delete(group), "删除操作日志失败")
 }
 
 func (l *LogOperApi) DeleteAll(rc *restfulx.ReqCtx) {
-	l.LogOperApp.DeleteAll()
+	biz.ErrIsNil(l.LogOperApp.DeleteAll(), "清空操作日志失败")
 }
