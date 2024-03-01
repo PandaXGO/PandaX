@@ -57,6 +57,7 @@ func handleConnection(conn *net.TCPConn, hs *hook_message_work.HookService) {
 		buf := make([]byte, 128)
 		n, err := conn.Read(buf)
 		if err != nil {
+			isAuth = false
 			return
 		}
 

@@ -17,7 +17,6 @@ require (
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-openapi/spec v0.20.6
 	github.com/go-playground/validator/v10 v10.8.0
-	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-queue/queue v0.2.0
 	github.com/google/uuid v1.3.0
