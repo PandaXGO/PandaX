@@ -66,7 +66,7 @@ func (r *RequestWrapper) GetByParam(paramMap map[string]string) *ResponseWrapper
 		}
 		params += k + "=" + v
 	}
-	r.url += "?" + params
+	r.url += params
 	return r.Get()
 }
 
