@@ -14,10 +14,7 @@ func DdmKey(data string) string {
 }
 
 func IsDdmKey(data string) bool {
-	if len(data) > 6 && data[3:len(data)-3] == "****" {
-		return true
-	}
-	return false
+	return len(data) > 6 && data[3:len(data)-3] == "****"
 }
 
 func DdmMail(data string) string {
@@ -25,10 +22,7 @@ func DdmMail(data string) string {
 }
 
 func ISDdmMail(data string) bool {
-	if len(data) > 11 && data[3:len(data)-8] == "****" {
-		return true
-	}
-	return false
+	return len(data) > 11 && data[3:len(data)-8] == "****"
 }
 
 func DdmPassword(data string) string {
@@ -36,8 +30,5 @@ func DdmPassword(data string) string {
 }
 
 func IsDdmPassword(data string) bool {
-	if data == "******" {
-		return true
-	}
-	return false
+	return data == "******"
 }

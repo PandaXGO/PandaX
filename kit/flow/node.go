@@ -22,10 +22,7 @@ type Text struct {
 }
 
 func (node *Node) IsStartNode(ty string) bool {
-	if node.Type == ty {
-		return true
-	}
-	return false
+	return node.Type == ty
 }
 
 func (node *Node) GetProperties(data any) error {

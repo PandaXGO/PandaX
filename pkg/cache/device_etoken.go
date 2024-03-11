@@ -25,9 +25,5 @@ func DelDeviceEtoken(key string) error {
 
 func ExistsDeviceEtoken(key string) bool {
 	exists, _ := RedisDb.Exists(RedisDb.Context(), key).Result()
-	if exists == 1 {
-		return true
-	} else {
-		return false
-	}
+	return exists == 1
 }

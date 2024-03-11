@@ -1,10 +1,5 @@
 package api
 
-/**
- * @Description
- * @Author 熊猫
- * @Date 2022/7/14 17:55
- **/
 import (
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
@@ -70,8 +65,5 @@ func (p *SysTenantsApi) DeleteSysTenants(rc *restfulx.ReqCtx) {
 
 // IsTenantAdmin 是否为主租户
 func IsTenantAdmin(tenantId int64) bool {
-	if tenantId == 1 {
-		return true
-	}
-	return false
+	return tenantId == 1
 }

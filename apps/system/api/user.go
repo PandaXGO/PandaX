@@ -344,10 +344,7 @@ func (u *UserApi) ExportUser(rc *restfulx.ReqCtx) {
 // Build 构建前端路由
 func Build(menus []entity.SysMenu) []vo.RouterVo {
 	equals := func(a string, b string) bool {
-		if a == b {
-			return true
-		}
-		return false
+		return a == b
 	}
 	rvs := make([]vo.RouterVo, 0)
 	for _, ms := range menus {

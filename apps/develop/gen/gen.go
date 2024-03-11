@@ -85,36 +85,33 @@ func (s *toolsGenTableColumn) IsNotQuery(name string) bool {
 
 func (s *toolsGenTableColumn) CheckNameColumn(columnName string) bool {
 	if len(columnName) >= 4 {
-		if tmp := columnName[len(columnName)-4:]; tmp == "name" {
-			return true
-		}
+		tmp := columnName[len(columnName)-4:]
+		return tmp == "name"
 	}
 	return false
 }
 
 func (s *toolsGenTableColumn) CheckStatusColumn(columnName string) bool {
 	if len(columnName) >= 6 {
-		if tmp := columnName[len(columnName)-6:]; tmp == "status" {
-			return true
-		}
+		tmp := columnName[len(columnName)-6:]
+		return tmp == "status"
+
 	}
 	return false
 }
 
 func (s *toolsGenTableColumn) CheckTypeColumn(columnName string) bool {
 	if len(columnName) >= 4 {
-		if tmp := columnName[len(columnName)-4:]; tmp == "type" {
-			return true
-		}
+		tmp := columnName[len(columnName)-4:]
+		return tmp == "type"
 	}
 	return false
 }
 
 func (s *toolsGenTableColumn) CheckSexColumn(columnName string) bool {
 	if len(columnName) >= 3 {
-		if tmp := columnName[len(columnName)-3:]; tmp == "sex" {
-			return true
-		}
+		tmp := columnName[len(columnName)-4:]
+		return tmp == "sex"
 	}
 	return false
 }
@@ -149,7 +146,7 @@ func (g *Generator) Generate() (entity.DevGenTable, error) {
 
 	var wg sync.WaitGroup
 	columnChan := make(chan entity.DevGenTableColumn, len(dbColumn)) // 创建带缓冲的通道
-	
+
 	for x := 0; x < len(dbColumn); x++ {
 		index := x
 		wg.Add(1)
