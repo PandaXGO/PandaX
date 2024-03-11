@@ -37,7 +37,7 @@ func (rpc RpcRequest) Pub(deviceId, reqPayload string) error {
 	topic := fmt.Sprintf(RpcRespTopic, rpc.RequestId)
 	value, ok := Session.Load(deviceId)
 	if !ok {
-		return errors.New("为获取到设备的MQTT连接")
+		return errors.New("未获取到设备的MQTT连接")
 	}
 	return Publish(topic, value.(string), reqPayload)
 }

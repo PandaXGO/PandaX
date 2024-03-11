@@ -20,7 +20,7 @@ func Send(deviceId, msg string) error {
 		}
 	} else {
 		global.Log.Infof("设备%s TCP连接不存在, 发送指令失败", deviceId)
-		return errors.New("为获取到设备的MQTT连接")
+		return errors.New("未获取到设备的MQTT连接")
 	}
 	return nil
 }
