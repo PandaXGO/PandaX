@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"github.com/kakuilan/kgo"
 	"net/http"
 	"os"
 	"pandax/kit/biz"
@@ -22,6 +23,9 @@ const filePath = "uploads/file"
 func (up *UploadApi) UploadImage(rc *restfulx.ReqCtx) {
 	_, fileHeader, err := rc.Request.Request.FormFile("file")
 	biz.ErrIsNil(err, "请传入文件")
+	// 判断上传文件类型，不支持返回
+	biz.IsTrue(kgo.KFile.IsImg(fileHeader.Filename), "请传入图片文件")
+
 	local := &tool.Local{Path: filePath}
 	link, fileName, err := local.UploadFile(fileHeader)
 	biz.ErrIsNil(err, "文件上传失败")

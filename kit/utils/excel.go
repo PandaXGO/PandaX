@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/xuri/excelize/v2"
+	"path/filepath"
 	"reflect"
 )
 
@@ -18,7 +19,13 @@ func ExportExcel(head []string, datas [][]any, filePath string) error {
 }
 
 func GetFileName(path, filename string) string {
-	return path + filename
+	fn := filepath.Base(filename)
+	ext := filepath.Ext(fn)
+	if ext == "" {
+		fn += ".xlsx"
+	}
+
+	return path + fn
 }
 
 func InterfaceToExcel(data any, fileName string) {

@@ -1,16 +1,15 @@
 package api
 
 import (
+	"github.com/dgrijalva/jwt-go"
+	"github.com/emicklei/go-restful/v3"
+	"github.com/kakuilan/kgo"
+	"github.com/mssola/user_agent"
 	"pandax/apps/system/api/form"
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
 	"pandax/kit/model"
 	"pandax/kit/token"
-
-	"github.com/dgrijalva/jwt-go"
-	"github.com/emicklei/go-restful/v3"
-	"github.com/kakuilan/kgo"
-	"github.com/mssola/user_agent"
 
 	logEntity "pandax/apps/log/entity"
 	logServices "pandax/apps/log/services"
@@ -336,6 +335,7 @@ func (u *UserApi) ExportUser(rc *restfulx.ReqCtx) {
 	user.Phone = phone
 
 	list := u.UserApp.FindList(user)
+	// 对设置的文件名进行处理
 	fileName := utils.GetFileName(global.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
 	rc.Download(fileName)

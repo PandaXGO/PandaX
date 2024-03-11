@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"pandax/kit/biz"
+	"path/filepath"
 	"strconv"
 	"sync"
 )
@@ -129,4 +130,14 @@ func SaveUploadedFile(file *multipart.FileHeader, dst string) error {
 
 	_, err = io.Copy(out, src)
 	return err
+}
+
+func IsExcl(fpath string) bool {
+	ext := filepath.Ext(fpath)
+	switch ext {
+	case "xls", "xlsx":
+		return true
+	default:
+		return false
+	}
 }

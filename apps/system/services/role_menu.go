@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"pandax/apps/system/entity"
 	"pandax/kit/biz"
 	"pandax/pkg/global"
@@ -36,18 +35,11 @@ func (m *sysRoleMenuImpl) Insert(roleId int64, menuId []int64) bool {
 	var menu []entity.SysMenu
 	biz.ErrIsNil(global.Db.Table("sys_menus").Where("menu_id in (?)", menuId).Find(&menu).Error, "查询菜单失败")
 
-	//拼接 sql 串
-	sql := "INSERT INTO sys_role_menus (role_id,menu_id,role_name) VALUES "
-
+	menus := make([]entity.SysRoleMenu, 0)
 	for i := 0; i < len(menu); i++ {
-		if len(menu)-1 == i {
-			//最后一条数据 以分号结尾
-			sql += fmt.Sprintf("(%d,%d,'%s');", role.RoleId, menu[i].MenuId, role.RoleKey)
-		} else {
-			sql += fmt.Sprintf("(%d,%d,'%s'),", role.RoleId, menu[i].MenuId, role.RoleKey)
-		}
+		menus = append(menus, entity.SysRoleMenu{RoleId: role.RoleId, MenuId: menu[i].MenuId, RoleName: role.RoleKey})
 	}
-	biz.ErrIsNil(global.Db.Exec(sql).Error, "新增角色菜单失败")
+	biz.ErrIsNil(global.Db.CreateInBatches(&menus, len(menus)).Error, "新增角色菜单失败")
 
 	return true
 }
