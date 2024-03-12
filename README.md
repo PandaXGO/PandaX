@@ -88,8 +88,8 @@ sudo ./startup.sh
 - <span class="tag done-tag">✔</span> **`设备管理`** - _设备的管理,支持多协议接入，MQTT,TCP,UDP,COAP,Modbus,Opcua,S7,HL7等_
 
 ## 🛠 以后可能会有什么NB功能？
-- <span class="tag wip-tag">开发中</span> **`3D组态(2024-Q1-Q2)`** - _3D组态场景编辑器_
-- - <span class="tag wip-tag">开发中</span> **`多时序数据库支持(2024-Q3)`** - _多时序数据库支持，规划除Tdengine外，适配Greptime,Timescaledb_
+- <span class="tag wip-tag">开发中</span> **`3D组态(2024-Q1-Q2)`** - _3D组态场景编辑器_  
+- <span class="tag wip-tag">开发中</span> **`多时序数据库支持(2024-Q3)`** - _多时序数据库支持，规划除Tdengine外，适配Greptime,Timescaledb_  
 - <span class="tag wip-tag">开发中</span> **`报表设计器（2024-Q4）`** - _excel的低代码报表设计_
 
 ---
