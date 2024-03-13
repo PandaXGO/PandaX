@@ -116,7 +116,8 @@ func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 		data.RuleChainId = root.Id
 	}
 
-	p.ProductApp.Insert(data)
+	_, err := p.ProductApp.Insert(data)
+	biz.ErrIsNilAppendErr(err, "")
 }
 
 // UpdateProduct 修改Product
@@ -124,14 +125,16 @@ func (p *ProductApi) UpdateProduct(rc *restfulx.ReqCtx) {
 	var data entity.Product
 	restfulx.BindQuery(rc, &data)
 
-	p.ProductApp.Update(data)
+	_, err := p.ProductApp.Update(data)
+	biz.ErrIsNilAppendErr(err, "")
 }
 
 func (p *ProductApi) UpdateProductStatue(rc *restfulx.ReqCtx) {
 	var data entity.Product
 	restfulx.BindJsonAndValid(rc, &data)
 
-	p.ProductApp.Update(data)
+	_, err := p.ProductApp.Update(data)
+	biz.ErrIsNilAppendErr(err, "")
 }
 
 // DeleteProduct 删除Product
@@ -143,7 +146,8 @@ func (p *ProductApi) DeleteProduct(rc *restfulx.ReqCtx) {
 		biz.IsTrue(!(list != nil && len(*list) > 0), fmt.Sprintf("产品ID%s下存在设备，不能被删除", id))
 	}
 	// 删除产品
-	p.ProductApp.Delete(ids)
+	err := p.ProductApp.Delete(ids)
+	biz.ErrIsNil(err, "删除失败")
 	for _, id := range ids {
 		// 删除所有模型，固件
 		p.TemplateApp.Delete([]string{id})

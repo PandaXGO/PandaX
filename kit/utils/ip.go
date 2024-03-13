@@ -6,8 +6,6 @@ import (
 	"pandax/kit/httpclient"
 )
 
-const ipurl = "https://ip.cn/api/index"
-
 const UNKNOWN = "XX XX"
 
 // GetRealAddressByIP 获取真实地址
@@ -15,17 +13,15 @@ func GetRealAddressByIP(ip string) string {
 	if ip == "127.0.0.1" || ip == "localhost" {
 		return "内部IP"
 	}
-	url := fmt.Sprintf("%s?ip=%s&type=1", ipurl, ip)
+	url := fmt.Sprintf("http://whois.pconline.com.cn/ipJson.jsp?json=true&ip=%s", ip)
 
 	res := httpclient.NewRequest(url).Get()
 	if res == nil || res.StatusCode != 200 {
 		return UNKNOWN
 	}
-	toMap, err := res.BodyToMap()
-	if err != nil {
-		return UNKNOWN
-	}
-	return toMap["address"].(string)
+	dst, _ := ToUTF8("GBK", string(res.Body))
+	toMap := Json2Map(dst)
+	return fmt.Sprintf("%s %s", toMap["pro"].(string), toMap["city"].(string))
 }
 
 // 获取局域网ip地址

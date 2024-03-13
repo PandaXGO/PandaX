@@ -12,7 +12,7 @@ func TestIdsStrToIdsIntGroup(t *testing.T) {
 }
 
 func TestGetRealAddressByIP(t *testing.T) {
-	ip := GetRealAddressByIP("10.42.0.1")
+	ip := GetRealAddressByIP("58.57.107.34")
 	t.Log(ip)
 }
 
