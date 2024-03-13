@@ -18,7 +18,7 @@ func InitProductTemplateRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/device/template").Produces(restful.MIME_JSON)
-	tags := []string{"template"}
+	tags := []string{"产品参数模板"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取Template分页列表").Handle(s.GetProductTemplateList)

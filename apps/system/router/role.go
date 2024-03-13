@@ -21,7 +21,7 @@ func InitRoleRouter(container *restful.Container) {
 	}
 	ws := new(restful.WebService)
 	ws.Path("/system/role").Produces(restful.MIME_JSON)
-	tags := []string{"role"}
+	tags := []string{"system", "角色"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取角色分页列表").Handle(s.GetRoleList)

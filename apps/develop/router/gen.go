@@ -18,7 +18,7 @@ func InitGenRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/develop/code/gen").Produces(restful.MIME_JSON)
-	tags := []string{"codegen"}
+	tags := []string{"代码生成"}
 
 	ws.Route(ws.GET("/preview/{tableId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取生成代码视图").Handle(s.Preview)

@@ -19,7 +19,7 @@ func InitApiRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/system/api").Produces(restful.MIME_JSON)
-	tags := []string{"api"}
+	tags := []string{"system", "api"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取api分页列表").Handle(s.GetApiList)

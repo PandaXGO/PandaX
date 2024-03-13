@@ -18,7 +18,7 @@ func InitNoticeRouter(container *restful.Container) {
 	}
 	ws := new(restful.WebService)
 	ws.Path("/system/notice").Produces(restful.MIME_JSON)
-	tags := []string{"notice"}
+	tags := []string{"system", "通知"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取通知分页列表").Handle(s.GetNoticeList)

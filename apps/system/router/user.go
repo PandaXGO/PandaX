@@ -27,7 +27,7 @@ func InitUserRouter(container *restful.Container) {
 	}
 	ws := new(restful.WebService)
 	ws.Path("/system/user").Produces(restful.MIME_JSON)
-	tags := []string{"user"}
+	tags := []string{"system", "用户"}
 
 	ws.Route(ws.GET("/getCaptcha").To(s.GenerateCaptcha).Doc("获取验证码"))
 

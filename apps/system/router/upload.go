@@ -12,7 +12,7 @@ func InitUploadRouter(container *restful.Container) {
 	s := &api.UploadApi{}
 	ws := new(restful.WebService)
 	ws.Path("/upload").Produces(restful.MIME_JSON)
-	tags := []string{"upload"}
+	tags := []string{"system", "文件"}
 
 	ws.Route(ws.POST("/up").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("上传图片").Handle(s.UploadImage)

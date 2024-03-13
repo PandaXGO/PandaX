@@ -20,7 +20,7 @@ func InitOrganizationRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/system/organization").Produces(restful.MIME_JSON)
-	tags := []string{"organization"}
+	tags := []string{"system", "组织"}
 
 	ws.Route(ws.GET("/roleOrganizationTreeSelect/{roleId}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取角色组织树").Handle(s.GetOrganizationTreeRoleSelect)

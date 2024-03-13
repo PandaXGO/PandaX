@@ -20,7 +20,7 @@ func InitMenuRouter(container *restful.Container) {
 	}
 	ws := new(restful.WebService)
 	ws.Path("/system/menu").Produces(restful.MIME_JSON)
-	tags := []string{"menu"}
+	tags := []string{"system", "菜单"}
 
 	ws.Route(ws.GET("/menuTreeSelect").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取菜单树").WithNeedToken(false).WithNeedCasbin(false).Handle(s.GetMenuTreeSelect)

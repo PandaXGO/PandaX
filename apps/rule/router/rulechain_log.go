@@ -17,7 +17,7 @@ func InitRuleChainMsgLogRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/rule/chain/log").Produces(restful.MIME_JSON)
-	tags := []string{"RuleChainMsgLog"}
+	tags := []string{"规则链日志"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取规则引擎日志分页列表").Handle(s.GetRuleChainMsgLogList)

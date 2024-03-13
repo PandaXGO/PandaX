@@ -19,7 +19,7 @@ func InitOperLogRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/log/logOper").Produces(restful.MIME_JSON)
-	tags := []string{"logOper"}
+	tags := []string{"日志信息"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取操作日志列表").Handle(s.GetOperLogList)

@@ -19,7 +19,7 @@ func InitPostRouter(container *restful.Container) {
 	}
 	ws := new(restful.WebService)
 	ws.Path("/system/post").Produces(restful.MIME_JSON)
-	tags := []string{"post"}
+	tags := []string{"system", "部门"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取岗位分页列表").Handle(s.GetPostList)

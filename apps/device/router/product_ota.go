@@ -18,7 +18,7 @@ func InitProductOtaRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/device/ota").Produces(restful.MIME_JSON)
-	tags := []string{"ota"}
+	tags := []string{"产品OTA"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取Ota分页列表").Handle(s.GetProductOtaList)

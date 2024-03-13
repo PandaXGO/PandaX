@@ -18,7 +18,7 @@ func InitDictRouter(container *restful.Container) {
 	}
 	ws := new(restful.WebService)
 	ws.Path("/system/dict").Produces(restful.MIME_JSON)
-	tags := []string{"dict"}
+	tags := []string{"system", "字典"}
 
 	ws.Route(ws.GET("/type/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取字典类型分页列表").Handle(s.GetDictTypeList)

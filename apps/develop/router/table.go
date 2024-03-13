@@ -20,7 +20,7 @@ func InitGenTableRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/develop/code/table").Produces(restful.MIME_JSON)
-	tags := []string{"codetable"}
+	tags := []string{"代码生成表"}
 
 	ws.Route(ws.GET("/db/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取数据库列表").Handle(s.GetDBTableList)

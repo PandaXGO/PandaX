@@ -18,7 +18,7 @@ func InitDeviceAlarmRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/device/alarm").Produces(restful.MIME_JSON)
-	tags := []string{"alarm"}
+	tags := []string{"设备告警"}
 
 	ws.Route(ws.GET("/panel").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取面板告警分组").Handle(s.GetDeviceAlarmPanel)

@@ -17,7 +17,7 @@ func InitDeviceGroupRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/device/group").Produces(restful.MIME_JSON)
-	tags := []string{"DeviceGroup"}
+	tags := []string{"设备分组"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取DeviceGroup列表").Handle(s.GetDeviceGroupList)

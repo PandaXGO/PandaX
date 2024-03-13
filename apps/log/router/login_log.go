@@ -19,7 +19,7 @@ func InitLoginLogRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/log/logLogin").Produces(restful.MIME_JSON)
-	tags := []string{"logLogin"}
+	tags := []string{"日志信息"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取登录日志列表").Handle(s.GetLoginLogList)

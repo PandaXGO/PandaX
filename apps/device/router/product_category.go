@@ -17,7 +17,7 @@ func InitProductCategoryRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/device/product/category").Produces(restful.MIME_JSON)
-	tags := []string{"ProductCategory"}
+	tags := []string{"产品分类"}
 
 	ws.Route(ws.GET("/list").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取ProductCategory列表").Handle(s.GetProductCategoryList)

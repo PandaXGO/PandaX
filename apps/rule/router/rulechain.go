@@ -18,7 +18,7 @@ func InitRuleChainRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/rule/chain").Produces(restful.MIME_JSON)
-	tags := []string{"rulechain"}
+	tags := []string{"规则链"}
 
 	ws.Route(ws.GET("/nodeLabels").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithNeedCasbin(false).WithLog("获取所有节点标签").Handle(s.GetNodeLabels)

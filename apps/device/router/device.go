@@ -21,7 +21,7 @@ func InitDeviceRouter(container *restful.Container) {
 
 	ws := new(restful.WebService)
 	ws.Path("/device").Produces(restful.MIME_JSON)
-	tags := []string{"device"}
+	tags := []string{"设备管理"}
 
 	ws.Route(ws.GET("/panel").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取DevicePanel").Handle(s.GetDevicePanel)
