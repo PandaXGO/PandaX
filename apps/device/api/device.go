@@ -11,6 +11,7 @@ import (
 	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
+	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	model2 "pandax/pkg/global/model"
 	"pandax/pkg/shadow"
@@ -208,7 +209,39 @@ func (p *DeviceApi) UpdateDevice(rc *restfulx.ReqCtx) {
 func (p *DeviceApi) DeleteDevice(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	ids := strings.Split(id, ",")
-	biz.ErrIsNil(p.DeviceApp.Delete(ids), "删除失败")
+
+	for _, id := range ids {
+		device, err := p.DeviceApp.FindOne(id)
+		if err != nil {
+			continue
+		}
+		err = p.DeviceApp.Delete([]string{id})
+		if err != nil {
+			continue
+		}
+		// 删除表
+		err = deleteDeviceTable(device.Name)
+		// 删除所有缓存
+		if device.DeviceType == global.GATEWAYS {
+			// 因为网关子设备没有Token，使用Name做的存储
+			cache.DelDeviceEtoken(device.Name)
+		} else {
+			cache.DelDeviceEtoken(device.Token)
+		}
+	}
+}
+
+// 删除Tdengine时序数据
+func deleteDeviceTable(device string) error {
+	err := global.TdDb.DropTable(device + "_" + entity.ATTRIBUTES_TSL)
+	if err != nil {
+		return err
+	}
+	err = global.TdDb.DropTable(device + "_" + entity.TELEMETRY_TSL)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (p *DeviceApi) ScreenTwinData(rc *restfulx.ReqCtx) {

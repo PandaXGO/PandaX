@@ -2,7 +2,6 @@ package services
 
 import (
 	"pandax/apps/device/entity"
-	"pandax/pkg/cache"
 	"pandax/pkg/global"
 )
 
@@ -118,12 +117,6 @@ func (m *productModelImpl) Delete(ids []string) error {
 	if err := global.Db.Table(m.table).Delete(&entity.Product{}, "id in (?)", ids).Error; err != nil {
 		return err
 	}
-	for _, id := range ids {
-		// 删除超级表
-		deleteDeviceStable(id)
-		// 删除所有缓存
-		cache.DelProductRule(id)
-	}
 	return nil
 }
 
@@ -133,18 +126,6 @@ func createDeviceStable(productId string) error {
 		return err
 	}
 	err = global.TdDb.CreateStable(productId + "_" + entity.TELEMETRY_TSL)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func deleteDeviceStable(productId string) error {
-	err := global.TdDb.DropStable(productId + "_" + entity.ATTRIBUTES_TSL)
-	if err != nil {
-		return err
-	}
-	err = global.TdDb.DropStable(productId + "_" + entity.TELEMETRY_TSL)
 	if err != nil {
 		return err
 	}

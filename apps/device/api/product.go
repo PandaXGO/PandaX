@@ -10,6 +10,7 @@ import (
 	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
+	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	model2 "pandax/pkg/global/model"
 	"strings"
@@ -147,10 +148,27 @@ func (p *ProductApi) DeleteProduct(rc *restfulx.ReqCtx) {
 	}
 	// 删除产品
 	err := p.ProductApp.Delete(ids)
-	biz.ErrIsNil(err, "删除失败")
+	biz.ErrIsNil(err, "产品删除失败")
+	// 删除所有模型，固件
 	for _, id := range ids {
-		// 删除所有模型，固件
+		// 删除超级表
+		deleteDeviceStable(id)
+		// 删除所有缓存
+		cache.DelProductRule(id)
+		// 删除绑定的属性及OTA记录
 		p.TemplateApp.Delete([]string{id})
 		p.OtaAPP.Delete([]string{id})
 	}
+}
+
+func deleteDeviceStable(productId string) error {
+	err := global.TdDb.DropStable(productId + "_" + entity.ATTRIBUTES_TSL)
+	if err != nil {
+		return err
+	}
+	err = global.TdDb.DropStable(productId + "_" + entity.TELEMETRY_TSL)
+	if err != nil {
+		return err
+	}
+	return nil
 }

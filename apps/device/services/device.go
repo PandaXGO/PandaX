@@ -193,20 +193,6 @@ func (m *deviceModelImpl) Delete(ids []string) error {
 	if err := global.Db.Table(m.table).Delete(&entity.Device{}, "id in (?)", ids).Error; err != nil {
 		return err
 	}
-	for _, id := range ids {
-		device, err := m.FindOne(id)
-		if err != nil {
-			continue
-		}
-		// 删除表
-		err = deleteDeviceTable(device.Name)
-		// 删除所有缓存
-		if device.DeviceType == global.GATEWAYS {
-			cache.DelDeviceEtoken(device.Name)
-		} else {
-			cache.DelDeviceEtoken(device.Token)
-		}
-	}
 	return nil
 }
 
@@ -217,19 +203,6 @@ func createDeviceTable(productId, device string) error {
 		return err
 	}
 	err = global.TdDb.CreateTable(productId+"_"+entity.TELEMETRY_TSL, device+"_"+entity.TELEMETRY_TSL)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// 删除Tdengine时序数据
-func deleteDeviceTable(device string) error {
-	err := global.TdDb.DropTable(device + "_" + entity.ATTRIBUTES_TSL)
-	if err != nil {
-		return err
-	}
-	err = global.TdDb.DropTable(device + "_" + entity.TELEMETRY_TSL)
 	if err != nil {
 		return err
 	}
