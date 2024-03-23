@@ -89,7 +89,7 @@ sudo ./startup.sh
 
 ## 🛠 以后可能会有什么NB功能？
 - <span class="tag wip-tag">开发中</span> **`3D组态(2024-Q1-Q3)`** - _3D组态场景编辑器_
-- <span class="tag wip-tag">开发中</span> **`边缘软网关（2024-Q4）`** - _边缘软网关（参考Neuron）_
+- <span class="tag wip-tag">开发中</span> **`边缘软网关（2024-Q4）`** - _边缘软网关（参考Neuron）,目前使用边缘采集器_
 
 ---
 前端工程结构
