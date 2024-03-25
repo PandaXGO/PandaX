@@ -11,18 +11,23 @@ spec:
   - port: 7788
     protocol: TCP
     targetPort: 7788
+    name: px-7788
   - port: 9001
     protocol: TCP
     targetPort: 9001
+    name: px-9001
   - port: 9002
     protocol: TCP
     targetPort: 9002
+    name: px-9002
   - port: 9003
     protocol: TCP
     targetPort: tcp9003
+    name: px-tcp9003
   - port: 9003
     protocol: UDP
     targetPort: udp9003
+    name: px-udp9003
   selector:
     app.kubernetes.io/name: pandax
     app.kubernetes.io/version: 1.0.0
@@ -107,18 +112,21 @@ spec:
         imagePullPolicy: IfNotPresent
         name: pandax
         ports:
-        - containerPort: 7788
+        - name: px-7788
+          containerPort: 7788
           protocol: TCP
-        - containerPort: 9001
+        - name: px-9001
+          containerPort: 9001
           protocol: TCP
-        - containerPort: 9002
+        - name: px-9002
+          containerPort: 9002
           protocol: TCP
-        - containerPort: 9003
+        - name: px-tcp9003
+          containerPort: 9003
           protocol: TCP
-          name: tcp9003
         - containerPort: 9003
           protocol: UDP
-          name: udp9003
+          name: px-udp9003
       serviceAccountName: pandax
 ---
 apiVersion: apps/v1

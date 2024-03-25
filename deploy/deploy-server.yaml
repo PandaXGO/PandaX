@@ -27,92 +27,9 @@ roleRef:
   kind: ClusterRole
   name: cluster-admin
 subjects:
-- kind: ServiceAccount
-  name: pandax
-  namespace: pandax
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app.kubernetes.io/version: 1.0.0
-  name: emqx
-  namespace: pandax
-spec:
-  ports:
-  - port: 1883
-    protocol: TCP
-    targetPort: 1883
-  - port: 8083
-    protocol: TCP
-    targetPort: 8083
-  - port: 8084
-    protocol: TCP
-    targetPort: 8084
-  - port: 8883
-    protocol: TCP
-    targetPort: 8883
-  - port: 18083
-    protocol: TCP
-    targetPort: 18083
-  selector:
-    app: emqx
-    app.kubernetes.io/version: 1.0.0
-  type: LoadBalancer
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app.kubernetes.io/version: 1.0.0
-  name: mysql
-  namespace: pandax
-spec:
-  ports:
-  - port: 3306
-    protocol: TCP
-    targetPort: mysql
-  selector:
-    app: mysql
-    app.kubernetes.io/version: 1.0.0
-  type: LoadBalancer
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app.kubernetes.io/version: 1.0.0
-  name: redis
-  namespace: pandax
-spec:
-  ports:
-  - port: 6379
-    protocol: TCP
-    targetPort: redis
-  selector:
-    app: redis
-    app.kubernetes.io/version: 1.0.0
-  type: LoadBalancer
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app.kubernetes.io/version: 1.0.0
-  name: tdengine
-  namespace: pandax
-spec:
-  ports:
-  - port: 6030
-    protocol: TCP
-    targetPort: 6030
-  - port: 6041
-    protocol: TCP
-    targetPort: 6041
-  selector:
-    app: tdengine
-    app.kubernetes.io/version: 1.0.0
-  type: LoadBalancer
+  - kind: ServiceAccount
+    name: pandax
+    namespace: pandax
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -136,20 +53,25 @@ spec:
         app.kubernetes.io/version: 1.0.0
     spec:
       containers:
-      - image: emqx/emqx:5.1.0
-        imagePullPolicy: IfNotPresent
-        name: emqx
-        ports:
-        - containerPort: 1883
-          protocol: TCP
-        - containerPort: 8083
-          protocol: TCP
-        - containerPort: 8084
-          protocol: TCP
-        - containerPort: 8883
-          protocol: TCP
-        - containerPort: 18083
-          protocol: TCP
+        - image: emqx/emqx:5.1.0
+          imagePullPolicy: IfNotPresent
+          name: emqx
+          ports:
+            - name: emqx-1883
+              containerPort: 1883
+              protocol: TCP
+            - name: emqx-8083
+              containerPort: 8083
+              protocol: TCP
+            - name: emqx-8084
+              containerPort: 8084
+              protocol: TCP
+            - name: emqx-8883
+              containerPort: 8883
+              protocol: TCP
+            - name: emqx-18083
+              containerPort: 18083
+              protocol: TCP
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -173,23 +95,23 @@ spec:
         app.kubernetes.io/version: 1.0.0
     spec:
       containers:
-      - env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: pandax
-        image: mysql:8.0.23
-        imagePullPolicy: IfNotPresent
-        name: mysql
-        ports:
-        - containerPort: 3306
+        - env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: pandax
+          image: mysql:8.0.23
+          imagePullPolicy: IfNotPresent
           name: mysql
-          protocol: TCP
-        volumeMounts:
-        - mountPath: /var/lib/mysql
-          name: mysql-data
+          ports:
+            - containerPort: 3306
+              name: mysql
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-data
       volumes:
-      - name: mysql-data
-        hostPath:
-          path: ./mysql/data
+        - name: mysql-data
+          hostPath:
+            path: /root/data/mysql/data
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -213,28 +135,28 @@ spec:
         app.kubernetes.io/version: 1.0.0
     spec:
       containers:
-      - env:
-        - name: requirepass
-          value: pandax
-        image: redis:7.0.12
-        imagePullPolicy: IfNotPresent
-        name: redis
-        ports:
-        - containerPort: 3306
+        - env:
+            - name: requirepass
+              value: pandax
+          image: redis:7.0.12
+          imagePullPolicy: IfNotPresent
           name: redis
-          protocol: TCP
-        volumeMounts:
-        - mountPath: /data
-          name: redis-data
-        - mountPath: /logs
-          name: mysql-log
+          ports:
+            - containerPort: 3306
+              name: redis
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data
+              name: redis-data
+            - mountPath: /logs
+              name: redis-log
       volumes:
-      - name: redis-data
-        hostPath:
-          path: ./redis/data
-      - name: redis-log
-        hostPath:
-          path: ./redis/logs
+        - name: redis-data
+          hostPath:
+            path: /root/data/redis/data
+        - name: redis-log
+          hostPath:
+            path: /root/data/redis/logs
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -258,11 +180,104 @@ spec:
         app.kubernetes.io/version: 1.0.0
     spec:
       containers:
-      - image: tdengine/tdengine:3.0.4.2
-        imagePullPolicy: IfNotPresent
-        name: tdengine
-        ports:
-        - containerPort: 6030
-          protocol: TCP
-        - containerPort: 6041
-          protocol: TCP
+        - image: tdengine/tdengine:3.0.4.2
+          imagePullPolicy: IfNotPresent
+          name: tdengine
+          ports:
+            - name: td-6030
+              containerPort: 6030
+              protocol: TCP
+            - name: td-6041
+              containerPort: 6041
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: emqx
+  namespace: pandax
+spec:
+  ports:
+    - name: emqx-1883
+      port: 1883
+      protocol: TCP
+      targetPort: 1883
+    - name: emqx-8083
+      port: 8083
+      protocol: TCP
+      targetPort: 8083
+    - name: emqx-8084
+      port: 8084
+      protocol: TCP
+      targetPort: 8084
+    - name: emqx-8883
+      port: 8883
+      protocol: TCP
+      targetPort: 8883
+    - name: emqx-18083
+      port: 18083
+      protocol: TCP
+      targetPort: 18083
+  selector:
+    app: emqx
+    app.kubernetes.io/version: 1.0.0
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: redis
+  namespace: pandax
+spec:
+  ports:
+    - name: redis
+      port: 6379
+      protocol: TCP
+      targetPort: redis
+  selector:
+    app: redis
+    app.kubernetes.io/version: 1.0.0
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: tdengine
+  namespace: pandax
+spec:
+  ports:
+    - name: td-6030
+      port: 6030
+      protocol: TCP
+      targetPort: 6030
+    - name: td-6041
+      port: 6041
+      protocol: TCP
+      targetPort: 6041
+  selector:
+    app: tdengine
+    app.kubernetes.io/version: 1.0.0
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.0.0
+  name: mysql
+  namespace: pandax
+spec:
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: mysql
+  selector:
+    app: mysql
+    app.kubernetes.io/version: 1.0.0
+  type: LoadBalancer
