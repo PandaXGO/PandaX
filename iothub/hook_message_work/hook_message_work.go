@@ -39,6 +39,9 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 				<-s.Ch
 			}
 		}()
+		// 去除上传数据的非法空字符
+		// msg.Datas = strings.ReplaceAll(msg.Datas, "\\u0000", "")
+
 		switch msg.Type {
 		case message.RowMes, message.AttributesMes, message.TelemetryMes, message.RpcRequestFromDevice:
 			msgVals := make(map[string]interface{})
