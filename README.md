@@ -4,7 +4,7 @@
 <div align="center"><h3 align="center">PandaX企业级物联网平台快速开发框架</h3></div>
 <div align="center"><h3 align="center">基于Go 1.20前后端分离架构，代码精简，开箱即用，前端紧随前沿 Vue3.0 + TypeScript + vite3 + Element-plus技术</h3></div>
 
- *主要维护gitee仓库，github随缘更新*
+ **主要维护gitee仓库，github随缘更新**
 
 ## 🌈平台简介
 
