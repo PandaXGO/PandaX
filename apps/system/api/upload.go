@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"github.com/kakuilan/kgo"
 	"net/http"
@@ -12,6 +13,8 @@ import (
 	"pandax/pkg/global"
 	"pandax/pkg/tool"
 	"path"
+	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -56,6 +59,13 @@ func (up *UploadApi) GetImage(rc *restfulx.ReqCtx) {
 func (up *UploadApi) DeleteImage(rc *restfulx.ReqCtx) {
 	fileName := restfulx.QueryParam(rc, "fileName")
 	biz.NotEmpty(fileName, "请传要删除的图片名")
+
+	absFilePath := filepath.Join(filePath, fileName)
+	if !strings.HasPrefix(absFilePath, filepath.Clean(filePath)+string(filepath.Separator)) {
+		biz.ErrIsNil(errors.New("非法文件路径"), "非法文件路径")
+		return
+	}
+
 	err := os.Remove(fmt.Sprintf("%s/%s", filePath, fileName))
 	biz.ErrIsNil(err, "文件删除失败")
 }
