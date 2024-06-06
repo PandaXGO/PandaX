@@ -17,7 +17,7 @@ type (
 		FindOne({{.PkJsonField}} {{.PkGoType}}) (*entity.{{.ClassName}},error)
 		FindListPage(page, pageSize int, data entity.{{.ClassName}}) (*[]entity.{{.ClassName}}, int64, error)
 		FindList(data entity.{{ .ClassName }}) (*[]entity.{{.ClassName}},error)
-		Update(data entity.{{.ClassName}}) (*entity.{{.ClassName}},error)
+		Update(data entity.{{.ClassName}}) error
 		Delete({{.PkJsonField}}s []{{.PkGoType}}) error
 	}
 
@@ -119,7 +119,7 @@ func (m *{{.BusinessName}}ModelImpl) FindListPage(page, pageSize int, data entit
 	if err != nil {
         return &list, total, err
     }
-	err = db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
+	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
 	return &list, total, err
 }
 
@@ -188,13 +188,12 @@ func (m *{{.BusinessName}}ModelImpl) FindList(data entity.{{$model}}) (*[]entity
     db.Preload("{{$column.LinkTableClass}}")
     {{- end -}}
     {{- end}}
-	err := db.Order("create_time").Find(&list).Error
+	err := db.Find(&list).Error
 	return &list, err
 }
 
-func (m *{{.BusinessName}}ModelImpl) Update(data entity.{{$model}}) (*entity.{{$model}}, error) {
-	err := global.Db.Table(m.table).Updates(&data).Error
-	return &data, err
+func (m *{{.BusinessName}}ModelImpl) Update(data entity.{{$model}}) error {
+	return global.Db.Table(m.table).Updates(&data).Error
 }
 
 func (m *{{.BusinessName}}ModelImpl) Delete({{.PkJsonField}}s []{{.PkGoType}}) error {

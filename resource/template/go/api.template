@@ -7,11 +7,11 @@ package api
 import (
     "pandax/kit/model"
     "pandax/kit/restfulx"
+	"strings"
 
 	"pandax/apps/{{.PackageName}}/entity"
 	"pandax/apps/{{.PackageName}}/services"
 	"pandax/kit/biz"
-	"pandax/kit/utils"
 )
 
 type {{.ClassName}}Api struct {
@@ -61,7 +61,7 @@ func (p *{{.ClassName}}Api) Insert{{.ClassName}}(rc *restfulx.ReqCtx) {
 	var data entity.{{.ClassName}}
 	restfulx.BindQuery(rc, &data)
 
-	err := p.{{.ClassName}}App.Insert(data)
+	_,err := p.{{.ClassName}}App.Insert(data)
 	biz.ErrIsNil(err, "添加{{.TableComment}}失败")
 }
 

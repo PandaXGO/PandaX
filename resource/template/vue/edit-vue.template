@@ -162,14 +162,18 @@ const onSubmit = () => {
       state.loading = true;
       if (state.ruleForm.{{.PkJsonField}} != undefined && state.ruleForm.{{.PkJsonField}} != 0) {
         update{{.FunctionName}}(state.ruleForm).then((response) => {
-          ElMessage.success("修改成功");
+          if (response.code == 200){
+            ElMessage.success("修改成功");
+            closeDialog(state.ruleForm); // 关闭弹窗
+          }
           state.loading = false;
-          closeDialog(state.ruleForm); // 关闭弹窗
         });
       } else {
         add{{.FunctionName}}(state.ruleForm).then((response) => {
-          ElMessage.success("新增成功");
-          closeDialog(state.ruleForm); // 关闭弹窗
+          if (response.code == 200){
+            ElMessage.success("新增成功");
+            closeDialog(state.ruleForm); // 关闭弹窗
+          }
         });
       }
     }

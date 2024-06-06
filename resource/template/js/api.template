@@ -10,7 +10,7 @@ export function list{{.FunctionName}}(query:any) {
 }
 
 // 查询{{.FunctionName}}详细
-export function get{{.FunctionName}}({{.PkJsonField}}:number) {
+export function get{{.FunctionName}}({{.PkJsonField}}:{{.PkGoType}}) {
 	return request({
 		url: '/{{.PackageName}}/{{.BusinessName}}/' + {{.PkJsonField}},
 		method: 'get'
@@ -36,7 +36,7 @@ export function update{{.FunctionName}}(data:any) {
 }
 
 // 删除{{.FunctionName}}
-export function del{{.FunctionName}}({{.PkJsonField}}: string) {
+export function del{{.FunctionName}}({{.PkJsonField}}: {{.PkGoType}}) {
 	return request({
 		url: '/{{.PackageName}}/{{.BusinessName}}/' + {{.PkJsonField}},
 		method: 'delete'

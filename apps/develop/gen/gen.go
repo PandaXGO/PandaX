@@ -155,7 +155,7 @@ func (g *Generator) Generate() (entity.DevGenTable, error) {
 			var column entity.DevGenTableColumn
 			column.ColumnComment = dbColumn[y].ColumnComment
 			column.ColumnName = dbColumn[y].ColumnName
-			column.ColumnType = dbColumn[y].ColumnType
+			column.ColumnType = dbColumn[y].DataType
 			column.Sort = y + 1
 			column.IsPk = "0"
 
@@ -361,7 +361,7 @@ func GenCode(tableId int64) {
 	t1, err := template.ParseFiles("resource/template/go/entity.template")
 	biz.ErrIsNil(err, "entity模版读取失败！")
 
-	t2, err := template.ParseFiles("resource/template/go/services.template")
+	t2, err := template.ParseFiles("resource/template/go/service.template")
 	biz.ErrIsNil(err, "service模版读取失败！")
 
 	t3, err := template.ParseFiles("resource/template/go/api.template")

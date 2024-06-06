@@ -182,11 +182,15 @@ func SetDeviceShadow(etoken *model.DeviceAuth, msgVals map[string]interface{}, m
 	for key, value := range msgVals {
 		if message.AttributesMes == msgType {
 			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslAttributesType, key, value)
-			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
+			if err != nil {
+				global.Log.Error("设置设备影子点失败", err)
+			}
 		}
 		if message.TelemetryMes == msgType {
 			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslTelemetryType, key, value)
-			biz.ErrIsNilAppendErr(err, "设置设备影子点失败")
+			if err != nil {
+				global.Log.Error("设置设备影子点失败", err)
+			}
 		}
 	}
 }
