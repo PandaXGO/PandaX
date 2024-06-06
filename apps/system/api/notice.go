@@ -3,6 +3,7 @@ package api
 import (
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
+	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
 	"pandax/kit/utils"
@@ -22,13 +23,14 @@ func (p *NoticeApi) GetNoticeList(rc *restfulx.ReqCtx) {
 	title := restfulx.QueryParam(rc, "title")
 
 	// 获取组织的子组织id
-	one := p.OrganizationApp.FindOne(rc.LoginAccount.OrganizationId)
+	one, err := p.OrganizationApp.FindOne(rc.LoginAccount.OrganizationId)
+	biz.ErrIsNil(err, "组织查询失败")
 	split := strings.Split(strings.Trim(one.OrganizationPath, "/"), "/")
 	// 获取所有父组织id
 	ids := utils.OrganizationPCIds(split, rc.LoginAccount.OrganizationId, true)
 	notice := entity.SysNotice{NoticeType: noticeType, Title: title, OrganizationIds: ids}
-	list, total := p.NoticeApp.FindListPage(pageNum, pageSize, notice)
-
+	list, total, err := p.NoticeApp.FindListPage(pageNum, pageSize, notice)
+	biz.ErrIsNil(err, "查询通知列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -42,7 +44,8 @@ func (p *NoticeApi) InsertNotice(rc *restfulx.ReqCtx) {
 	var notice entity.SysNotice
 	restfulx.BindJsonAndValid(rc, &notice)
 	notice.UserName = rc.LoginAccount.UserName
-	p.NoticeApp.Insert(notice)
+	_, err := p.NoticeApp.Insert(notice)
+	biz.ErrIsNil(err, "添加通知失败")
 }
 
 // UpdateNotice 修改通知
@@ -50,12 +53,14 @@ func (p *NoticeApi) UpdateNotice(rc *restfulx.ReqCtx) {
 	var notice entity.SysNotice
 	restfulx.BindJsonAndValid(rc, &notice)
 
-	p.NoticeApp.Update(notice)
+	err := p.NoticeApp.Update(notice)
+	biz.ErrIsNil(err, "修改通知失败")
 }
 
 // DeleteNotice 删除通知
 func (p *NoticeApi) DeleteNotice(rc *restfulx.ReqCtx) {
 	noticeId := restfulx.PathParam(rc, "noticeId")
 	noticeIds := utils.IdsStrToIdsIntGroup(noticeId)
-	p.NoticeApp.Delete(noticeIds)
+	err := p.NoticeApp.Delete(noticeIds)
+	biz.ErrIsNil(err, "删除通知失败")
 }

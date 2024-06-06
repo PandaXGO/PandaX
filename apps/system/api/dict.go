@@ -23,7 +23,8 @@ func (p *DictApi) GetDictTypeList(rc *restfulx.ReqCtx) {
 	dictName := restfulx.QueryParam(rc, "dictName")
 	dictType := restfulx.QueryParam(rc, "dictType")
 
-	list, total := p.DictType.FindListPage(pageNum, pageSize, entity.SysDictType{Status: status, DictName: dictName, DictType: dictType})
+	list, total, err := p.DictType.FindListPage(pageNum, pageSize, entity.SysDictType{Status: status, DictName: dictName, DictType: dictType})
+	biz.ErrIsNil(err, "查询字典类型分页失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -34,7 +35,9 @@ func (p *DictApi) GetDictTypeList(rc *restfulx.ReqCtx) {
 
 func (p *DictApi) GetDictType(rc *restfulx.ReqCtx) {
 	dictId := restfulx.PathParamInt(rc, "dictId")
-	p.DictType.FindOne(int64(dictId))
+	data, err := p.DictType.FindOne(int64(dictId))
+	biz.ErrIsNil(err, "查询字典类型失败")
+	rc.ResData = data
 }
 
 func (p *DictApi) InsertDictType(rc *restfulx.ReqCtx) {
@@ -42,7 +45,8 @@ func (p *DictApi) InsertDictType(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &dict)
 
 	dict.CreateBy = rc.LoginAccount.UserName
-	p.DictType.Insert(dict)
+	_, err := p.DictType.Insert(dict)
+	biz.ErrIsNil(err, "添加字典类型失败")
 }
 
 func (p *DictApi) UpdateDictType(rc *restfulx.ReqCtx) {
@@ -50,7 +54,8 @@ func (p *DictApi) UpdateDictType(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &dict)
 
 	dict.CreateBy = rc.LoginAccount.UserName
-	p.DictType.Update(dict)
+	err := p.DictType.Update(dict)
+	biz.ErrIsNil(err, "修改字典类型失败")
 }
 
 func (p *DictApi) DeleteDictType(rc *restfulx.ReqCtx) {
@@ -59,15 +64,22 @@ func (p *DictApi) DeleteDictType(rc *restfulx.ReqCtx) {
 
 	deList := make([]int64, 0)
 	for _, id := range dictIds {
-		one := p.DictType.FindOne(id)
-		list := p.DictData.FindList(entity.SysDictData{DictType: one.DictType})
+		one, err := p.DictType.FindOne(id)
+		if err != nil {
+			continue
+		}
+		list, err := p.DictData.FindList(entity.SysDictData{DictType: one.DictType})
+		if err != nil {
+			continue
+		}
 		if len(*list) == 0 {
 			deList = append(deList, id)
 		} else {
 			global.Log.Info(fmt.Sprintf("dictId: %d 存在字典数据绑定无法删除", id))
 		}
 	}
-	p.DictType.Delete(deList)
+	err := p.DictType.Delete(deList)
+	biz.ErrIsNil(err, "删除字典类型失败")
 }
 
 func (p *DictApi) ExportDictType(rc *restfulx.ReqCtx) {
@@ -76,7 +88,8 @@ func (p *DictApi) ExportDictType(rc *restfulx.ReqCtx) {
 	dictName := restfulx.QueryParam(rc, "dictName")
 	dictType := restfulx.QueryParam(rc, "dictType")
 
-	list := p.DictType.FindList(entity.SysDictType{Status: status, DictName: dictName, DictType: dictType})
+	list, err := p.DictType.FindList(entity.SysDictType{Status: status, DictName: dictName, DictType: dictType})
+	biz.ErrIsNil(err, "查询字典类型列表失败")
 	fileName := utils.GetFileName(global.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)
 	rc.Download(fileName)
@@ -86,25 +99,32 @@ func (p *DictApi) GetDictDataList(rc *restfulx.ReqCtx) {
 	dictLabel := restfulx.QueryParam(rc, "dictLabel")
 	dictType := restfulx.QueryParam(rc, "dictType")
 	status := restfulx.QueryParam(rc, "status")
-	rc.ResData = p.DictData.FindList(entity.SysDictData{Status: status, DictType: dictType, DictLabel: dictLabel})
+	data, err := p.DictData.FindList(entity.SysDictData{Status: status, DictType: dictType, DictLabel: dictLabel})
+	biz.ErrIsNil(err, "查询字典列表失败")
+	rc.ResData = data
 }
 
 func (p *DictApi) GetDictDataListByDictType(rc *restfulx.ReqCtx) {
 	dictType := restfulx.QueryParam(rc, "dictType")
 	biz.IsTrue(dictType != "", "请传入字典类型")
-	rc.ResData = p.DictData.FindList(entity.SysDictData{DictType: dictType})
+	data, err := p.DictData.FindList(entity.SysDictData{DictType: dictType})
+	biz.ErrIsNil(err, "查询字典列表失败")
+	rc.ResData = data
 }
 
 func (p *DictApi) GetDictData(rc *restfulx.ReqCtx) {
 	dictCode := restfulx.PathParamInt(rc, "dictCode")
-	p.DictData.FindOne(int64(dictCode))
+	data, err := p.DictData.FindOne(int64(dictCode))
+	biz.ErrIsNil(err, "查询字典失败")
+	rc.ResData = data
 }
 
 func (p *DictApi) InsertDictData(rc *restfulx.ReqCtx) {
 	var data entity.SysDictData
 	restfulx.BindJsonAndValid(rc, &data)
 	data.CreateBy = rc.LoginAccount.UserName
-	p.DictData.Insert(data)
+	_, err := p.DictData.Insert(data)
+	biz.ErrIsNil(err, "添加字典失败")
 }
 
 func (p *DictApi) UpdateDictData(rc *restfulx.ReqCtx) {
@@ -112,10 +132,12 @@ func (p *DictApi) UpdateDictData(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &data)
 
 	data.CreateBy = rc.LoginAccount.UserName
-	p.DictData.Update(data)
+	err := p.DictData.Update(data)
+	biz.ErrIsNil(err, "修改字典失败")
 }
 
 func (p *DictApi) DeleteDictData(rc *restfulx.ReqCtx) {
 	dictCode := restfulx.PathParam(rc, "dictCode")
-	p.DictData.Delete(utils.IdsStrToIdsIntGroup(dictCode))
+	err := p.DictData.Delete(utils.IdsStrToIdsIntGroup(dictCode))
+	biz.ErrIsNil(err, "修改字典失败")
 }

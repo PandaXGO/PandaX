@@ -18,23 +18,27 @@ type MenuApi struct {
 }
 
 func (m *MenuApi) GetMenuTreeSelect(rc *restfulx.ReqCtx) {
-	lable := m.MenuApp.SelectMenuLable(entity.SysMenu{})
+	lable, err := m.MenuApp.SelectMenuLable(entity.SysMenu{})
+	biz.ErrIsNil(err, "查询菜单树失败")
 	rc.ResData = lable
 }
 
 func (m *MenuApi) GetMenuRole(rc *restfulx.ReqCtx) {
 	roleKey := restfulx.QueryParam(rc, "roleKey")
 	biz.IsTrue(roleKey != "", "请传入角色Key")
-	rc.ResData = Build(*m.MenuApp.SelectMenuRole(roleKey))
+	data, err := m.MenuApp.SelectMenuRole(roleKey)
+	biz.ErrIsNil(err, "查询角色菜单失败")
+	rc.ResData = Build(*data)
 }
 
 func (m *MenuApi) GetMenuTreeRoleSelect(rc *restfulx.ReqCtx) {
 	roleId := restfulx.PathParamInt(rc, "roleId")
-
-	result := m.MenuApp.SelectMenuLable(entity.SysMenu{})
+	result, err := m.MenuApp.SelectMenuLable(entity.SysMenu{})
+	biz.ErrIsNil(err, "查询菜单树失败")
 	menuIds := make([]int64, 0)
 	if roleId != 0 {
-		menuIds = m.RoleApp.GetRoleMeunId(entity.SysRole{RoleId: int64(roleId)})
+		menuIds, err = m.RoleApp.GetRoleMeunId(entity.SysRole{RoleId: int64(roleId)})
+		biz.ErrIsNil(err, "通过角色查询菜单失败")
 	}
 	rc.ResData = vo.MenuTreeVo{
 		Menus:       *result,
@@ -45,7 +49,9 @@ func (m *MenuApi) GetMenuTreeRoleSelect(rc *restfulx.ReqCtx) {
 func (m *MenuApi) GetMenuPaths(rc *restfulx.ReqCtx) {
 	roleKey := restfulx.QueryParam(rc, "roleKey")
 	biz.IsTrue(roleKey != "", "请传入角色Key")
-	rc.ResData = m.RoleMenuApp.GetMenuPaths(entity.SysRoleMenu{RoleName: roleKey})
+	data, err := m.RoleMenuApp.GetMenuPaths(entity.SysRoleMenu{RoleName: roleKey})
+	biz.ErrIsNil(err, "查询菜单路径失败")
+	rc.ResData = data
 }
 
 func (m *MenuApi) GetMenuList(rc *restfulx.ReqCtx) {
@@ -54,16 +60,21 @@ func (m *MenuApi) GetMenuList(rc *restfulx.ReqCtx) {
 
 	menu := entity.SysMenu{MenuName: menuName, Status: status}
 	if menu.MenuName == "" {
-		rc.ResData = m.MenuApp.SelectMenu(menu)
+		data, err := m.MenuApp.SelectMenu(menu)
+		biz.ErrIsNil(err, "查询菜单列表失败")
+		rc.ResData = data
 	} else {
-		rc.ResData = m.MenuApp.FindList(menu)
+		data, err := m.MenuApp.FindList(menu)
+		biz.ErrIsNil(err, "查询菜单列表失败")
+		rc.ResData = data
 	}
 }
 
 func (m *MenuApi) GetMenu(rc *restfulx.ReqCtx) {
 	menuId := restfulx.PathParamInt(rc, "menuId")
-
-	rc.ResData = m.MenuApp.FindOne(int64(menuId))
+	data, err := m.MenuApp.FindOne(int64(menuId))
+	biz.ErrIsNil(err, "查询菜单失败")
+	rc.ResData = data
 }
 
 func (m *MenuApi) InsertMenu(rc *restfulx.ReqCtx) {
@@ -71,8 +82,8 @@ func (m *MenuApi) InsertMenu(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &menu)
 	menu.CreateBy = rc.LoginAccount.UserName
 	m.MenuApp.Insert(menu)
-	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
-	menus := m.MenuApp.SelectMenuRole(rc.LoginAccount.RoleKey)
+	permis, _ := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
+	menus, _ := m.MenuApp.SelectMenuRole(rc.LoginAccount.RoleKey)
 	rc.ResData = vo.MenuPermisVo{
 		Menus:       Build(*menus),
 		Permissions: permis,
@@ -84,8 +95,8 @@ func (m *MenuApi) UpdateMenu(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &menu)
 	menu.UpdateBy = rc.LoginAccount.UserName
 	m.MenuApp.Update(menu)
-	permis := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
-	menus := m.MenuApp.SelectMenuRole(rc.LoginAccount.RoleKey)
+	permis, _ := m.RoleMenuApp.GetPermis(rc.LoginAccount.RoleId)
+	menus, _ := m.MenuApp.SelectMenuRole(rc.LoginAccount.RoleKey)
 	rc.ResData = vo.MenuPermisVo{
 		Menus:       Build(*menus),
 		Permissions: permis,
@@ -94,5 +105,6 @@ func (m *MenuApi) UpdateMenu(rc *restfulx.ReqCtx) {
 
 func (m *MenuApi) DeleteMenu(rc *restfulx.ReqCtx) {
 	menuId := restfulx.PathParam(rc, "menuId")
-	m.MenuApp.Delete(utils.IdsStrToIdsIntGroup(menuId))
+	err := m.MenuApp.Delete(utils.IdsStrToIdsIntGroup(menuId))
+	biz.ErrIsNil(err, "删除菜单失败")
 }

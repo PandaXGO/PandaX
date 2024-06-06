@@ -2,18 +2,17 @@ package services
 
 import (
 	"pandax/apps/system/entity"
-	"pandax/kit/biz"
 	"pandax/pkg/global"
 )
 
 type (
 	SysConfigModel interface {
-		Insert(data entity.SysConfig) *entity.SysConfig
-		FindOne(dictCode int64) *entity.SysConfig
-		FindListPage(page, pageSize int, data entity.SysConfig) (*[]entity.SysConfig, int64)
-		FindList(data entity.SysConfig) *[]entity.SysConfig
-		Update(data entity.SysConfig) *entity.SysConfig
-		Delete(dictCode []int64)
+		Insert(data entity.SysConfig) (*entity.SysConfig, error)
+		FindOne(dictCode int64) (*entity.SysConfig, error)
+		FindListPage(page, pageSize int, data entity.SysConfig) (*[]entity.SysConfig, int64, error)
+		FindList(data entity.SysConfig) (*[]entity.SysConfig, error)
+		Update(data entity.SysConfig) error
+		Delete(dictCode []int64) error
 	}
 
 	sysSysConfigModelImpl struct {
@@ -25,20 +24,18 @@ var SysSysConfigModelDao SysConfigModel = &sysSysConfigModelImpl{
 	table: `sys_configs`,
 }
 
-func (m *sysSysConfigModelImpl) Insert(data entity.SysConfig) *entity.SysConfig {
+func (m *sysSysConfigModelImpl) Insert(data entity.SysConfig) (*entity.SysConfig, error) {
 	err := global.Db.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "新增配置失败")
-	return &data
+	return &data, err
 }
 
-func (m *sysSysConfigModelImpl) FindOne(configId int64) *entity.SysConfig {
+func (m *sysSysConfigModelImpl) FindOne(configId int64) (*entity.SysConfig, error) {
 	resData := new(entity.SysConfig)
 	err := global.Db.Table(m.table).Where("config_id = ?", configId).First(resData).Error
-	biz.ErrIsNil(err, "查询配置信息失败")
-	return resData
+	return resData, err
 }
 
-func (m *sysSysConfigModelImpl) FindListPage(page, pageSize int, data entity.SysConfig) (*[]entity.SysConfig, int64) {
+func (m *sysSysConfigModelImpl) FindListPage(page, pageSize int, data entity.SysConfig) (*[]entity.SysConfig, int64, error) {
 	list := make([]entity.SysConfig, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -56,12 +53,14 @@ func (m *sysSysConfigModelImpl) FindListPage(page, pageSize int, data entity.Sys
 	}
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
 	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询配置分页列表信息失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *sysSysConfigModelImpl) FindList(data entity.SysConfig) *[]entity.SysConfig {
+func (m *sysSysConfigModelImpl) FindList(data entity.SysConfig) (*[]entity.SysConfig, error) {
 	list := make([]entity.SysConfig, 0)
 
 	db := global.Db.Table(m.table)
@@ -77,18 +76,13 @@ func (m *sysSysConfigModelImpl) FindList(data entity.SysConfig) *[]entity.SysCon
 	}
 	db.Where("delete_time IS NULL")
 	err := db.Order("create_time").Find(&list).Error
-	biz.ErrIsNil(err, "查询配置列表信息失败")
-	return &list
+	return &list, err
 }
 
-func (m *sysSysConfigModelImpl) Update(data entity.SysConfig) *entity.SysConfig {
-	err := global.Db.Table(m.table).Model(&data).Updates(&data).Error
-	biz.ErrIsNil(err, "修改配置信息失败")
-	return &data
+func (m *sysSysConfigModelImpl) Update(data entity.SysConfig) error {
+	return global.Db.Table(m.table).Model(&data).Updates(&data).Error
 }
 
-func (m *sysSysConfigModelImpl) Delete(configIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysConfig{}, "config_id in (?)", configIds).Error
-	biz.ErrIsNil(err, "删除配置信息失败")
-	return
+func (m *sysSysConfigModelImpl) Delete(configIds []int64) error {
+	return global.Db.Table(m.table).Delete(&entity.SysConfig{}, "config_id in (?)", configIds).Error
 }

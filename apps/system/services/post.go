@@ -2,18 +2,17 @@ package services
 
 import (
 	"pandax/apps/system/entity"
-	"pandax/kit/biz"
 	"pandax/pkg/global"
 )
 
 type (
 	SysPostModel interface {
-		Insert(data entity.SysPost) *entity.SysPost
-		FindOne(postId int64) *entity.SysPost
-		FindListPage(page, pageSize int, data entity.SysPost) (*[]entity.SysPost, int64)
-		FindList(data entity.SysPost) *[]entity.SysPost
-		Update(data entity.SysPost) *entity.SysPost
-		Delete(postId []int64)
+		Insert(data entity.SysPost) (*entity.SysPost, error)
+		FindOne(postId int64) (*entity.SysPost, error)
+		FindListPage(page, pageSize int, data entity.SysPost) (*[]entity.SysPost, int64, error)
+		FindList(data entity.SysPost) (*[]entity.SysPost, error)
+		Update(data entity.SysPost) error
+		Delete(postId []int64) error
 	}
 
 	sysPostModelImpl struct {
@@ -25,20 +24,18 @@ var SysPostModelDao SysPostModel = &sysPostModelImpl{
 	table: `sys_posts`,
 }
 
-func (m *sysPostModelImpl) Insert(data entity.SysPost) *entity.SysPost {
+func (m *sysPostModelImpl) Insert(data entity.SysPost) (*entity.SysPost, error) {
 	err := global.Db.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "添加岗位失败")
-	return &data
+	return &data, err
 }
 
-func (m *sysPostModelImpl) FindOne(postId int64) *entity.SysPost {
+func (m *sysPostModelImpl) FindOne(postId int64) (*entity.SysPost, error) {
 	resData := new(entity.SysPost)
 	err := global.Db.Table(m.table).Where("post_id = ?", postId).First(resData).Error
-	biz.ErrIsNil(err, "查询岗位失败")
-	return resData
+	return resData, err
 }
 
-func (m *sysPostModelImpl) FindListPage(page, pageSize int, data entity.SysPost) (*[]entity.SysPost, int64) {
+func (m *sysPostModelImpl) FindListPage(page, pageSize int, data entity.SysPost) (*[]entity.SysPost, int64, error) {
 	list := make([]entity.SysPost, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -59,11 +56,10 @@ func (m *sysPostModelImpl) FindListPage(page, pageSize int, data entity.SysPost)
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
 	err = db.Order("sort").Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询岗位分页列表失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *sysPostModelImpl) FindList(data entity.SysPost) *[]entity.SysPost {
+func (m *sysPostModelImpl) FindList(data entity.SysPost) (*[]entity.SysPost, error) {
 	list := make([]entity.SysPost, 0)
 	db := global.Db.Table(m.table)
 	// 此处填写 where参数判断
@@ -80,15 +76,14 @@ func (m *sysPostModelImpl) FindList(data entity.SysPost) *[]entity.SysPost {
 		db = db.Where("status = ?", data.Status)
 	}
 	db.Where("delete_time IS NULL")
-	biz.ErrIsNil(db.Order("sort").Find(&list).Error, "查询岗位列表失败")
-	return &list
+	err := db.Order("sort").Find(&list).Error
+	return &list, err
 }
 
-func (m *sysPostModelImpl) Update(data entity.SysPost) *entity.SysPost {
-	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改岗位失败")
-	return &data
+func (m *sysPostModelImpl) Update(data entity.SysPost) error {
+	return global.Db.Table(m.table).Updates(&data).Error
 }
 
-func (m *sysPostModelImpl) Delete(postIds []int64) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysPost{}, "post_id in (?)", postIds).Error, "删除岗位失败")
+func (m *sysPostModelImpl) Delete(postIds []int64) error {
+	return global.Db.Table(m.table).Delete(&entity.SysPost{}, "post_id in (?)", postIds).Error
 }

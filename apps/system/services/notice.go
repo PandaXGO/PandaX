@@ -2,17 +2,16 @@ package services
 
 import (
 	"pandax/apps/system/entity"
-	"pandax/kit/biz"
 	"pandax/pkg/global"
 )
 
 type (
 	SysNoticeModel interface {
-		Insert(data entity.SysNotice) *entity.SysNotice
-		FindOne(postId int64) *entity.SysNotice
-		FindListPage(page, pageSize int, data entity.SysNotice) (*[]entity.SysNotice, int64)
-		Update(data entity.SysNotice) *entity.SysNotice
-		Delete(postId []int64)
+		Insert(data entity.SysNotice) (*entity.SysNotice, error)
+		FindOne(postId int64) (*entity.SysNotice, error)
+		FindListPage(page, pageSize int, data entity.SysNotice) (*[]entity.SysNotice, int64, error)
+		Update(data entity.SysNotice) error
+		Delete(postId []int64) error
 	}
 
 	sysNoticeModelImpl struct {
@@ -24,20 +23,18 @@ var SysNoticeModelDao SysNoticeModel = &sysNoticeModelImpl{
 	table: `sys_notices`,
 }
 
-func (m *sysNoticeModelImpl) Insert(data entity.SysNotice) *entity.SysNotice {
+func (m *sysNoticeModelImpl) Insert(data entity.SysNotice) (*entity.SysNotice, error) {
 	err := global.Db.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "添加通知失败")
-	return &data
+	return &data, err
 }
 
-func (m *sysNoticeModelImpl) FindOne(postId int64) *entity.SysNotice {
+func (m *sysNoticeModelImpl) FindOne(postId int64) (*entity.SysNotice, error) {
 	resData := new(entity.SysNotice)
 	err := global.Db.Table(m.table).Where("post_id = ?", postId).First(resData).Error
-	biz.ErrIsNil(err, "查询通知失败")
-	return resData
+	return resData, err
 }
 
-func (m *sysNoticeModelImpl) FindListPage(page, pageSize int, data entity.SysNotice) (*[]entity.SysNotice, int64) {
+func (m *sysNoticeModelImpl) FindListPage(page, pageSize int, data entity.SysNotice) (*[]entity.SysNotice, int64, error) {
 	list := make([]entity.SysNotice, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -55,15 +52,13 @@ func (m *sysNoticeModelImpl) FindListPage(page, pageSize int, data entity.SysNot
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
 	err = db.Order("create_time").Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询通知分页列表失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *sysNoticeModelImpl) Update(data entity.SysNotice) *entity.SysNotice {
-	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改通知失败")
-	return &data
+func (m *sysNoticeModelImpl) Update(data entity.SysNotice) error {
+	return global.Db.Table(m.table).Updates(&data).Error
 }
 
-func (m *sysNoticeModelImpl) Delete(postIds []int64) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysNotice{}, "notice_id in (?)", postIds).Error, "删除通知失败")
+func (m *sysNoticeModelImpl) Delete(postIds []int64) error {
+	return global.Db.Table(m.table).Delete(&entity.SysNotice{}, "notice_id in (?)", postIds).Error
 }

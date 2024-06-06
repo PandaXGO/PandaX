@@ -28,8 +28,8 @@ func (p *PostApi) GetPostList(rc *restfulx.ReqCtx) {
 	postCode := restfulx.QueryParam(rc, "postCode")
 	post := entity.SysPost{Status: status, PostName: postName, PostCode: postCode}
 
-	list, total := p.PostApp.FindListPage(pageNum, pageSize, post)
-
+	list, total, err := p.PostApp.FindListPage(pageNum, pageSize, post)
+	biz.ErrIsNil(err, "查询部门列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -41,7 +41,9 @@ func (p *PostApi) GetPostList(rc *restfulx.ReqCtx) {
 // GetPost 获取职位
 func (p *PostApi) GetPost(rc *restfulx.ReqCtx) {
 	postId := restfulx.PathParamInt(rc, "postId")
-	p.PostApp.FindOne(int64(postId))
+	data, err := p.PostApp.FindOne(int64(postId))
+	biz.ErrIsNil(err, "查询部门失败")
+	rc.ResData = data
 }
 
 // InsertPost 添加职位
@@ -49,7 +51,8 @@ func (p *PostApi) InsertPost(rc *restfulx.ReqCtx) {
 	var post entity.SysPost
 	restfulx.BindJsonAndValid(rc, &post)
 	post.CreateBy = rc.LoginAccount.UserName
-	p.PostApp.Insert(post)
+	_, err := p.PostApp.Insert(post)
+	biz.ErrIsNil(err, "添加部门失败")
 }
 
 // UpdatePost 修改职位
@@ -58,7 +61,8 @@ func (p *PostApi) UpdatePost(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &post)
 
 	post.CreateBy = rc.LoginAccount.UserName
-	p.PostApp.Update(post)
+	err := p.PostApp.Update(post)
+	biz.ErrIsNil(err, "修改部门失败")
 }
 
 // DeletePost 删除职位
@@ -70,7 +74,10 @@ func (p *PostApi) DeletePost(rc *restfulx.ReqCtx) {
 	for _, id := range postIds {
 		user := entity.SysUser{}
 		user.PostId = id
-		list := p.UserApp.FindList(user)
+		list, err := p.UserApp.FindList(user)
+		if err != nil {
+			continue
+		}
 		if len(*list) == 0 {
 			deList = append(deList, id)
 		} else {
@@ -80,5 +87,6 @@ func (p *PostApi) DeletePost(rc *restfulx.ReqCtx) {
 	if len(deList) == 0 {
 		biz.ErrIsNil(errors.New("所有岗位都已绑定用户，无法删除"), "所有岗位都已绑定用户，无法删除")
 	}
-	p.PostApp.Delete(deList)
+	err := p.PostApp.Delete(deList)
+	biz.ErrIsNil(err, "删除部门失败")
 }

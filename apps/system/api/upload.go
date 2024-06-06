@@ -2,9 +2,6 @@ package api
 
 import (
 	"fmt"
-	"github.com/kakuilan/kgo"
-	"net/http"
-	"os"
 	"pandax/kit/biz"
 	"pandax/kit/oss"
 	"pandax/kit/restfulx"
@@ -17,18 +14,15 @@ import (
 
 type UploadApi struct{}
 
-const filePath = "uploads/file"
-
 // UploadImage 图片上传
 func (up *UploadApi) UploadImage(rc *restfulx.ReqCtx) {
 	_, fileHeader, err := rc.Request.Request.FormFile("file")
+	fileType := restfulx.QueryParam(rc, "fileType")
 	biz.ErrIsNil(err, "请传入文件")
-	// 判断上传文件类型，不支持返回
-	biz.IsTrue(kgo.KFile.IsImg(fileHeader.Filename), "请传入图片文件")
-
-	local := &tool.Local{Path: filePath}
+	local := &tool.Local{Path: tool.GetFilePath(fileType)}
 	link, fileName, err := local.UploadFile(fileHeader)
 	biz.ErrIsNil(err, "文件上传失败")
+
 	rc.ResData = map[string]string{"fileName": fileName, "filePath": link}
 }
 
@@ -45,18 +39,20 @@ func (p *UploadApi) UplaodToOss(rc *restfulx.ReqCtx) {
 	rc.ResData = fmt.Sprintf("http://%s/%s/%s", config.Endpoint, config.BucketName, yunFileTmpPath)
 }
 
+// subpath 是fileName
 func (up *UploadApi) GetImage(rc *restfulx.ReqCtx) {
-	actual := path.Join(filePath, restfulx.PathParam(rc, "subpath"))
-	http.ServeFile(
-		rc.Response.ResponseWriter,
-		rc.Request.Request,
-		actual)
+	fileType := restfulx.QueryParam(rc, "fileType")
+	actual := path.Join(tool.GetFilePath(fileType), restfulx.PathParam(rc, "subpath"))
+
+	rc.Download(actual)
 }
 
 func (up *UploadApi) DeleteImage(rc *restfulx.ReqCtx) {
 	fileName := restfulx.QueryParam(rc, "fileName")
+	fileType := restfulx.QueryParam(rc, "fileType")
 	biz.NotEmpty(fileName, "请传要删除的图片名")
-	err := os.Remove(fmt.Sprintf("%s/%s", filePath, fileName))
+	local := &tool.Local{Path: tool.GetFilePath(fileType)}
+	err := local.DeleteFile(fileName)
 	biz.ErrIsNil(err, "文件删除失败")
 }
 

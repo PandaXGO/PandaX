@@ -3,15 +3,14 @@ package services
 import (
 	"fmt"
 	"pandax/apps/system/entity"
-	"pandax/kit/biz"
 	"pandax/pkg/global"
 )
 
 type (
 	SysRoleOrganizationModel interface {
-		Insert(roleId int64, organizationIds []int64) bool
+		Insert(roleId int64, organizationIds []int64) error
 		FindOrganizationsByRoleId(roleId int64) ([]int64, error)
-		Delete(rm entity.SysRoleOrganization)
+		Delete(rm entity.SysRoleOrganization) error
 	}
 
 	sysRoleOrganizationImpl struct {
@@ -23,7 +22,7 @@ var SysRoleOrganizationModelDao SysRoleOrganizationModel = &sysRoleOrganizationI
 	table: `sys_role_organizations`,
 }
 
-func (m *sysRoleOrganizationImpl) Insert(roleId int64, organizationIds []int64) bool {
+func (m *sysRoleOrganizationImpl) Insert(roleId int64, organizationIds []int64) error {
 	sql := "INSERT INTO sys_role_organizations (role_id, organization_id) VALUES "
 
 	for i := 0; i < len(organizationIds); i++ {
@@ -34,8 +33,8 @@ func (m *sysRoleOrganizationImpl) Insert(roleId int64, organizationIds []int64) 
 			sql += fmt.Sprintf("(%d,%d),", roleId, organizationIds[i])
 		}
 	}
-	global.Db.Exec(sql)
-	return true
+
+	return global.Db.Exec(sql).Error
 }
 
 func (m *sysRoleOrganizationImpl) FindOrganizationsByRoleId(roleId int64) ([]int64, error) {
@@ -44,7 +43,6 @@ func (m *sysRoleOrganizationImpl) FindOrganizationsByRoleId(roleId int64) ([]int
 	return result, err
 }
 
-func (m *sysRoleOrganizationImpl) Delete(rm entity.SysRoleOrganization) {
-	biz.ErrIsNil(global.Db.Table(m.table).Where("role_id = ?", rm.RoleId).Delete(&rm).Error, "删除角色失败")
-	return
+func (m *sysRoleOrganizationImpl) Delete(rm entity.SysRoleOrganization) error {
+	return global.Db.Table(m.table).Where("role_id = ?", rm.RoleId).Delete(&rm).Error
 }

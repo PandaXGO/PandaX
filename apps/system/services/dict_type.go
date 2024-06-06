@@ -2,18 +2,17 @@ package services
 
 import (
 	"pandax/apps/system/entity"
-	"pandax/kit/biz"
 	"pandax/pkg/global"
 )
 
 type (
 	SysDictTypeModel interface {
-		Insert(data entity.SysDictType) *entity.SysDictType
-		FindOne(organizationId int64) *entity.SysDictType
-		FindListPage(page, pageSize int, data entity.SysDictType) (*[]entity.SysDictType, int64)
-		FindList(data entity.SysDictType) *[]entity.SysDictType
-		Update(data entity.SysDictType) *entity.SysDictType
-		Delete(organizationId []int64)
+		Insert(data entity.SysDictType) (*entity.SysDictType, error)
+		FindOne(organizationId int64) (*entity.SysDictType, error)
+		FindListPage(page, pageSize int, data entity.SysDictType) (*[]entity.SysDictType, int64, error)
+		FindList(data entity.SysDictType) (*[]entity.SysDictType, error)
+		Update(data entity.SysDictType) error
+		Delete(organizationId []int64) error
 	}
 
 	sysDictTypeModelImpl struct {
@@ -25,20 +24,18 @@ var SysDictTypeModelDao SysDictTypeModel = &sysDictTypeModelImpl{
 	table: `sys_dict_types`,
 }
 
-func (m *sysDictTypeModelImpl) Insert(data entity.SysDictType) *entity.SysDictType {
+func (m *sysDictTypeModelImpl) Insert(data entity.SysDictType) (*entity.SysDictType, error) {
 	err := global.Db.Table(m.table).Create(&data).Error
-	biz.ErrIsNil(err, "新增字典类型失败")
-	return &data
+	return &data, err
 }
 
-func (m *sysDictTypeModelImpl) FindOne(dictId int64) *entity.SysDictType {
+func (m *sysDictTypeModelImpl) FindOne(dictId int64) (*entity.SysDictType, error) {
 	resData := new(entity.SysDictType)
 	err := global.Db.Table(m.table).Where("dict_id = ?", dictId).First(resData).Error
-	biz.ErrIsNil(err, "查询字典类型信息失败")
-	return resData
+	return resData, err
 }
 
-func (m *sysDictTypeModelImpl) FindListPage(page, pageSize int, data entity.SysDictType) (*[]entity.SysDictType, int64) {
+func (m *sysDictTypeModelImpl) FindListPage(page, pageSize int, data entity.SysDictType) (*[]entity.SysDictType, int64, error) {
 	list := make([]entity.SysDictType, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -56,12 +53,14 @@ func (m *sysDictTypeModelImpl) FindListPage(page, pageSize int, data entity.SysD
 	}
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
 	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询字典类型分页列表信息失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *sysDictTypeModelImpl) FindList(data entity.SysDictType) *[]entity.SysDictType {
+func (m *sysDictTypeModelImpl) FindList(data entity.SysDictType) (*[]entity.SysDictType, error) {
 	list := make([]entity.SysDictType, 0)
 
 	db := global.Db.Table(m.table)
@@ -77,18 +76,13 @@ func (m *sysDictTypeModelImpl) FindList(data entity.SysDictType) *[]entity.SysDi
 	}
 	db.Where("delete_time IS NULL")
 	err := db.Order("create_time").Find(&list).Error
-	biz.ErrIsNil(err, "查询字典类型列表信息失败")
-	return &list
+	return &list, err
 }
 
-func (m *sysDictTypeModelImpl) Update(data entity.SysDictType) *entity.SysDictType {
-	err := global.Db.Table(m.table).Where("dict_id = ?", data.DictId).Updates(&data).Error
-	biz.ErrIsNil(err, "修改字典类型信息失败")
-	return &data
+func (m *sysDictTypeModelImpl) Update(data entity.SysDictType) error {
+	return global.Db.Table(m.table).Where("dict_id = ?", data.DictId).Updates(&data).Error
 }
 
-func (m *sysDictTypeModelImpl) Delete(dictIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysDictType{}, "dict_id in (?)", dictIds).Error
-	biz.ErrIsNil(err, "删除字典类型信息失败")
-	return
+func (m *sysDictTypeModelImpl) Delete(dictIds []int64) error {
+	return global.Db.Table(m.table).Delete(&entity.SysDictType{}, "dict_id in (?)", dictIds).Error
 }

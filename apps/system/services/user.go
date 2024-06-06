@@ -1,8 +1,8 @@
 package services
 
 import (
+	"errors"
 	"pandax/apps/system/entity"
-	"pandax/kit/biz"
 	"pandax/pkg/global"
 
 	"github.com/kakuilan/kgo"
@@ -11,14 +11,14 @@ import (
 
 type (
 	SysUserModel interface {
-		Login(u entity.Login) *entity.SysUser
-		Insert(data entity.SysUser) *entity.SysUser
-		FindOne(data entity.SysUser) (resData *entity.SysUserView)
-		FindListPage(page, pageSize int, data entity.SysUser) (list *[]entity.SysUserPage, total int64)
-		FindList(data entity.SysUser) (list *[]entity.SysUserView)
-		Update(data entity.SysUser) *entity.SysUser
-		Delete(userId []int64)
-		SetPwd(data entity.SysUser, pwd entity.SysUserPwd) bool
+		Login(u entity.Login) (*entity.SysUser, error)
+		Insert(data entity.SysUser) (*entity.SysUser, error)
+		FindOne(data entity.SysUser) (resData *entity.SysUserView, err error)
+		FindListPage(page, pageSize int, data entity.SysUser) (list *[]entity.SysUserPage, total int64, err error)
+		FindList(data entity.SysUser) (list *[]entity.SysUserView, err error)
+		Update(data entity.SysUser) error
+		Delete(userId []int64) error
+		SetPwd(data entity.SysUser, pwd entity.SysUserPwd) error
 	}
 
 	sysUserModelImpl struct {
@@ -30,33 +30,36 @@ var SysUserModelDao SysUserModel = &sysUserModelImpl{
 	table: `sys_users`,
 }
 
-func (m *sysUserModelImpl) Login(u entity.Login) *entity.SysUser {
+func (m *sysUserModelImpl) Login(u entity.Login) (*entity.SysUser, error) {
 	user := new(entity.SysUser)
-
-	err := global.Db.Table(m.table).Where("username = ? ", u.Username).Find(user)
-	biz.ErrIsNil(err.Error, "查询用户信息失败")
+	err := global.Db.Table(m.table).Where("username = ? ", u.Username).Find(user).Error
+	if err != nil {
+		return nil, errors.New("查询用户信息失败")
+	}
 
 	// 验证密码
 	b := kgo.KEncr.PasswordVerify([]byte(u.Password), []byte(user.Password))
-	biz.IsTrue(b, "密码错误")
-
-	return user
+	if !b {
+		return nil, errors.New("密码错误")
+	}
+	return user, nil
 }
 
-func (m *sysUserModelImpl) Insert(data entity.SysUser) *entity.SysUser {
+func (m *sysUserModelImpl) Insert(data entity.SysUser) (*entity.SysUser, error) {
 	bytes, _ := kgo.KEncr.PasswordHash([]byte(data.Password), bcrypt.DefaultCost)
 	data.Password = string(bytes)
 
 	// check 用户名
 	var count int64
 	global.Db.Table(m.table).Where("username = ? and delete_time IS NULL", data.Username).Count(&count)
-	biz.IsTrue(count == 0, "账户已存在！")
-
-	biz.ErrIsNil(global.Db.Table(m.table).Create(&data).Error, "添加用户失败")
-	return &data
+	if count != 0 {
+		return nil, errors.New("账户已存在！")
+	}
+	err := global.Db.Table(m.table).Create(&data).Error
+	return &data, err
 }
 
-func (m *sysUserModelImpl) FindOne(data entity.SysUser) *entity.SysUserView {
+func (m *sysUserModelImpl) FindOne(data entity.SysUser) (*entity.SysUserView, error) {
 	resData := new(entity.SysUserView)
 
 	db := global.Db.Table(m.table).Select([]string{"sys_users.*", "sys_roles.role_name"})
@@ -79,12 +82,12 @@ func (m *sysUserModelImpl) FindOne(data entity.SysUser) *entity.SysUserView {
 	if data.PostId != 0 {
 		db = db.Where("post_id = ?", data.PostId)
 	}
-	biz.ErrIsNil(db.First(resData).Error, "查询用户失败")
+	err := db.First(resData).Error
 
-	return resData
+	return resData, err
 }
 
-func (m *sysUserModelImpl) FindListPage(page, pageSize int, data entity.SysUser) (*[]entity.SysUserPage, int64) {
+func (m *sysUserModelImpl) FindListPage(page, pageSize int, data entity.SysUser) (*[]entity.SysUserPage, int64, error) {
 	list := make([]entity.SysUserPage, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -111,11 +114,10 @@ func (m *sysUserModelImpl) FindListPage(page, pageSize int, data entity.SysUser)
 	db.Where("sys_users.delete_time IS NULL")
 	err := db.Count(&total).Error
 	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询用户分页列表失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *sysUserModelImpl) FindList(data entity.SysUser) *[]entity.SysUserView {
+func (m *sysUserModelImpl) FindList(data entity.SysUser) (*[]entity.SysUserView, error) {
 	list := make([]entity.SysUserView, 0)
 	// 此处填写 where参数判断
 	db := global.Db.Table(m.table).Select([]string{"sys_users.*", "sys_roles.role_name"})
@@ -147,38 +149,43 @@ func (m *sysUserModelImpl) FindList(data entity.SysUser) *[]entity.SysUserView {
 	}
 	db.Where("sys_users.delete_time IS NULL")
 
-	biz.ErrIsNilAppendErr(db.Find(&list).Error, "查询用户列表失败")
+	err := db.Find(&list).Error
 
-	return &list
+	return &list, err
 }
 
-func (m *sysUserModelImpl) Update(data entity.SysUser) *entity.SysUser {
+func (m *sysUserModelImpl) Update(data entity.SysUser) error {
 	if data.Password != "" {
 		bytes, _ := kgo.KEncr.PasswordHash([]byte(data.Password), bcrypt.DefaultCost)
 		data.Password = string(bytes)
 	}
 	update := new(entity.SysUser)
-	biz.ErrIsNil(global.Db.Table(m.table).First(update, data.UserId).Error, "查询用户失败")
+	err := global.Db.Table(m.table).First(update, data.UserId).Error
+	if err != nil {
+		return err
+	}
 
 	if data.RoleId == 0 {
 		data.RoleId = update.RoleId
 	}
 
-	biz.ErrIsNil(global.Db.Table(m.table).Updates(&data).Error, "修改用户失败")
-	return &data
+	return global.Db.Table(m.table).Updates(&data).Error
 }
 
-func (m *sysUserModelImpl) Delete(userIds []int64) {
-	biz.ErrIsNil(global.Db.Table(m.table).Delete(&entity.SysUser{}, "user_id in (?)", userIds).Error, "删除用户失败")
+func (m *sysUserModelImpl) Delete(userIds []int64) error {
+	return global.Db.Table(m.table).Delete(&entity.SysUser{}, "user_id in (?)", userIds).Error
 }
 
-func (m *sysUserModelImpl) SetPwd(data entity.SysUser, pwd entity.SysUserPwd) bool {
-	user := m.FindOne(data)
+func (m *sysUserModelImpl) SetPwd(data entity.SysUser, pwd entity.SysUserPwd) error {
+	user, err := m.FindOne(data)
+	if err != nil {
+		return err
+	}
 	bl := kgo.KEncr.PasswordVerify([]byte(pwd.OldPassword), []byte(user.Password))
-	biz.IsTrue(bl, "旧密码输入错误")
+	if !bl {
+		return errors.New("旧密码输入错误")
+	}
 
 	data.Password = pwd.NewPassword
-	m.Update(data)
-
-	return true
+	return m.Update(data)
 }

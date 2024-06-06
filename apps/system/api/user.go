@@ -1,15 +1,16 @@
 package api
 
 import (
-	"github.com/dgrijalva/jwt-go"
-	"github.com/emicklei/go-restful/v3"
-	"github.com/kakuilan/kgo"
-	"github.com/mssola/user_agent"
 	"pandax/apps/system/api/form"
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
 	"pandax/kit/model"
 	"pandax/kit/token"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/emicklei/go-restful/v3"
+	"github.com/kakuilan/kgo"
+	"github.com/mssola/user_agent"
 
 	logEntity "pandax/apps/log/entity"
 	logServices "pandax/apps/log/services"
@@ -63,8 +64,10 @@ func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 	restfulx.BindJsonAndValid(rc, &l)
 	biz.IsTrue(captcha.Verify(l.CaptchaId, l.Captcha), "验证码认证失败")
 
-	login := u.UserApp.Login(entity.Login{Username: l.Username, Password: l.Password})
-	role := u.RoleApp.FindOne(login.RoleId)
+	login, err := u.UserApp.Login(entity.Login{Username: l.Username, Password: l.Password})
+	biz.ErrIsNil(err, "登录失败,用户不存在！")
+	role, err := u.RoleApp.FindOne(login.RoleId)
+	biz.ErrIsNil(err, "用户所属角色查询失败")
 	j := token.NewJWT("", []byte(global.Conf.Jwt.Key), jwt.SigningMethodHS256)
 	token, err := j.CreateToken(token.Claims{
 		UserId:         login.UserId,
@@ -110,11 +113,13 @@ func (u *UserApi) Auth(rc *restfulx.ReqCtx) {
 	biz.NotEmpty(userName, "用户名必传")
 	var user entity.SysUser
 	user.Username = userName
-	userData := u.UserApp.FindOne(user)
-	role := u.RoleApp.FindOne(userData.RoleId)
+	userData, err := u.UserApp.FindOne(user)
+	biz.ErrIsNil(err, "用户可能不存在！")
+	role, err := u.RoleApp.FindOne(userData.RoleId)
+	biz.ErrIsNil(err, "用户所属角色查询失败")
 	//前端权限
-	permis := u.RoleMenuApp.GetPermis(role.RoleId)
-	menus := u.MenuApp.SelectMenuRole(role.RoleKey)
+	permis, _ := u.RoleMenuApp.GetPermis(role.RoleId)
+	menus, _ := u.MenuApp.SelectMenuRole(role.RoleKey)
 
 	rc.ResData = vo.AuthVo{
 		User:        *userData,
@@ -156,8 +161,8 @@ func (u *UserApi) GetSysUserList(rc *restfulx.ReqCtx) {
 	user.Phone = phone
 	user.OrganizationId = int64(organizationId)
 
-	list, total := u.UserApp.FindListPage(pageNum, pageSize, user)
-
+	list, total, err := u.UserApp.FindListPage(pageNum, pageSize, user)
+	biz.ErrIsNil(err, "查询用户分页列表失败")
 	rc.ResData = model.ResultPage{
 		Total:    total,
 		PageNum:  int64(pageNum),
@@ -171,14 +176,14 @@ func (u *UserApi) GetSysUserProfile(rc *restfulx.ReqCtx) {
 
 	sysUser := entity.SysUser{}
 	sysUser.UserId = rc.LoginAccount.UserId
-	user := u.UserApp.FindOne(sysUser)
-
+	user, err := u.UserApp.FindOne(sysUser)
+	biz.ErrIsNil(err, "用户可能不存在！")
 	//获取角色列表
-	roleList := u.RoleApp.FindList(entity.SysRole{RoleId: rc.LoginAccount.RoleId})
+	roleList, _ := u.RoleApp.FindList(entity.SysRole{RoleId: rc.LoginAccount.RoleId})
 	//岗位列表
-	postList := u.PostApp.FindList(entity.SysPost{PostId: rc.LoginAccount.PostId})
+	postList, _ := u.PostApp.FindList(entity.SysPost{PostId: rc.LoginAccount.PostId})
 	//获取组织列表
-	organizationList := u.OrganizationApp.FindList(entity.SysOrganization{OrganizationId: rc.LoginAccount.OrganizationId})
+	organizationList, _ := u.OrganizationApp.FindList(entity.SysOrganization{OrganizationId: rc.LoginAccount.OrganizationId})
 
 	postIds := make([]int64, 0)
 	postIds = append(postIds, rc.LoginAccount.PostId)
@@ -213,7 +218,8 @@ func (u *UserApi) InsetSysUserAvatar(rc *restfulx.ReqCtx) {
 	sysuser.Avatar = "/" + filPath
 	sysuser.UpdateBy = rc.LoginAccount.UserName
 
-	u.UserApp.Update(sysuser)
+	err := u.UserApp.Update(sysuser)
+	biz.ErrIsNil(err, "修改头像失败")
 }
 
 // SysUserUpdatePwd 修改密码
@@ -223,7 +229,8 @@ func (u *UserApi) SysUserUpdatePwd(rc *restfulx.ReqCtx) {
 
 	user := entity.SysUser{}
 	user.UserId = rc.LoginAccount.UserId
-	u.UserApp.SetPwd(user, pws)
+	err := u.UserApp.SetPwd(user, pws)
+	biz.ErrIsNil(err, "修改密码失败")
 }
 
 // GetSysUser 获取用户
@@ -232,19 +239,23 @@ func (u *UserApi) GetSysUser(rc *restfulx.ReqCtx) {
 
 	user := entity.SysUser{}
 	user.UserId = int64(userId)
-	result := u.UserApp.FindOne(user)
-
+	result, err := u.UserApp.FindOne(user)
+	biz.ErrIsNil(err, "用户可能不存在！")
 	var role entity.SysRole
 	var post entity.SysPost
 	var organization entity.SysOrganization
+
+	roles, _ := u.RoleApp.FindList(role)
+	posts, _ := u.PostApp.FindList(post)
+	orgs, _ := u.OrganizationApp.SelectOrganization(organization)
 
 	rc.ResData = vo.UserVo{
 		Data:          result,
 		PostIds:       result.PostIds,
 		RoleIds:       result.RoleIds,
-		Roles:         *u.RoleApp.FindList(role),
-		Posts:         *u.PostApp.FindList(post),
-		Organizations: u.OrganizationApp.SelectOrganization(organization),
+		Roles:         *roles,
+		Posts:         *posts,
+		Organizations: orgs,
 	}
 }
 
@@ -252,9 +263,9 @@ func (u *UserApi) GetSysUser(rc *restfulx.ReqCtx) {
 func (u *UserApi) GetSysUserInit(rc *restfulx.ReqCtx) {
 
 	var role entity.SysRole
-	roles := u.RoleApp.FindList(role)
+	roles, _ := u.RoleApp.FindList(role)
 	var post entity.SysPost
-	posts := u.PostApp.FindList(post)
+	posts, _ := u.PostApp.FindList(post)
 	rc.ResData = vo.UserRolePost{
 		Roles: *roles,
 		Posts: *posts,
@@ -266,16 +277,22 @@ func (u *UserApi) GetUserRolePost(rc *restfulx.ReqCtx) {
 	var user entity.SysUser
 	user.UserId = rc.LoginAccount.UserId
 
-	resData := u.UserApp.FindOne(user)
-
+	resData, err := u.UserApp.FindOne(user)
+	biz.ErrIsNil(err, "用户可能不存在！")
 	roles := make([]entity.SysRole, 0)
 	posts := make([]entity.SysPost, 0)
 	for _, roleId := range strings.Split(resData.RoleIds, ",") {
-		ro := u.RoleApp.FindOne(kgo.KConv.Str2Int64(roleId))
+		ro, err := u.RoleApp.FindOne(kgo.KConv.Str2Int64(roleId))
+		if err != nil {
+			continue
+		}
 		roles = append(roles, *ro)
 	}
 	for _, postId := range strings.Split(resData.PostIds, ",") {
-		po := u.PostApp.FindOne(kgo.KConv.Str2Int64(postId))
+		po, err := u.PostApp.FindOne(kgo.KConv.Str2Int64(postId))
+		if err != nil {
+			continue
+		}
 		posts = append(posts, *po)
 	}
 	rc.ResData = vo.UserRolePost{
@@ -289,7 +306,8 @@ func (u *UserApi) InsertSysUser(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
 	restfulx.BindJsonAndValid(rc, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
-	u.UserApp.Insert(sysUser)
+	_, err := u.UserApp.Insert(sysUser)
+	biz.ErrIsNil(err, "添加用户失败")
 }
 
 // UpdateSysUser 修改用户数据
@@ -297,7 +315,8 @@ func (u *UserApi) UpdateSysUser(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
 	restfulx.BindJsonAndValid(rc, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
-	u.UserApp.Update(sysUser)
+	err := u.UserApp.Update(sysUser)
+	biz.ErrIsNil(err, "修改用户失败")
 }
 
 // UpdateSysUserSelf 用户修改数据
@@ -305,7 +324,8 @@ func (u *UserApi) UpdateSysUserSelf(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
 	restfulx.BindJsonAndValid(rc, &sysUser)
 	sysUser.UserId = rc.LoginAccount.UserId
-	u.UserApp.Update(sysUser)
+	err := u.UserApp.Update(sysUser)
+	biz.ErrIsNil(err, "修改用户数据失败")
 }
 
 // UpdateSysUserStu 修改用户状态
@@ -313,13 +333,15 @@ func (u *UserApi) UpdateSysUserStu(rc *restfulx.ReqCtx) {
 	var sysUser entity.SysUser
 	restfulx.BindJsonAndValid(rc, &sysUser)
 	sysUser.CreateBy = rc.LoginAccount.UserName
-	u.UserApp.Update(sysUser)
+	err := u.UserApp.Update(sysUser)
+	biz.ErrIsNil(err, "修改用户状态失败")
 }
 
 // DeleteSysUser 删除用户数据
 func (u *UserApi) DeleteSysUser(rc *restfulx.ReqCtx) {
 	userIds := restfulx.PathParam(rc, "userId")
-	u.UserApp.Delete(utils.IdsStrToIdsIntGroup(userIds))
+	err := u.UserApp.Delete(utils.IdsStrToIdsIntGroup(userIds))
+	biz.ErrIsNil(err, "删除用户失败")
 }
 
 // ExportUser 导出用户
@@ -334,7 +356,8 @@ func (u *UserApi) ExportUser(rc *restfulx.ReqCtx) {
 	user.Username = username
 	user.Phone = phone
 
-	list := u.UserApp.FindList(user)
+	list, err := u.UserApp.FindList(user)
+	biz.ErrIsNil(err, "用户列表查询失败")
 	// 对设置的文件名进行处理
 	fileName := utils.GetFileName(global.Conf.Server.ExcelDir, filename)
 	utils.InterfaceToExcel(*list, fileName)

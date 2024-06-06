@@ -3,7 +3,6 @@ package services
 import (
 	"errors"
 	"pandax/apps/system/entity"
-	"pandax/kit/biz"
 	"pandax/pkg/global"
 
 	"github.com/kakuilan/kgo"
@@ -11,15 +10,15 @@ import (
 
 type (
 	SysOrganizationModel interface {
-		Insert(data entity.SysOrganization) *entity.SysOrganization
-		FindOne(organizationId int64) *entity.SysOrganization
-		FindListPage(page, pageSize int, data entity.SysOrganization) (*[]entity.SysOrganization, int64)
-		FindList(data entity.SysOrganization) *[]entity.SysOrganization
-		Update(data entity.SysOrganization) *entity.SysOrganization
-		Delete(organizationId []int64)
-		SelectOrganization(data entity.SysOrganization) []entity.SysOrganization
-		SelectOrganizationLable(data entity.SysOrganization) []entity.OrganizationLable
-		SelectOrganizationIds(data entity.SysOrganization) []int64
+		Insert(data entity.SysOrganization) (*entity.SysOrganization, error)
+		FindOne(organizationId int64) (*entity.SysOrganization, error)
+		FindListPage(page, pageSize int, data entity.SysOrganization) (*[]entity.SysOrganization, int64, error)
+		FindList(data entity.SysOrganization) (*[]entity.SysOrganization, error)
+		Update(data entity.SysOrganization) error
+		Delete(organizationId []int64) error
+		SelectOrganization(data entity.SysOrganization) ([]entity.SysOrganization, error)
+		SelectOrganizationLable(data entity.SysOrganization) ([]entity.OrganizationLable, error)
+		SelectOrganizationIds(data entity.SysOrganization) ([]int64, error)
 	}
 
 	sysOrganizationModelImpl struct {
@@ -31,28 +30,33 @@ var SysOrganizationModelDao SysOrganizationModel = &sysOrganizationModelImpl{
 	table: `sys_organizations`,
 }
 
-func (m *sysOrganizationModelImpl) Insert(data entity.SysOrganization) *entity.SysOrganization {
-	biz.ErrIsNil(global.Db.Table(m.table).Create(&data).Error, "新增组织信息失败")
+func (m *sysOrganizationModelImpl) Insert(data entity.SysOrganization) (*entity.SysOrganization, error) {
+	err := global.Db.Table(m.table).Create(&data).Error
+	if err != nil {
+		return nil, err
+	}
 	organizationPath := "/" + kgo.KConv.Int2Str(data.OrganizationId)
 	if int(data.ParentId) != 0 {
-		organizationP := m.FindOne(data.ParentId)
+		organizationP, err := m.FindOne(data.ParentId)
+		if err != nil {
+			return nil, err
+		}
 		organizationPath = organizationP.OrganizationPath + organizationPath
 	} else {
 		organizationPath = "/0" + organizationPath
 	}
 	data.OrganizationPath = organizationPath
-	biz.ErrIsNil(global.Db.Table(m.table).Model(&data).Updates(&data).Error, "修改组织信息失败")
-	return &data
+	err = global.Db.Table(m.table).Model(&data).Updates(&data).Error
+	return &data, err
 }
 
-func (m *sysOrganizationModelImpl) FindOne(organizationId int64) *entity.SysOrganization {
+func (m *sysOrganizationModelImpl) FindOne(organizationId int64) (*entity.SysOrganization, error) {
 	resData := new(entity.SysOrganization)
 	err := global.Db.Table(m.table).Where("organization_id = ?", organizationId).First(resData).Error
-	biz.ErrIsNil(err, "查询组织信息失败")
-	return resData
+	return resData, err
 }
 
-func (m *sysOrganizationModelImpl) FindListPage(page, pageSize int, data entity.SysOrganization) (*[]entity.SysOrganization, int64) {
+func (m *sysOrganizationModelImpl) FindListPage(page, pageSize int, data entity.SysOrganization) (*[]entity.SysOrganization, int64, error) {
 	list := make([]entity.SysOrganization, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -74,11 +78,10 @@ func (m *sysOrganizationModelImpl) FindListPage(page, pageSize int, data entity.
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
 	err = db.Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询组织分页列表信息失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *sysOrganizationModelImpl) FindList(data entity.SysOrganization) *[]entity.SysOrganization {
+func (m *sysOrganizationModelImpl) FindList(data entity.SysOrganization) (*[]entity.SysOrganization, error) {
 	list := make([]entity.SysOrganization, 0)
 
 	db := global.Db.Table(m.table)
@@ -94,16 +97,20 @@ func (m *sysOrganizationModelImpl) FindList(data entity.SysOrganization) *[]enti
 	}
 	db.Where("delete_time IS NULL")
 	err := db.Order("sort").Find(&list).Error
-	biz.ErrIsNil(err, "查询组织列表信息失败")
-	return &list
+	return &list, err
 }
 
-func (m *sysOrganizationModelImpl) Update(data entity.SysOrganization) *entity.SysOrganization {
-	one := m.FindOne(data.OrganizationId)
-
+func (m *sysOrganizationModelImpl) Update(data entity.SysOrganization) error {
+	one, err := m.FindOne(data.OrganizationId)
+	if err != nil {
+		return err
+	}
 	organizationPath := "/" + kgo.KConv.Int2Str(data.OrganizationId)
 	if int(data.ParentId) != 0 {
-		organizationP := m.FindOne(data.ParentId)
+		organizationP, err := m.FindOne(data.ParentId)
+		if err != nil {
+			return err
+		}
 		organizationPath = organizationP.OrganizationPath + organizationPath
 	} else {
 		organizationPath = "/0" + organizationPath
@@ -111,21 +118,21 @@ func (m *sysOrganizationModelImpl) Update(data entity.SysOrganization) *entity.S
 	data.OrganizationPath = organizationPath
 
 	if data.OrganizationPath != "" && data.OrganizationPath != one.OrganizationPath {
-		biz.ErrIsNil(errors.New("上级组织不允许修改！"), "上级组织不允许修改")
+		return errors.New("上级组织不允许修改！")
 	}
-	biz.ErrIsNil(global.Db.Table(m.table).Model(&data).Updates(&data).Error, "修改组织信息失败")
-	return &data
+	err = global.Db.Table(m.table).Model(&data).Updates(&data).Error
+	return err
 }
 
-func (m *sysOrganizationModelImpl) Delete(organizationIds []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysOrganization{}, "organization_id in (?)", organizationIds).Error
-	biz.ErrIsNil(err, "删除组织信息失败")
-	return
+func (m *sysOrganizationModelImpl) Delete(organizationIds []int64) error {
+	return global.Db.Table(m.table).Delete(&entity.SysOrganization{}, "organization_id in (?)", organizationIds).Error
 }
 
-func (m *sysOrganizationModelImpl) SelectOrganization(data entity.SysOrganization) []entity.SysOrganization {
-	list := m.FindList(data)
-
+func (m *sysOrganizationModelImpl) SelectOrganization(data entity.SysOrganization) ([]entity.SysOrganization, error) {
+	list, err := m.FindList(data)
+	if err != nil {
+		return nil, err
+	}
 	sd := make([]entity.SysOrganization, 0)
 	li := *list
 	for i := 0; i < len(li); i++ {
@@ -136,12 +143,14 @@ func (m *sysOrganizationModelImpl) SelectOrganization(data entity.SysOrganizatio
 
 		sd = append(sd, info)
 	}
-	return sd
+	return sd, nil
 }
 
-func (m *sysOrganizationModelImpl) SelectOrganizationLable(data entity.SysOrganization) []entity.OrganizationLable {
-	organizationlist := m.FindList(data)
-
+func (m *sysOrganizationModelImpl) SelectOrganizationLable(data entity.SysOrganization) ([]entity.OrganizationLable, error) {
+	organizationlist, err := m.FindList(data)
+	if err != nil {
+		return nil, err
+	}
 	dl := make([]entity.OrganizationLable, 0)
 	organizationl := *organizationlist
 	for i := 0; i < len(organizationl); i++ {
@@ -155,11 +164,14 @@ func (m *sysOrganizationModelImpl) SelectOrganizationLable(data entity.SysOrgani
 
 		dl = append(dl, organizationsInfo)
 	}
-	return dl
+	return dl, nil
 }
 
-func (m *sysOrganizationModelImpl) SelectOrganizationIds(data entity.SysOrganization) []int64 {
-	organizationlist := m.FindList(data)
+func (m *sysOrganizationModelImpl) SelectOrganizationIds(data entity.SysOrganization) ([]int64, error) {
+	organizationlist, err := m.FindList(data)
+	if err != nil {
+		return nil, err
+	}
 	dl := make([]int64, 0)
 	organizationl := *organizationlist
 	for i := 0; i < len(organizationl); i++ {
@@ -173,7 +185,7 @@ func (m *sysOrganizationModelImpl) SelectOrganizationIds(data entity.SysOrganiza
 		id := DiguiOrganizationId(organizationlist, e)
 		dl = append(dl, id...)
 	}
-	return dl
+	return dl, nil
 }
 
 func Digui(organizationlist *[]entity.SysOrganization, menu entity.SysOrganization) entity.SysOrganization {

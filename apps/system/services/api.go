@@ -3,7 +3,6 @@ package services
 import (
 	"errors"
 	"pandax/apps/system/entity"
-	"pandax/kit/biz"
 	"pandax/kit/casbin"
 	"pandax/pkg/global"
 
@@ -12,12 +11,12 @@ import (
 
 type (
 	SysApiModel interface {
-		Insert(data entity.SysApi) *entity.SysApi
-		FindOne(id int64) *entity.SysApi
-		FindListPage(page, pageSize int, data entity.SysApi) (*[]entity.SysApi, int64)
-		FindList(data entity.SysApi) *[]entity.SysApi
-		Update(data entity.SysApi) *entity.SysApi
-		Delete(ids []int64)
+		Insert(data entity.SysApi) (*entity.SysApi, error)
+		FindOne(id int64) (*entity.SysApi, error)
+		FindListPage(page, pageSize int, data entity.SysApi) (*[]entity.SysApi, int64, error)
+		FindList(data entity.SysApi) (*[]entity.SysApi, error)
+		Update(data entity.SysApi) error
+		Delete(ids []int64) error
 	}
 
 	sysApiModelImpl struct {
@@ -29,22 +28,22 @@ var SysApiModelDao SysApiModel = &sysApiModelImpl{
 	table: `sys_apis`,
 }
 
-func (m *sysApiModelImpl) Insert(api entity.SysApi) *entity.SysApi {
+func (m *sysApiModelImpl) Insert(api entity.SysApi) (*entity.SysApi, error) {
 	err := global.Db.Table(m.table).Where("path = ? AND method = ?", api.Path, api.Method).First(&entity.SysApi{}).Error
-	biz.IsTrue(errors.Is(err, gorm.ErrRecordNotFound), "存在相同api")
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.New("存在相同api")
+	}
 	err = global.Db.Table(m.table).Create(&api).Error
-	biz.ErrIsNil(err, "新增Api失败")
-	return &api
+	return &api, err
 }
 
-func (m *sysApiModelImpl) FindOne(id int64) (resData *entity.SysApi) {
+func (m *sysApiModelImpl) FindOne(id int64) (resData *entity.SysApi, err error) {
 	resData = new(entity.SysApi)
-	err := global.Db.Table(m.table).Where("id = ?", id).First(&resData).Error
-	biz.ErrIsNil(err, "查询Api失败")
+	err = global.Db.Table(m.table).Where("id = ?", id).First(&resData).Error
 	return
 }
 
-func (m *sysApiModelImpl) FindListPage(page, pageSize int, data entity.SysApi) (*[]entity.SysApi, int64) {
+func (m *sysApiModelImpl) FindListPage(page, pageSize int, data entity.SysApi) (*[]entity.SysApi, int64, error) {
 	list := make([]entity.SysApi, 0)
 	var total int64 = 0
 	offset := pageSize * (page - 1)
@@ -69,12 +68,14 @@ func (m *sysApiModelImpl) FindListPage(page, pageSize int, data entity.SysApi) (
 
 	db.Where("delete_time IS NULL")
 	err := db.Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
 	err = db.Order("api_group").Limit(pageSize).Offset(offset).Find(&list).Error
-	biz.ErrIsNil(err, "查询配置分页列表信息失败")
-	return &list, total
+	return &list, total, err
 }
 
-func (m *sysApiModelImpl) FindList(data entity.SysApi) *[]entity.SysApi {
+func (m *sysApiModelImpl) FindList(data entity.SysApi) (*[]entity.SysApi, error) {
 	list := make([]entity.SysApi, 0)
 	db := global.Db.Table(m.table)
 
@@ -95,27 +96,31 @@ func (m *sysApiModelImpl) FindList(data entity.SysApi) *[]entity.SysApi {
 	}
 	db.Where("delete_time IS NULL")
 	err := db.Order("api_group").Find(&list).Error
-	biz.ErrIsNil(err, "查询Api列表信息失败")
-	return &list
+	return &list, err
 }
 
-func (m *sysApiModelImpl) Update(api entity.SysApi) *entity.SysApi {
+func (m *sysApiModelImpl) Update(api entity.SysApi) error {
 	var oldA entity.SysApi
 	err := global.Db.Table(m.table).Where("id = ?", api.Id).First(&oldA).Error
-	biz.ErrIsNil(err, "【修改api】查询api失败")
+	if err != nil {
+		return err
+	}
 	if oldA.Path != api.Path || oldA.Method != api.Method {
 		err := global.Db.Table(m.table).Where("path = ? AND method = ?", api.Path, api.Method).First(&entity.SysApi{}).Error
-		biz.IsTrue(errors.Is(err, gorm.ErrRecordNotFound), "存在相同api路径")
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("存在相同api路径")
+		}
 	}
 	// 异常直接抛错误
 	ca := casbin.CasbinService{ModelPath: global.Conf.Casbin.ModelPath}
-	ca.UpdateCasbinApi(oldA.Path, api.Path, oldA.Method, api.Method)
+	err = ca.UpdateCasbinApi(oldA.Path, api.Path, oldA.Method, api.Method)
+	if err != nil {
+		return err
+	}
 	err = global.Db.Table(m.table).Model(&api).Updates(&api).Error
-	biz.ErrIsNil(err, "修改api信息失败")
-	return &api
+	return err
 }
 
-func (m *sysApiModelImpl) Delete(ids []int64) {
-	err := global.Db.Table(m.table).Delete(&entity.SysApi{}, "id in (?)", ids).Error
-	biz.ErrIsNil(err, "删除配置信息失败")
+func (m *sysApiModelImpl) Delete(ids []int64) error {
+	return global.Db.Table(m.table).Delete(&entity.SysApi{}, "id in (?)", ids).Error
 }
