@@ -2,9 +2,12 @@ package utils
 
 import (
 	"bytes"
+	"encoding/base64"
 	"github.com/kakuilan/kgo"
+	"math/rand"
 	"strings"
 	"text/template"
+	"time"
 )
 
 func UnicodeIndex(str, substr string) int {
@@ -153,4 +156,14 @@ func OrganizationPCIds(orgIds []string, id int64, isP bool) []int64 {
 	} else {
 		return cRes
 	}
+}
+
+func GenerateID() string {
+	rand.Seed(time.Now().UnixNano())
+	id := make([]byte, 7) // 由于base64编码会增加字符数，这里使用7个字节生成10位ID
+	_, err := rand.Read(id)
+	if err != nil {
+		panic(err) // 错误处理，根据实际情况进行处理
+	}
+	return base64.URLEncoding.EncodeToString(id)[:10]
 }

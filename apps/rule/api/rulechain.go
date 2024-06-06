@@ -6,7 +6,7 @@ import (
 	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
-	model2 "pandax/pkg/global/model"
+	"pandax/kit/utils"
 	"pandax/pkg/rule_engine"
 	"strings"
 )
@@ -81,7 +81,7 @@ func (p *RuleChainApi) GetRuleChain(rc *restfulx.ReqCtx) {
 func (p *RuleChainApi) InsertRuleChain(rc *restfulx.ReqCtx) {
 	var data entity.RuleChain
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = model2.GenerateID()
+	data.Id = utils.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	_, err := p.RuleChainApp.Insert(data)
@@ -112,7 +112,7 @@ func (p *RuleChainApi) CloneRuleChain(rc *restfulx.ReqCtx) {
 	one, err := p.RuleChainApp.FindOne(id)
 	biz.ErrIsNil(err, "规则链不存在")
 	one.RuleName = one.RuleName + "-克隆"
-	one.Id = model2.GenerateID()
+	one.Id = utils.GenerateID()
 	one.Root = "0"
 	_, err = p.RuleChainApp.Insert(*one)
 	biz.ErrIsNil(err, "克隆规则链失败")

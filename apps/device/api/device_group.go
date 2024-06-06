@@ -5,7 +5,7 @@ import (
 	"pandax/apps/device/services"
 	"pandax/kit/biz"
 	"pandax/kit/restfulx"
-	"pandax/pkg/global/model"
+	"pandax/kit/utils"
 	"strings"
 )
 
@@ -80,7 +80,7 @@ func (p *DeviceGroupApi) GetDeviceGroup(rc *restfulx.ReqCtx) {
 func (p *DeviceGroupApi) InsertDeviceGroup(rc *restfulx.ReqCtx) {
 	var data entity.DeviceGroup
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = model.GenerateID()
+	data.Id = utils.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	p.DeviceGroupApp.Insert(data)

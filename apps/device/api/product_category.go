@@ -5,7 +5,7 @@ import (
 	"pandax/apps/device/services"
 	"pandax/kit/biz"
 	"pandax/kit/restfulx"
-	"pandax/pkg/global/model"
+	"pandax/kit/utils"
 	"strings"
 )
 
@@ -66,7 +66,7 @@ func (p *ProductCategoryApi) GetProductCategory(rc *restfulx.ReqCtx) {
 func (p *ProductCategoryApi) InsertProductCategory(rc *restfulx.ReqCtx) {
 	var data entity.ProductCategory
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = model.GenerateID()
+	data.Id = utils.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	p.ProductCategoryApp.Insert(data)

@@ -10,9 +10,9 @@ import (
 	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
+	"pandax/kit/utils"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
-	model2 "pandax/pkg/global/model"
 	"strings"
 
 	"pandax/apps/device/entity"
@@ -107,7 +107,7 @@ func (p *ProductApi) GetProduct(rc *restfulx.ReqCtx) {
 func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 	var data entity.Product
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = model2.GenerateID()
+	data.Id = utils.GenerateID()
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	// 如果未设置规则链，默认为主链

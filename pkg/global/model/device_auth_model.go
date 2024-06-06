@@ -7,13 +7,11 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"math/rand"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
 	"pandax/pkg/cache"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type DeviceAuth struct {
@@ -44,6 +42,7 @@ func (token *DeviceAuth) MD5ID() string {
 	access = strings.TrimRight(access, "=")
 	return access
 }
+
 func (token *DeviceAuth) GetMarshal() string {
 	marshal, _ := json.Marshal(*token)
 	return string(marshal)
@@ -81,13 +80,4 @@ func OrgAuthSet(tx *gorm.DB, roleId int64, owner string) error {
 	}
 
 	return nil
-}
-func GenerateID() string {
-	rand.Seed(time.Now().UnixNano())
-	id := make([]byte, 7) // 由于base64编码会增加字符数，这里使用7个字节生成10位ID
-	_, err := rand.Read(id)
-	if err != nil {
-		panic(err) // 错误处理，根据实际情况进行处理
-	}
-	return base64.URLEncoding.EncodeToString(id)[:10]
 }
