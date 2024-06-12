@@ -55,12 +55,6 @@ func Auth(authToken string) bool {
 
 // SubAuth 获取子设备的认证信息
 func SubAuth(name string) (*model.DeviceAuth, bool) {
-	defer func() {
-		if Rerr := recover(); Rerr != nil {
-			global.Log.Error(Rerr)
-			return
-		}
-	}()
 	etoken := &model.DeviceAuth{}
 	// redis 中有就查询，没有就添加
 	exists := cache.ExistsDeviceEtoken(name)
@@ -94,13 +88,6 @@ func CreateSubTableField(productId, ty string, fields map[string]interface{}) {
 	for key, value := range fields {
 		group.Add(1)
 		go func(key string, value any) {
-			defer func() {
-				group.Done()
-				if err := recover(); err != nil {
-					global.Log.Error("自动创建tsl错误", err)
-					global.TdDb.DelTableField(productId+"_"+ty, key)
-				}
-			}()
 			if key == "ts" {
 				return
 			}
