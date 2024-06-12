@@ -435,7 +435,10 @@ func GenConfigure(tableId, parentId int) {
 		Status:      "0",
 		CreateBy:    "admin",
 	}
-	insert := sysServices.SysMenuModelDao.Insert(menu)
+	insert, _ := sysServices.SysMenuModelDao.Insert(menu)
+	if err != nil {
+		return
+	}
 	menuA := sysEntity.SysMenu{
 		ParentId:   insert.MenuId,
 		MenuName:   "新增" + tab.TableComment,
