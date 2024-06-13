@@ -88,7 +88,7 @@ func (p *DeviceApi) GetDevice(rc *restfulx.ReqCtx) {
 }
 
 // GetDeviceStatus 获取Device状态信息
-func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
+func (p *DeviceApi) GetDevigitceStatus(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	classify := restfulx.QueryParam(rc, "classify")
 	device, err := p.DeviceApp.FindOne(id)
@@ -114,16 +114,9 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 		}
 		// 有直接从设备影子中查询，没有查询时序数据库最后一条记录
 		if point, ok := rs[tel.Key]; ok {
-			if classify == global.TslTelemetryType {
-				value := point.Value
-				sdv.Time = point.UpdatedAt
-				sdv.Value = value
-			}
-			if classify == global.TslAttributesType {
-				if value, ok := tel.Define["default_value"]; ok {
-					sdv.Value = value
-				}
-			}
+			value := point.Value
+			sdv.Time = point.UpdatedAt
+			sdv.Value = value
 		} else {
 			var table string
 			if classify == global.TslTelemetryType {
@@ -136,6 +129,15 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 			one, err := global.TdDb.GetOne(sql, strings.ToLower(tel.Key), table)
 			if err == nil {
 				sdv.Value = one[strings.ToLower(tel.Key)]
+				sdv.Time = time.Now()
+			} else {
+				if value, ok := tel.Define["default_value"]; ok {
+					sdv.Value = value
+					sdv.Time = time.Now()
+				} else {
+					sdv.Value = "未知"
+					sdv.Time = time.Now()
+				}
 			}
 		}
 		res = append(res, sdv)
