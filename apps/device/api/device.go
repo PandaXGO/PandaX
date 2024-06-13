@@ -88,7 +88,7 @@ func (p *DeviceApi) GetDevice(rc *restfulx.ReqCtx) {
 }
 
 // GetDeviceStatus 获取Device状态信息
-func (p *DeviceApi) GetDevigitceStatus(rc *restfulx.ReqCtx) {
+func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	classify := restfulx.QueryParam(rc, "classify")
 	device, err := p.DeviceApp.FindOne(id)
