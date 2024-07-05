@@ -109,7 +109,7 @@ func (s *toolsGenTableColumn) CheckTypeColumn(columnName string) bool {
 }
 
 func (s *toolsGenTableColumn) CheckSexColumn(columnName string) bool {
-	if len(columnName) >= 3 {
+	if len(columnName) >= 4 {
 		tmp := columnName[len(columnName)-4:]
 		return tmp == "sex"
 	}
