@@ -83,7 +83,7 @@ func (s *TdEngine) column(dataType, key, name string, maxLength int) string {
 		if maxLength == 0 {
 			maxLength = 255
 		}
-		tdType = "NCHAR(" + strconv.Itoa(maxLength) + ")"
+		tdType = "VARCHAR(" + strconv.Itoa(maxLength*10) + ")"
 	}
 	column = fmt.Sprintf("%s %s %s", key, tdType, comment)
 	return column
