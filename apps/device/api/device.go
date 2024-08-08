@@ -186,7 +186,7 @@ func (p *DeviceApi) InsertDevice(rc *restfulx.ReqCtx) {
 	data.OrgId = rc.LoginAccount.OrganizationId
 	list, _ := p.DeviceApp.FindList(entity.Device{Name: data.Name})
 	biz.IsTrue(!(list != nil && len(*list) > 0), fmt.Sprintf("名称%s已存在，设置其他命名", data.Name))
-	data.Id = utils.GenerateID()
+	data.Id = utils.GenerateTdID("d")
 	data.LinkStatus = global.INACTIVE
 	data.LastAt = time.Now()
 	data.Protocol = product.ProtocolName

@@ -167,3 +167,35 @@ func GenerateID() string {
 	}
 	return base64.URLEncoding.EncodeToString(id)[:10]
 }
+
+const (
+	letterBytes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+)
+
+func RandString(n int) string {
+	rand.Seed(time.Now().UnixNano())
+	output := make([]byte, n)
+	// We will take n bytes, one byte for each character of output.
+	randomness := make([]byte, n)
+	// read all random
+	_, err := rand.Read(randomness)
+	if err != nil {
+		panic(err)
+	}
+	l := len(letterBytes)
+	// fill output
+	for pos := range output {
+		// get random item
+		random := randomness[pos]
+		// random % 64
+		randomPos := random % uint8(l)
+		// put into output
+		output[pos] = letterBytes[randomPos]
+	}
+
+	return string(output)
+}
+
+func GenerateTdID(px string) string {
+	return px + RandString(9)
+}

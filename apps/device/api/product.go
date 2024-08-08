@@ -107,7 +107,7 @@ func (p *ProductApi) GetProduct(rc *restfulx.ReqCtx) {
 func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 	var data entity.Product
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = utils.GenerateID()
+	data.Id = utils.GenerateTdID("p")
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	// 如果未设置规则链，默认为主链
