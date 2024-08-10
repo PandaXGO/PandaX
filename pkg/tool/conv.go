@@ -2,6 +2,7 @@ package tool
 
 import (
 	"encoding/json"
+	"fmt"
 	"pandax/pkg/global"
 	"reflect"
 	"strings"
@@ -131,9 +132,13 @@ func StringToStruct(m string, s interface{}) error {
 // TimeToFormat convert time to formatted string
 func TimeToFormat(val interface{}) string {
 	switch v := val.(type) {
+	case int:
+		t := timestampToTime(int64(v))
+		// 格式化时间字符串
+		formattedTime := t.Format("2006-01-02 15:04:05")
+		return formattedTime
 	case int64:
-		// 如果是时间戳类型，将其转换为时间对象
-		t := time.Unix(v, 0)
+		t := timestampToTime(v)
 		// 格式化时间字符串
 		formattedTime := t.Format("2006-01-02 15:04:05")
 		return formattedTime
@@ -150,4 +155,16 @@ func TimeToFormat(val interface{}) string {
 	default:
 		return ""
 	}
+}
+
+func timestampToTime(val int64) time.Time {
+	// 如果是时间戳类型，将其转换为时间对象
+	timeLen := len(fmt.Sprintf("%d", val))
+	if timeLen == 10 {
+		return time.Unix(val, 0)
+	}
+	if timeLen == 13 {
+		return time.UnixMilli(val)
+	}
+	return time.Now()
 }
