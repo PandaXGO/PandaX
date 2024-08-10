@@ -21,7 +21,15 @@ func GetRealAddressByIP(ip string) string {
 	}
 	dst, _ := ToUTF8("GBK", string(res.Body))
 	toMap := Json2Map(dst)
-	return fmt.Sprintf("%s %s", toMap["pro"].(string), toMap["city"].(string))
+	pro := ""
+	city := ""
+	if tPro, ok := toMap["pro"].(string); ok {
+		pro = tPro
+	}
+	if tCity, ok := toMap["city"].(string); ok {
+		city = tCity
+	}
+	return fmt.Sprintf("%s %s", pro, city)
 }
 
 // 获取局域网ip地址
