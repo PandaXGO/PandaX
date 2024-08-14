@@ -9,9 +9,13 @@ import (
 
 type externalRestapiNode struct {
 	bareNode
-	RestEndpointUrlPattern string            `json:"restEndpointUrlPattern" yaml:"restEndpointUrlPattern"`
-	RequestMethod          string            `json:"requestMethod" yaml:"requestMethod"`
-	Headers                map[string]string `json:"headers" yaml:"headers"`
+	RestEndpointUrlPattern         string            `json:"restEndpointUrlPattern" yaml:"restEndpointUrlPattern"`
+	RequestMethod                  string            `json:"requestMethod" yaml:"requestMethod"`
+	Headers                        map[string]string `json:"headers" yaml:"headers"`
+	ReadTimeoutMs                  int64             `json:"readTimeoutMs"  yaml:"readTimeoutMs"` //读取超时
+	MaxParallelRequestsCount       int64             `json:"maxParallelRequestsCount" yaml:"readTimeoutMs"`
+	UseRedisQueueForMsgPersistence bool              `json:"useRedisQueueForMsgPersistence"` //消息持久化
+	MaxQueueSize                   int64             `json:"maxQueueSize"`                   //队列大小
 }
 
 type externalRestapiNodeFactory struct{}
