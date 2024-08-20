@@ -142,6 +142,11 @@ func TimeToFormat(val interface{}) string {
 		// 格式化时间字符串
 		formattedTime := t.Format("2006-01-02 15:04:05")
 		return formattedTime
+	case float64:
+		t := timestampToTime(int64(v))
+		// 格式化时间字符串
+		formattedTime := t.Format("2006-01-02 15:04:05")
+		return formattedTime
 	case string:
 		// 如果是字符串类型，将其解析为时间对象
 		t, err := time.Parse("2006-01-02 15:04:05", v)
