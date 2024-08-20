@@ -14,7 +14,6 @@ import (
 	"pandax/kit/utils"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
-	"pandax/pkg/shadow"
 	"strings"
 	"time"
 
@@ -97,14 +96,7 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	biz.ErrIsNil(err, "查询设备模板失败")
 	// 从设备影子中读取
 	res := make([]entity.DeviceStatusVo, 0)
-	getDevice := shadow.InitDeviceShadow(device.Name, device.Pid)
-	rs := make(map[string]shadow.DevicePoint)
-	if classify == global.TslAttributesType {
-		rs = getDevice.AttributesPoints
-	}
-	if classify == global.TslTelemetryType {
-		rs = getDevice.TelemetryPoints
-	}
+
 	for _, tel := range *template {
 		sdv := entity.DeviceStatusVo{
 			Name:   tel.Name,
@@ -112,32 +104,25 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 			Type:   tel.Type,
 			Define: tel.Define,
 		}
-		// 有直接从设备影子中查询，没有查询时序数据库最后一条记录
-		if point, ok := rs[tel.Key]; ok {
-			value := point.Value
-			sdv.Time = point.UpdatedAt
-			sdv.Value = value
+		var table string
+		if classify == global.TslTelemetryType {
+			table = fmt.Sprintf("%s_telemetry", strings.ToLower(device.Name))
+		}
+		if classify == global.TslAttributesType {
+			table = fmt.Sprintf("%s_attributes", strings.ToLower(device.Name))
+		}
+		sql := `select ts,? from ? order by ts desc`
+		one, err := global.TdDb.GetOne(sql, strings.ToLower(tel.Key), table)
+		if err == nil {
+			sdv.Value = one[strings.ToLower(tel.Key)]
+			sdv.Time = time.Now()
 		} else {
-			var table string
-			if classify == global.TslTelemetryType {
-				table = fmt.Sprintf("%s_telemetry", strings.ToLower(device.Name))
-			}
-			if classify == global.TslAttributesType {
-				table = fmt.Sprintf("%s_attributes", strings.ToLower(device.Name))
-			}
-			sql := `select ts,? from ? order by ts desc`
-			one, err := global.TdDb.GetOne(sql, strings.ToLower(tel.Key), table)
-			if err == nil {
-				sdv.Value = one[strings.ToLower(tel.Key)]
+			if value, ok := tel.Define["default_value"]; ok {
+				sdv.Value = value
 				sdv.Time = time.Now()
 			} else {
-				if value, ok := tel.Define["default_value"]; ok {
-					sdv.Value = value
-					sdv.Time = time.Now()
-				} else {
-					sdv.Value = "未知"
-					sdv.Time = time.Now()
-				}
+				sdv.Value = "未知"
+				sdv.Time = time.Now()
 			}
 		}
 		res = append(res, sdv)

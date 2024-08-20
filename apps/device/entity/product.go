@@ -18,6 +18,8 @@ const (
 	ATTRIBUTES_TSL = "attributes"
 	TELEMETRY_TSL  = "telemetry"
 	COMMANDS_TSL   = "commands"
+	EVENT_TSL      = "events"
+	LOG_TSL        = "logs"
 	TAGS_TSL       = "tags"
 )
 
@@ -77,7 +79,7 @@ type ProductOta struct {
 	Description string `json:"description"  gorm:"type:varchar(255);comment:说明"`
 }
 
-type Define map[string]interface{}
+type Define map[string]any
 
 func (a Define) Value() (driver.Value, error) {
 	return json.Marshal(a)

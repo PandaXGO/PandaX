@@ -1,21 +1,37 @@
 package tdengine
 
-import "time"
+import (
+	"fmt"
+	"time"
 
-const logTableName = "device_log"
+	"github.com/kakuilan/kgo"
+)
+
+const logTableName = "logs"
+
+// 日志 TDengine
+type TdLog struct {
+	Ts       string `json:"ts" dc:"时间"`
+	DeviceId string `json:"deviceId" dc:"设备标识"`
+	TraceId  string `json:"traceId" dc:"追踪"`
+	Type     string `json:"type" dc:"日志类型"` // 命令调用  上行 下行
+	Content  string `json:"content" dc:"日志内容"`
+}
 
 // CreateLogStable 添加LOG超级表
 func (s *TdEngine) CreateLogStable() (err error) {
-	sql := "CREATE STABLE IF NOT EXISTS ? (ts TIMESTAMP, type VARCHAR(20), content VARCHAR(1000)) TAGS (device VARCHAR(255))"
+	sql := "CREATE STABLE IF NOT EXISTS ? (ts TIMESTAMP,deviceId NCHAR(64),traceId NCHAR(64),type NCHAR(20), content VARCHAR(1000))"
 	_, err = s.db.Exec(sql, logTableName)
 	return
 }
 
 // InsertLog 写入数据
 func (s *TdEngine) InsertLog(log *TdLog) (err error) {
-	sql := "INSERT INTO log_? USING device_log TAGS (?) VALUES (?, ?, ?)"
-	_, err = s.db.Exec(sql, log.Device, log.Ts, log.Type, log.Content)
-
+	logs, err := kgo.KConv.Struct2Map(*log, "")
+	if err != nil {
+		return err
+	}
+	err = s.InsertDevice(logTableName, logs)
 	return
 }
 
@@ -23,7 +39,7 @@ func (s *TdEngine) InsertLog(log *TdLog) (err error) {
 func (s *TdEngine) ClearLog() (err error) {
 	ts := time.Now().Add(-7 * 24 * time.Hour).Format("2006-01-02")
 
-	sql := "DELETE FROM device_log WHERE ts < ?"
+	sql := fmt.Sprintf("DELETE FROM %s WHERE ts < ?", logTableName)
 	_, err = s.db.Exec(sql, ts)
 
 	return
@@ -40,7 +56,7 @@ func (s *TdEngine) GetAllLog(sql string, args ...any) (list []TdLog, err error) 
 	for rows.Next() {
 		var log TdLog
 
-		err = rows.Scan(&log.Ts, &log.Type, &log.Content, &log.Device)
+		err = rows.Scan(&log.Ts, &log.DeviceId, &log.TraceId, &log.Type, &log.Content)
 		if err != nil {
 			return nil, err
 		}

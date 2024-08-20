@@ -14,7 +14,6 @@ import (
 	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine"
 	"pandax/pkg/rule_engine/message"
-	"pandax/pkg/shadow"
 	"pandax/pkg/tool"
 	"pandax/pkg/websocket"
 )
@@ -66,18 +65,7 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 				global.Log.Error("规则链执行失败", err)
 				return
 			}
-			// 保存设备影子
-			if msg.Type != message.RpcRequestFromDevice {
-				SetDeviceShadow(msg.DeviceAuth, ruleMessage.Msg, msg.Type)
-			}
 		case message.DisConnectMes, message.ConnectMes:
-			//检测设备影子并修改设备影子状态
-			if msg.Type == message.ConnectMes {
-				shadow.InitDeviceShadow(msg.DeviceAuth.Name, msg.DeviceAuth.ProductId)
-				shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
-			} else {
-				shadow.DeviceShadowInstance.SetOffline(msg.DeviceAuth.Name)
-			}
 			// 更改设备在线状态
 			if msg.Type == message.ConnectMes {
 				services.DeviceModelDao.UpdateStatus(msg.DeviceId, global.ONLINE)
@@ -165,32 +153,5 @@ func SendZtWebsocket(deviceId, message string) {
 	for stageid := range websocket.Wsp {
 		CJNR := fmt.Sprintf(`{"MESSAGETYPE":"01","MESSAGECONTENT": %s}`, string(data))
 		websocket.SendMessage(CJNR, stageid)
-	}
-}
-
-// SetDeviceShadow 设置设备点
-func SetDeviceShadow(etoken *model.DeviceAuth, msgVals map[string]interface{}, msgType string) {
-	defer func() {
-		if err := recover(); err != nil {
-			global.Log.Error(err)
-		}
-	}()
-
-	if msgType == message.RowMes {
-		msgType = message.TelemetryMes
-	}
-	for key, value := range msgVals {
-		if message.AttributesMes == msgType {
-			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslAttributesType, key, value)
-			if err != nil {
-				global.Log.Error("设置设备影子点失败", err)
-			}
-		}
-		if message.TelemetryMes == msgType {
-			err := shadow.DeviceShadowInstance.SetDevicePoint(etoken.Name, global.TslTelemetryType, key, value)
-			if err != nil {
-				global.Log.Error("设置设备影子点失败", err)
-			}
-		}
 	}
 }

@@ -11,7 +11,6 @@ import (
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
 	"pandax/kit/utils"
-	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	"strings"
 
@@ -70,6 +69,7 @@ func (p *ProductApi) GetProductTsl(rc *restfulx.ReqCtx) {
 	attributes := make([]map[string]interface{}, 0)
 	telemetry := make([]map[string]interface{}, 0)
 	commands := make([]map[string]interface{}, 0)
+	events := make([]map[string]interface{}, 0)
 	for _, template := range *templates {
 		tslData := map[string]interface{}{
 			"name":       template.Name,
@@ -86,12 +86,17 @@ func (p *ProductApi) GetProductTsl(rc *restfulx.ReqCtx) {
 		if template.Classify == global.TslCommandsType {
 			commands = append(commands, tslData)
 		}
+		if template.Classify == global.TslEventType {
+			events = append(events, tslData)
+		}
+
 	}
 
 	rc.ResData = map[string]interface{}{
 		"attributes": attributes,
 		"telemetry":  telemetry,
 		"commands":   commands,
+		"events":     events,
 	}
 }
 
@@ -149,26 +154,4 @@ func (p *ProductApi) DeleteProduct(rc *restfulx.ReqCtx) {
 	// 删除产品
 	err := p.ProductApp.Delete(ids)
 	biz.ErrIsNil(err, "产品删除失败")
-	// 删除所有模型，固件
-	for _, id := range ids {
-		// 删除超级表
-		deleteDeviceStable(id)
-		// 删除所有缓存
-		cache.DelProductRule(id)
-		// 删除绑定的属性及OTA记录
-		p.TemplateApp.Delete([]string{id})
-		p.OtaAPP.Delete([]string{id})
-	}
-}
-
-func deleteDeviceStable(productId string) error {
-	err := global.TdDb.DropStable(productId + "_" + entity.ATTRIBUTES_TSL)
-	if err != nil {
-		return err
-	}
-	err = global.TdDb.DropStable(productId + "_" + entity.TELEMETRY_TSL)
-	if err != nil {
-		return err
-	}
-	return nil
 }

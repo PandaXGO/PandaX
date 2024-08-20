@@ -4,6 +4,7 @@ const (
 	TslAttributesType = "attributes"
 	TslTelemetryType  = "telemetry"
 	TslCommandsType   = "commands"
+	TslEventType      = "events"
 )
 
 // 告警等级

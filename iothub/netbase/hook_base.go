@@ -2,9 +2,10 @@ package netbase
 
 import (
 	"encoding/json"
+	"fmt"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
-	"pandax/iothub/server/emqxserver/protobuf"
+	exhook "pandax/iothub/server/emqxserver/protobuf"
 	"pandax/kit/utils"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
@@ -91,20 +92,24 @@ func CreateSubTableField(productId, ty string, fields map[string]interface{}) {
 			if key == "ts" {
 				return
 			}
-			interfaceType := tool.GetInterfaceType(value)
-			// 向产品tsl中添加模型
-			err := global.TdDb.AddSTableField(productId+"_"+ty, key, interfaceType, 0)
-			if err != nil {
-				return
+			check := cache.CheckSubDeviceField(key)
+			if !check {
+				interfaceType := tool.GetInterfaceType(value)
+				err := global.TdDb.AddSTableField(productId+"_"+ty, key, interfaceType, 0)
+				if err != nil {
+					return
+				}
+				tsl := entity.ProductTemplate{}
+				tsl.Pid = productId
+				tsl.Id = utils.GenerateID()
+				tsl.Name = key
+				tsl.Type = interfaceType
+				tsl.Key = key
+				tsl.Classify = ty
+				// 向产品tsl中添加模型
+				services.ProductTemplateModelDao.Insert(tsl)
+				cache.SetSubDeviceField(key)
 			}
-			tsl := entity.ProductTemplate{}
-			tsl.Pid = productId
-			tsl.Id = utils.GenerateID()
-			tsl.Name = key
-			tsl.Type = interfaceType
-			tsl.Key = key
-			tsl.Classify = ty
-			services.ProductTemplateModelDao.Insert(tsl)
 		}(key, value)
 	}
 	group.Wait()
@@ -187,12 +192,11 @@ func GetRequestIdFromTopic(reg, topic string) (requestId string) {
 
 func CreateConnectionInfo(msgType, protocol, clientID, peerHost string, deviceAuth *model.DeviceAuth) *DeviceEventInfo {
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
-	ci := &tdengine.ConnectInfo{
-		ClientID: clientID,
+	ci := &tdengine.Events{
 		DeviceId: deviceAuth.DeviceId,
-		PeerHost: peerHost,
-		Protocol: protocol,
-		Type:     msgType,
+		Name:     msgType,
+		Type:     "info",
+		Content:  fmt.Sprintf("设备%s, %s 事件", deviceAuth.Name, msgType),
 		Ts:       ts,
 	}
 	v, err := json.Marshal(*ci)

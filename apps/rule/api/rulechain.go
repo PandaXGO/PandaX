@@ -64,8 +64,11 @@ func (p *RuleChainApi) GetRuleChainList(rc *restfulx.ReqCtx) {
 func (p *RuleChainApi) GetRuleChainListLabel(rc *restfulx.ReqCtx) {
 	data := entity.RuleChain{}
 	data.RuleName = restfulx.QueryParam(rc, "ruleName")
+	data.RoleId = rc.LoginAccount.RoleId
+	data.Owner = rc.LoginAccount.UserName
+
 	list, err := p.RuleChainApp.FindListBaseLabel(data)
-	biz.ErrIsNil(err, "获取规则链Label错误")
+	biz.ErrIsNilAppendErr(err, "获取规则链Label错误")
 	rc.ResData = list
 }
 

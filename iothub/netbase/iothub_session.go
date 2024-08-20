@@ -16,7 +16,7 @@ type DeviceEventInfo struct {
 func (j *DeviceEventInfo) Bytes() []byte {
 	b, err := json.Marshal(j)
 	if err != nil {
-		panic(err)
+		return nil
 	}
 	return b
 }
