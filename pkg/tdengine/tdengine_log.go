@@ -20,8 +20,8 @@ type TdLog struct {
 
 // CreateLogStable 添加LOG超级表
 func (s *TdEngine) CreateLogStable() (err error) {
-	sql := "CREATE TABLE IF NOT EXISTS ? (ts TIMESTAMP,deviceId NCHAR(64),traceId NCHAR(64),type NCHAR(20), content VARCHAR(1000))"
-	_, err = s.db.Exec(sql, logTableName)
+	sql := fmt.Sprintf("CREATE TABLE IF NOT EXISTS ? (ts TIMESTAMP,deviceId NCHAR(64),traceId NCHAR(64),type NCHAR(20), content VARCHAR(1000))", s.dbName, logTableName)
+	_, err = s.db.Exec(sql)
 	return
 }
 
