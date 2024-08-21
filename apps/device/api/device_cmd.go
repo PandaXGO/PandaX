@@ -3,17 +3,15 @@ package api
 // ==========================================================================
 import (
 	"encoding/json"
-	"pandax/apps/device/util"
 	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
-	"pandax/kit/utils"
-	"pandax/pkg/global"
+	devicerpc "pandax/pkg/device_rpc"
 	"strings"
-	"time"
 
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	"pandax/apps/device/util"
 )
 
 type DeviceCmdLogApi struct {
@@ -50,22 +48,12 @@ func (p *DeviceCmdLogApi) InsertDeviceCmdLog(rc *restfulx.ReqCtx) {
 	err := json.Unmarshal([]byte(data.CmdContent), &ms)
 	biz.ErrIsNil(err, "指令格式不正确")
 	biz.IsTrue(len(ms) > 0, "指令格式不正确")
-	data.Id = utils.GenerateID()
-	data.State = "2"
-	data.RequestTime = time.Now().Format("2006-01-02 15:04:05")
 	go func() {
-		err := util.BuildRunDeviceRpc(data.DeviceId, data.Mode, map[string]interface{}{
-			"method": data.CmdName,
-			"params": ms,
-		})
-		if err != nil {
-			global.Log.Error("规则链执行失败", err)
-			data.State = "1"
-		} else {
-			data.State = "0"
+		rpc := devicerpc.RpcPayload{
+			Method: data.CmdName,
+			Params: ms,
 		}
-		data.ResponseTime = time.Now().Format("2006-01-02 15:04:05.000")
-		err = p.DeviceCmdLogApp.Insert(data)
+		err := util.BuildRunDeviceRpc(data.DeviceId, data.Mode, rpc)
 		biz.ErrIsNil(err, "添加指令记录失败")
 	}()
 }

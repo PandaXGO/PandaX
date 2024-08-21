@@ -2,7 +2,6 @@ package netbase
 
 import (
 	"encoding/json"
-	"fmt"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	exhook "pandax/iothub/server/emqxserver/protobuf"
@@ -184,19 +183,29 @@ func SplitLwm2mClientID(lwm2mClientID string, index int) string {
 func GetRequestIdFromTopic(reg, topic string) (requestId string) {
 	re := regexp.MustCompile(reg)
 	res := re.FindStringSubmatch(topic)
+	if len(res) > 2 {
+		return res[2]
+	}
+	return ""
+}
+
+func GetEventFromTopic(reg, topic string) (identifier string) {
+	re := regexp.MustCompile(reg)
+	res := re.FindStringSubmatch(topic)
 	if len(res) > 1 {
 		return res[1]
 	}
 	return ""
 }
 
-func CreateConnectionInfo(msgType, protocol, clientID, peerHost string, deviceAuth *model.DeviceAuth) *DeviceEventInfo {
+// eventType 事件类型 info alarm
+func CreateEvent(msgType, eventType, content string, deviceAuth *model.DeviceAuth) *DeviceEventInfo {
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
 	ci := &tdengine.Events{
 		DeviceId: deviceAuth.DeviceId,
 		Name:     msgType,
-		Type:     "info",
-		Content:  fmt.Sprintf("设备%s, %s 事件", deviceAuth.Name, msgType),
+		Type:     eventType,
+		Content:  content,
 		Ts:       ts,
 	}
 	v, err := json.Marshal(*ci)

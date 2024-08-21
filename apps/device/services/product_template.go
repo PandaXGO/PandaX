@@ -10,6 +10,7 @@ type (
 	ProductTemplateModel interface {
 		Insert(data entity.ProductTemplate) (*entity.ProductTemplate, error)
 		FindOne(id string) (*entity.ProductTemplate, error)
+		FindOneByKey(deviceId, key string) (*entity.ProductTemplate, error)
 		FindListPage(page, pageSize int, data entity.ProductTemplate) (*[]entity.ProductTemplate, int64, error)
 		FindListAttrs(data entity.ProductTemplate) (*[]entity.ProductTemplate, error)
 		FindList(data entity.ProductTemplate) (*[]entity.ProductTemplate, error)
@@ -34,6 +35,13 @@ func (m *templateModelImpl) Insert(data entity.ProductTemplate) (*entity.Product
 func (m *templateModelImpl) FindOne(id string) (*entity.ProductTemplate, error) {
 	resData := new(entity.ProductTemplate)
 	db := global.Db.Table(m.table).Where("id = ?", id)
+	err := db.First(resData).Error
+	return resData, err
+}
+
+func (m *templateModelImpl) FindOneByKey(deviceId, key string) (*entity.ProductTemplate, error) {
+	resData := new(entity.ProductTemplate)
+	db := global.Db.Table(m.table).Where("pid = ?", deviceId).Where("key = ?", key)
 	err := db.First(resData).Error
 	return resData, err
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-const connectTableName = "events"
+const connectTableName = "device_events"
 
 type Events struct {
 	Ts       string `json:"ts"`

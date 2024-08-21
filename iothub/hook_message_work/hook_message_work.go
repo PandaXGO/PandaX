@@ -14,8 +14,12 @@ import (
 	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine"
 	"pandax/pkg/rule_engine/message"
+	"pandax/pkg/tdengine"
 	"pandax/pkg/tool"
 	"pandax/pkg/websocket"
+	"time"
+
+	"github.com/kakuilan/kgo"
 )
 
 // 消息处理模块
@@ -38,11 +42,8 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 				<-s.Ch
 			}
 		}()
-		// 去除上传数据的非法空字符
-		// msg.Datas = strings.ReplaceAll(msg.Datas, "\\u0000", "")
-
 		switch msg.Type {
-		case message.RowMes, message.AttributesMes, message.TelemetryMes, message.RpcRequestFromDevice:
+		case message.RowMes, message.AttributesMes, message.TelemetryMes, message.RpcRequestFromDevice, message.UpEventMes:
 			msgVals := make(map[string]interface{})
 			err := json.Unmarshal([]byte(msg.Datas), &msgVals)
 			if err != nil {
@@ -64,6 +65,29 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 			if err != nil {
 				global.Log.Error("规则链执行失败", err)
 				return
+			}
+			// 保存事件信息
+			if msg.Type == message.UpEventMes {
+				tsl, err := services.ProductTemplateModelDao.FindOneByKey(msg.DeviceId, msg.Identifier)
+				if err != nil {
+					return
+				}
+				ci := &tdengine.Events{
+					DeviceId: msg.DeviceId,
+					Name:     msg.Identifier,
+					Type:     tsl.Type,
+					Content:  msg.Datas,
+					Ts:       time.Now().Format("2006-01-02 15:04:05.000"),
+				}
+				data, err := kgo.KConv.Struct2Map(ci, "")
+				if err != nil {
+					global.Log.Error("事件格式转化错误")
+					return
+				}
+				err = global.TdDb.InsertEvent(data)
+				if err != nil {
+					global.Log.Error("事件添加错误", err)
+				}
 			}
 		case message.DisConnectMes, message.ConnectMes:
 			// 更改设备在线状态

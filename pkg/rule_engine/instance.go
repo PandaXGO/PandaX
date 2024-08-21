@@ -19,17 +19,19 @@ type RuleChainInstance struct {
 }
 
 func NewRuleChainInstance(ruleID string, data []byte) (*RuleChainInstance, error) {
+	instance := &RuleChainInstance{}
 	manifest, err := manifest.New(data)
 	if err != nil {
 		logrus.WithError(err).Errorf("invalid manifest file")
 		return nil, err
 	}
-	withManifest, err := newInstanceWithManifest(manifest)
+	instance, err = newInstanceWithManifest(manifest)
 	if err != nil {
 		return nil, err
 	}
-	withManifest.ruleID = ruleID
-	return withManifest, nil
+	instance.ruleID = ruleID
+
+	return instance, nil
 }
 
 func newInstanceWithManifest(m *manifest.Manifest) (*RuleChainInstance, error) {

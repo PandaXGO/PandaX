@@ -3,12 +3,14 @@ package websocket
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
 	"net/http"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/util"
+	devicerpc "pandax/pkg/device_rpc"
 	"pandax/pkg/global"
 	"strings"
+
+	"github.com/gorilla/websocket"
 )
 
 var upGrader = websocket.Upgrader{
@@ -65,10 +67,11 @@ func OnMessage(ws *Websocket, msg string) {
 			return
 		}
 		//2. 根据设备下发属性更改
-		err = util.BuildRunDeviceRpc(vtsa.TwinId, "single", map[string]interface{}{
-			"method": "setAttributes",
-			"params": vtsa.Attrs,
-		})
+		rpc := devicerpc.RpcPayload{
+			Method: "setAttributes",
+			Params: vtsa.Attrs,
+		}
+		err = util.BuildRunDeviceRpc(vtsa.TwinId, "single", rpc)
 		if err != nil {
 			global.Log.Error("命令发送失败", err)
 			sendMessages("02", "命令发送失败", screenId)

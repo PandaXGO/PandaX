@@ -88,7 +88,7 @@ func (s *HookGrpcService) OnClientConnected(ctx context.Context, in *exhook2.Cli
 	}
 	//添加连接ID
 	mqttclient.Session.Store(etoken.DeviceId, in.Clientinfo.Clientid)
-	data := netbase.CreateConnectionInfo(message.ConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
+	data := netbase.CreateEvent(message.ConnectMes, "info", fmt.Sprintf("设备%s通过MQTT协议连接", etoken.Name), etoken)
 	go s.HookService.Queue.Queue(data)
 	return &exhook2.EmptySuccess{}, nil
 }
@@ -103,7 +103,7 @@ func (s *HookGrpcService) OnClientDisconnected(ctx context.Context, in *exhook2.
 	}
 	//删除连接ID
 	mqttclient.Session.Delete(etoken.DeviceId)
-	data := netbase.CreateConnectionInfo(message.DisConnectMes, "mqtt", in.Clientinfo.Clientid, in.Clientinfo.Peerhost, etoken)
+	data := netbase.CreateEvent(message.DisConnectMes, "info", fmt.Sprintf("设备%s断开连接", etoken.Name), etoken)
 	go s.HookService.Queue.Queue(data)
 	return &exhook2.EmptySuccess{}, nil
 }
@@ -243,10 +243,10 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 				if in.Message.Topic == ConnectGatewayTopic {
 					if val, ok := value.(string); ok {
 						if val == "online" {
-							data = netbase.CreateConnectionInfo(message.ConnectMes, "mqtt", in.Message.From, in.Message.Headers["peerhost"], auth)
+							data = netbase.CreateEvent(message.ConnectMes, "info", fmt.Sprintf("子设备%s通过网关连接", etoken.Name), auth)
 						}
 						if val == "offline" {
-							data = netbase.CreateConnectionInfo(message.DisConnectMes, "mqtt", in.Message.From, in.Message.Headers["peerhost"], auth)
+							data = netbase.CreateEvent(message.ConnectMes, "info", fmt.Sprintf("子设备设备%s通过网关连接", etoken.Name), auth)
 						}
 						// 子设备发送到队列里
 						go s.HookService.Queue.Queue(data)
@@ -281,6 +281,10 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 			// 获取请求id
 			id := netbase.GetRequestIdFromTopic(RpcReq, in.Message.Topic)
 			data.RequestId = id
+		case message.UpEventMes:
+			data.Type = message.UpEventMes
+			identifier := netbase.GetEventFromTopic(EventReq, in.Message.Topic)
+			data.Identifier = identifier
 		}
 		//将数据放到队列中
 		go s.HookService.Queue.Queue(data)

@@ -153,12 +153,12 @@ func (hhs *HookHttpService) hook(req *restful.Request, resp *restful.Response) {
 
 func (cm *ConnectionManager) AddConnection(addr string, etoken *model.DeviceAuth, service *hook_message_work.HookService) {
 	cm.activeConnections.Store(addr, etoken)
-	data := netbase.CreateConnectionInfo(message.ConnectMes, "http", addr, addr, etoken)
+	data := netbase.CreateEvent(message.ConnectMes, "info", fmt.Sprintf("设备%s通过HTTP协议连接", etoken.Name), etoken)
 	go service.Queue.Queue(data)
 }
 
 func (cm *ConnectionManager) RemoveConnection(addr string, etoken *model.DeviceAuth, service *hook_message_work.HookService) {
-	data := netbase.CreateConnectionInfo(message.DisConnectMes, "http", addr, addr, etoken)
+	data := netbase.CreateEvent(message.DisConnectMes, "info", fmt.Sprintf("设备%s断开连接", etoken.Name), etoken)
 	cm.activeConnections.Delete(addr)
 	go service.Queue.Queue(data)
 }

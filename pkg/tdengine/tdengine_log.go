@@ -7,7 +7,7 @@ import (
 	"github.com/kakuilan/kgo"
 )
 
-const logTableName = "logs"
+const logTableName = "device_logs"
 
 // 日志 TDengine
 type TdLog struct {
@@ -39,7 +39,7 @@ func (s *TdEngine) InsertLog(log *TdLog) (err error) {
 func (s *TdEngine) ClearLog() (err error) {
 	ts := time.Now().Add(-7 * 24 * time.Hour).Format("2006-01-02")
 
-	sql := fmt.Sprintf("DELETE FROM %s WHERE ts < ?", logTableName)
+	sql := fmt.Sprintf("DELETE FROM %s.%s WHERE ts < ?", s.dbName, logTableName)
 	_, err = s.db.Exec(sql, ts)
 
 	return

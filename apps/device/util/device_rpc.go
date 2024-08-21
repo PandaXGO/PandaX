@@ -7,13 +7,15 @@ import (
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
 	ruleService "pandax/apps/rule/services"
+	"pandax/pkg/cache"
+	devicerpc "pandax/pkg/device_rpc"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine"
 	"pandax/pkg/rule_engine/message"
 	"pandax/pkg/tool"
 )
 
-func BuildRunDeviceRpc(deviceId, mode string, msgData map[string]interface{}) error {
+func BuildRunDeviceRpc(deviceId, mode string, rp devicerpc.RpcPayload) error {
 	device, err := services.DeviceModelDao.FindOne(deviceId)
 	if err != nil {
 		return err
@@ -35,10 +37,21 @@ func BuildRunDeviceRpc(deviceId, mode string, msgData map[string]interface{}) er
 	dataCode := ruleData.LfData.DataCode
 	code, _ := json.Marshal(dataCode)
 	//新建规则链实体
-	instance, errs := rule_engine.NewRuleChainInstance(findOne.Id, code)
-	if err != nil {
-		return errs
+	instance := &rule_engine.RuleChainInstance{}
+	ruleInstance, bo := cache.GetProductRule(device.Product.Id)
+	if !bo {
+		instance, err = rule_engine.NewRuleChainInstance(findOne.Id, code)
+		if err != nil {
+			return err
+		}
+	} else {
+		if data, ok := ruleInstance.(*rule_engine.RuleChainInstance); ok {
+			instance = data
+		} else {
+			return errors.New("规则实体解析错误")
+		}
 	}
+
 	metadataVals := map[string]interface{}{
 		"deviceId":       device.Id,
 		"mode":           mode,
@@ -49,10 +62,11 @@ func BuildRunDeviceRpc(deviceId, mode string, msgData map[string]interface{}) er
 		"orgId":          device.OrgId,
 		"owner":          device.Owner,
 	}
-	msg := message.NewMessage(device.Owner, message.RpcRequestToDevice, msgData, metadataVals)
+
+	msg := message.NewMessage(device.Owner, message.RpcRequestToDevice, rp.ToMap(), metadataVals)
 	err = instance.StartRuleChain(context.Background(), msg)
 	if err != nil {
-		global.Log.Error("规则链执行失败", errs)
+		global.Log.Error("规则链执行失败", err)
 	}
 	return err
 }

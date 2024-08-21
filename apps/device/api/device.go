@@ -7,7 +7,6 @@ package api
 // ==========================================================================
 import (
 	"fmt"
-	"pandax/apps/device/util"
 	"pandax/kit/biz"
 	"pandax/kit/model"
 	"pandax/kit/restfulx"
@@ -131,6 +130,18 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	rc.ResData = res
 }
 
+func (p *DeviceApi) GetDeviceEvents(rc *restfulx.ReqCtx) {
+	pageNum := restfulx.QueryInt(rc, "pageNum", 1)
+	pageSize := restfulx.QueryInt(rc, "pageSize", 10)
+	deviceId := restfulx.PathParam(rc, "id")
+	ty := restfulx.QueryParam(rc, "type")
+	offset := pageSize * (pageNum - 1)
+	sql := `select * from ? where  deviceId = ? and type = ? DESC LIMIT ?,? `
+	list, err := global.TdDb.GetAllEvents(sql, deviceId, ty, offset, pageSize)
+	biz.ErrIsNilAppendErr(err, "查询设备事件历史失败")
+	rc.ResData = list
+}
+
 // GetDeviceTelemetryHistory 获取Device属性的遥测历史
 func (p *DeviceApi) GetDeviceTelemetryHistory(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
@@ -144,21 +155,6 @@ func (p *DeviceApi) GetDeviceTelemetryHistory(rc *restfulx.ReqCtx) {
 	rs, err := global.TdDb.GetAll(sql, key, fmt.Sprintf("%s_telemetry", strings.ToLower(device.Name)), startTime, endTime, key, limit)
 	biz.ErrIsNilAppendErr(err, "查询设备属性的遥测历史失败")
 	rc.ResData = rs
-}
-
-// 下发设备属性
-func (p *DeviceApi) DownAttribute(rc *restfulx.ReqCtx) {
-	id := restfulx.PathParam(rc, "id")
-	key := restfulx.QueryParam(rc, "key")
-	value := restfulx.QueryParam(rc, "value")
-	biz.NotEmpty(value, "请设置属性值")
-	err := util.BuildRunDeviceRpc(id, "single", map[string]interface{}{
-		"method": "setAttributes",
-		"params": map[string]interface{}{
-			key: value,
-		},
-	})
-	biz.ErrIsNilAppendErr(err, "下发失败:")
 }
 
 // InsertDevice 添加Device

@@ -3,13 +3,11 @@ package mqttclient
 import (
 	"errors"
 	"fmt"
-	"math/rand"
-	"time"
 )
 
 const (
-	RpcRespTopic = `v1/devices/me/rpc/response/%d`
-	RpcReqTopic  = `v1/devices/me/rpc/request/%d`
+	RpcRespTopic = `v1/devices/me/rpc/response/%s`
+	RpcReqTopic  = `v1/devices/me/rpc/request/%s`
 )
 
 const (
@@ -18,7 +16,7 @@ const (
 )
 
 type RpcRequest struct {
-	RequestId int
+	RequestId string
 	Mode      string //单向、双向 单项只发送不等待响应  双向需要等到响应
 	Timeout   int    // 设置双向时，等待的超时时间
 }
@@ -40,10 +38,4 @@ func (rpc RpcRequest) Pub(deviceId, reqPayload string) error {
 		return errors.New("未获取到设备的MQTT连接")
 	}
 	return Publish(topic, value.(string), reqPayload)
-}
-
-func (rpc *RpcRequest) GetRequestId() {
-	rand.Seed(time.Now().UnixNano())
-	// 生成随机整数
-	rpc.RequestId = rand.Intn(10000) + 1 // 生成0到99之间的随机整数
 }

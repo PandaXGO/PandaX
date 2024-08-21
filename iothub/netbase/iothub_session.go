@@ -10,7 +10,8 @@ type DeviceEventInfo struct {
 	DeviceAuth *model.DeviceAuth `json:"deviceAuth"`
 	Datas      string            `json:"datas"`
 	Type       string            `json:"type"`
-	RequestId  string            `json:"requestId"`
+	RequestId  string            `json:"requestId"`  // rpc 请求ID
+	Identifier string            `json:"identifier"` //事件标识
 }
 
 func (j *DeviceEventInfo) Bytes() []byte {

@@ -91,7 +91,7 @@ devA 为设备标识
   "devB": "offline"
 }
 ```
-## 命令下发,设备请求格式,
+## 服务端命令下发,设备请求格式,
 ```json
 {
    "method": "restart",
@@ -103,14 +103,28 @@ devA 为设备标识
    }
 }
 ```
-属性下发 method: 'setAttributes'
-
-## 命令响应的格式
+## 服务端属性下发 method: 'setAttributes'
 ```json
 {
-  "method": "2343",
+  "method": "setAttributes",
   "params": {
      "aa": "2"
    }
 }
 ```
+
+## 设备端 请求的格式
+{
+  "method": "getCurrentTime",
+  "params": {
+     "aa": "2"
+   }
+}
+
+## 设备端 响应的格式
+{
+  "method": "cmdResp", 
+  "params": {
+     "aa": "2"
+   }
+}

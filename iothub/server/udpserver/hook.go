@@ -7,7 +7,7 @@ import (
 	"net"
 	"time"
 
-	udpclient "pandax/iothub/client/updclient"
+	udpclient "pandax/iothub/client/udpclient"
 	"pandax/iothub/hook_message_work"
 	"pandax/iothub/netbase"
 	"pandax/pkg/global"
@@ -44,7 +44,7 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 			_ = server.listener.Close()
 
 			if isAuth, ok := authMap[client.AddrPort().String()]; ok && isAuth {
-				data := netbase.CreateConnectionInfo(message.DisConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
+				data := netbase.CreateEvent(message.DisConnectMes, "info", fmt.Sprintf("设备%s断开连接", etoken.Name), etoken)
 				go hhs.HookService.Queue.Queue(data)
 			}
 			udpclient.UdpClient.Delete(etoken.DeviceId)
@@ -72,7 +72,7 @@ func InitUdpHook(addr string, hs *hook_message_work.HookService) {
 
 			if auth {
 				global.Log.Infof("UDP协议 设备%s,认证成功", etoken.DeviceId)
-				data := netbase.CreateConnectionInfo(message.ConnectMes, "udp", client.IP.String(), client.AddrPort().String(), etoken)
+				data := netbase.CreateEvent(message.ConnectMes, "info", fmt.Sprintf("设备%s通过UDP协议连接", etoken.Name), etoken)
 				go hhs.HookService.Queue.Queue(data)
 
 				authMap[client.AddrPort().String()] = true

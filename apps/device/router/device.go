@@ -80,6 +80,18 @@ func InitDeviceRouter(container *restful.Container) {
 		Returns(200, "OK", []entity.DeviceStatusVo{}).
 		Returns(404, "Not Found", nil))
 
+	ws.Route(ws.GET("/{id}/event").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("获取设备事件历史").Handle(s.GetDeviceEvents)
+	}).
+		Doc("获取设备事件历史").
+		Param(ws.QueryParameter("pageNum", "页数").Required(true).DataType("int")).
+		Param(ws.QueryParameter("pageSize", "每页条数").Required(true).DataType("int")).
+		Param(ws.PathParameter("id", "设备ID").Required(true).DataType("string")).
+		Param(ws.QueryParameter("type", "事件类型").Required(true).DataType("string")).
+		Metadata(restfulspec.KeyOpenAPITags, tags). // on the response
+		Returns(200, "OK", []map[string]any{}).
+		Returns(404, "Not Found", nil))
+
 	ws.Route(ws.GET("/{id}/property/history").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("获取设备属性的遥测历史").Handle(s.GetDeviceTelemetryHistory)
 	}).
@@ -92,15 +104,6 @@ func InitDeviceRouter(container *restful.Container) {
 		Metadata(restfulspec.KeyOpenAPITags, tags). // on the response
 		Returns(200, "OK", []map[string]any{}).
 		Returns(404, "Not Found", nil))
-
-	ws.Route(ws.GET("/{id}/attribute/down").To(func(request *restful.Request, response *restful.Response) {
-		restfulx.NewReqCtx(request, response).WithLog("获取Device属性下发").Handle(s.DownAttribute)
-	}).
-		Doc("获取Device属性下发").
-		Param(ws.PathParameter("id", "Id").DataType("string")).
-		Param(ws.QueryParameter("key", "属性KEY").Required(false).DataType("string")).
-		Param(ws.QueryParameter("value", "属性Value").Required(false).DataType("string")).
-		Metadata(restfulspec.KeyOpenAPITags, tags))
 
 	ws.Route(ws.POST("").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("添加Device信息").Handle(s.InsertDevice)

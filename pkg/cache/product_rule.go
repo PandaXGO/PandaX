@@ -11,6 +11,10 @@ func ComputeIfAbsentProductRule(key string, fun func(any) (any, error)) (any, er
 	return ProductCache.ComputeIfAbsent(key, fun)
 }
 
+func GetProductRule(key string) (any, bool) {
+	return ProductCache.Get(key)
+}
+
 func DelProductRule(key string) {
 	ProductCache.Delete(key)
 }
