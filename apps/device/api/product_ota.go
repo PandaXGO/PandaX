@@ -12,10 +12,13 @@ import (
 
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	"pandax/apps/device/util"
+	devicerpc "pandax/pkg/device_rpc"
 )
 
 type ProductOtaApi struct {
 	ProductOtaApp services.ProductOtaModel
+	DeviceApp     services.DeviceModel
 }
 
 const filePath = "uploads/file"
@@ -73,4 +76,33 @@ func (p *ProductOtaApi) DeleteProductOta(rc *restfulx.ReqCtx) {
 	id := restfulx.PathParam(rc, "id")
 	ids := strings.Split(id, ",")
 	p.ProductOtaApp.Delete(ids)
+}
+
+// DeleteProductOta OTA升级
+func (p *ProductOtaApi) OtaDown(rc *restfulx.ReqCtx) {
+	// 固件包
+	id := restfulx.PathParam(rc, "id")
+	pid := restfulx.QueryParam(rc, "pid")
+	ota, err := p.ProductOtaApp.FindOne(id)
+	biz.ErrIsNil(err, "查询OTA信息失败")
+	// 1、对比所有设备与OTA固件版本
+	devices, err := p.DeviceApp.FindList(entity.Device{Pid: pid, LinkStatus: "online"})
+	biz.ErrIsNil(err, "该产品下没有设备存在")
+	// 2、对低版本的设备进行指令下发升级
+	go func() {
+		rpc := devicerpc.RpcPayload{
+			Method: "ota",
+			Params: map[string]any{
+				"verison": ota.Version,
+				"url":     ota.Url,
+				"Id":      ota.Id,
+				"sign":    ota.Check,
+			},
+		}
+		for _, device := range *devices {
+			util.BuildRunDeviceRpc(device.Id, "", rpc)
+		}
+
+	}()
+
 }

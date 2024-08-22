@@ -93,7 +93,6 @@ func (p *DeviceApi) GetDeviceStatus(rc *restfulx.ReqCtx) {
 	biz.ErrIsNil(err, "获取设备失败")
 	template, err := p.ProductTemplateApp.FindList(entity.ProductTemplate{Classify: classify, Pid: device.Pid})
 	biz.ErrIsNil(err, "查询设备模板失败")
-	// 从设备影子中读取
 	res := make([]entity.DeviceStatusVo, 0)
 
 	for _, tel := range *template {

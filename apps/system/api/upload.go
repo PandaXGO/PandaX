@@ -17,7 +17,7 @@ type UploadApi struct{}
 // UploadImage 图片上传
 func (up *UploadApi) UploadImage(rc *restfulx.ReqCtx) {
 	_, fileHeader, err := rc.Request.Request.FormFile("file")
-	fileType := restfulx.QueryParam(rc, "fileType")
+	fileType := restfulx.PathParam(rc, "path")
 	biz.ErrIsNil(err, "请传入文件")
 	local := &tool.Local{Path: tool.GetFilePath(fileType)}
 	link, fileName, err := local.UploadFile(fileHeader)
@@ -41,7 +41,7 @@ func (p *UploadApi) UplaodToOss(rc *restfulx.ReqCtx) {
 
 // subpath 是fileName
 func (up *UploadApi) GetImage(rc *restfulx.ReqCtx) {
-	fileType := restfulx.QueryParam(rc, "fileType")
+	fileType := restfulx.PathParam(rc, "path")
 	actual := path.Join(tool.GetFilePath(fileType), restfulx.PathParam(rc, "subpath"))
 
 	rc.Download(actual)

@@ -20,25 +20,19 @@ type Local struct {
 }
 
 const (
-	DevicePath        = "DevicePath"        //设备相关
-	RulePath          = "RulePath"          //规则链截图及json
-	VisualPath        = "VisualPath"        //组态截图及json
-	ThreePath         = "ThreePath"         //3D组态截图及json
-	VisualGalleryPath = "VisualGalleryPath" //组态图库
-	ThreeModelPath    = "ThreeModelPath"    //3D模型和缩略图
-	ThreeMapPath      = "ThreeMapPath"      //3d贴图
-	OtherPath         = "OtherPath"         //其他
+	ImagePath    = "image" // 图片资源,包括贴图
+	OtaPath      = "ota"   // 固件包
+	ModelPath    = "model" // 模型资源
+	DataJsonPath = "data"  //组态，规则链json
+	OtherPath    = "other" //其他
 )
 
 var PathMap = map[string]string{
-	DevicePath:        "uploads/device",
-	RulePath:          "uploads/rule",
-	VisualPath:        "uploads/visual",
-	ThreePath:         "uploads/three",
-	VisualGalleryPath: "uploads/visual/gallery",
-	ThreeModelPath:    "uploads/three/model",
-	ThreeMapPath:      "uploads/three/map",
-	OtherPath:         "uploads/other",
+	ImagePath:    "uploads/image",
+	OtaPath:      "uploads/ota",
+	ModelPath:    "uploads/model",
+	DataJsonPath: "uploads/json",
+	OtherPath:    "uploads/other",
 }
 
 func init() {

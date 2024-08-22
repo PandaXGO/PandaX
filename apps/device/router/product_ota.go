@@ -63,5 +63,12 @@ func InitProductOtaRouter(container *restful.Container) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Param(ws.PathParameter("id", "多id 1,2,3").DataType("string")))
 
+	ws.Route(ws.DELETE("/{id}/down").To(func(request *restful.Request, response *restful.Response) {
+		restfulx.NewReqCtx(request, response).WithLog("Ota升级").Handle(s.OtaDown)
+	}).
+		Doc("Ota升级").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Param(ws.QueryParameter("pid", "产品Id").Required(false).DataType("string")))
+
 	container.Add(ws)
 }

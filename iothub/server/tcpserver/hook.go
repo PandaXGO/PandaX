@@ -47,7 +47,7 @@ func handleConnection(conn *net.TCPConn, hs *hook_message_work.HookService) {
 	defer func() {
 		_ = conn.Close()
 		if isAuth {
-			data := netbase.CreateEvent(message.DisConnectMes, "info", fmt.Sprintf("设备%s断开连接", etoken.Name), etoken)
+			data := netbase.CreateEventInfo(message.DisConnectMes, "info", fmt.Sprintf("设备%s断开连接", etoken.Name), etoken)
 			go hs.Queue.Queue(data)
 		}
 		tcpclient.TcpClient.Delete(etoken.DeviceId)
@@ -67,7 +67,7 @@ func handleConnection(conn *net.TCPConn, hs *hook_message_work.HookService) {
 			auth := netbase.Auth(token)
 			if auth {
 				global.Log.Infof("TCP协议 设备%s,认证成功", etoken.DeviceId)
-				data := netbase.CreateEvent(message.ConnectMes, "info", fmt.Sprintf("设备%s通过TCP协议连接", etoken.Name), etoken)
+				data := netbase.CreateEventInfo(message.ConnectMes, "info", fmt.Sprintf("设备%s通过TCP协议连接", etoken.Name), etoken)
 				go hs.Queue.Queue(data)
 				isAuth = true
 				tcpclient.TcpClient.Store(etoken.DeviceId, conn)

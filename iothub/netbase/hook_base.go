@@ -199,7 +199,7 @@ func GetEventFromTopic(reg, topic string) (identifier string) {
 }
 
 // eventType 事件类型 info alarm
-func CreateEvent(msgType, eventType, content string, deviceAuth *model.DeviceAuth) *DeviceEventInfo {
+func CreateEventInfo(msgType, eventType, content string, deviceAuth *model.DeviceAuth) *DeviceEventInfo {
 	ts := time.Now().Format("2006-01-02 15:04:05.000")
 	ci := &tdengine.Events{
 		DeviceId: deviceAuth.DeviceId,
