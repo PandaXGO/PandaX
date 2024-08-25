@@ -1,11 +1,11 @@
 package router
 
 import (
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/system/api"
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
-	"pandax/kit/restfulx"
 
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"

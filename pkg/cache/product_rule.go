@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"pandax/kit/cache"
+	"github.com/PandaXGO/PandaKit/cache"
 	"time"
 )
 

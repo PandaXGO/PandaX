@@ -2,9 +2,9 @@ package api
 
 import (
 	"fmt"
-	"pandax/kit/biz"
-	"pandax/kit/restfulx"
-	"pandax/kit/ws"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/ws"
 	"pandax/pkg/middleware"
 	"runtime"
 

@@ -1,12 +1,12 @@
 package router
 
 import (
+	"github.com/PandaXGO/PandaKit/casbin"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/system/api"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
-	"pandax/kit/casbin"
-	"pandax/kit/model"
-	"pandax/kit/restfulx"
 
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"

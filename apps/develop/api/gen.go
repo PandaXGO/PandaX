@@ -1,9 +1,9 @@
 package api
 
 import (
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/develop/gen"
 	"pandax/apps/develop/services"
-	"pandax/kit/restfulx"
 )
 
 type GenApi struct {

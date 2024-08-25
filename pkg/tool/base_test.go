@@ -1,7 +1,7 @@
 package tool
 
 import (
-	"pandax/kit/utils"
+	"github.com/PandaXGO/PandaKit/utils"
 	"testing"
 )
 
@@ -11,7 +11,7 @@ func TestToCamelCase(t *testing.T) {
 }
 
 func TestGenerateID(t *testing.T) {
-	id := utils.GenerateID()
+	id := utils.GenerateID("")
 	t.Log(id)
 }
 

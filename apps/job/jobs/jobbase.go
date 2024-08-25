@@ -2,11 +2,11 @@ package jobs
 
 import (
 	"fmt"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/job/entity"
 	logEntity "pandax/apps/job/entity"
 	"pandax/apps/job/services"
 	logServices "pandax/apps/job/services"
-	"pandax/kit/utils"
 	"pandax/pkg/global"
 	"sync"
 	"time"
@@ -52,7 +52,7 @@ type ExecJob struct {
 func (e *ExecJob) Run() {
 	startTime := time.Now()
 	jobLog := logEntity.JobLog{Name: e.Name, EntryId: e.EntryId, TargetInvoke: e.InvokeTarget, Status: "0"}
-	jobLog.Id = utils.GenerateID()
+	jobLog.Id = utils.GenerateID("j")
 	jobLog.OrgId = e.OrgId
 	jobLog.Owner = e.Owner
 	var obj = jobList[e.InvokeTarget]

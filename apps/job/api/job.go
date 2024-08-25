@@ -1,14 +1,14 @@
 package api
 
 import (
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/job/api/from"
 	"pandax/apps/job/entity"
 	"pandax/apps/job/jobs"
 	"pandax/apps/job/services"
-	"pandax/kit/biz"
-	"pandax/kit/model"
-	"pandax/kit/restfulx"
-	"pandax/kit/utils"
 	"strings"
 )
 
@@ -19,7 +19,7 @@ type JobApi struct {
 func (j *JobApi) CreateJob(rc *restfulx.ReqCtx) {
 	var job entity.SysJob
 	restfulx.BindQuery(rc, &job)
-	job.Id = utils.GenerateID()
+	job.Id = utils.GenerateID("j")
 	job.Owner = rc.LoginAccount.UserName
 	job.OrgId = rc.LoginAccount.OrganizationId
 	_, err := j.JobApp.Insert(job)

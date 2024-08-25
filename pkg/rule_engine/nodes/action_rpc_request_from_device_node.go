@@ -2,11 +2,11 @@ package nodes
 
 import (
 	"errors"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/device/services"
 	"pandax/iothub/client/mqttclient"
 	"pandax/iothub/client/tcpclient"
 	"pandax/iothub/client/udpclient"
-	"pandax/kit/utils"
 	devicerpc "pandax/pkg/device_rpc"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
@@ -72,7 +72,7 @@ func (n *rpcRequestFromDeviceNode) Handle(msg *message.Message) error {
 			RequestId := n.RequestId
 			if RequestId == "" {
 				if msg.Metadata.GetValue("requestId") == nil {
-					rpc.RequestId = utils.GenerateID()
+					rpc.RequestId = utils.GenerateID("")
 				} else {
 					rpc.RequestId = msg.Metadata.GetValue("requestId").(string)
 				}

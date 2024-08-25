@@ -3,10 +3,10 @@ package middleware
 import (
 	"encoding/json"
 	"fmt"
-	"pandax/kit/biz"
-	"pandax/kit/logger"
-	"pandax/kit/restfulx"
-	"pandax/kit/utils"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
+	"pandax/pkg/global"
 	"reflect"
 	"runtime/debug"
 
@@ -29,10 +29,10 @@ func LogHandler(rc *restfulx.ReqCtx) error {
 	lfs[req.Method] = req.URL.Path
 
 	if err := rc.Err; err != nil {
-		logger.Log.WithFields(lfs).Error(getErrMsg(rc, err))
+		global.Log.WithFields(lfs).Error(getErrMsg(rc, err))
 		return nil
 	}
-	logger.Log.WithFields(lfs).Info(getLogMsg(rc))
+	global.Log.WithFields(lfs).Info(getLogMsg(rc))
 	return nil
 }
 

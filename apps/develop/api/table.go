@@ -1,14 +1,14 @@
 package api
 
 import (
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/develop/api/vo"
 	"pandax/apps/develop/entity"
 	"pandax/apps/develop/gen"
 	"pandax/apps/develop/services"
-	"pandax/kit/biz"
-	"pandax/kit/model"
-	"pandax/kit/restfulx"
-	"pandax/kit/utils"
 	"strings"
 	"sync"
 )

@@ -6,8 +6,8 @@
 package router
 
 import (
-    "pandax/kit/model"
-    "pandax/kit/restfulx"
+    "github.com/PandaXGO/PandaKit/model"
+    "github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/{{.PackageName}}/api"
 	"pandax/apps/{{.PackageName}}/entity"
 	"pandax/apps/{{.PackageName}}/services"

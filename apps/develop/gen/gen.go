@@ -9,12 +9,12 @@ import (
 	"sync"
 	"text/template"
 
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/develop/entity"
 	"pandax/apps/develop/services"
 	sysEntity "pandax/apps/system/entity"
 	sysServices "pandax/apps/system/services"
-	"pandax/kit/biz"
-	"pandax/kit/utils"
 	"pandax/pkg/global"
 
 	"github.com/kakuilan/kgo"

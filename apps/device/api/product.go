@@ -7,10 +7,10 @@ package api
 // ==========================================================================
 import (
 	"fmt"
-	"pandax/kit/biz"
-	"pandax/kit/model"
-	"pandax/kit/restfulx"
-	"pandax/kit/utils"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/pkg/global"
 	"strings"
 
@@ -112,7 +112,7 @@ func (p *ProductApi) GetProduct(rc *restfulx.ReqCtx) {
 func (p *ProductApi) InsertProduct(rc *restfulx.ReqCtx) {
 	var data entity.Product
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = utils.GenerateTdID("p")
+	data.Id = utils.GenerateID("p")
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	// 如果未设置规则链，默认为主链

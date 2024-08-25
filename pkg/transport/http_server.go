@@ -3,7 +3,6 @@ package transport
 import (
 	"context"
 	"net/http"
-	"pandax/kit/logger"
 	"pandax/pkg/global"
 
 	"github.com/emicklei/go-restful/v3"
@@ -60,9 +59,9 @@ func (s *HttpServer) Stop(ctx context.Context) error {
 type httpLog struct{}
 
 func (t *httpLog) Print(v ...any) {
-	logger.Log.Debug(v...)
+	global.Log.Debug(v...)
 }
 
 func (t *httpLog) Printf(format string, v ...any) {
-	logger.Log.Debugf(format, v...)
+	global.Log.Debugf(format, v...)
 }

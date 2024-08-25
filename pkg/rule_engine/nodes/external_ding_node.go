@@ -6,8 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/PandaXGO/PandaKit/httpclient"
 	"net/url"
-	"pandax/kit/httpclient"
 	"pandax/pkg/rule_engine/message"
 	"time"
 )

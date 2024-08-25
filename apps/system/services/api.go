@@ -2,8 +2,8 @@ package services
 
 import (
 	"errors"
+	"github.com/PandaXGO/PandaKit/casbin"
 	"pandax/apps/system/entity"
-	"pandax/kit/casbin"
 	"pandax/pkg/global"
 
 	"gorm.io/gorm"

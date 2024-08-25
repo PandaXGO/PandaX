@@ -3,12 +3,12 @@ package api
 import (
 	"errors"
 	"fmt"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
-	"pandax/kit/biz"
-	"pandax/kit/model"
-	"pandax/kit/restfulx"
-	"pandax/kit/utils"
 	"pandax/pkg/global"
 )
 

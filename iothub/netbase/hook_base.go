@@ -2,10 +2,10 @@ package netbase
 
 import (
 	"encoding/json"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	exhook "pandax/iothub/server/emqxserver/protobuf"
-	"pandax/kit/utils"
 	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	"pandax/pkg/global/model"
@@ -100,7 +100,7 @@ func CreateSubTableField(productId, ty string, fields map[string]interface{}) {
 				}
 				tsl := entity.ProductTemplate{}
 				tsl.Pid = productId
-				tsl.Id = utils.GenerateID()
+				tsl.Id = utils.GenerateID("tsl")
 				tsl.Name = key
 				tsl.Type = interfaceType
 				tsl.Key = key

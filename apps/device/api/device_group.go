@@ -1,11 +1,11 @@
 package api
 
 import (
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
-	"pandax/kit/biz"
-	"pandax/kit/restfulx"
-	"pandax/kit/utils"
 	"strings"
 )
 
@@ -80,7 +80,7 @@ func (p *DeviceGroupApi) GetDeviceGroup(rc *restfulx.ReqCtx) {
 func (p *DeviceGroupApi) InsertDeviceGroup(rc *restfulx.ReqCtx) {
 	var data entity.DeviceGroup
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = utils.GenerateID()
+	data.Id = utils.GenerateID("dg")
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	p.DeviceGroupApp.Insert(data)

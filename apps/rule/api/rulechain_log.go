@@ -1,11 +1,11 @@
 package api
 
 import (
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
 	"pandax/apps/rule/entity"
 	"pandax/apps/rule/services"
-	"pandax/kit/biz"
-	"pandax/kit/model"
-	"pandax/kit/restfulx"
 	"pandax/pkg/rule_engine/nodes"
 )
 

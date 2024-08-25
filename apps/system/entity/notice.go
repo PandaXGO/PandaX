@@ -1,6 +1,6 @@
 package entity
 
-import "pandax/kit/model"
+import "github.com/PandaXGO/PandaKit/model"
 
 type SysNotice struct {
 	NoticeId       int64  `json:"noticeId" gorm:"primary_key;AUTO_INCREMENT"`

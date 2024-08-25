@@ -2,7 +2,7 @@ package cache
 
 import (
 	"context"
-	"pandax/kit/rediscli"
+	"github.com/PandaXGO/PandaKit/rediscli"
 	"time"
 )
 

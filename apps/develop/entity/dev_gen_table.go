@@ -1,6 +1,6 @@
 package entity
 
-import "pandax/kit/model"
+import "github.com/PandaXGO/PandaKit/model"
 
 type DevGenTable struct {
 	TableId        int64               `gorm:"primaryKey;autoIncrement"   json:"tableId"` // 编号

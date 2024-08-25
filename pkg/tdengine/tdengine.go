@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"fmt"
-	"pandax/kit/httpclient"
+	"github.com/PandaXGO/PandaKit/httpclient"
 	"strings"
 	"time"
 

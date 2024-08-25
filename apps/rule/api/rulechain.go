@@ -1,12 +1,12 @@
 package api
 
 import (
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/rule/entity"
 	"pandax/apps/rule/services"
-	"pandax/kit/biz"
-	"pandax/kit/model"
-	"pandax/kit/restfulx"
-	"pandax/kit/utils"
 	"pandax/pkg/rule_engine"
 	"strings"
 )
@@ -84,7 +84,7 @@ func (p *RuleChainApi) GetRuleChain(rc *restfulx.ReqCtx) {
 func (p *RuleChainApi) InsertRuleChain(rc *restfulx.ReqCtx) {
 	var data entity.RuleChain
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = utils.GenerateID()
+	data.Id = utils.GenerateID("rc")
 	data.Owner = rc.LoginAccount.UserName
 	data.OrgId = rc.LoginAccount.OrganizationId
 	_, err := p.RuleChainApp.Insert(data)
@@ -115,7 +115,7 @@ func (p *RuleChainApi) CloneRuleChain(rc *restfulx.ReqCtx) {
 	one, err := p.RuleChainApp.FindOne(id)
 	biz.ErrIsNil(err, "规则链不存在")
 	one.RuleName = one.RuleName + "-克隆"
-	one.Id = utils.GenerateID()
+	one.Id = utils.GenerateID("rc")
 	one.Root = "0"
 	_, err = p.RuleChainApp.Insert(*one)
 	biz.ErrIsNil(err, "克隆规则链失败")

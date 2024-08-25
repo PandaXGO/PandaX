@@ -2,10 +2,10 @@ package api
 
 import (
 	"encoding/json"
-	"pandax/kit/biz"
-	"pandax/kit/model"
-	"pandax/kit/restfulx"
-	"pandax/kit/utils"
+	"github.com/PandaXGO/PandaKit/biz"
+	"github.com/PandaXGO/PandaKit/model"
+	"github.com/PandaXGO/PandaKit/restfulx"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/pkg/global"
 	"strings"
 
@@ -59,7 +59,7 @@ func (p *ProductTemplateApi) GetProductTemplate(rc *restfulx.ReqCtx) {
 func (p *ProductTemplateApi) InsertProductTemplate(rc *restfulx.ReqCtx) {
 	var data entity.ProductTemplate
 	restfulx.BindJsonAndValid(rc, &data)
-	data.Id = utils.GenerateID()
+	data.Id = utils.GenerateID("pt")
 	if data.Classify == entity.ATTRIBUTES_TSL || data.Classify == entity.TELEMETRY_TSL {
 		// 向超级表及子表中添加字段
 		len := 100
