@@ -39,10 +39,10 @@ func (n *logNode) Handle(msg *message.Message) error {
 	services.RuleChainMsgLogModelDao.Insert(entity.RuleChainMsgLog{
 		MessageId:  msg.Id,
 		MsgType:    msg.MsgType,
-		DeviceId:   msg.Metadata["deviceId"].(string),
-		OrgId:      msg.Metadata["orgId"].(int64),
-		Owner:      msg.Metadata["owner"].(string),
-		DeviceName: msg.Metadata["deviceName"].(string),
+		DeviceId:   msg.Metadata.GetStringValue("deviceId"),
+		OrgId:      int64(msg.Metadata.GetIntValue("orgId")),
+		Owner:      msg.Metadata.GetStringValue("owner"),
+		DeviceName: msg.Metadata.GetStringValue("deviceName"),
 		Ts:         msg.Ts,
 		Content:    logMessage,
 	})

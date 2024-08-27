@@ -29,8 +29,7 @@ func (n *deviceTypeSwitchNode) Handle(msg *message.Message) error {
 
 	deviceLabelNode := n.GetLinkedNode(message.DEVICE)
 	gatewayLabelNode := n.GetLinkedNode(message.GATEWAY)
-
-	deviceType := msg.Metadata.GetValue("deviceType").(string)
+	deviceType := msg.Metadata.GetStringValue("deviceType")
 	if deviceType == message.DEVICE {
 		if deviceLabelNode != nil {
 			n.Debug(msg, message.DEBUGOUT, "")

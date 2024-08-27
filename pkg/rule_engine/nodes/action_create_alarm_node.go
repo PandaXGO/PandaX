@@ -2,9 +2,10 @@ package nodes
 
 import (
 	"encoding/json"
-	"github.com/PandaXGO/PandaKit/utils"
+	"errors"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
+	"pandax/kit/utils"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
 	"time"
@@ -34,8 +35,14 @@ func (n *createAlarmNode) Handle(msg *message.Message) error {
 	created := n.GetLinkedNode("Created")
 	updated := n.GetLinkedNode("Updated")
 	failure := n.GetLinkedNode("Failure")
+	var deviceId string
+	if did, ok := msg.Metadata.GetValue("deviceId").(string); ok {
+		deviceId = did
+	} else {
+		return errors.New("元数据中为获取到设备ID")
+	}
 	var err error
-	alarm, err := services.DeviceAlarmModelDao.FindOneByType(msg.Metadata.GetValue("deviceId").(string), n.AlarmType, "0")
+	alarm, err := services.DeviceAlarmModelDao.FindOneByType(deviceId, n.AlarmType, "0")
 	if err == nil {
 		marshal, _ := json.Marshal(msg.Msg)
 		alarm.Details = string(marshal)
@@ -48,16 +55,16 @@ func (n *createAlarmNode) Handle(msg *message.Message) error {
 		}
 	} else {
 		alarm = &entity.DeviceAlarm{}
-		alarm.Id = utils.GenerateID("")
-		alarm.DeviceId = msg.Metadata.GetValue("deviceId").(string)
-		alarm.ProductId = msg.Metadata.GetValue("productId").(string)
-		alarm.Name = msg.Metadata.GetValue("deviceName").(string)
+		alarm.Id = utils.GenerateID()
+		alarm.DeviceId = msg.Metadata.GetStringValue("deviceId")
+		alarm.ProductId = msg.Metadata.GetStringValue("productId")
+		alarm.Name = msg.Metadata.GetStringValue("deviceName")
 		alarm.Level = n.AlarmSeverity
 		alarm.State = global.ALARMING
 		alarm.Type = n.AlarmType
 		alarm.Time = time.Now()
-		alarm.OrgId = msg.Metadata.GetValue("orgId").(int64)
-		alarm.Owner = msg.Metadata.GetValue("owner").(string)
+		alarm.OrgId = int64(msg.Metadata.GetIntValue("orgId"))
+		alarm.Owner = msg.Metadata.GetStringValue("owner")
 		marshal, _ := json.Marshal(msg.Msg)
 		alarm.Details = string(marshal)
 		err = services.DeviceAlarmModelDao.Insert(*alarm)

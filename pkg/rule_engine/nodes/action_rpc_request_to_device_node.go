@@ -3,12 +3,12 @@ package nodes
 import (
 	"encoding/json"
 	"errors"
-	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	"pandax/iothub/client/mqttclient"
 	"pandax/iothub/client/tcpclient"
 	"pandax/iothub/client/udpclient"
+	"pandax/kit/utils"
 	"pandax/pkg/global"
 	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine/message"
@@ -41,21 +41,32 @@ func (n *rpcRequestToDeviceNode) Handle(msg *message.Message) error {
 	if msg.Msg.GetValue("method") == nil || msg.Msg.GetValue("params") == nil {
 		return errors.New("指令下发格式错误")
 	}
-	deviceId := msg.Metadata.GetValue("deviceId").(string)
+	var deviceId string
+	if did, ok := msg.Metadata.GetValue("deviceId").(string); ok {
+		deviceId = did
+	} else {
+		return errors.New("元数据中为获取到设备ID")
+	}
 	// 创建请求格式
 	var datas = model.RpcPayload{
-		Method: msg.Msg.GetValue("method").(string),
 		Params: msg.Msg.GetValue("params"),
+	}
+	if method, ok := msg.Metadata.GetValue("method").(string); ok {
+		datas.Method = method
+	} else {
+		return errors.New("指令方法格式错误")
 	}
 	payload, _ := json.Marshal(datas)
 
 	// 构建指令记录
 	var data entity.DeviceCmdLog
-	data.Id = utils.GenerateID("")
+	data.Id = utils.GenerateID()
 	data.DeviceId = deviceId
 	data.CmdName = datas.Method
 	data.CmdContent = kgo.KConv.ToStr(datas.Params)
-	data.Mode = msg.Metadata.GetValue("mode").(string)
+	if mode, ok := msg.Metadata.GetValue("mode").(string); ok {
+		data.Mode = mode
+	}
 	data.State = "2"
 	data.RequestTime = time.Now().Format("2006-01-02 15:04:05")
 
@@ -65,8 +76,8 @@ func (n *rpcRequestToDeviceNode) Handle(msg *message.Message) error {
 	}
 	// 判断设备协议，根据不通协议，发送不通内容
 	deviceProtocol := global.MQTTProtocol
-	if msg.Metadata.GetValue("deviceProtocol") != nil && msg.Metadata.GetValue("deviceProtocol").(string) != "" {
-		deviceProtocol = msg.Metadata.GetValue("deviceProtocol").(string)
+	if msg.Metadata.GetValue("deviceProtocol") != nil && msg.Metadata.GetStringValue("deviceProtocol") != "" {
+		deviceProtocol = msg.Metadata.GetStringValue("deviceProtocol")
 	}
 	var err error
 	if deviceProtocol == global.MQTTProtocol || deviceProtocol == global.CoAPProtocol || deviceProtocol == global.LwM2MProtocol {

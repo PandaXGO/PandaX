@@ -1,6 +1,7 @@
 package nodes
 
 import (
+	"errors"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
 )
@@ -33,7 +34,12 @@ func (n *saveTimeSeriesNode) Handle(msg *message.Message) error {
 			return nil
 		}
 	}*/
-	deviceName := msg.Metadata["deviceName"].(string)
+	var deviceName string
+	if dn, ok := msg.Metadata.GetValue("deviceName").(string); ok {
+		deviceName = dn
+	} else {
+		return errors.New("元数据中为获取到设备ID")
+	}
 	err := global.TdDb.InsertDevice(deviceName+"_telemetry", msg.Msg)
 	if err != nil {
 		n.Debug(msg, message.DEBUGOUT, err.Error())

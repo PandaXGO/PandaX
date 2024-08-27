@@ -2,9 +2,11 @@ package message
 
 import (
 	"encoding/json"
-	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/kakuilan/kgo"
+	"github.com/sirupsen/logrus"
 )
 
 // 消息类型
@@ -14,7 +16,6 @@ const (
 	RpcRequestFromDevice = "RpcRequestFromDevice"
 	RpcRequestToDevice   = "RpcRequestToDevice"
 	UpEventMes           = "Event"
-	AlarmMes             = "Alarm"
 	RowMes               = "Row"
 	TelemetryMes         = "Telemetry"
 	AttributesMes        = "Attributes"
@@ -116,6 +117,26 @@ func (meta *Metadata) GetValue(key string) any {
 		return nil
 	}
 	return (*meta)[key]
+}
+func (meta *Metadata) GetStringValue(key string) string {
+	if _, found := (*meta)[key]; !found {
+		return ""
+	}
+	return kgo.KConv.ToStr((*meta)[key])
+}
+
+func (meta *Metadata) GetIntValue(key string) int {
+	if _, found := (*meta)[key]; !found {
+		return 0
+	}
+	return kgo.KConv.ToInt((*meta)[key])
+}
+
+func (meta *Metadata) GetFloat64Value(key string) float64 {
+	if _, found := (*meta)[key]; !found {
+		return 0
+	}
+	return kgo.KConv.ToFloat((*meta)[key])
 }
 
 func (meta *Metadata) Has(key string) bool {

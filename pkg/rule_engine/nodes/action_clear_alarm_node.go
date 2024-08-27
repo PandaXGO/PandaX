@@ -2,6 +2,7 @@ package nodes
 
 import (
 	"encoding/json"
+	"errors"
 	"pandax/apps/device/services"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
@@ -32,8 +33,14 @@ func (n *clearAlarmNode) Handle(msg *message.Message) error {
 
 	cleared := n.GetLinkedNode("Cleared")
 	failure := n.GetLinkedNode("Failure")
+	var deviceId string
+	if did, ok := msg.Metadata.GetValue("deviceId").(string); ok {
+		deviceId = did
+	} else {
+		return errors.New("元数据中为获取到设备ID")
+	}
 	var err error
-	alarm, err := services.DeviceAlarmModelDao.FindOneByType(msg.Metadata.GetValue("deviceId").(string), n.AlarmType, "0")
+	alarm, err := services.DeviceAlarmModelDao.FindOneByType(deviceId, n.AlarmType, "0")
 	if err == nil {
 		alarm.State = global.CLEARED
 		marshal, _ := json.Marshal(msg.Msg)

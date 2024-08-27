@@ -2,11 +2,11 @@ package nodes
 
 import (
 	"errors"
-	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/device/services"
 	"pandax/iothub/client/mqttclient"
 	"pandax/iothub/client/tcpclient"
 	"pandax/iothub/client/udpclient"
+	"pandax/kit/utils"
 	devicerpc "pandax/pkg/device_rpc"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
@@ -41,9 +41,19 @@ func (n *rpcRequestFromDeviceNode) Handle(msg *message.Message) error {
 		return errors.New("指令请求格式错误")
 	}
 
+	var deviceId string
+	if did, ok := msg.Metadata.GetValue("deviceId").(string); ok {
+		deviceId = did
+	} else {
+		return errors.New("元数据中为获取到设备ID")
+	}
 	var rpcp = devicerpc.RpcPayload{
-		Method: msg.Msg.GetValue("method").(string),
 		Params: msg.Msg.GetValue("params"),
+	}
+	if method, ok := msg.Metadata.GetValue("method").(string); ok {
+		rpcp.Method = method
+	} else {
+		return errors.New("指令方法格式错误")
 	}
 	var err error
 	// 指令下发响应
@@ -63,21 +73,19 @@ func (n *rpcRequestFromDeviceNode) Handle(msg *message.Message) error {
 		}
 		// 判断设备协议，根据不通协议，发送不通内容
 		deviceProtocol := global.MQTTProtocol
-		if msg.Metadata.GetValue("deviceProtocol") != nil && msg.Metadata.GetValue("deviceProtocol").(string) != "" {
+		if msg.Metadata.GetValue("deviceProtocol") != nil && msg.Metadata.GetStringValue("deviceProtocol") != "" {
 			deviceProtocol = msg.Metadata.GetValue("deviceProtocol").(string)
 		}
-		deviceId := msg.Metadata.GetValue("deviceId").(string)
 		if deviceProtocol == global.MQTTProtocol || deviceProtocol == global.CoAPProtocol || deviceProtocol == global.LwM2MProtocol {
 			rpc := &mqttclient.RpcRequest{}
-			RequestId := n.RequestId
-			if RequestId == "" {
-				if msg.Metadata.GetValue("requestId") == nil {
-					rpc.RequestId = utils.GenerateID("")
+			if n.RequestId == "" {
+				if msg.Metadata.GetStringValue("requestId") == "" {
+					rpc.RequestId = utils.GenerateID()
 				} else {
-					rpc.RequestId = msg.Metadata.GetValue("requestId").(string)
+					rpc.RequestId = msg.Metadata.GetStringValue("requestId")
 				}
 			} else {
-				rpc.RequestId = RequestId
+				rpc.RequestId = n.RequestId
 			}
 			err = rpc.Pub(deviceId, result)
 		}
