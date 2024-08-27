@@ -2,7 +2,7 @@ package nodes
 
 import (
 	"encoding/json"
-	"pandax/kit/httpclient"
+	"github.com/PandaXGO/PandaKit/httpclient"
 	"pandax/pkg/rule_engine/message"
 )
 
