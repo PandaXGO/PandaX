@@ -3,9 +3,9 @@ package nodes
 import (
 	"encoding/json"
 	"errors"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
-	"pandax/kit/utils"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine/message"
 	"time"
@@ -55,7 +55,7 @@ func (n *createAlarmNode) Handle(msg *message.Message) error {
 		}
 	} else {
 		alarm = &entity.DeviceAlarm{}
-		alarm.Id = utils.GenerateID()
+		alarm.Id = utils.GenerateID("")
 		alarm.DeviceId = msg.Metadata.GetStringValue("deviceId")
 		alarm.ProductId = msg.Metadata.GetStringValue("productId")
 		alarm.Name = msg.Metadata.GetStringValue("deviceName")

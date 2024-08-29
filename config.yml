@@ -5,11 +5,11 @@ app:
 server:
   # debug release test
   model: release
-  port: 7799
+  port: 7788
   # iothub服务端口  使用的rpc端口  9000 9001 可能与minio端口冲突
-  grpc-port: 7701
-  http-port: 7702
-  tcp-port: 7703
+  grpc-port: 9001
+  http-port: 9002
+  tcp-port: 9003
   cors: true
   # 接口限流
   rate:
@@ -34,7 +34,7 @@ queue:
   ch-num: 3000  #并发执行数,同时处理多少条数据
 
 redis:
-  host: 192.168.10.242
+  host: 127.0.0.1
   password: 123456
   port: 6379
 
@@ -42,7 +42,7 @@ mysql:
   host: 127.0.0.1:3306
   username: root
   password: 123456
-  db-name: pandax_iot
+  db-name: pandax
   config: charset=utf8&loc=Local&parseTime=true
 
 postgresql:
@@ -65,7 +65,7 @@ oss:
 taos:
   username: "root"
   password: "taosdata"
-  host: "192.168.10.242:6041"
+  host: "127.0.0.1:6041"
   database: "iot"
   config: ""
 

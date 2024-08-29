@@ -3,12 +3,12 @@ package nodes
 import (
 	"encoding/json"
 	"errors"
+	"github.com/PandaXGO/PandaKit/utils"
 	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	"pandax/iothub/client/mqttclient"
 	"pandax/iothub/client/tcpclient"
 	"pandax/iothub/client/udpclient"
-	"pandax/kit/utils"
 	"pandax/pkg/global"
 	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine/message"
@@ -60,7 +60,7 @@ func (n *rpcRequestToDeviceNode) Handle(msg *message.Message) error {
 
 	// 构建指令记录
 	var data entity.DeviceCmdLog
-	data.Id = utils.GenerateID()
+	data.Id = utils.GenerateID("")
 	data.DeviceId = deviceId
 	data.CmdName = datas.Method
 	data.CmdContent = kgo.KConv.ToStr(datas.Params)

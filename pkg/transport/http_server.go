@@ -35,7 +35,6 @@ func (s *HttpServer) Type() Type {
 }
 
 func (s *HttpServer) Start(ctx context.Context) error {
-	global.Log.Infof("HTTP Server listen: %s", s.Addr)
 	go func() {
 		if global.Conf.Server.Tls.Enable {
 			global.Log.Infof("HTTPS Server listen: %s", s.Addr)
