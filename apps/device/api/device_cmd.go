@@ -48,14 +48,12 @@ func (p *DeviceCmdLogApi) InsertDeviceCmdLog(rc *restfulx.ReqCtx) {
 	err := json.Unmarshal([]byte(data.CmdContent), &ms)
 	biz.ErrIsNil(err, "指令格式不正确")
 	biz.IsTrue(len(ms) > 0, "指令格式不正确")
-	go func() {
-		rpc := devicerpc.RpcPayload{
-			Method: data.CmdName,
-			Params: ms,
-		}
-		err := util.BuildRunDeviceRpc(data.DeviceId, data.Mode, rpc)
-		biz.ErrIsNil(err, "添加指令记录失败")
-	}()
+	rpc := devicerpc.RpcPayload{
+		Method: data.CmdName,
+		Params: ms,
+	}
+	err = util.BuildRunDeviceRpc(data.DeviceId, data.Mode, rpc)
+	biz.ErrIsNil(err, "添加指令记录失败")
 }
 
 // DeleteDeviceCmdLog 删除告警
