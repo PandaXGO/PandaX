@@ -3,7 +3,7 @@ module pandax
 go 1.19
 
 require (
-	github.com/PandaXGO/PandaKit v0.0.0-20240825114426-1e96ee147767
+	github.com/PandaXGO/PandaKit v0.0.0-20240825133609-0764a081a8a3
 	github.com/Shopify/sarama v1.38.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didip/tollbooth v4.0.2+incompatible
