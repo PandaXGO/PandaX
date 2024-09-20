@@ -7,7 +7,7 @@ import (
 	"github.com/PandaXGO/PandaKit/token"
 	"pandax/pkg/global"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func PermissionHandler(rc *restfulx.ReqCtx) error {

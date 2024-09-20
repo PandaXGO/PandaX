@@ -7,8 +7,8 @@ import (
 	"pandax/apps/system/api/vo"
 	"pandax/apps/system/entity"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/emicklei/go-restful/v3"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/kakuilan/kgo"
 	"github.com/mssola/user_agent"
 
@@ -76,10 +76,10 @@ func (u *UserApi) Login(rc *restfulx.ReqCtx) {
 		RoleKey:        role.RoleKey,
 		OrganizationId: login.OrganizationId,
 		PostId:         login.PostId,
-		StandardClaims: jwt.StandardClaims{
-			NotBefore: time.Now().Unix() - 1000,                       // 签名生效时间
-			ExpiresAt: time.Now().Unix() + global.Conf.Jwt.ExpireTime, // 过期时间 7天  配置文件
-			Issuer:    "PandaX",                                       // 签名的发行者
+		RegisteredClaims: jwt.RegisteredClaims{
+			NotBefore: jwt.NewNumericDate(time.Now()),                                                            // 签名生效时间
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(global.Conf.Jwt.ExpireTime) * time.Hour)), // 过期时间 7天  配置文件
+			Issuer:    "PandaX",                                                                                  // 签名的发行者
 		},
 	})
 	biz.ErrIsNil(err, "生成Token失败")

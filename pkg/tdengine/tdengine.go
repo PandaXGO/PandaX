@@ -17,7 +17,7 @@ type TdEngine struct {
 }
 
 func InitTd(username, password, host, db string) (*TdEngine, error) {
-	_, err := CreateDataBase(username, password, host, db)
+	err := CreateDataBase(username, password, host, db)
 	if err != nil {
 		return nil, err
 	}
@@ -36,15 +36,15 @@ func NewTdengine(username, password, host, db string) (*TdEngine, error) {
 }
 
 // 创建数据库
-func CreateDataBase(username, password, host, dbname string) (float64, error) {
+func CreateDataBase(username, password, host, dbname string) error {
 	sql := "CREATE DATABASE if not exists " + dbname
 	url := fmt.Sprintf("http://%s/rest/sql", host)
 	token := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, password)))
-	data, err := httpclient.NewRequest(url).Header("Authorization", "Basic "+token).PostText(sql).BodyToMap()
+	_, err := httpclient.NewRequest(url).Header("Authorization", "Basic "+token).PostText(sql).BodyToMap()
 	if err != nil {
-		return 0, err
+		return err
 	}
-	return data["rows"].(float64), nil
+	return nil
 }
 
 // GetTdEngineAllDb 获取所有数据库
