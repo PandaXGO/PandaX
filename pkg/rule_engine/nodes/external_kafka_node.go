@@ -2,7 +2,7 @@ package nodes
 
 import (
 	"encoding/json"
-	"github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
 	"github.com/sirupsen/logrus"
 	"pandax/pkg/rule_engine/message"
 	"strings"

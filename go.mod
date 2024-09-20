@@ -1,10 +1,10 @@
 module pandax
 
-go 1.19
+go 1.20
 
 require (
+	github.com/IBM/sarama v1.43.3
 	github.com/PandaXGO/PandaKit v0.0.0-20240918090900-856034ddbd29
-	github.com/Shopify/sarama v1.38.1
 	github.com/didip/tollbooth v4.0.2+incompatible
 	github.com/dop251/goja v0.0.0-20231027120936-b396bb4c349d
 	github.com/eclipse/paho.mqtt.golang v1.4.2
@@ -45,8 +45,8 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/eapache/go-resiliency v1.3.0 // indirect
-	github.com/eapache/go-xerial-snappy v0.0.0-20230111030713-bf00bc1b83b6 // indirect
+	github.com/eapache/go-resiliency v1.7.0 // indirect
+	github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3 // indirect
 	github.com/eapache/queue v1.1.0 // indirect
 	github.com/elastic/go-sysinfo v1.14.1 // indirect
 	github.com/elastic/go-windows v1.0.2 // indirect
@@ -108,7 +108,7 @@ require (
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
-	github.com/pierrec/lz4/v4 v4.1.17 // indirect
+	github.com/pierrec/lz4/v4 v4.1.21 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/qiniu/go-sdk/v7 v7.22.0 // indirect
