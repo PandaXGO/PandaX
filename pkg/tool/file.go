@@ -11,6 +11,7 @@ import (
 	"os"
 	"pandax/pkg/global"
 	"path"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -94,12 +95,20 @@ func (local *Local) UploadFile(file *multipart.FileHeader) (string, string, erro
 }
 
 func (local *Local) Base64ToFile(name, base64Str string) (path string, fileName string, err error) {
+	fileType := "jpg"
 	if strings.Contains(base64Str, "data:image") {
-		base64Str = strings.TrimPrefix(base64Str, "data:image/png;base64,")
+		re := regexp.MustCompile(`^data:image/(\w+);base64,?`)
+		matchedString := re.FindStringSubmatch(base64Str)
+		global.Log.Info("re", matchedString)
+		if len(matchedString) <= 1 {
+			return "", "", errors.New("文件Base64格式错误")
+		}
+		base64Str = strings.TrimPrefix(base64Str, matchedString[0])
+		fileType = matchedString[1]
 	}
 
 	imgData, err := base64.StdEncoding.DecodeString(base64Str)
-	filename := name + ".png"
+	filename := name + "." + fileType
 	path = local.Path + "/" + filename
 	_, err = os.Stat(path)
 	if err == nil {

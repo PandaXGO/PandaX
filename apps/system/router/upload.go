@@ -14,11 +14,12 @@ func InitUploadRouter(container *restful.Container) {
 	ws.Path("/upload").Produces(restful.MIME_JSON)
 	tags := []string{"system", "文件"}
 
-	ws.Route(ws.POST("/up").To(func(request *restful.Request, response *restful.Response) {
+	ws.Route(ws.POST("/up/{path}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithLog("上传图片").Handle(s.UploadImage)
 	}).
 		Doc("上传图片").
 		Param(ws.FormParameter("imagefile", "文件")).
+		Param(ws.PathParameter("path", "文件类型")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Returns(200, "OK", map[string]string{}))
 
@@ -30,7 +31,7 @@ func InitUploadRouter(container *restful.Container) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Returns(200, "OK", map[string]string{}))
 
-	ws.Route(ws.GET("/get/{subpath}").To(func(request *restful.Request, response *restful.Response) {
+	ws.Route(ws.GET("/down/{path}/{subpath:*}").To(func(request *restful.Request, response *restful.Response) {
 		restfulx.NewReqCtx(request, response).WithNeedToken(false).WithNeedCasbin(false).WithLog("获取文件").Handle(s.GetImage)
 	}).
 		Doc("获取文件").
