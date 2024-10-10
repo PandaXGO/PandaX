@@ -51,7 +51,7 @@ func (n *rpcRequestToDeviceNode) Handle(msg *message.Message) error {
 	var datas = model.RpcPayload{
 		Params: msg.Msg.GetValue("params"),
 	}
-	if method, ok := msg.Metadata.GetValue("method").(string); ok {
+	if method, ok := msg.Msg.GetValue("method").(string); ok {
 		datas.Method = method
 	} else {
 		return errors.New("指令方法格式错误")
