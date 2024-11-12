@@ -61,7 +61,7 @@ func (m *deviceGroupModelImpl) FindListPage(page, pageSize int, data entity.Devi
 		db = db.Where("name like ?", "%"+data.Name+"%")
 	}
 	if data.Path != "" {
-		db = db.Where("path like %?%", "%"+data.Path+"%")
+		db = db.Where("path like ?", "%"+data.Path+"%")
 	}
 	if data.Status != "" {
 		db = db.Where("status = ?", data.Status)
