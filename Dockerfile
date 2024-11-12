@@ -1,14 +1,10 @@
-
 FROM golang:1.23.0-alpine AS builder
 
 WORKDIR /app
 
 COPY . .
-
 RUN go env -w GOPROXY=https://goproxy.cn,direct && go mod download
-
 RUN go build -o pandax
-
 
 FROM alpine:latest
 LABEL MAINTAINER="PandaX"
