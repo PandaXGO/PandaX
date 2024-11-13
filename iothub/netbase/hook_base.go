@@ -88,6 +88,7 @@ func CreateSubTableField(productId, ty string, fields map[string]interface{}) {
 	for key, value := range fields {
 		group.Add(1)
 		go func(key string, value any) {
+            defer group.Done()
 			if key == "ts" {
 				return
 			}
