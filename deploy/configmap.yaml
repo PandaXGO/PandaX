@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: emqx-deployment
+data:
+  NAME: "emqx"
+  CLUSTER__DISCOVERY: "k8s"
+  CLUSTER__K8S__ADDRESS_TYPE: "ip"
+  CLUSTER__K8S__APISERVER: "https://IP:PORT"
+  CLUSTER__K8S__NAMESPACE: "default"
+  CLUSTER__K8S__SERVICE_NAME: "emqx-deployment"
+  CLUSTER__K8S__APP_NAME: "emqx"
