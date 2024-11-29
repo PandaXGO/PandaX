@@ -39,7 +39,7 @@ metadata:
   name: emqx
   namespace: pandax
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: emqx
@@ -52,9 +52,14 @@ spec:
         app: emqx
         app.kubernetes.io/version: 1.0.0
     spec:
+      serviceAccountName: dziot
       containers:
         - image: emqx/emqx:5.1.0
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - prefix: EMQX_
+              configMapRef:
+                name: emqx-config
           name: emqx
           ports:
             - name: emqx-1883
