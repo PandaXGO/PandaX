@@ -5,11 +5,7 @@ import (
 )
 
 type RuleDataJson struct {
-	Id     string
-	LfData LfData `json:"lfData"`
-}
-
-type LfData struct {
+	Id          string
 	GlobalColor string                 `json:"globalColor"`
 	DataCode    map[string]interface{} `json:"dataCode"`
 	OpenRule    bool                   `json:"openRule"`

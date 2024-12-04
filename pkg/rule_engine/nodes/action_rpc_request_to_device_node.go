@@ -9,8 +9,8 @@ import (
 	"pandax/iothub/client/mqttclient"
 	"pandax/iothub/client/tcpclient"
 	"pandax/iothub/client/udpclient"
+	devicerpc "pandax/pkg/device_rpc"
 	"pandax/pkg/global"
-	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine/message"
 	"time"
 
@@ -48,7 +48,7 @@ func (n *rpcRequestToDeviceNode) Handle(msg *message.Message) error {
 		return errors.New("元数据中为获取到设备ID")
 	}
 	// 创建请求格式
-	var datas = model.RpcPayload{
+	var datas = devicerpc.RpcPayload{
 		Params: msg.Msg.GetValue("params"),
 	}
 	if method, ok := msg.Msg.GetValue("method").(string); ok {

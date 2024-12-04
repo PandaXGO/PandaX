@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/kakuilan/kgo"
 	"pandax/iothub/client/mqttclient"
 	"pandax/iothub/hook_message_work"
 	"pandax/iothub/netbase"
@@ -205,23 +206,25 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 			}
 			// key就是device name
 			for deviceName, value := range subData {
-				auth, isSub := netbase.SubAuth(deviceName)
+				auth, isSub := netbase.SubAuth(deviceName, etoken)
 				if !isSub {
 					continue
+				}
+				if auth.Status != "online" {
+					data = netbase.CreateEventInfo(message.ConnectMes, "info", fmt.Sprintf("子设备%s通过网关连接", etoken.Name), auth)
+					go s.HookService.Queue.Queue(data)
 				}
 				data.DeviceAuth = auth
 				data.DeviceId = auth.DeviceId
 				if in.Message.Topic == AttributesGatewayTopic {
 					data.Type = message.AttributesMes
-					marshal, _ := json.Marshal(value)
-					attributesData := netbase.UpdateDeviceAttributesData(string(marshal))
+					attr := kgo.KConv.ToStr(value)
+					attributesData := netbase.UpdateDeviceAttributesData(attr)
 					if attributesData == nil {
 						continue
 					}
 					bytes, _ := json.Marshal(attributesData)
 					data.Datas = string(bytes)
-					// 创建tdengine的设备属性表
-					netbase.CreateSubTableField(auth.ProductId, global.TslAttributesType, attributesData)
 					// 子设备发送到队列里
 					go s.HookService.Queue.Queue(data)
 				}
@@ -235,22 +238,8 @@ func (s *HookGrpcService) OnMessagePublish(ctx context.Context, in *exhook2.Mess
 					}
 					bytes, _ := json.Marshal(telemetryData)
 					data.Datas = string(bytes)
-					// 创建tdengine的设备遥测表
-					netbase.CreateSubTableField(auth.ProductId, global.TslTelemetryType, telemetryData)
 					// 子设备发送到队列里
 					go s.HookService.Queue.Queue(data)
-				}
-				if in.Message.Topic == ConnectGatewayTopic {
-					if val, ok := value.(string); ok {
-						if val == "online" {
-							data = netbase.CreateEventInfo(message.ConnectMes, "info", fmt.Sprintf("子设备%s通过网关连接", etoken.Name), auth)
-						}
-						if val == "offline" {
-							data = netbase.CreateEventInfo(message.ConnectMes, "info", fmt.Sprintf("子设备设备%s通过网关连接", etoken.Name), auth)
-						}
-						// 子设备发送到队列里
-						go s.HookService.Queue.Queue(data)
-					}
 				}
 			}
 			return

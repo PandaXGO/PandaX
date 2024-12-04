@@ -25,7 +25,7 @@ func (r *RuleChainApi) GetNodeDebug(rc *restfulx.ReqCtx) {
 	ruleId := restfulx.QueryParam(rc, "ruleId")
 	nodeId := restfulx.QueryParam(rc, "nodeId")
 
-	total, list, err := rule_engine.GetDebugDataPage(pageNum, pageSize, ruleId, nodeId)
+	total, list, err := rule_engine.RuleEngine.GetDebugDataPage(pageNum, pageSize, ruleId, nodeId)
 	biz.ErrIsNil(err, "获取规则测试数据错误")
 	rc.ResData = model.ResultPage{
 		Total:    total,
@@ -38,7 +38,7 @@ func (r *RuleChainApi) GetNodeDebug(rc *restfulx.ReqCtx) {
 func (r *RuleChainApi) ClearNodeDebug(rc *restfulx.ReqCtx) {
 	ruleId := restfulx.QueryParam(rc, "ruleId")
 	nodeId := restfulx.QueryParam(rc, "nodeId")
-	rule_engine.ClearDebugData(ruleId, nodeId)
+	rule_engine.RuleEngine.ClearDebugData(ruleId, nodeId)
 }
 
 // GetRuleChainList WorkInfo列表数据

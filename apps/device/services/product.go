@@ -2,7 +2,6 @@ package services
 
 import (
 	"pandax/apps/device/entity"
-	"pandax/pkg/cache"
 	"pandax/pkg/global"
 )
 
@@ -12,6 +11,7 @@ type (
 		FindOne(id string) (*entity.ProductRes, error)
 		FindListPage(page, pageSize int, data entity.Product) (*[]entity.ProductRes, int64, error)
 		FindList(data entity.Product) (*[]entity.ProductRes, error)
+		FindListByRule(ruleId string) (*[]entity.Product, error)
 		Update(data entity.Product) (*entity.Product, error)
 		Delete(ids []string) error
 		FindProductCount() (entity.DeviceCount, error)
@@ -108,6 +108,18 @@ func (m *productModelImpl) FindList(data entity.Product) (*[]entity.ProductRes, 
 	return &list, err
 }
 
+func (m *productModelImpl) FindListByRule(ruleId string) (*[]entity.Product, error) {
+	list := make([]entity.Product, 0)
+	db := global.Db.Table(m.table)
+	// 此处填写 where参数判断
+	if ruleId != "" {
+		db = db.Where("rule_chain_id = ?", ruleId)
+	}
+	db = db.Where("status = ?", "0")
+	err := db.Find(&list).Error
+	return &list, err
+}
+
 func (m *productModelImpl) Update(data entity.Product) (*entity.Product, error) {
 	// go的一些默认值 int 0 bool false  保存失败需要先转成map
 	err := global.Db.Table(m.table).Where("id = ?", data.Id).Updates(data).Error
@@ -122,8 +134,6 @@ func (m *productModelImpl) Delete(ids []string) error {
 	for _, id := range ids {
 		// 删除超级表
 		deleteDeviceStable(id)
-		// 删除所有缓存
-		cache.DelProductRule(id)
 		// 删除绑定的属性及OTA记录
 		ProductTemplateModelDao.Delete([]string{id})
 		ProductOtaModelDao.Delete([]string{id})

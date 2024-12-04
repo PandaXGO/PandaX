@@ -2,10 +2,8 @@ package initialize
 
 import (
 	"encoding/json"
-	"pandax/apps/device/entity"
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
-	"pandax/pkg/cache"
 	"pandax/pkg/events"
 	"pandax/pkg/global"
 	"pandax/pkg/rule_engine"
@@ -15,11 +13,9 @@ import (
 // 初始化事件监听
 func InitEvents() {
 	// 监听规则链改变 更新所有绑定改规则链的产品
-	global.EventEmitter.On(events.ProductChainRuleEvent, func(ruleId, codeData string) {
+	global.EventEmitter.On(events.ProductChainRuleEvent, func(ruleId string, codeData string) {
 		global.Log.Infof("规则链%s变更", ruleId)
-		list, _ := services.ProductModelDao.FindList(entity.Product{
-			RuleChainId: ruleId,
-		})
+		list, _ := services.ProductModelDao.FindListByRule(ruleId)
 		if list != nil {
 			var lfData ruleEntity.RuleDataJson
 			err := tool.StringToStruct(codeData, &lfData)
@@ -27,7 +23,7 @@ func InitEvents() {
 				global.Log.Error("规则链序列化失败", err)
 				return
 			}
-			code, err := json.Marshal(lfData.LfData.DataCode)
+			code, err := json.Marshal(lfData.DataCode)
 			if err != nil {
 				global.Log.Error("规则链序列化失败", err)
 				return
@@ -39,7 +35,7 @@ func InitEvents() {
 				return
 			}
 			for _, product := range *list {
-				cache.PutProductRule(product.Id, instance)
+				rule_engine.RuleEngine.SaveRuleInstance(product.Id, instance)
 			}
 		}
 	})

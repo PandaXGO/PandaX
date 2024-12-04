@@ -210,19 +210,17 @@ func createDeviceTable(productId, device string) error {
 }
 
 func GetDeviceToken(data *entity.Device) *model.DeviceAuth {
-	now := time.Now()
 	etoken := &model.DeviceAuth{
-		DeviceId:       data.Id,
-		OrgId:          data.OrgId,
-		Owner:          data.Owner,
-		Name:           data.Name,
-		DeviceType:     data.DeviceType,
-		ProductId:      data.Pid,
-		DeviceProtocol: data.Protocol,
+		DeviceId:    data.Id,
+		OrgId:       data.OrgId,
+		Owner:       data.Owner,
+		Name:        data.Name,
+		DeviceType:  data.DeviceType,
+		Status:      data.LinkStatus,
+		DeviceGroup: data.Gid,
+		ProductId:   data.Pid,
+		DeviceExt:   data.Ext,
 	}
-	//设备有效期360天
-	etoken.CreatedAt = now.Unix()
-	etoken.ExpiredAt = now.Add(time.Hour * 24 * 365).Unix()
 	return etoken
 }
 

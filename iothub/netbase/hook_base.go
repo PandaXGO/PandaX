@@ -13,7 +13,6 @@ import (
 	"pandax/pkg/tool"
 	"regexp"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -38,81 +37,84 @@ func Auth(authToken string) bool {
 			return false
 		}
 		etoken = services.GetDeviceToken(&device.Device)
-		etoken.DeviceProtocol = device.Product.ProtocolName
+		etoken.Protocol = device.Product.ProtocolName
 		err = cache.SetDeviceEtoken(authToken, etoken.GetMarshal(), time.Hour*24*365)
 		if err != nil {
 			global.Log.Infof("认证失败，设备TOKEN %s添加缓存失败", authToken)
 			return false
 		}
 	}
-	// 判断token是否过期了, 设备过期
-	if etoken.ExpiredAt < time.Now().Unix() {
-		global.Log.Infof("设备authToken %s 失效", authToken)
-		return false
-	}
 	return true
 }
 
 // SubAuth 获取子设备的认证信息
-func SubAuth(name string) (*model.DeviceAuth, bool) {
+func SubAuth(authToken string, productAuth *model.DeviceAuth) (*model.DeviceAuth, bool) {
+	defer func() {
+		if Rerr := recover(); Rerr != nil {
+			global.Log.Error(Rerr)
+			return
+		}
+	}()
+	// 解析认证
+	tokens := strings.Split(authToken, "_")
+	producId := ""
+	name := ""
+	if len(tokens) >= 2 {
+		producId = tokens[0]
+		name = tokens[1]
+	} else if len(tokens) == 1 {
+		name = tokens[0]
+	} else {
+		return nil, false
+	}
+
 	etoken := &model.DeviceAuth{}
 	// redis 中有就查询，没有就添加
-	exists := cache.ExistsDeviceEtoken(name)
-	if exists {
-		err := etoken.GetDeviceToken(name)
+	err := cache.GetDeviceEtoken(name, etoken)
+	if err == nil {
+		return etoken, true
+	}
+	// 判断子设备 已经创建的子设备
+	deviceRes, err := services.DeviceModelDao.FindOneByName(name)
+	// 没有设备就要创建子设备
+	if err != nil {
+		product, err := services.ProductModelDao.FindOne(producId)
 		if err != nil {
-			global.Log.Infof("认证失败，缓存读取设备错误,无效的设备标识： %s", err)
 			return nil, false
 		}
+		//自动创建设备，
+		// 1. 创建设备
+		device := entity.Device{
+			Name:       name,
+			Pid:        producId,
+			Alias:      productAuth.Name + "子设备",
+			ParentId:   productAuth.DeviceId,
+			Gid:        productAuth.DeviceGroup,
+			Status:     "0",
+			LinkStatus: global.ONLINE,
+			LastAt:     time.Now(),
+			DeviceType: entity.GATEWAYS_DEVICE,
+		}
+		device.Id = utils.GenerateID("d")
+		device.OrgId = product.OrgId
+		device.Owner = product.Owner
+		device.Protocol = product.ProtocolName
+		deviceD, err := services.DeviceModelDao.Insert(device)
+		if err != nil {
+			return nil, false
+		}
+		etoken = services.GetDeviceToken(deviceD)
+		etoken.Protocol = product.ProtocolName
 	} else {
-		device, err := services.DeviceModelDao.FindOneByName(name)
-		// 没有设备就要创建子设备
-		if err != nil {
-			global.Log.Infof("设备标识 %s 不存在, ", name)
-			return nil, false
-		}
-		etoken = services.GetDeviceToken(&device.Device)
-		etoken.DeviceProtocol = device.Product.ProtocolName
-		err = cache.SetDeviceEtoken(name, etoken.GetMarshal(), time.Hour*24*365)
-		if err != nil {
-			global.Log.Infof("设备标识 %s添加缓存失败", name)
-			return nil, false
-		}
+		etoken = services.GetDeviceToken(&deviceRes.Device)
+		etoken.Protocol = deviceRes.Product.ProtocolName
+	}
+	err = cache.SetDeviceEtoken(name, etoken.GetMarshal(), time.Hour*24*365)
+	if err != nil {
+		global.Log.Infof("设备 %s添加缓存失败", name)
+		return nil, false
 	}
 	return etoken, true
-}
-
-// CreateSubTableField 添加子设备字段
-func CreateSubTableField(productId, ty string, fields map[string]interface{}) {
-	var group sync.WaitGroup
-	for key, value := range fields {
-		group.Add(1)
-		go func(key string, value any) {
-            defer group.Done()
-			if key == "ts" {
-				return
-			}
-			check := cache.CheckSubDeviceField(key)
-			if !check {
-				interfaceType := tool.GetInterfaceType(value)
-				err := global.TdDb.AddSTableField(productId+"_"+ty, key, interfaceType, 0)
-				if err != nil {
-					return
-				}
-				tsl := entity.ProductTemplate{}
-				tsl.Pid = productId
-				tsl.Id = utils.GenerateID("tsl")
-				tsl.Name = key
-				tsl.Type = interfaceType
-				tsl.Key = key
-				tsl.Classify = ty
-				// 向产品tsl中添加模型
-				services.ProductTemplateModelDao.Insert(tsl)
-				cache.SetSubDeviceField(key)
-			}
-		}(key, value)
-	}
-	group.Wait()
 }
 
 // UpdateDeviceTelemetryData 解析遥测数据类型 返回标准带时间戳格式

@@ -1,19 +1,17 @@
 package hook_message_work
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/PandaXGO/PandaKit/biz"
 	"pandax/apps/device/services"
 	ruleEntity "pandax/apps/rule/entity"
 	ruleService "pandax/apps/rule/services"
 	"pandax/iothub/netbase"
-	"pandax/pkg/cache"
 	"pandax/pkg/global"
 	"pandax/pkg/global/model"
 	"pandax/pkg/rule_engine"
 	"pandax/pkg/rule_engine/message"
+	"pandax/pkg/shadow"
 	"pandax/pkg/tdengine"
 	"pandax/pkg/tool"
 	"pandax/pkg/websocket"
@@ -55,13 +53,13 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 				go SendZtWebsocket(msg.DeviceId, msg.Datas)
 			}
 			// 获取规则链代码实体
-			instance := getRuleChainInstance(msg.DeviceAuth)
-			if instance == nil {
-				global.Log.Error("规则链实体不存在")
+			instance, err := getRuleChainInstance(msg.DeviceAuth)
+			if err != nil {
+				global.Log.Error("获取设备实体失败", err)
 				return
 			}
 			ruleMessage := buildRuleMessage(msg.DeviceAuth, msgVals, msg.Type)
-			err = instance.StartRuleChain(context.Background(), ruleMessage)
+			err = rule_engine.RuleEngine.StartRuleInstance(instance, ruleMessage)
 			if err != nil {
 				global.Log.Error("规则链执行失败", err)
 				return
@@ -89,12 +87,19 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 					global.Log.Error("事件添加错误", err)
 				}
 			}
+			// 刷新设备状态
+			shadow.DeviceShadowInstance.RefreshDeviceStatus(msg.DeviceAuth.Name)
 		case message.DisConnectMes, message.ConnectMes:
 			// 更改设备在线状态
+			isHas := shadow.DeviceShadowInstance.HasDevice(msg.DeviceAuth.Name)
+			if !isHas {
+				shadow.InitDeviceShadow(msg.DeviceAuth.Name)
+			}
 			if msg.Type == message.ConnectMes {
-				services.DeviceModelDao.UpdateStatus(msg.DeviceId, global.ONLINE)
+				shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
+
 			} else {
-				services.DeviceModelDao.UpdateStatus(msg.DeviceId, global.OFFLINE)
+				shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
 			}
 			// 添加设备连接历史
 			data := make(map[string]any)
@@ -112,16 +117,11 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 }
 
 // 获取规则实体
-func getRuleChainInstance(etoken *model.DeviceAuth) *rule_engine.RuleChainInstance {
-	defer func() {
-		if err := recover(); err != nil {
-			global.Log.Error(err)
-		}
-	}()
-
+func getRuleChainInstance(etoken *model.DeviceAuth) (*rule_engine.RuleChainInstance, error) {
 	key := etoken.ProductId
-	instance, err := cache.ComputeIfAbsentProductRule(key, func(k any) (any, error) {
-		one, err := services.ProductModelDao.FindOne(k.(string))
+	instance := rule_engine.RuleEngine.GetRuleInstance(key)
+	if instance == nil {
+		one, err := services.ProductModelDao.FindOne(key)
 		if err != nil {
 			return nil, err
 		}
@@ -134,20 +134,18 @@ func getRuleChainInstance(etoken *model.DeviceAuth) *rule_engine.RuleChainInstan
 		if err != nil {
 			return nil, err
 		}
-		code, _ := json.Marshal(lfData.LfData.DataCode)
+		code, _ := json.Marshal(lfData.DataCode)
 		//新建规则链实体
-		instance, err := rule_engine.NewRuleChainInstance(rule.Id, code)
+		instance, err = rule_engine.NewRuleChainInstance(rule.Id, code)
 		if err != nil {
-			global.Log.Error("规则链初始化失败", err)
 			return nil, err
 		}
-		return instance, nil
-	})
-	biz.ErrIsNil(err, "缓存读取规则链失败")
-	if ruleData, ok := instance.(*rule_engine.RuleChainInstance); ok {
-		return ruleData
+		_, err = rule_engine.RuleEngine.SaveRuleInstance(key, instance)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return nil
+	return instance, nil
 }
 
 // 构建规则链执行的消息
@@ -156,7 +154,7 @@ func buildRuleMessage(etoken *model.DeviceAuth, msgVals map[string]interface{}, 
 		"deviceId":       etoken.DeviceId,
 		"deviceName":     etoken.Name,
 		"deviceType":     etoken.DeviceType,
-		"deviceProtocol": etoken.DeviceProtocol,
+		"deviceProtocol": etoken.Protocol,
 		"productId":      etoken.ProductId,
 		"orgId":          etoken.OrgId,
 		"owner":          etoken.Owner,

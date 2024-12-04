@@ -10,21 +10,20 @@ import (
 	"pandax/apps/system/entity"
 	"pandax/apps/system/services"
 	"pandax/pkg/cache"
-	"strconv"
 	"strings"
 )
 
 type DeviceAuth struct {
-	Owner          string `json:"owner"`
-	OrgId          int64  `json:"orgId"`
-	DeviceId       string `json:"deviceId"`
-	DeviceType     string `json:"deviceType"`
-	DeviceProtocol string `json:"deviceProtocol"`
-	ProductId      string `json:"productId"`
-	RuleChainId    string `json:"ruleChainId"`
-	Name           string `json:"name"`
-	CreatedAt      int64  `json:"created_at"`
-	ExpiredAt      int64  `json:"expired_at"`
+	Owner       string         `json:"owner"`
+	OrgId       int64          `json:"orgId"`
+	DeviceId    string         `json:"deviceId"`
+	DeviceType  string         `json:"deviceType"`
+	DeviceGroup string         `json:"deviceGroup"`
+	DeviceExt   map[string]any `json:"deviceExt"`
+	Protocol    string         `json:"protocol"`
+	ProductId   string         `json:"productId"`
+	Name        string         `json:"name"`
+	Status      string         `json:"status"`
 }
 
 func (entity *DeviceAuth) GetDeviceToken(key string) error {
@@ -37,7 +36,6 @@ func (entity *DeviceAuth) GetDeviceToken(key string) error {
 func (token *DeviceAuth) MD5ID() string {
 	buf := bytes.NewBufferString(token.DeviceId)
 	buf.WriteString(token.DeviceType)
-	buf.WriteString(strconv.FormatInt(token.CreatedAt, 10))
 	access := base64.URLEncoding.EncodeToString([]byte(uuid.NewMD5(uuid.Must(uuid.NewRandom()), buf.Bytes()).String()))
 	access = strings.TrimRight(access, "=")
 	return access

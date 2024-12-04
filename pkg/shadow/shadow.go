@@ -3,7 +3,6 @@ package shadow
 import (
 	"errors"
 	"fmt"
-	"pandax/pkg/global"
 	"sync"
 	"time"
 )
@@ -18,15 +17,12 @@ type OnlineChangeCallback func(deviceName string, online bool) // 设备上/下�
 type DeviceShadow interface {
 	AddDevice(device Device) (err error)
 	GetDevice(deviceName string) (device Device, err error)
-
-	SetDevicePoint(deviceName, pointType, pointName string, value interface{}) (err error)
-	GetDevicePoint(deviceName, pointType, pointName string) (value DevicePoint, err error)
-	GetDevicePoints(deviceName, pointType string) (points map[string]DevicePoint, err error)
+	HasDevice(deviceName string) bool
+	DeleteDevice(deviceName ...string) error
 
 	GetDeviceUpdateAt(deviceName string) (time.Time, error)
-
 	GetDeviceStatus(deviceName string) (online bool, err error)
-
+	RefreshDeviceStatus(deviceName string)
 	SetOnline(deviceName string) (err error)
 	SetOffline(deviceName string) (err error)
 
@@ -35,14 +31,14 @@ type DeviceShadow interface {
 	// StopStatusListener 停止设备状态监听
 	StopStatusListener()
 
-	// SetDeviceTTL 设备影子过期时间
+	// SetDeviceTTL 设备影子过期时间, 过期设备将下线
 	SetDeviceTTL(ttl int)
 }
 
 type deviceShadow struct {
 	m           *sync.Map
 	ticker      *time.Ticker
-	handlerFunc OnlineChangeCallback
+	handlerFunc OnlineChangeCallback //上下线执行的回调函数
 	ttl         int
 }
 
@@ -50,21 +46,20 @@ var DeviceShadowInstance DeviceShadow
 
 func init() {
 	shadow := &deviceShadow{
-		m:      &sync.Map{},
-		ticker: time.NewTicker(time.Second),
+		m:           &sync.Map{},
+		ticker:      time.NewTicker(time.Second),
+		ttl:         3600, // 默认1小时
+		handlerFunc: deviceHandler,
 	}
 	go shadow.checkOnOff()
 	DeviceShadowInstance = shadow
 }
 
-func InitDeviceShadow(deviceName, ProductId string) Device {
+func InitDeviceShadow(deviceName string) Device {
 	device, err := DeviceShadowInstance.GetDevice(deviceName)
 	if err == UnknownDeviceErr {
-		attributes := make(map[string]DevicePoint)
-		telemetry := make(map[string]DevicePoint)
-		device = NewDevice(deviceName, ProductId, attributes, telemetry)
+		device = NewDevice(deviceName)
 		DeviceShadowInstance.AddDevice(device)
-		//shadow.DeviceShadowInstance.SetDeviceTTL()
 	}
 	return device
 }
@@ -90,63 +85,22 @@ func (d *deviceShadow) GetDevice(deviceName string) (device Device, err error) {
 		return Device{}, UnknownDeviceErr
 	}
 }
-func (d *deviceShadow) SetDevicePoint(deviceName, pointType, pointName string, value interface{}) (err error) {
-	deviceAny, ok := d.m.Load(deviceName)
-	if !ok {
-		return UnknownDeviceErr
-	}
-	device := deviceAny.(Device)
-	// update point value
-	device.updatedAt = time.Now()
 
-	switch pointType {
-	case global.TslAttributesType:
-		device.AttributesPoints[pointName] = NewDevicePoint(pointName, value)
-	case global.TslTelemetryType:
-		device.TelemetryPoints[pointName] = NewDevicePoint(pointName, value)
-	default:
-		return errors.New("设备属性类型错误")
+func (d *deviceShadow) HasDevice(deviceName string) bool {
+	if _, ok := d.m.Load(deviceName); ok {
+		return ok
 	}
-
-	// update
-	d.m.Store(deviceName, device)
-	return
+	return false
 }
 
-		
-func (d *deviceShadow) GetDevicePoint(deviceName, pointType, pointName string) (value DevicePoint, err error) {
-	if deviceAny, ok := d.m.Load(deviceName); ok {
-		device := deviceAny.(Device)
-		if !device.online || time.Since(device.updatedAt) > time.Duration(d.ttl)*time.Second {
-			return
-		}
-		switch pointType {
-		case global.TslAttributesType:
-			return device.AttributesPoints[pointName], nil
-		case global.TslTelemetryType:
-			return device.TelemetryPoints[pointName], nil
-		default:
-			return value, errors.New("设备属性类型错误")
-		}
-	} else {
-		return value, UnknownDeviceErr
+func (d *deviceShadow) DeleteDevice(deviceName ...string) error {
+	if len(deviceName) == 0 {
+		return nil
 	}
-}
-
-func (d *deviceShadow) GetDevicePoints(deviceName, pointType string) (points map[string]DevicePoint, err error) {
-	if deviceAny, ok := d.m.Load(deviceName); ok {
-		device := deviceAny.(Device)
-		switch pointType {
-		case global.TslAttributesType:
-			return device.AttributesPoints, nil
-		case global.TslTelemetryType:
-			return device.TelemetryPoints, nil
-		default:
-			return points, errors.New("设备属性类型错误")
-		}
-	} else {
-		return nil, UnknownDeviceErr
+	for _, v := range deviceName {
+		d.m.Delete(v)
 	}
+	return nil
 }
 
 func (d *deviceShadow) GetDeviceUpdateAt(deviceName string) (time.Time, error) {
@@ -181,6 +135,19 @@ func (d *deviceShadow) GetDeviceStatus(deviceName string) (online bool, err erro
 	}
 }
 
+// RefreshDeviceStatus 刷新设备状态
+func (d *deviceShadow) RefreshDeviceStatus(deviceName string) {
+	if deviceAny, ok := d.m.Load(deviceName); ok {
+		device := deviceAny.(Device)
+		if device.online {
+			return
+		}
+		device.online = true
+		device.updatedAt = time.Now()
+		d.m.Store(deviceName, device)
+	}
+}
+
 func (d *deviceShadow) SetOnline(deviceName string) (err error) {
 	return d.changeOnOff(deviceName, true)
 }
@@ -197,6 +164,7 @@ func (d *deviceShadow) StopStatusListener() {
 	d.ticker.Stop()
 }
 
+// 定时检测设备是否离线
 func (d *deviceShadow) checkOnOff() {
 	for range d.ticker.C {
 		d.m.Range(func(key, value interface{}) bool {
@@ -204,12 +172,6 @@ func (d *deviceShadow) checkOnOff() {
 			if !ok {
 				return true
 			}
-
-			// fix: when ttl == 0, device always offline
-			if d.ttl == 0 {
-				return true
-			}
-
 			if device.online && time.Since(device.updatedAt) > time.Duration(d.ttl)*time.Second {
 				_ = d.SetOffline(device.Name)
 			}
