@@ -9,6 +9,7 @@ import (
 	"pandax/apps/develop/entity"
 	"pandax/apps/develop/gen"
 	"pandax/apps/develop/services"
+	"pandax/pkg/global"
 	"strings"
 	"sync"
 )
@@ -104,7 +105,8 @@ func (g *GenTableApi) Insert(rc *restfulx.ReqCtx) {
 			}
 			genTable, err := tg.Generate()
 			if err != nil {
-				biz.ErrIsNil(err, "创建表结构")
+				global.Log.Error("创建表结构")
+				return
 			}
 			genTable.OrgId = rc.LoginAccount.OrganizationId
 			genTable.Owner = rc.LoginAccount.UserName

@@ -9,6 +9,7 @@
 *.test
 .idea
 pandax
+static
 
 *.git
 
