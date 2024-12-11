@@ -97,9 +97,8 @@ func (s *HookService) handleOne(msg *netbase.DeviceEventInfo) {
 			}
 			if msg.Type == message.ConnectMes {
 				shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
-
 			} else {
-				shadow.DeviceShadowInstance.SetOnline(msg.DeviceAuth.Name)
+				shadow.DeviceShadowInstance.SetOffline(msg.DeviceAuth.Name)
 			}
 			// 添加设备连接历史
 			data := make(map[string]any)
