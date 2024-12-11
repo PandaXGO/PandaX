@@ -16,7 +16,7 @@ type Device struct {
 func NewDevice(deviceName string) Device {
 	return Device{
 		Name:      deviceName,
-		online:    true,
+		online:    false,
 		updatedAt: time.Now(),
 	}
 }
