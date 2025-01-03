@@ -143,7 +143,7 @@ func UpdateDeviceTelemetryData(data string) map[string]interface{} {
 			return resTel
 		}
 	}
-	tel["ts"] = time.Now().Format("2006-01-02 15:04:05.000")
+	tel["ts"] = time.Now().Local().Format("2006-01-02 15:04:05.000")
 	return tel
 }
 
@@ -155,7 +155,7 @@ func UpdateDeviceAttributesData(data string) map[string]interface{} {
 		global.Log.Error("上传属性数据结构错误")
 		return nil
 	}
-	tel["ts"] = time.Now().Format("2006-01-02 15:04:05.000")
+	tel["ts"] = time.Now().Local().Format("2006-01-02 15:04:05.000")
 	return tel
 }
 
@@ -203,7 +203,7 @@ func GetEventFromTopic(reg, topic string) (identifier string) {
 
 // eventType 事件类型 info alarm
 func CreateEventInfo(msgType, eventType, content string, deviceAuth *model.DeviceAuth) *DeviceEventInfo {
-	ts := time.Now().Format("2006-01-02 15:04:05.000")
+	ts := time.Now().Local().Format("2006-01-02 15:04:05.000")
 	ci := &tdengine.Events{
 		DeviceId: deviceAuth.DeviceId,
 		Name:     msgType,
