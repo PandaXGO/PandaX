@@ -84,5 +84,5 @@ func (m *sysDictDataModelImpl) Update(data entity.SysDictData) error {
 }
 
 func (m *sysDictDataModelImpl) Delete(codeIds []int64) error {
-	return global.Db.Table(m.table).Delete(&entity.SysOrganization{}, "dict_code in (?)", codeIds).Error
+	return global.Db.Table(m.table).Delete(&entity.SysDictData{}, "dict_code in (?)", codeIds).Error
 }
