@@ -29,10 +29,16 @@ func NewScriptEngine(msg message.Message, fun string, script string) ScriptEngin
 	}
 }
 
-func (bse *baseScriptEngine) ScriptOnMessage() (*message.Message, error) {
+func (bse *baseScriptEngine) ScriptOnMessage() (*message.Message,error) {
+	var err error
+	defer func() {
+		if caught := recover(); caught != nil {
+			err = fmt.Errorf("%s", caught)
+		}
+	}() 
 	msg := bse.Msg
 	vm := goja.New()
-	_, err := vm.RunString(bse.Script)
+	_, err = vm.RunString(bse.Script)
 	if err != nil {
 		logrus.Info("JS代码有问题")
 		return nil, err
@@ -51,9 +57,15 @@ func (bse *baseScriptEngine) ScriptOnMessage() (*message.Message, error) {
 }
 
 func (bse *baseScriptEngine) ScriptOnSwitch() ([]string, error) {
+	var err error
+	defer func() {
+		if caught := recover(); caught != nil {
+			err = fmt.Errorf("%s", caught)
+		}
+	}() 
 	msg := bse.Msg
 	vm := goja.New()
-	_, err := vm.RunString(bse.Script)
+	_, err = vm.RunString(bse.Script)
 	if err != nil {
 		logrus.Info("JS代码有问题")
 		return nil, err
@@ -69,9 +81,15 @@ func (bse *baseScriptEngine) ScriptOnSwitch() ([]string, error) {
 }
 
 func (bse *baseScriptEngine) ScriptOnFilter() (bool, error) {
+	var err error
+	defer func() {
+		if caught := recover(); caught != nil {
+			err = fmt.Errorf("%s", caught)
+		}
+	}() 
 	msg := bse.Msg
 	vm := goja.New()
-	_, err := vm.RunString(bse.Script)
+	_, err = vm.RunString(bse.Script)
 	if err != nil {
 		logrus.Info("JS代码有问题")
 		return false, err
@@ -87,9 +105,15 @@ func (bse *baseScriptEngine) ScriptOnFilter() (bool, error) {
 }
 
 func (bse *baseScriptEngine) ScriptToString() (string, error) {
+	var err error
+	defer func() {
+		if caught := recover(); caught != nil {
+			err = fmt.Errorf("%s", caught)
+		}
+	}() 
 	msg := bse.Msg
 	vm := goja.New()
-	_, err := vm.RunString(bse.Script)
+	_, err = vm.RunString(bse.Script)
 	if err != nil {
 		logrus.Info("JS代码有问题")
 		return "", err
@@ -105,9 +129,15 @@ func (bse *baseScriptEngine) ScriptToString() (string, error) {
 }
 
 func (bse *baseScriptEngine) ScriptGenerate() (map[string]interface{}, error) {
+	var err error
+	defer func() {
+		if caught := recover(); caught != nil {
+			err = fmt.Errorf("%s", caught)
+		}
+	}() 
 	msg := bse.Msg
 	vm := goja.New()
-	_, err := vm.RunString(bse.Script)
+	_, err = vm.RunString(bse.Script)
 	if err != nil {
 		logrus.Info("JS代码有问题")
 		return nil, err
