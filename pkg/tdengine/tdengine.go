@@ -40,7 +40,7 @@ func CreateDataBase(username, password, host, dbname string) error {
 	sql := "CREATE DATABASE if not exists " + dbname
 	url := fmt.Sprintf("http://%s/rest/sql", host)
 	token := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", username, password)))
-	_, err := httpclient.NewRequest(url).Header("Authorization", "Basic "+token).PostText(sql).BodyToMap()
+	_, err := httpclient.NewRequest(url).Header("Authorization", "Basic "+token).PostText(sql).BodyToString()
 	if err != nil {
 		return err
 	}
