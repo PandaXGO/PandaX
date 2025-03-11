@@ -38,3 +38,11 @@ func newInstanceWithManifest(m *manifest.Manifest) (*RuleChainInstance, error) {
 	}
 	return r, nil
 }
+// 获取规则实体指定节点
+func (rule *RuleChainInstance) GetNode(nodeId string) (nodes.Node, error) {
+	if node,ok := rule.nodes[nodeId];ok {
+		return node,nil
+	}else {
+		return nil,fmt.Errorf("节点不存在")
+	}
+}
