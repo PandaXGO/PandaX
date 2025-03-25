@@ -18,7 +18,7 @@ type (
 		FindListPage(page, pageSize int, data entity.Device) (*[]entity.DeviceRes, int64, error)
 		FindList(data entity.Device) (*[]entity.DeviceRes, error)
 		Update(data entity.Device) (*entity.Device, error)
-		UpdateStatus(id, linkStatus string) error
+		UpdateStatus(name, linkStatus string) error
 		Delete(ids []string) error
 		FindDeviceCount() (entity.DeviceCount, error)
 		FindDeviceCountGroupByLinkStatus() ([]entity.DeviceCountLinkStatus, error)
@@ -185,8 +185,8 @@ func (m *deviceModelImpl) Update(data entity.Device) (*entity.Device, error) {
 	err := global.Db.Table(m.table).Updates(&data).Error
 	return &data, err
 }
-func (m *deviceModelImpl) UpdateStatus(id, linkStatus string) error {
-	return global.Db.Table(m.table).Where("id", id).Update("link_status", linkStatus).Update("last_time", time.Now()).Error
+func (m *deviceModelImpl) UpdateStatus(name, linkStatus string) error {
+	return global.Db.Table(m.table).Where("name", name).Update("link_status", linkStatus).Update("last_time", time.Now()).Error
 }
 
 func (m *deviceModelImpl) Delete(ids []string) error {
