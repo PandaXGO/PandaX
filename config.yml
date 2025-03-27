@@ -42,7 +42,7 @@ mysql:
   host: 127.0.0.1:3306
   username: root
   password: 123456
-  db-name: pandax
+  db-name: pandax_iot
   config: charset=utf8&loc=Local&parseTime=true
 
 postgresql:
