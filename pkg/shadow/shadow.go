@@ -38,6 +38,7 @@ type DeviceShadow interface {
 type deviceShadow struct {
 	m           *sync.Map
 	ticker      *time.Ticker
+    mutex       *sync.RWMutex        // 添加互斥锁
 	handlerFunc OnlineChangeCallback //上下线执行的回调函数
 	ttl         int
 }
@@ -50,6 +51,7 @@ func init() {
 		ticker:      time.NewTicker(time.Second),
 		ttl:         3600, // 默认1小时
 		handlerFunc: deviceHandler,
+        mutex:       &sync.RWMutex{},
 	}
 	go shadow.checkOnOff()
 	DeviceShadowInstance = shadow
@@ -79,6 +81,8 @@ func (d *deviceShadow) SetDeviceTTL(ttl int) {
 }
 
 func (d *deviceShadow) GetDevice(deviceName string) (device Device, err error) {
+    d.mutex.RLock()
+	defer d.mutex.RUnlock()
 	if deviceAny, ok := d.m.Load(deviceName); ok {
 		return deviceAny.(Device), nil
 	} else {
