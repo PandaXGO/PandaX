@@ -98,8 +98,8 @@ sudo ./startup.sh
 - <span class="tag done-tag">✔</span> **`设备管理`** - _设备的管理,支持多协议接入，MQTT,TCP,UDP,COAP,Modbus,Opcua,S7,HL7等_
 
 ## 🛠 以后可能会有什么NB功能？
-- <span class="tag wip-tag">开发中</span> **`3D组态(2024-Q1-Q3)`** - _3D组态场景编辑器_
-- <span class="tag wip-tag">开发中</span> **`报表设计器（2024-Q4）`** - _低代码报表设计器_
+- <span class="tag wip-tag">开发中</span> **`3D组态(2025-Q3-Q4)`** - _3D组态场景编辑器_
+- <span class="tag wip-tag">开发中</span> **`AI智能体`** - _通过大语言+MCP+知识库+流程引擎搭建Agent_
 
 ---
 前端工程结构
