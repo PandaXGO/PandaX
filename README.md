@@ -100,7 +100,7 @@ sudo ./startup.sh
 
 ## 🛠 以后可能会有什么NB功能？
 - <span class="tag wip-tag">开发中</span> **`3D组态(2025 Q3-Q4)`** - _3D组态场景编辑器_
-- <span class="tag wip-tag">开发中</span> **`AI智能体（2025 Q2-Q3）`** - _通过大语言+MCP+知识库+流程引擎搭建Agent_
+- <span class="tag wip-tag">开发中</span> **`AI智能体（2025 Q2-Q3）`** - _通过多模态大模型+MCP+知识库+流程引擎搭建Agent_
 
 ---
 前端工程结构
