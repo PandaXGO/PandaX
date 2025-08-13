@@ -43,7 +43,12 @@ var rootCmd = &cobra.Command{
 				dbGorm.MaxOpenConns = global.Conf.Postgresql.MaxOpenConns
 			}
 			global.Db = dbGorm.GormInit()
-			global.Log.Infof("%s连接成功", global.Conf.Server.DbType)
+            if global.Db == nil {
+				global.Log.Panicf("%s连接失败", global.Conf.Server.DbType)
+			}else{
+                global.Log.Infof("%s连接成功", global.Conf.Server.DbType)
+            }
+	
 			client, err := rediscli.NewRedisClient(global.Conf.Redis.Host, global.Conf.Redis.Password, global.Conf.Redis.Port, global.Conf.Redis.Db)
 			if err != nil {
 				global.Log.Panic("Redis连接错误")
