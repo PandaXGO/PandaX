@@ -38,6 +38,8 @@ func NewIotHubTopic() TopicMeg {
 }
 
 func (iht TopicMeg) GetMessageType(topic string) string {
+    //删除topic的前后空格
+	topic = strings.TrimSpace(topic)
 	if meg, ok := iht[topic]; ok {
 		return meg
 	}
