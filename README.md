@@ -95,11 +95,13 @@ sudo ./startup.sh
 - <span class="tag done-tag">✔</span> **`表单设计`** - _表单设计_
 - <span class="tag done-tag">✔</span> **`报表设计`** - _数据报表设计_
 - <span class="tag done-tag">✔</span> **`产品管理`** - _设备的产品管理_
-- <span class="tag done-tag">✔</span> **`设备管理`** - _设备的管理,支持多协议接入，MQTT,TCP,UDP,COAP,Modbus,Opcua,S7,HL7等_
+- <span class="tag done-tag">✔</span> **`AI智能体`** - _AI智能体_
+- <span class="tag done-tag">✔</span> **`摄像头监控`** - _摄像头GB28181，RTSP拉流，摄像头多模态告警_
+- <span class="tag done-tag">✔</span> **`设备管理`** - _设备的管理,支持多协议接入，MQTT,TCP,UDP,COAP,Modbus,Opcua,S7,dtl645,iec104,cjt188等_
 
 ## 🛠 以后可能会有什么NB功能？
-- <span class="tag wip-tag">开发中</span> **`3D组态(2024-Q1-Q3)`** - _3D组态场景编辑器_
-- <span class="tag wip-tag">开发中</span> **`报表设计器（2024-Q4）`** - _低代码报表设计器_
+- <span class="tag wip-tag">开发中</span> **`3D组态(2026 Q1-Q6)`** - _3D组态场景编辑器_
+- <span class="tag wip-tag">开发中</span> **`AI智能体（2025 Q2-Q3）`** - _通过多模态大模型+MCP+知识库+流程引擎搭建Agent_
 
 ---
 前端工程结构
