@@ -88,6 +88,7 @@ sudo ./startup.sh
 
 ## ⚡ 内置功能
 
+- <span class="tag done-tag">✔</span> **`租户管理`** - _平台数据以租户进行隔离，平台管理员可设置租户资源限制。._
 - <span class="tag done-tag">✔</span> **`用户管理`** - _用户是系统操作者，该功能主要完成系统用户配置。._
 - <span class="tag done-tag">✔</span> **`组织管理`** - _配置系统组织机构（公司、组织、小组），树结构展现支持数据权限。_
 - <span class="tag done-tag">✔</span> **`岗位管理`** - _配置系统用户所属担任职务。_
@@ -100,12 +101,13 @@ sudo ./startup.sh
 - <span class="tag done-tag">✔</span> **`系统接口`** - _根据业务代码自动生成相关的api接口文档。_
 - <span class="tag done-tag">✔</span> **`服务监控`** - _监视当前系统CPU、内存、磁盘、堆栈等相关信息。_
 - <span class="tag done-tag">✔</span> **`代码生成`** - _可直接通过框架生成前后端基础业务代码（go、vue），减少开发时间。_
+- <span class="tag done-tag">✔</span> **`物联网卡`** - _可以绑定现场设备使用的物联网卡，展示其使用情况。_
 - <span class="tag done-tag">✔</span> **`组态大屏设计器`** - _通过拖拉拽直接生成组态、大屏。_
 - <span class="tag done-tag">✔</span> **`规则链设计`** - _物联网规则链过滤_
 - <span class="tag done-tag">✔</span> **`表单设计`** - _表单设计_
 - <span class="tag done-tag">✔</span> **`报表设计`** - _数据报表设计_
 - <span class="tag done-tag">✔</span> **`产品管理`** - _设备的产品管理_
-- <span class="tag done-tag">✔</span> **`AI智能体`** - _AI智能体_
+- <span class="tag done-tag">✔</span> **`AI智能体`** - _AI智能体，对话式生成想要的数据统计及报表_
 - <span class="tag done-tag">✔</span> **`摄像头监控`** - _摄像头GB28181，RTSP拉流，摄像头多模态告警_
 - <span class="tag done-tag">✔</span> **`设备管理`** - _设备的管理,支持多协议接入，MQTT,TCP,UDP,COAP,Modbus,Opcua,S7,dtl645,iec104,cjt188等_
 
