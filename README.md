@@ -66,8 +66,16 @@ sudo ./startup.sh
          <td><img src="https://s3.bmp.ovh/imgs/2023/08/22/58dda6cddceba5da.png"/></td>
     </tr>
     <tr>
-        <td><img src="https://s3.bmp.ovh/imgs/2024/11/29/9dd9f66e0d8a44a1.png"/></td>
-         <td><img src="https://s3.bmp.ovh/imgs/2024/11/29/82c61c0ca263e66e.png"/></td>
+        <td><img src="./images/登录.png"/></td>
+         <td><img src="./images/设备.png"/></td>
+    </tr>
+    <tr>
+        <td><img src="./images/设备详情.png"/></td>
+        <td><img src="./images/智能体.png"/></td>
+    </tr>
+    <tr>
+        <td><img src="./images/视频.png"/></td>
+         <td><img src="./images/组态.png"/></td>
     </tr>
 </table>
 更多功能请访问系统体验
@@ -103,7 +111,7 @@ sudo ./startup.sh
 
 ## 🛠 以后可能会有什么NB功能？
 - <span class="tag wip-tag">开发中</span> **`3D组态(2026 Q1-Q6)`** - _3D组态场景编辑器_
-- <span class="tag wip-tag">开发中</span> **`AI智能体（2026 Q2-Q3）`** - _通过多模态大模型+MCP+知识库+流程引擎搭建Agent_
+- <span class="tag wip-tag">可视化AI生成</span> **`AI智能体（2026 Q4）`** - _通过多模态大模型+Skill+知识库+可视化自动生成Agent_
 
 ---
 前端工程结构
