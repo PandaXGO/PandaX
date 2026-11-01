@@ -35,6 +35,8 @@ sudo ./startup.sh
 
 ```
 
+首次启动前，请在 `config.yml` 的 `jwt.key` 中配置独立生成的随机密钥（至少 32 字节），例如使用 `openssl rand -hex 32` 生成。不要使用公开默认值 `PandaX`。更换密钥会使已有登录令牌失效。
+
 ---
 系统在线文档
 ---

@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/PandaXGO/PandaKit/biz"
+	"strings"
 )
 
 type Jwt struct {
@@ -10,6 +11,7 @@ type Jwt struct {
 }
 
 func (j *Jwt) Valid() {
-	biz.IsTrue(j.Key != "", "config.yml之 [jwt.key] 不能为空")
+	key := strings.TrimSpace(j.Key)
+	biz.IsTrue(len(key) >= 32 && key != "PandaX", "config.yml之 [jwt.key] 必须是至少32字节的随机密钥")
 	biz.IsTrue(j.ExpireTime != 0, "config.yml之 [jwt.expire-time] 不能为空")
 }
