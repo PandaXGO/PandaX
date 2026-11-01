@@ -24,7 +24,7 @@ server:
     key-file: ./resource/default.key
     cert-file: ./resource/default.pem
 jwt:
-  key: PandaX
+  key: ""
   # 过期时间单位秒 7天 小时
   expire-time: 168
 #数据上报并发识别任务数量限制
